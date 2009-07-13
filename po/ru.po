@@ -1,0 +1,133 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2007-12-07 11:35+0000\n"
+"Last-Translator: Maxim Osipov <maxim.osipov@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Pootle 1.0.2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "Измерить"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "Значение спектра"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "Среднее Квадратичное   : "
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "Среднее   : "
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "Масштаб:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "Ось Х: "
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Ось Y: "
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "Щелкните для Постоянного Тока"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "Щелкните чтобы выключить Смещение"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "Нажмите чтобы показать ось Частот"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "Пауза"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "Показать значения"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "Щелкните для Переменного Тока"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "Щелкните чтобы включить Смещение"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "Щелкните для оси Времени"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "Спрятать значения"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "Продолжить"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "Снимок экрана"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1 секунда"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1 минута"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1 час"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "Начать Запись"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "Показать Запись"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "Остановить Запись"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "Удалить Запись"
+
+#, fuzzy
+#~ msgid "5 seconds"
+#~ msgstr "1 секунда"
+
+#, fuzzy
+#~ msgid "5 minutes"
+#~ msgstr "1 минута"
+
+#~ msgid "RMS: "
+#~ msgstr "Среднее Квадратичное: "
+
+# This is quite long, may abbreviate to "Сред." or even "Ср."
+#~ msgid "AVG : "
+#~ msgstr "Среднее: "

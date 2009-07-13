@@ -1,0 +1,128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-02-19 14:42-0500\n"
+"Last-Translator: Adi Roiban <adiroiban@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2);;\n"
+"X-Generator: Pootle 1.0.2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "Măsurători"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "Valoare spectrum"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr ""
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr ""
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "Scară:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "Axa X:_"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Axa Y:_"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+#, fuzzy
+msgid "Click for DC"
+msgstr "Clic pentru DC"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr ""
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr ""
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "Pauză"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "Afişează valori"
+
+#: electrical_ui.py:141
+#, fuzzy
+msgid "Click for AC"
+msgstr "Clic pentru DC"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr ""
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr ""
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "Ascunde valori"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "Reia"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr ""
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "o secundă"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "un minut"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "o oră"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "Porneşte înregistrare"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "Afişează înregistrarea"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "Opreşte înregistrare"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "Şterge înregistarea"
+
+#, fuzzy
+#~ msgid "5 seconds"
+#~ msgstr "o secundă"
+
+#, fuzzy
+#~ msgid "5 minutes"
+#~ msgstr "un minut"

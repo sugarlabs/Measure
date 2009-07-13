@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: xo-bundled\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-02-04 02:51-0500\n"
+"Last-Translator: Sankarshan Mukhopadhyay <sankarshan.mukhopadhyay@gmail.com>\n"
+"Language-Team: Bengali <core@bengalinux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.0.2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "মেপে নিন"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "স্পেক্ট্রামের মান"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "RMS"
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "AVG"
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "মাপকাঠি"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "X অক্ষ:"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Y অক্ষ:"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "DC এর জন্য ক্লিক করুন"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "Bias বন্ধ করার জন্য ক্লিক করুন"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "Frequency base এর জন্য ক্লিক করুন"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "স্থগিত করো"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "মান প্রদর্শন কর"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "AC এর জন্য ক্লিক করুন"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "Bias চালু করার জন্য ক্লিক করুন"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "Time base এর জন্য ক্লিক করুন"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "মান লুকিয়ে রাখ"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "পুনরায় চালু কর"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "স্ন্যাপশট"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "১ সেকেন্ড"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "১ মিনিট"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "১ ঘন্টা"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "লগ করা শুরু করো"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "লগ প্রদর্শন করো"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "লগ করা বন্ধ করো"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "লগ মুছে ফেল"
+
+#, fuzzy
+#~ msgid "5 seconds"
+#~ msgstr "১ সেকেন্ড"
+
+#, fuzzy
+#~ msgid "5 minutes"
+#~ msgstr "১ মিনিট"

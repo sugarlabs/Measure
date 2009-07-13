@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-04-14 02:15-0400\n"
+"Last-Translator: Huda Sarfraz <huda.sarfraz@nu.edu.pk>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "ناپیں"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "سپیکٹرم قدر"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "RMS _ _ _: _"
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "AVG _ _ _: _"
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr " پيمانہ:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "X محور: _"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Y محور: _"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "DC کے لئے کلک کريں"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "بائيس بند کرنے کے ليے کلک کريں"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "تعدد اساس کے ليے کلک کريں"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "روکیں"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "قدر ديکھائيں"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "AC کے ليے کلک کريں"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "بائيس چلانے کے ليے کلک کريں"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "وقت اساس کے ليے کلک کريں"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "قدریں چھپائيں"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "دوبارہ سے شروع کریں"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "فوری تصوير"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1 سيکنڈ"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1 منٹ"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1 گھنٹہ"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "لاگ کرنا شروع کريں"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "لاگ ديکھائيں"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "لاگ کرنا روک دیں"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "لاگ ہٹائيں"
+
+#~ msgid "Show sheet and graphs"
+#~ msgstr "شيٹ اور گراف دکھائيں"
+
+#~ msgid "Show waveform"
+#~ msgstr "ويو فارم دکھائيں"
+
+#~ msgid "Time base"
+#~ msgstr "وقت بيس"
+
+#~ msgid "Frequency base"
+#~ msgstr "تعدد بیس"
+
+#~ msgid "Resistance Sensor"
+#~ msgstr "رزسٹنس سینسر"
+
+#~ msgid "Voltage Sensor"
+#~ msgstr "وولٹیج سینسر"
+
+#~ msgid "Picture"
+#~ msgstr "تصویر"
+
+#~ msgid "5 seconds"
+#~ msgstr "5 سيکنڈ"
+
+#~ msgid "5 minutes"
+#~ msgstr "5 منٹ"
+
+#~ msgid "Spectral power"
+#~ msgstr "سپيکٹريل پاور"
+
+#~ msgid "RMS: "
+#~ msgstr "RMS:_ "
+
+#~ msgid "AVG : "
+#~ msgstr "AVG:_"

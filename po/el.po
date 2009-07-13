@@ -1,0 +1,148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-04-29 04:26-0400\n"
+"Last-Translator: Simos Xenitellis <simos.lists@googlemail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "Μέτρηση"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "Τιμή κλίμακας"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "RMS   : "
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "Μ.Ο.   : "
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "Κλίμακα:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "Χ Άξονας: _"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Y Άξονας: _"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "Πατήστε για DC"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "Πατήστε για να απενεργοποιήσετε το Bias"
+
+# Αυτό σίγουρα χρειάζεται διόρθωση
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "Πατήστε για βάση Συχνότητας"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "Παύση"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "Εμφάνισε τις τιμές"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "Πατήστε για AC"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "Πατήστε για ενεργοποίηση του Bias"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "Πατήστε για βάση με το χρόνο"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "Κρύψε τις τιμές"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "Επαναφορά"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "Στιγμιότυπο"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1 δευτερόλεπτο"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1 λεπτό"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1 ώρα"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "Έναρξη Αναφοράς"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "Εμφάνιση Καταχώρησης"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "Παύση Αναφοράς"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "Αφαίρεση Καταχώρησης"
+
+#~ msgid "Show sheet and graphs"
+#~ msgstr "Εμφάνιση φύλλου εργασίας και γραφικών"
+
+#~ msgid "Show waveform"
+#~ msgstr "Εμφάνιση κυματομορφής"
+
+#~ msgid "Time base"
+#~ msgstr "Βάση του χρόνου"
+
+#~ msgid "Frequency base"
+#~ msgstr "Βάση Συχνότητας"
+
+#~ msgid "Resistance Sensor"
+#~ msgstr "Αισθητήρας Αντίστασης"
+
+#~ msgid "Voltage Sensor"
+#~ msgstr "Αισθητήρας Τάσης"
+
+#~ msgid "Picture"
+#~ msgstr "Εικόνα"
+
+#~ msgid "5 seconds"
+#~ msgstr "5 δευτερόλεπτα"
+
+#~ msgid "5 minutes"
+#~ msgstr "5 λεπτά"
+
+#~ msgid "Spectral power"
+#~ msgstr "Φασματική ισχύς"

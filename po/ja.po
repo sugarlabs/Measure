@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-07-28 20:54-0400\n"
+"Last-Translator: Spiky <y@sailweb.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "計測"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+#, fuzzy
+msgid "Spectrum value"
+msgstr "スペクトル値"
+
+#: drawWaveform.py:330
+#, fuzzy
+msgid "RMS   : "
+msgstr "実効値   ： "
+
+#: drawWaveform.py:330
+#, fuzzy
+msgid "AVG   : "
+msgstr "平均   ： "
+
+#: drawWaveform.py:331
+#, fuzzy
+msgid "Scale:"
+msgstr "目盛り   ： "
+
+#: drawWaveform.py:332
+#, fuzzy
+msgid "X Axis: "
+msgstr "X軸： "
+
+#: drawWaveform.py:332
+#, fuzzy
+msgid "Y Axis : "
+msgstr "Y軸： "
+
+#: electrical_ui.py:38 electrical_ui.py:151
+#, fuzzy
+msgid "Click for DC"
+msgstr "クリックしてDCに切替"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+#, fuzzy
+msgid "Click for Bias Off"
+msgstr "クリックしてバイアス解放"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+#, fuzzy
+msgid "Click for Frequency base"
+msgstr "クリックして周波数単位を変更"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+#, fuzzy
+msgid "Pause"
+msgstr "一時停止"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+#, fuzzy
+msgid "Show values"
+msgstr "値を表示"
+
+#: electrical_ui.py:141
+#, fuzzy
+msgid "Click for AC"
+msgstr "クリックしてACに切替"
+
+#: electrical_ui.py:163
+#, fuzzy
+msgid "Click for Bias On"
+msgstr "クリックしてバイアスをかける"
+
+#: electrical_ui.py:183
+#, fuzzy
+msgid "Click for Time base"
+msgstr "クリックして時間単位を変更"
+
+#: electrical_ui.py:212
+#, fuzzy
+msgid "Hide values"
+msgstr "値を非表示"
+
+#: electrical_ui.py:249
+#, fuzzy
+msgid "Resume"
+msgstr "再開"
+
+#: logging_ui.py:44 logging_ui.py:50
+#, fuzzy
+msgid "Snapshot"
+msgstr "スナップショット"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1秒間"
+
+# the length of one minute. unsure of the context.
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1分間"
+
+# the length of one hour, unsure of context
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1時間"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "記録開始"
+
+#: logging_ui.py:82 logging_ui.py:167
+#, fuzzy
+msgid "Show Log"
+msgstr "ログ表示"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "記録終了"
+
+#: logging_ui.py:159
+#, fuzzy
+msgid "Remove Log"
+msgstr "ログ削除"
+
+#~ msgid "Show sheet and graphs"
+#~ msgstr "数値表とグラフを表示"
+
+#~ msgid "Show waveform"
+#~ msgstr "波形を表示"
+
+#~ msgid "Time base"
+#~ msgstr "時間に沿って..."
+
+#~ msgid "Frequency base"
+#~ msgstr "周波数に沿って..."
+
+#~ msgid "Resistance Sensor"
+#~ msgstr "抵抗値センサー"
+
+#~ msgid "Voltage Sensor"
+#~ msgstr "電圧センサー"
+
+#~ msgid "Picture"
+#~ msgstr "ピクチャ"
+
+#~ msgid "5 seconds"
+#~ msgstr "5秒間"
+
+# the length of one minute. unsure of the context.
+#~ msgid "5 minutes"
+#~ msgstr "5分間"

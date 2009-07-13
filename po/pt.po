@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-08-26 19:15-0400\n"
+"Last-Translator: Eduardo H. Silva <HoboPrimate@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "Medir"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "Valor de espectro"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "RMS   : "
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "AVG   : "
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "Escala:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "Eixo X: "
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Eixo Y: "
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "Clicar para DC"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "Clicar para Bias Off"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "Clicar para Frequência base"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "Pausar"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "Mostrar valores"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "Clicar para AC"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "Clicar para Bias On"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "Clicar para Tempo base"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "Esconder valores"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "Continuar"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "Fotografia"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1 segundo"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1 minuto"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1 hora"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "Começar a Registar"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "Mostrar Registo"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "Parar o Registo"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "Remover Registo"
+
+#, fuzzy
+#~ msgid "5 seconds"
+#~ msgstr "1 segundo"
+
+#, fuzzy
+#~ msgid "5 minutes"
+#~ msgstr "1 minuto"
+
+#~ msgid "RMS: "
+#~ msgstr "RMS: "
+
+#~ msgid "AVG : "
+#~ msgstr "AVG : "

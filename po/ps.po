@@ -1,0 +1,146 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-03-12 04:24-0400\n"
+"Last-Translator: Usman Mansoor Ansari <jalalkut@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "اندازه کول"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "د سپكټرم ارزښت"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "RMS    : "
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "AVG   : "
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "مېچل:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "افقي محوور: "
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "عمودي محور: "
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "DC لپاره ټک وکړﺉ"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "د باېس بندولو لپاره ټک کړﺉ"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "د فرېكوېنسي بنسټ لپاره ټك وكړئ"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "ځنډ"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "ارزښت ښودنل"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "اې.سي لپاره ټك كړئ"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "باېس ان لپاره ټك كړئ"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "د وخت بنسټ لپاره ټك كړئ"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "ارزښتونه پټول"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "کارمخینه"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "سملاسي انځور"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "۱ ثانیه"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "۱ دقیقه"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "۱ ساعت"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "ننوتون پيلونه"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "خبرال وښاياست"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "ننوتون تمول"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "خبرال لر كړئ"
+
+#~ msgid "Show sheet and graphs"
+#~ msgstr "ګراف او پاڼه ښودل"
+
+#~ msgid "Show waveform"
+#~ msgstr "د څپې فارم ښودل"
+
+#~ msgid "Time base"
+#~ msgstr "د وخت بنسټ"
+
+#~ msgid "Frequency base"
+#~ msgstr "د فرېکوېنسي بنسټ"
+
+#~ msgid "Resistance Sensor"
+#~ msgstr "د مخنیوي حس"
+
+#~ msgid "Voltage Sensor"
+#~ msgstr "د ولټېج حس"
+
+#~ msgid "Picture"
+#~ msgstr "انځور"
+
+#~ msgid "5 seconds"
+#~ msgstr "۵ ثانیې"
+
+#~ msgid "5 minutes"
+#~ msgstr "۵ دقیقې"
+
+#~ msgid "Spectral power"
+#~ msgstr "خیالي ځواک"

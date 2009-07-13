@@ -1,0 +1,152 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-03-21 15:37-0400\n"
+"Last-Translator: Shankar Pokharel <memshankar@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "नाप"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr "वर्णपट माप"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "आर एम एस   : "
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "औसत   : "
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "मापन:"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "X अक्ष:"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Y अक्ष:"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr "DC को लागि थिच"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr "Bias बन्द गर्न थिच"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr "आवृती आधारको लागि थिच"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "विश्राम"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "माप देखाउ"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "AC को लागि थिच"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "Bias गर्न थिच"
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr "समय आधारको लागि थिच"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "माप लुकाऊ"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "फेरि चालु गर"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "झलक"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "१ सेकेन्ड"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "१ मिनेट"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "१ घन्टा"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "बचत सुरु गर"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "वहीखाता देखाऊ"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "बचत बन्द गर"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "वहीखाताबाट हटाऊ"
+
+#~ msgid "Show sheet and graphs"
+#~ msgstr "सुचि र रेखाचित्र देखाऊ"
+
+#~ msgid "Show waveform"
+#~ msgstr "तरङरेखा देखाऊ"
+
+#~ msgid "Time base"
+#~ msgstr "समय आधार"
+
+#~ msgid "Frequency base"
+#~ msgstr "आवृती आधार"
+
+#~ msgid "Resistance Sensor"
+#~ msgstr "अवरोध सचेतक"
+
+#~ msgid "Voltage Sensor"
+#~ msgstr "भोल्टेज सचेतक"
+
+#~ msgid "Picture"
+#~ msgstr "चित्र"
+
+#~ msgid "5 seconds"
+#~ msgstr "५ सेकेन्ड"
+
+#~ msgid "5 minutes"
+#~ msgstr "५ मिनेट"
+
+#~ msgid "Spectral power"
+#~ msgstr "वर्णपटीय शक्ति"
+
+#~ msgid "RMS: "
+#~ msgstr "आर एम एस:"
+
+#~ msgid "AVG : "
+#~ msgstr "औसत"

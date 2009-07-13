@@ -1,0 +1,133 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2007-11-23 16:35+0000\n"
+"Last-Translator: Aleksandar Balalovski <gemidjy@lugola.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 || n%10==1 ? 0 : 1;\n"
+"X-Generator: Pootle 1.0.2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "Мерка"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+#, fuzzy
+msgid "Spectrum value"
+msgstr "Вредност на спектар"
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "RMS   : "
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "AVG   : "
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "Размер"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "X оска:"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "Y оска:"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+#, fuzzy
+msgid "Click for DC"
+msgstr "Клинки за DC"
+
+#: electrical_ui.py:50 electrical_ui.py:172
+#, fuzzy
+msgid "Click for Bias Off"
+msgstr "Кликни за исклучување на закосувањето"
+
+#: electrical_ui.py:61 electrical_ui.py:192
+#, fuzzy
+msgid "Click for Frequency base"
+msgstr "Кникни за основна фреквенција"
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "Пауза"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "Прикажи вредности"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr "Кликни за AC"
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr "Кникни за пуштање на закосување"
+
+#: electrical_ui.py:183
+#, fuzzy
+msgid "Click for Time base"
+msgstr "Кликни за основно време"
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "Скриј вредности"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "Продолжи"
+
+#: logging_ui.py:44 logging_ui.py:50
+#, fuzzy
+msgid "Snapshot"
+msgstr "Слика од екран"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1 секунда"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1 минута"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1 час"
+
+#: logging_ui.py:68 logging_ui.py:144
+#, fuzzy
+msgid "Start Logging"
+msgstr "Започни со логирање"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "Прикажи записник"
+
+#: logging_ui.py:134
+#, fuzzy
+msgid "Stop Logging"
+msgstr "Престани со логирање"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "Отстрани записник"
+
+#, fuzzy
+#~ msgid "5 seconds"
+#~ msgstr "1 секунда"
+
+#, fuzzy
+#~ msgid "5 minutes"
+#~ msgstr "1 минута"

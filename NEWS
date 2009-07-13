@@ -1,0 +1,83 @@
+23
+
+21
+* #8683 Fixed minor sensor logging problem
+
+20
+* Added license information
+
+19
+* New usage context based UI - sound and sensors context
+* In sound context recording takes screenshots of waveforms and creates journal entries
+* In sensors context recording writes csv values and creates journal entry 
+* Textbox at bottom to show prompts for easy usage
+* New even lower frequency display in sound context for 25hz waveforms
+* Waveform color is XO stroke color
+* Major changes in codebase from ver18 to make it easily extensible from a dev point of view
+* Supports upto 4 simultaneous waveforms display by specifying start and end co-ordinates
+
+18
+* Fixed changing Numeric to numpy
+* Updated translations 	
+17
+
+* New translations (Pootle)
+* Bitfrost compliant (Logging works now) #6436
+
+16
+
+* New translations added via Pootle - pl, te, mn, ff_AF, ff, bg, ca 
+
+15
+
+* New translations added via Pootle
+
+14
+
+* (Note : This release doesn't comply with Bitfrost. Please see AnalogInput.py to correct that)
+* Revisited Journal Integration - now scale, mode etc. are also written in logfile
+* Details show/hide added - rms, avg, X Axis scale and Y Axis scale are visible
+* Fixed #3616 by making the Activity wait for ,active = True to fire before trying to get hold of the sound device
+* Increased gain slider sensitivity, also disabled Mic Boost throughout Activity
+
+13
+
+* Changing sampling rate from ALSA rather than using downsampling in code
+* Frequency slider now takes three discrete values
+* Faster background drawing method 
+* Code cleanup
+* Fixed Activity not calling on_quit when quitting.
+
+12
+
+* Fixed #4444 by disabling the gobject.timeout when activity is inactive that queues up the expose drawing event
+
+11
+
+* Fixed and closed #3666
+
+10
+
+* Fixed sound related problem by turning up Master and PCM high on exit (closed #3481)
+
+9
+
+
+* Code modified to match Alsacontrol name 'DC Mode Enable'
+* UI refinement and improvement
+* Fixed loud feedback problem
+
+
+8
+
+* No change from version 7.
+
+7
+
+* Fix NEWS file
+  NEWS files should be appended to for every major change and the setup
+  will take care of adding the version when releasing
+
+6
+
+* Initial release

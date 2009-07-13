@@ -1,0 +1,149 @@
+# translation of measure_stable.po to Hindi
+# G Karunakar <karunakar@indlinux.org>, 2007.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+msgid ""
+msgstr ""
+"Project-Id-Version: measure_stable\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"PO-Revision-Date: 2008-04-23 05:36-0400\n"
+"Last-Translator: Prashant Thakkar <prashantbthakkar@gmail.com>\n"
+"Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 1.1.0rc2\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "नाप"
+
+#: drawWaveform.py:205 drawWaveform.py:260
+msgid "Spectrum value"
+msgstr ""
+
+#: drawWaveform.py:330
+msgid "RMS   : "
+msgstr "आर.एम.एस."
+
+#: drawWaveform.py:330
+msgid "AVG   : "
+msgstr "ए.वी.जी."
+
+#: drawWaveform.py:331
+msgid "Scale:"
+msgstr "स्केलः"
+
+#: drawWaveform.py:332
+msgid "X Axis: "
+msgstr "x अक्ष :"
+
+#: drawWaveform.py:332
+msgid "Y Axis : "
+msgstr "y अक्ष :"
+
+#: electrical_ui.py:38 electrical_ui.py:151
+msgid "Click for DC"
+msgstr ""
+
+#: electrical_ui.py:50 electrical_ui.py:172
+msgid "Click for Bias Off"
+msgstr ""
+
+#: electrical_ui.py:61 electrical_ui.py:192
+msgid "Click for Frequency base"
+msgstr ""
+
+#: electrical_ui.py:116 electrical_ui.py:256
+msgid "Pause"
+msgstr "ठहरें"
+
+#: electrical_ui.py:126 electrical_ui.py:203
+msgid "Show values"
+msgstr "मान दिखाओ"
+
+#: electrical_ui.py:141
+msgid "Click for AC"
+msgstr ""
+
+#: electrical_ui.py:163
+msgid "Click for Bias On"
+msgstr ""
+
+#: electrical_ui.py:183
+msgid "Click for Time base"
+msgstr ""
+
+#: electrical_ui.py:212
+msgid "Hide values"
+msgstr "मान छिपाओ"
+
+#: electrical_ui.py:249
+msgid "Resume"
+msgstr "पुनरारंभ"
+
+#: logging_ui.py:44 logging_ui.py:50
+msgid "Snapshot"
+msgstr "तस्वीर"
+
+#: logging_ui.py:44
+msgid "1 second"
+msgstr "1 सेकण्ड"
+
+#: logging_ui.py:44
+msgid "1 minute"
+msgstr "1 मिनट"
+
+#: logging_ui.py:44
+msgid "1 hour"
+msgstr "1 घंटा"
+
+#: logging_ui.py:68 logging_ui.py:144
+msgid "Start Logging"
+msgstr "लागिंग करना प्रारंभ करें"
+
+#: logging_ui.py:82 logging_ui.py:167
+msgid "Show Log"
+msgstr "लॉग दिखाओ"
+
+#: logging_ui.py:134
+msgid "Stop Logging"
+msgstr "लॉग करना रोकें"
+
+#: logging_ui.py:159
+msgid "Remove Log"
+msgstr "लॉग हटाओ"
+
+#~ msgid "Show sheet and graphs"
+#~ msgstr "कागज और ग्राफ़ दिखाए"
+
+#~ msgid "Show waveform"
+#~ msgstr "तरंगरूप दिखाए"
+
+#~ msgid "Time base"
+#~ msgstr "समयानुसार"
+
+#~ msgid "Frequency base"
+#~ msgstr "तरंगानुसार"
+
+#~ msgid "Resistance Sensor"
+#~ msgstr "प्रतिरोधक संवेदक"
+
+#~ msgid "Voltage Sensor"
+#~ msgstr "वोल्टेज संवेदक"
+
+#~ msgid "Picture"
+#~ msgstr "छवि"
+
+#, fuzzy
+#~ msgid "5 seconds"
+#~ msgstr "1 सेकण्ड"
+
+#, fuzzy
+#~ msgid "5 minutes"
+#~ msgstr "1 मिनट"
+
+#~ msgid "Spectral power"
+#~ msgstr "वर्णक्रम संबंधी की क्षमता"

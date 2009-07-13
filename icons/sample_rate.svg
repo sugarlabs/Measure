@@ -1,0 +1,19 @@
+<?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg enable-background="new 0 0 55.125 55" height="55px" version="1.1" viewBox="0 0 55.125 55" width="55.125px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px"><g display="block" id="sample_x5F_rate">
+	<g>
+		<g>
+			
+				<line fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" x1="32.562" x2="20.562" y1="38.258" y2="38.258"/>
+			
+				<line fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" x1="32.562" x2="32.562" y1="36.258" y2="40.234"/>
+			
+				<line fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" x1="20.562" x2="20.562" y1="36.258" y2="40.234"/>
+		</g>
+		<line fill="none" stroke="#C6C8CA" stroke-width="2.25" x1="9" x2="21" y1="28.266" y2="22.266"/>
+		<line fill="none" stroke="#C6C8CA" stroke-width="2.25" x1="21" x2="33" y1="22.266" y2="25.266"/>
+		<line fill="none" stroke="#C6C8CA" stroke-width="2.25" x1="33" x2="46" y1="25.266" y2="18.266"/>
+		<circle cx="9" cy="28.266" fill="#FFFFFF" r="3.5"/>
+		<circle cx="21" cy="22.266" fill="#FFFFFF" r="3.5"/>
+		<circle cx="33" cy="25.266" fill="#FFFFFF" r="3.5"/>
+		<circle cx="46" cy="18.266" fill="#FFFFFF" r="3.5"/>
+	</g>
+</g></svg>
