@@ -394,7 +394,11 @@ class AudioGrab():
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"%]")]
-        return int(p)
+        try:
+            return int(p)
+        except:
+            # in case alsamixer doesn't report a percentage
+            return 0
 
     def set_sampling_rate(self, sr):
         """Sets the sampling rate of the capture device
