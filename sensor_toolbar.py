@@ -1,8 +1,8 @@
 #! /usr/bin/python
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, OLPC
-#    
+#    Copyright (C) 2007, Arjun Sarwal
+#    Copyright (C) 2009, Walter Bender
 #    	
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -34,13 +34,15 @@ from sugar import profile
 # 'Sensor' toolbar class
 class SensorToolbar(gtk.Toolbar):
 
-    def __init__(self, audiograb, textbox, journal):
+    def __init__(self, wave, audiograb, textbox, journal):
 
         gtk.Toolbar.__init__(self)
 
-        self._STR_BASIC = _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO) ")
+        self._STR_BASIC = \
+          _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO) ")
         self._STR1 = _("Bias/Offset Enabled  ")
         self._STR2 = _("Bias/Offset Disabled ")
+        self._STR3 = _(" Invert ")
 
         self.gain_state = None
         self.boost_state = None        
@@ -49,29 +51,39 @@ class SensorToolbar(gtk.Toolbar):
 
         self._LOG_SEPARATOR_DIST = 20
 
-
+        self.wave = wave
         self.ag = audiograb
         self.textbox_copy = textbox
         self.ji = journal
     
         self.logging_status = False
 
-        #######################Resistance#####################
+        ###################### Resistance ####################
         self._resistance = ToolButton('bias-on2')
         self.insert(self._resistance, -1)
         self._resistance.show()
         self._resistance.set_tooltip(_('Resistance Sensor'))
-        self._resistance.connect('clicked', self.set_resistance_voltage_mode, 'resistance')
-        ###################################################
+        self._resistance.connect('clicked', self.set_resistance_voltage_mode,\
+                                 'resistance')
+        ######################################################
 
-        #######################Voltage########################
+        ####################### Voltage ######################
         self._voltage = ToolButton('bias-off')
         self.insert(self._voltage, -1)
         self._voltage.show()
         self._voltage.set_tooltip(_('Voltage Sensor'))
-        self._voltage.connect('clicked', self.set_resistance_voltage_mode, 'voltage')
-        ####################################################
+        self._voltage.connect('clicked', self.set_resistance_voltage_mode,\
+                              'voltage')
+        ######################################################
 
+        ####################### invert #####################
+        self._invert = ToolButton('invert')
+        self.insert(self._invert, -1)
+        self._invert.show()
+        self._invert.set_tooltip(_('Invert'))
+        self._invert.connect('clicked', self._invert_control_cb)
+        self.wave.set_invert_state(False)
+        ####################################################
 
         for seperator_count_temp in range( 1, self._LOG_SEPARATOR_DIST):
             separator = gtk.SeparatorToolItem()
@@ -195,6 +207,21 @@ class SensorToolbar(gtk.Toolbar):
             return False
         return False
 
+    def _invert_control_cb(self, data=None):
+        print "invert_control_cb; current state: " + \
+              str(self.wave.get_invert_state())
+        if self.wave.get_invert_state()==True:
+            self.wave.set_invert_state(False)
+            print "invert_control_cb; changing to False"
+            self._invert.set_icon('invert')
+            self._invert.show()
+        else:
+            self.wave.set_invert_state(True)
+            print "invert_control_cb; changing to True"
+            self._invert.set_icon('invert2')
+            self._invert.show()
+        self._update_string_for_textbox()
+        return False
 
     def get_mode(self):
         if self.ag.get_bias()==False and self.ag.get_dc_mode()==True :
@@ -234,6 +261,8 @@ class SensorToolbar(gtk.Toolbar):
             self.string_for_textbox += self._STR1
         else:
             self.string_for_textbox += self._STR2
+        if self.wave.get_invert_state()==True:
+            self.string_for_textbox += self._STR3
         self.textbox_copy.set_data_params(0, self.string_for_textbox)
 
 

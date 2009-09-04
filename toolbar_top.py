@@ -44,7 +44,7 @@ class Toolbar(ActivityToolbox):
         self.add_toolbar(_('Sound'), self._sound_toolbar)
         self._sound_toolbar.show()
 
-        self._sensors_toolbar = SensorToolbar(audiograb, textbox, journal)
+        self._sensors_toolbar = SensorToolbar(wave, audiograb, textbox, journal)
         self.add_toolbar(_('Sensors'), self._sensors_toolbar)
         self._sensors_toolbar.show()
 

@@ -52,6 +52,7 @@ class SoundToolbar(gtk.Toolbar):
         self._STR_BASIC = _("Sound ")
         self._STR1 = _("Time Base      ")
         self._STR2 = _("Frequency Base ")
+        self._STR3 = _(" Invert ")
         self._STR_SCALEX = ""
         self._STR_XAXIS1 = _("X Axis Scale: 1 division = ")
         self._STR_XAXIS2 = _("ms ")
@@ -82,20 +83,9 @@ class SoundToolbar(gtk.Toolbar):
         self._freq.connect('clicked', self._timefreq_control_cb, False)
         ####################################################
 
-        ####################### invert #####################
-        self._invert = ToolButton('invert')
-        self.insert(self._invert, -1)
-        self._invert.show()
-        self._invert.set_tooltip(_('Invert'))
-        self._invert.connect('clicked', self._invert_control_cb)
-        ####################################################
-
         #self.time_freq_state = self.wave_copy.get_fft_mode()
         #self._time.set_active(not(self.time_freq_state))
         #self._freq.set_active(self.time_freq_state)
-
-        self.wave_copy.set_invert_state(False)
-        print "##### invert state: " + str(self.wave_copy.get_invert_state())
 
         self.freq_low_img = gtk.Image()
         self.freq_high_img = gtk.Image()
@@ -268,21 +258,6 @@ class SoundToolbar(gtk.Toolbar):
             self._update_string_for_textbox()
         return False
 
-    def _invert_control_cb(self, data=None):
-        print "invert_control_cb; current state: " + \
-              str(self.wave_copy.get_invert_state())
-        if self.wave_copy.get_invert_state()==True:
-            self.wave_copy.set_invert_state(False)
-            print "invert_control_cb; changing to False"
-            self._invert.set_icon('invert')
-            self._invert.show()
-        else:
-            self.wave_copy.set_invert_state(True)
-            print "invert_control_cb; changing to True"
-            self._invert.set_icon('invert2')
-            self._invert.show()
-        return False
-
     def cb_page_sizef(self, get, data=None):
         if(get.value>=10 and get.value<20):
             self._freq_range.set_value(10)
@@ -347,6 +322,8 @@ class SoundToolbar(gtk.Toolbar):
             self.string_for_textbox += self._STR1
         else:
             self.string_for_textbox += self._STR2
+        if self.wave_copy.get_invert_state()==True:
+            self.string_for_textbox += self._STR3
         self.string_for_textbox += ("\n" + self._STR_SCALEX)
         self.textbox_copy.set_data_params(0, self.string_for_textbox)
 
