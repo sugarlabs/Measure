@@ -1,4 +1,23 @@
 #! /usr/bin/python
+#
+#    Author:  Arjun Sarwal   arjun@laptop.org
+#    Copyright (C) 2007, Arjun Sarwal
+#    Copyright (C) 2009, Walter Bender
+#    	
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 import pygst
 pygst.require("0.10")
 import pygtk
@@ -39,12 +58,13 @@ class DrawWaveform(gtk.DrawingArea):
         self.avg=''
         self.pp=''	
         self.count=0
+        self.invert=False
 
         self.param1= config.WINDOW_H/65536.0
         self.param2= config.WINDOW_H/2.0	
         self.y_mag = 3.0
         self.g = 1  #Gain (not in dB) introduced by Capture Gain and Mic Boost    
-        self._freq_range = 4	#See comment in sound_toolbar.py to see what different ranges are all about
+        self._freq_range = 4 #See comment in sound_toolbar.py re freq_range
         self.draw_interval = 10
         self.num_of_points = 115
         self.details_iter = 50
@@ -57,7 +77,8 @@ class DrawWaveform(gtk.DrawingArea):
         self.rms = 0
         self.avg = 0
         self.Rv = 0
-        self.y_mag_bias_multiplier = 1	#constant to multiply with self.param2 while scaling values 
+	# constant to multiply with self.param2 while scaling values 
+        self.y_mag_bias_multiplier = 1
         self.log_param1 = ""
         self.log_param2 = ""
         self.log_param3 = ""
@@ -171,9 +192,15 @@ class DrawWaveform(gtk.DrawingArea):
         self.context = False
         self.handler_block(self.expose_event_id)
 
+    def set_invert_state(self, invert_state):
+        self.invert = invert_state
+
+    def get_invert_state(self):
+        return self.invert
 
     def get_drawing_interval(self):
-        """Returns the pixel interval horizontally between plots of two consecutive points"""
+        """Returns the pixel interval horizontally between plots of two 
+        consecutive points"""
         return self.draw_interval
 
 
@@ -184,11 +211,12 @@ class DrawWaveform(gtk.DrawingArea):
         colmap = self.get_colormap()
         clr = colmap.alloc_color(0, 65535, 0, False, False)
         self._line_gc = self.window.new_gc(foreground = clr)
-        self._line_gc.set_line_attributes(self._FOREGROUND_LINE_THICKNESS, gdk.LINE_SOLID,\
-	        gdk.CAP_ROUND, gdk.JOIN_BEVEL)   
+        self._line_gc.set_line_attributes(self._FOREGROUND_LINE_THICKNESS,\
+                                          gdk.LINE_SOLID,\
+	                                  gdk.CAP_ROUND, gdk.JOIN_BEVEL)   
 
         self._back_surf = gdk.Pixmap(self.window, int(config.WINDOW_W), \
-	        int(config.WINDOW_H))
+	                             int(config.WINDOW_H))
         cr = self._back_surf.cairo_create()
 	                    
         #background
@@ -221,16 +249,18 @@ class DrawWaveform(gtk.DrawingArea):
 
 
     def _expose(self, widget, event):
-        """This function is the "expose" event handler and does all the drawing"""
+        """This function is the "expose" event handler and does all the 
+        drawing"""
 
-        #######################Real time drawing###################################
+        ##################### Real time drawing ###################
         if(self.context == True):
 
             #Draw the background
             #We could probably make this faster with another pixmap.
             self._init_background()
-            self.window.draw_drawable(self.get_style().bg_gc[0], self._back_surf, 0, 0, 0, \
-                0, config.WINDOW_W, config.WINDOW_H)									
+            self.window.draw_drawable(self.get_style().bg_gc[0], \
+                                      self._back_surf, 0, 0, 0, 0, \
+                                      config.WINDOW_W, config.WINDOW_H)									
 
             #Iterate for each graph                                                            
             for graph_id in self.graph_id:              							
@@ -251,36 +281,38 @@ class DrawWaveform(gtk.DrawingArea):
                             self.draw_interval = 3
                         self.max_samples = span/self.draw_interval
 
-
                     if(len(self.main_buffers)>=self.max_samples):
-                        del self.main_buffers[0:(len(self.main_buffers)-(self.max_samples+1))]
+                        del self.main_buffers[0:(len(self.main_buffers)-\
+                                                (self.max_samples+1))]
 		          
                     if(self.fft_show==False):				
                         self.y_mag_bias_multiplier = 1					
-                          #Depending upon the X span of the graph, deciding the total number of points to take
+                        """ Depending upon the X span of the graph, deciding 
+                        the total number of points to take """
 
          
                     else:
-                        ###############FFT################		
+                        ############## FFT ###############		
                         Fs = 48000
                         nfft = 65536
                         if self.integer_buffer:
                             self.integer_buffer = self.integer_buffer[0:256]
                             self.fftx = fft(self.integer_buffer, 256,-1)
                             self.fftx = self.fftx[0:self.max_samples]
-                            self.main_buffers = [(abs(x) * 0.02) for x in self.fftx]
+                            self.main_buffers = [(abs(x) * 0.02) \
+                                                for x in self.fftx]
                             self.y_mag_bias_multiplier=0.1
                         ##################################
                                     
 							                
-                    #################Getting data######################
+                    ################ Getting data #################
                     if self.source[graph_id]==0:
                         self.buffers=self.main_buffers
                     else:
                         pass        #write code here that gets data from file
                     ###############################################
 
-                    ################Scaling the values###################
+                    ########### Scaling the values ################
                     if config.CONTEXT == 2:
                         self.y_mag = 1
                         self.y_mag_bias_multiplier = 1
@@ -289,7 +321,13 @@ class DrawWaveform(gtk.DrawingArea):
 
                     val=[]
                     for i in self.buffers:
-                        temp_val_float = (self.param1*i*self.y_mag) + (self.param2*self.y_mag_bias_multiplier)
+                        # only apply invert to time display
+                        if self.invert is True and self.fft_show is False:
+                            temp_val_float = -(self.param1*i*self.y_mag) +\
+                                        (self.param2*self.y_mag_bias_multiplier)
+                        else:
+                            temp_val_float = (self.param1*i*self.y_mag) +\
+                                        (self.param2*self.y_mag_bias_multiplier)
                         if(temp_val_float>=self.Yend[graph_id]):
                             temp_val_float= self.Yend[graph_id]
                         if(temp_val_float<=self.Ystart[graph_id]):
@@ -297,12 +335,11 @@ class DrawWaveform(gtk.DrawingArea):
                         val.append( config.WINDOW_H - temp_val_float  )
 
                     self.peaks=val
-                    ################################################
+                    ###############################################
 
-                    
-                    
-                    ##########The actual drawing of the graph##################
-                    #TODO: Improvement : The color setting shouldn't happen in every drawing loop, should happen only once
+                    ###### The actual drawing of the graph ########
+                    """TODO: Improvement : The color setting shouldn't happen
+                    in every drawing loop, should happen only once"""
                     colmap = self.get_colormap()
                     r,g,b = self.get_stroke_color_from_sugar()
                     clr = colmap.alloc_color( r, g, b, False, False)					
@@ -318,7 +355,7 @@ class DrawWaveform(gtk.DrawingArea):
                         self.window.draw_lines(self._line_gc, lines)
                     else:
                         self.window.draw_points(self._line_gc, lines)
-                    ############################################################
+                    ###############################################
 
                     
         """
@@ -327,14 +364,14 @@ class DrawWaveform(gtk.DrawingArea):
         self.pr_time=time.time()
         layout = pango.Layout(self.pango_context)
         layout.set_text(str(fr) +self.debug_str)
-        self.window.draw_layout(self.get_style().white_gc, self.t_x, self.t_y, layout)
+        self.window.draw_layout(self.get_style().white_gc, self.t_x, self.t_y,\
+                                layout)
         """
         return True
 
 
     def set_side_toolbar_reference(self, side_toolbar):
         self.side_toolbar_copy = side_toolbar
-
 
     def set_electrical_ui_reference(self, electrical_ui):
         self.electrical_ui_copy = electrical_ui
@@ -345,7 +382,8 @@ class DrawWaveform(gtk.DrawingArea):
         1 - uses from file"""
         self.source[graph_id] = source
 
-    def set_graph_params(self, graph_id, Xstart, Ystart, Xend, Yend, type, color):
+    def set_graph_params(self, graph_id, Xstart, Ystart, Xend, Yend, type,\
+                         color):
         """Sets Xstart, Ystart --> the bottom left co-ordinates
         Xend, Yend             --> the top right co-ordinates
         type                   --> 0 for a connected graph, 1 for a dotted graph
@@ -356,7 +394,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.Yend[graph_id] = Yend
         self.type[graph_id]  = type
         self.color[graph_id]  = color
-
 
     def get_fft_mode(self):
         """Returns if FFT is ON (True) or OFF (False)"""
@@ -370,36 +407,33 @@ class DrawWaveform(gtk.DrawingArea):
         """See sound_toolbar to see what all frequency ranges are"""
         self._freq_range = freq_range
 
-
     def get_stroke_color_from_sugar(self):
-        """Returns in (r,g,b) format the stroke color set in the profile on the XO"""
+        """Returns in (r,g,b) format the stroke color from the Sugar profile"""
         color = profile.get_color()
         stroke = color.get_stroke_color()
         colorstring = stroke.strip()
         if colorstring[0] == '#': 
-	        colorstring = colorstring[1:]
-	        r,g,b = colorstring[:2], colorstring[2:4], colorstring[4:]
-	        r+="00"
-	        g+="00"
-	        b+="00"
-	        r,g,b = [int(n, 16) for n in (r,g,b)]
+            colorstring = colorstring[1:]
+	    r,g,b = colorstring[:2], colorstring[2:4], colorstring[4:]
+	    r+="00"
+	    g+="00"
+	    b+="00"
+	    r,g,b = [int(n, 16) for n in (r,g,b)]
         return (r,g,b)
 
-
     def get_fill_color_from_sugar(self):
-        """Returns in (r,g,b) format the fill color set in the profile on the XO"""
+        """Returns in (r,g,b) format the fill color from the Sugar profile"""
         color = profile.get_color()
         fill = color.get_fill_color()
         colorstring = fill.strip()
         if colorstring[0] == '#': 
-	        colorstring = colorstring[1:]
-	        r,g,b = colorstring[:2], colorstring[2:4], colorstring[4:]
-	        r+="00"
-	        g+="00"
-	        b+="00"
-	        r,g,b = [int(n, 16) for n in (r,g,b)]
+            colorstring = colorstring[1:]
+	    r,g,b = colorstring[:2], colorstring[2:4], colorstring[4:]
+	    r+="00"
+	    g+="00"
+	    b+="00"
+	    r,g,b = [int(n, 16) for n in (r,g,b)]
         return (r,g,b)
-
 
     def get_mag_params(self):
         return self.g, self.y_mag
@@ -407,5 +441,3 @@ class DrawWaveform(gtk.DrawingArea):
     def set_mag_params(self, g=1.0, y_mag=3.0):
         self.g = g
         self.y_mag = y_mag
-        
-
