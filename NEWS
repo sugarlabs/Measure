@@ -1,3 +1,8 @@
+26
+* fixed toolbar display bug
+* cleaned up sound record code
+* caught exception causing resume from journal crash
+
 25
 * Added invert button to invert time-based waveform
 * Work around alsa problem on non-XO hardware that was preventing launch
