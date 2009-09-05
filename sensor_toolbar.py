@@ -26,7 +26,6 @@ from gettext import gettext as _
 import config  	#This has all the globals
 
 from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
 from sugar import profile
@@ -49,7 +48,7 @@ class SensorToolbar(gtk.Toolbar):
 
         self.string_for_textbox = ""
 
-        self._LOG_SEPARATOR_DIST = 20
+        self._LOG_SEPARATOR_DIST = 5
 
         self.wave = wave
         self.ag = audiograb
@@ -76,14 +75,14 @@ class SensorToolbar(gtk.Toolbar):
                               'voltage')
         ######################################################
 
-        ####################### invert #####################
+        ####################### invert #######################
         self._invert = ToolButton('invert')
         self.insert(self._invert, -1)
         self._invert.show()
         self._invert.set_tooltip(_('Invert'))
         self._invert.connect('clicked', self._invert_control_cb)
         self.wave.set_invert_state(False)
-        ####################################################
+        ######################################################
 
         for seperator_count_temp in range( 1, self._LOG_SEPARATOR_DIST):
             separator = gtk.SeparatorToolItem()
@@ -91,19 +90,21 @@ class SensorToolbar(gtk.Toolbar):
             self.insert(separator, -1)
 
         self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(config.ICONS_DIR + '/sample_rate.svg')
+        self.loginterval_img.set_from_file(config.ICONS_DIR + \
+                                           '/sample_rate.svg')
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
         self.loginterval_img.show()
         self.loginterval_img_tool.show()
 
-
-        #######################Logging Interval#####################
+        ################### Logging Interval ##################
         self._loginterval_combo = ComboBox()
-        self.interval = [_('1 second') , _('30 seconds'),  _('5 minutes'),  _('30 minutes')]
+        self.interval = [_('1 second') , _('30 seconds'),  _('5 minutes'),\
+                         _('30 minutes')]
 
-        self._interval_changed_id = self._loginterval_combo.connect("changed", self.loginterval_control)
+        self._interval_changed_id = self._loginterval_combo.connect("changed",\
+                                         self.loginterval_control)
 
         for i, s in enumerate(self.interval):
             self._loginterval_combo.append_item(i, s, None)
@@ -114,16 +115,15 @@ class SensorToolbar(gtk.Toolbar):
         self.insert(self._loginterval_tool,-1)
         self._loginterval_tool.show()
         self.logginginterval_status = '1second'		
-        ############################################################
+        ########################################################
 
-        #######################Start Logging/Stop Logging#####################
+        ########### Start Logging/Stop Logging #################
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
         self._record.show()
         self._record.set_tooltip(_('Start Recording'))
         self._record.connect('clicked', self.record_control)
-        ######################################################################
-
+        ########################################################
 
     def record_control(self, data=None):
         """Depending upon the selected interval, does either
@@ -137,11 +137,11 @@ class SensorToolbar(gtk.Toolbar):
             Yscale = 0.0
             interval = self.interval_convert()
             username = profile.get_nick_name()
-            self.ji.start_new_session(username, Xscale, Yscale, self.logginginterval_status)
+            self.ji.start_new_session(username, Xscale, Yscale,\
+                                      self.logginginterval_status)
             self.ag.set_logging_params(True, interval, False)
             config.LOGGING_IN_SESSION = True
             self.logging_status = True
-            
             self._record.set_icon('media-playback-stop')
             self._record.show()
             self._record.set_tooltip(_('Stop Recording'))
@@ -152,15 +152,14 @@ class SensorToolbar(gtk.Toolbar):
                 self.ji.stop_session()                
                 config.LOGGING_IN_SESSION = False
                 self.logging_status = False
-                
                 self._record.set_icon('media-record')
                 self._record.show()
                 self._record.set_tooltip(_('Start Recording'))
 
-
     def interval_convert(self):
         """Converts picture/1second/5seconds/1minute/5minutes to an integer
-        which denotes the number of times the audiograb buffer must be called before a value is written.
+        which denotes the number of times the audiograb buffer must be called
+        before a value is written.
         When set to 0, the whole of current buffer will be written"""
         if self.logginginterval_status == '1second':
             return 89
@@ -171,10 +170,7 @@ class SensorToolbar(gtk.Toolbar):
         elif self.logginginterval_status == '30minute':
             return 160000
             
-            
-
     def loginterval_control(self, combobox):
-
         if (self._loginterval_combo.get_active() != -1):
             if (self._loginterval_combo.get_active() == 0):
                 self.logginginterval_status = '1second'		
@@ -185,8 +181,6 @@ class SensorToolbar(gtk.Toolbar):
             if (self._loginterval_combo.get_active() == 3):
                 self.logginginterval_status = '30minute'		
 
-
-	
     def set_resistance_voltage_mode(self, data=None, mode_to_set='resistance'):
         if mode_to_set == 'resistance' and self.get_mode()=='voltage' :
             self.set_mode('resistance')
@@ -196,7 +190,6 @@ class SensorToolbar(gtk.Toolbar):
             self._voltage.show()
             self._update_string_for_textbox()
             return False
-
         if mode_to_set == 'voltage' and self.get_mode()=='resistance' :
             self.set_mode('voltage')
             self._resistance.set_icon('bias-on')
@@ -231,14 +224,12 @@ class SensorToolbar(gtk.Toolbar):
         else:
             return 'error'
 
-
     def set_mode(self, mode='resistance'):
         if mode=='resistance':
             self.ag.set_bias(True)
         else:
             self.ag.set_bias(False)
         return 
-
 
     def context_off(self):
         self.ag.pause_grabbing()
@@ -252,7 +243,6 @@ class SensorToolbar(gtk.Toolbar):
         #self.boost_state = self.ag.get_mic_boost()
         self.ag.set_capture_gain(0)
         self.ag.set_mic_boost(False)
-
 
     def _update_string_for_textbox(self):
         self.string_for_textbox = ""

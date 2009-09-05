@@ -18,36 +18,30 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import pygst
-pygst.require("0.10")
 import pygtk
 import gtk
-import os
-import gobject
 from time import *
 from gettext import gettext as _
 
 import config  	#This has all the globals
-import audioop
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
-
+from sugar import profile
 
 class SoundToolbar(gtk.Toolbar):
 
-    def __init__(self, wave, audiograb, textbox, journal, activity):
+    def __init__(self, wave, audiograb, textbox, journal):
 
         gtk.Toolbar.__init__(self)
 
-        self.wave_copy = wave
-        self.audiograb_copy = audiograb
+        self.wave = wave
+        self.ag = audiograb
         self.textbox_copy = textbox
         self.ji = journal
-        self.activity = activity
 
-        self._LOG_SEPARATOR_DIST = 10
+        self._LOG_SEPARATOR_DIST = 5
 
         self._STR_BASIC = _("Sound ")
         self._STR1 = _("Time Base      ")
@@ -83,7 +77,7 @@ class SoundToolbar(gtk.Toolbar):
         self._freq.connect('clicked', self._timefreq_control_cb, False)
         ####################################################
 
-        #self.time_freq_state = self.wave_copy.get_fft_mode()
+        #self.time_freq_state = self.wave.get_fft_mode()
         #self._time.set_active(not(self.time_freq_state))
         #self._freq.set_active(self.time_freq_state)
 
@@ -175,8 +169,13 @@ class SoundToolbar(gtk.Toolbar):
         """Depending upon the selected interval, does either
         a logging session, or just logs the current buffer"""
         if config.LOGGING_IN_SESSION == False:
+            Xscale = (1.00/self.ag.get_sampling_rate())
+            Yscale = 0.0
             interval = self.interval_convert()
-            self.audiograb_copy.set_logging_params(True, interval, True)
+            username = profile.get_nick_name()
+            self.ji.start_new_session(username, Xscale, Yscale,\
+                                      self.logginginterval_status)
+            self.ag.set_logging_params(True, interval, True)
             config.LOGGING_IN_SESSION = True
             self.logging_status = True
             self._record.set_icon('media-playback-stop')
@@ -191,7 +190,7 @@ class SoundToolbar(gtk.Toolbar):
 		self.logging_status = False
         else:
             if self.logging_status == True:
-                self.audiograb_copy.set_logging_params(False)
+                self.ag.set_logging_params(False)
                 config.LOGGING_IN_SESSION = False
                 self.logging_status = False
                 self._record.set_icon('media-record')
@@ -228,29 +227,29 @@ class SoundToolbar(gtk.Toolbar):
                 self.logginginterval_status = '30minute'		
 
     def _pauseplay_control_cb(self, data=None):
-        if self.audiograb_copy.get_freeze_the_display()==True:
-            self.audiograb_copy.set_freeze_the_display(False)
+        if self.ag.get_freeze_the_display()==True:
+            self.ag.set_freeze_the_display(False)
             self._pause.set_icon('media-playback-pause-insensitive')
             self._pause.set_tooltip(_('Unfreeze the display'))
             self._pause.show()
         else:
-            self.audiograb_copy.set_freeze_the_display(True)
+            self.ag.set_freeze_the_display(True)
             self._pause.set_icon('media-playback-pause')
             self._pause.set_tooltip(_('Freeze the display'))
             self._pause.show()
         return False
 
     def _timefreq_control_cb(self, data=None, time_state=True):
-        if time_state==True and self.wave_copy.get_fft_mode()==True:
-            self.wave_copy.set_fft_mode(False)
+        if time_state==True and self.wave.get_fft_mode()==True:
+            self.wave.set_fft_mode(False)
             self._time.set_icon('domain-time2')
             self._freq.set_icon('domain-freq')
             self._time.show()
             self._freq.show()
             self._update_string_for_textbox()
             return False
-        if time_state==False and self.wave_copy.get_fft_mode()==False:		
-            self.wave_copy.set_fft_mode(True)
+        if time_state==False and self.wave.get_fft_mode()==False:		
+            self.wave.set_fft_mode(True)
             self._time.set_icon('domain-time')
             self._freq.set_icon('domain-freq2')
             self._time.show()
@@ -261,27 +260,27 @@ class SoundToolbar(gtk.Toolbar):
     def cb_page_sizef(self, get, data=None):
         if(get.value>=10 and get.value<20):
             self._freq_range.set_value(10)
-            self.audiograb_copy.set_sampling_rate(4000)
-            self.wave_copy.set_freq_range(1)
+            self.ag.set_sampling_rate(4000)
+            self.wave.set_freq_range(1)
         if(get.value>=20 and get.value<46):
             self._freq_range.set_value(30)
-            self.audiograb_copy.set_sampling_rate(4000)
-            self.wave_copy.set_freq_range(2)
+            self.ag.set_sampling_rate(4000)
+            self.wave.set_freq_range(2)
         if(get.value>=46 and get.value<62):
             self._freq_range.set_value(50)
-            self.audiograb_copy.set_sampling_rate(16000)
-            self.wave_copy.set_freq_range(3)
+            self.ag.set_sampling_rate(16000)
+            self.wave.set_freq_range(3)
         if(get.value>=62 and get.value<=70):
             self._freq_range.set_value(70)
-            self.audiograb_copy.set_sampling_rate(48000)
-            self.wave_copy.set_freq_range(4)
+            self.ag.set_sampling_rate(48000)
+            self.wave.set_freq_range(4)
         self._update_string_for_textbox()
         return True
 
     def calculate_x_axis_scale(self):	
-        sampling_rate = self.audiograb_copy.get_sampling_rate()
-        draw_interval = self.wave_copy.get_drawing_interval()
-        if self.wave_copy.get_fft_mode() == False:
+        sampling_rate = self.ag.get_sampling_rate()
+        draw_interval = self.wave.get_drawing_interval()
+        if self.wave.get_fft_mode() == False:
             scale = (50000.0/sampling_rate)/draw_interval
             #TODO: fix this [:4] bad bad hack!
             self._STR_SCALEX = self._STR_XAXIS1 + str(scale)[:4] + \
@@ -297,32 +296,32 @@ class SoundToolbar(gtk.Toolbar):
     def context_off(self):
         """When some other context is switched to and the sound context 
         is switched off"""
-        self.g, self.y_mag = self.wave_copy.get_mag_params()
-        self.capture_gain = self.audiograb_copy.get_capture_gain()
-        self.mic_boost = self.audiograb_copy.get_mic_boost()
-        self.audiograb_copy.stop_sound_device()
-        self.wave_copy.set_fft_mode(False)
+        self.g, self.y_mag = self.wave.get_mag_params()
+        self.capture_gain = self.ag.get_capture_gain()
+        self.mic_boost = self.ag.get_mic_boost()
+        self.ag.stop_sound_device()
+        self.wave.set_fft_mode(False)
 
     def context_on(self):
         """When the sound context is switched on"""
-        self.audiograb_copy.start_sound_device()
-        self.audiograb_copy.set_dc_mode(False)
-        self.audiograb_copy.set_bias(True)
-        self.audiograb_copy.set_capture_gain(self.capture_gain)
-        self.audiograb_copy.set_mic_boost(self.mic_boost)
-        self.wave_copy.set_fft_mode(False)
-        self.wave_copy.set_mag_params(self.g, self.y_mag)
+        self.ag.start_sound_device()
+        self.ag.set_dc_mode(False)
+        self.ag.set_bias(True)
+        self.ag.set_capture_gain(self.capture_gain)
+        self.ag.set_mic_boost(self.mic_boost)
+        self.wave.set_fft_mode(False)
+        self.wave.set_mag_params(self.g, self.y_mag)
         self._update_string_for_textbox()
 
     def _update_string_for_textbox(self):
         self.calculate_x_axis_scale()
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\t")
-        if self.wave_copy.get_fft_mode() == False:
+        if self.wave.get_fft_mode() == False:
             self.string_for_textbox += self._STR1
         else:
             self.string_for_textbox += self._STR2
-        if self.wave_copy.get_invert_state()==True:
+        if self.wave.get_invert_state()==True:
             self.string_for_textbox += self._STR3
         self.string_for_textbox += ("\n" + self._STR_SCALEX)
         self.textbox_copy.set_data_params(0, self.string_for_textbox)

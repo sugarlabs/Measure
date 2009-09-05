@@ -1,7 +1,8 @@
 #! /usr/bin/python
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, OLPC
+#    Copyright (C) 2007, Arjun Sarwal
+#    Copyright (C) 2009, Walter Bender
 #    
 #    	
 #    This program is free software; you can redistribute it and/or modify
@@ -28,7 +29,7 @@ from sugar.activity.activity import ActivityToolbox
 
 from sound_toolbar import SoundToolbar
 from sensor_toolbar import SensorToolbar
-from logging_ui import LogToolbar
+# from logging_ui import LogToolbar
 from gettext import gettext as _
 
 class Toolbar(ActivityToolbox):
@@ -40,7 +41,7 @@ class Toolbar(ActivityToolbox):
         self._SOUND_TOOLBAR = 1
         self._SENSOR_TOOLBAR = 2
 
-        self._sound_toolbar = SoundToolbar(wave, audiograb, textbox, journal, activity)
+        self._sound_toolbar = SoundToolbar(wave, audiograb, textbox, journal)
         self.add_toolbar(_('Sound'), self._sound_toolbar)
         self._sound_toolbar.show()
 
