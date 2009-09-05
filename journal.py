@@ -88,12 +88,7 @@ class JournalInteraction():
     
     def set_max_session_id(self):
         """Sets the existing maximum session_id if the file already exists"""
-        reader = csv.reader(open(self.filepath, "rb"))
-        max = 0
-        for row in reader:
-            if int(row[0])>max:
-                max= int(row[0])
-        self.session_id=max
+        self.session_id=self.get_number_of_records();
     
     def set_number_of_rows(self):
         """Sets the number of rows an existing file has"""
