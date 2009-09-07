@@ -1,8 +1,8 @@
 #! /usr/bin/python
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, OLPC
-#    
+#    Copyright (C) 2007, Arjun Sarwal
+#    Copyright (C) 2009, Walter Bender
 #    	
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -72,17 +72,15 @@ class AudioGrab():
         self.pipeline.add(self.alsasrc)
         self.caps1 = gst.element_factory_make("capsfilter", "caps1")
         self.pipeline.add(self.caps1)
-        caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (config.RATE, )
+        caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % \
+                  (config.RATE, )
         self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
         self.fakesink = gst.element_factory_make("fakesink", "fsink")
         self.pipeline.add(self.fakesink)		
         self.fakesink.connect("handoff", self.on_buffer)	
         self.fakesink.set_property("signal-handoffs",True) 
         gst.element_link_many(self.alsasrc, self.caps1, self.fakesink)
-
-
         self.dont_queue_the_buffer = False
-
 
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
@@ -91,22 +89,18 @@ class AudioGrab():
     def _new_buffer(self,buf):
         if self.dont_queue_the_buffer == False:
             self.callable1(str(buf))
-            #print "$$audiograb:have just called callback to update buffer for drawing"
         else:
             pass
-            #print "$$audiograb:not queuing2"
-            
-
 
     def on_buffer(self, element, buffer, pad):		
         """The function that is called whenever new data is available
         This is the signal handler for the handoff signal"""
         self.temp_buffer = buffer
         if self.dont_queue_the_buffer == False:
-            gobject.timeout_add(config.AUDIO_BUFFER_TIMEOUT, self._new_buffer, self.temp_buffer)
+            gobject.timeout_add(config.AUDIO_BUFFER_TIMEOUT,\
+                                self._new_buffer, self.temp_buffer)
         else:
             pass
-
         if self.logging_state==True:
             if self.waveform_id == config.SOUND_MAX_WAVE_LOGS:
                 self.waveform_id = 1
@@ -114,24 +108,22 @@ class AudioGrab():
                 self.ji.stop_session()
             else:
                 if self.counter_buffer == self.buffer_interval_logging:
-                    #gobject.timeout_add(300, self._emit_for_logging, self.temp_buffer)
+                    #gobject.timeout_add(300, self._emit_for_logging, \
+                    #                    self.temp_buffer)
                     self._emit_for_logging(str(self.temp_buffer))
                     self.counter_buffer=0
-
                 self.counter_buffer+=1
-
-            if self.buffer_interval_logging ==0:        #If a record is to be written, thats all for the logging session
+            # If a record is to be written, thats all for the logging session
+            if self.buffer_interval_logging ==0:
                 self.logging_state = False
                 self.ji.stop_session()
                 self.waveform_id = 1
-
         return False
 
-
     def set_freeze_the_display(self, freeze = False):
-        """Useful when just the display is needed to be frozen, but logging should continue"""
+        """Useful when just the display is needed to be frozen, but logging 
+        should continue"""
         self.dont_queue_the_buffer = not freeze
-
 
     def get_freeze_the_display(self):
         """Returns state of queueing the buffer"""
@@ -140,7 +132,6 @@ class AudioGrab():
     def _emit_for_logging(self, buf):
         """Sends the data for logging"""
         if self.buffer_interval_logging==0:
-            #self.ji.write_record(self.picture_buffer)
             self.ji.take_screenshot()
         else:
             if self.screenshot == True:
@@ -149,7 +140,6 @@ class AudioGrab():
             else:
                 temp_buf = list(unpack( str(int(len(buf))/2)+'h' , buf))
                 self.ji.write_value(temp_buf[0])
-
 
     def start_sound_device(self):
         """Start or Restart grabbing data from the audio capture"""
@@ -184,10 +174,11 @@ class AudioGrab():
         self.set_mic_boost(self.mic_boost)
 
 
-    def set_logging_params(self, start_stop=False, interval=0, screenshot = True):
+    def set_logging_params(self, start_stop=False, interval=0, screenshot=True):
         """Configures for logging of data i.e. starts or stops a session
         Sets an interval if logging interval is to be started
-        Sets if screenshot of waveform is to be taken or values need to be written"""
+        Sets if screenshot of waveform is to be taken or values need to be 
+        written"""
         self.logging_state = start_stop 
         self.set_buffer_interval_logging(interval)
         #if interval==0:
@@ -197,20 +188,24 @@ class AudioGrab():
 
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
-        self.picture_buffer = list(unpack( str(int(len(str(self.temp_buffer)))/2)+'h' , str(self.temp_buffer)))
+        self.picture_buffer = \
+            list(unpack(str(int(len(str(self.temp_buffer)))/2)+'h',\
+                 str(self.temp_buffer)))
 
     def set_logging_state(self, start_stop=False):
-        """Sets whether buffer is to be emited for logging (True) or not (False)"""
+        """Sets whether buffer is to be emited for logging (True) or not
+        (False)"""
         self.logging_state = start_stop
 
     def set_buffer_interval_logging(self, interval=0):
-        """Sets the number of buffers after which a buffer needs to be emitted"""
+        """Sets the number of buffers after which a buffer needs to be
+        emitted"""
         self.buffer_interval_logging = interval
 
     def reset_counter_buffer(self):
-        """Resets the counter buffer used to keep track of after how many buffers to emit a buffer for logging"""
+        """Resets the counter buffer used to keep track of after how many
+        buffers to emit a buffer for logging"""
         self.counter_buffer = 0
-
 
     def mute_master(self):
         """Mutes the Master Control"""
@@ -244,19 +239,20 @@ class AudioGrab():
 
 
     def get_master(self):
-        """Gets the Master gain slider settings. The value returned is an integer between 0-100
-        and is an indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "Master"], stdout=subprocess.PIPE).communicate()[0])
+        """Gets the Master gain slider settings. The value returned is an
+        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
+        p = str(subprocess.Popen(["amixer", "get", "Master"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Front Left:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"%]")]
         return int(p)
 
-
-
     def get_mix_for_recording(self):
-        """Returns True if Mix is set as recording device and False if it isn't """
-        p = str(subprocess.Popen(["amixer", "get", "Mix", "capture", "cap"], stdout=subprocess.PIPE).communicate()[0])
+        """Returns True if Mix is set as recording device and False if it
+        isn't """
+        p = str(subprocess.Popen(["amixer", "get", "Mix", "capture", "cap"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"]")]
@@ -264,11 +260,12 @@ class AudioGrab():
 	        return True
         else:
 	        return False
-	
 
     def get_mic_for_recording(self):
-        """Returns True if mic is set as recording device and False if it isn't """
-        p = str(subprocess.Popen(["amixer", "get", "Mic", "capture", "cap"], stdout=subprocess.PIPE).communicate()[0])
+        """Returns True if mic is set as recording device and False if it
+        isn't """
+        p = str(subprocess.Popen(["amixer", "get", "Mic", "capture", "cap"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"]")]
@@ -298,7 +295,8 @@ class AudioGrab():
     def get_bias(self):
         """Returns the setting of Bias control 
         i.e. True: Enabled and False: Disabled"""
-        p = str(subprocess.Popen(["amixer", "get", "'V_REFOUT Enable'"], stdout=subprocess.PIPE).communicate()[0])
+        p = str(subprocess.Popen(["amixer", "get", "'V_REFOUT Enable'"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"]")]
@@ -319,7 +317,8 @@ class AudioGrab():
     def get_dc_mode(self):
         """Returns the setting of DC Mode Enable control 
         i .e. True: Unmuted and False: Muted"""
-        p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"], stdout=subprocess.PIPE).communicate()[0])
+        p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"]")]
@@ -340,7 +339,8 @@ class AudioGrab():
     def get_mic_boost(self):
         """Returns the setting of Mic Boost +20dB control 
         i.e. True: Unmuted and False: Muted"""
-        p = str(subprocess.Popen(["amixer", "get", "'Mic Boost (+20dB)'"], stdout=subprocess.PIPE).communicate()[0])
+        p = str(subprocess.Popen(["amixer", "get", "'Mic Boost (+20dB)'"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"]")]
@@ -358,9 +358,10 @@ class AudioGrab():
 
 
     def get_capture_gain(self):
-        """Gets the Capture gain slider settings. The value returned is an integer between 0-100
-        and is an indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "Capture"], stdout=subprocess.PIPE).communicate()[0])
+        """Gets the Capture gain slider settings. The value returned is an
+        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
+        p = str(subprocess.Popen(["amixer", "get", "Capture"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Front Left:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"%]")]
@@ -374,13 +375,14 @@ class AudioGrab():
         os.system("amixer set PCM " + str(PCM_val) + "%")
 
     def get_PCM_gain(self):
-        """Gets the PCM gain slider settings. The value returned is an indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "PCM"], stdout=subprocess.PIPE).communicate()[0])
+        """Gets the PCM gain slider settings. The value returned is an
+        indicative of the percentage 0 - 100%"""
+        p = str(subprocess.Popen(["amixer", "get", "PCM"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Front Left:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"%]")]
         return int(p)
-
 
     def set_mic_gain(self, mic_val):
         """Sets the MIC gain slider settings 
@@ -389,8 +391,10 @@ class AudioGrab():
         os.system("amixer set Mic " + str(mic_val) + "%")
 
     def get_mic_gain(self):
-        """Gets the MIC gain slider settings. The value returned is an indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "Mic"], stdout=subprocess.PIPE).communicate()[0])
+        """Gets the MIC gain slider settings. The value returned is an 
+        indicative of the percentage 0 - 100%"""
+        p = str(subprocess.Popen(["amixer", "get", "Mic"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
         p = p[find(p,"Mono:"):]
         p = p[find(p,"[")+1:]
         p = p[:find(p,"%]")]
@@ -402,7 +406,8 @@ class AudioGrab():
 
     def set_sampling_rate(self, sr):
         """Sets the sampling rate of the capture device
-        Sampling rate must be given as an integer for example 16000 for setting 16Khz sampling rate
+        Sampling rate must be given as an integer for example 16000 for
+        setting 16Khz sampling rate
         The sampling rate would be set in the device to the nearest available"""
         self.pause_grabbing()
         caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (sr, )
@@ -422,11 +427,17 @@ class AudioGrab():
 
 
     def set_sensor_type(self, sensor_type=1):
-        """Set the type of sensor you want to use. Set sensor_type according to the following
-        0 - AC coupling with Bias Off --> Very rarely used. Use when connecting a dynamic microphone externally
-        1 - AC coupling with Bias On --> The default settings. The internal MIC uses these
-        2 - DC coupling with Bias Off --> Used when using a voltage output sensor. For example LM35 which gives output proportional to temperature
-        3 - DC coupling with Bias On --> Used with resistive sensors. For example"""
+        """Set the type of sensor you want to use. Set sensor_type according 
+        to the following
+        0 - AC coupling with Bias Off --> Very rarely used.
+            Use when connecting a dynamic microphone externally
+        1 - AC coupling with Bias On --> The default settings. 
+            The internal MIC uses these
+        2 - DC coupling with Bias Off --> Used when using a voltage
+            output sensor. For example LM35 which gives output proportional
+            to temperature
+        3 - DC coupling with Bias On --> Used with resistive sensors.
+            For example"""
         if sensor_type==0:
 	        self.set_dc_mode(False)
 	        self.set_bias(False)
