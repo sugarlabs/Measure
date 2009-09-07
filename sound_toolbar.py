@@ -42,8 +42,6 @@ class SoundToolbar(gtk.Toolbar):
         self.textbox_copy = textbox
         self.ji = journal
 
-        self._LOG_SEPARATOR_DIST = 5
-
         self._STR_BASIC = _("Sound ")
         self._STR1 = _("Time Base      ")
         self._STR2 = _("Frequency Base ")
@@ -123,12 +121,6 @@ class SoundToolbar(gtk.Toolbar):
         self._pause.set_tooltip(_('Freeze the display'))
         self._pause.connect('clicked', self._pauseplay_control_cb)
         ####################################################
-
-        for seperator_count_temp in range( 1, self._LOG_SEPARATOR_DIST):
-            separator = gtk.SeparatorToolItem()
-            separator.set_draw(False)
-            self.insert(separator, -1)
-
 
         self.loginterval_img = gtk.Image()
         self.loginterval_img.set_from_file(config.ICONS_DIR + \
@@ -228,7 +220,7 @@ class SoundToolbar(gtk.Toolbar):
                 self.logginginterval_status = '2minute'		
             if (self._loginterval_combo.get_active() == 3):
                 self.logginginterval_status = '10minute'		
-            if (self._loginterval_combo.get_active() == 3):
+            if (self._loginterval_combo.get_active() == 4):
                 self.logginginterval_status = '30minute'		
 
     def _pauseplay_control_cb(self, data=None):

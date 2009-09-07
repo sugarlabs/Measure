@@ -49,8 +49,6 @@ class SensorToolbar(gtk.Toolbar):
 
         self.string_for_textbox = ""
 
-        self._LOG_SEPARATOR_DIST = 5
-
         self.wave = wave
         self.ag = audiograb
         self.textbox_copy = textbox
@@ -84,11 +82,6 @@ class SensorToolbar(gtk.Toolbar):
         self._invert.connect('clicked', self._invert_control_cb)
         self.wave.set_invert_state(False)
         ######################################################
-
-        for seperator_count_temp in range( 1, self._LOG_SEPARATOR_DIST):
-            separator = gtk.SeparatorToolItem()
-            separator.set_draw(False)
-            self.insert(separator, -1)
 
         self.loginterval_img = gtk.Image()
         self.loginterval_img.set_from_file(config.ICONS_DIR + \
