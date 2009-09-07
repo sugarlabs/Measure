@@ -41,7 +41,6 @@ import logging
 from sugar.activity import activity
 from sugar.datastore import datastore
 
-
 class MeasureActivity(activity.Activity):
 
     def __init__(self, handle):
@@ -49,7 +48,6 @@ class MeasureActivity(activity.Activity):
         activity.Activity.__init__(self, handle)
         act_root = environ['SUGAR_ACTIVITY_ROOT'] 
         tmp_dir = join(act_root, 'data')	   
-
 
         self.active_status = True
         self.ACTIVE = True
@@ -65,13 +63,11 @@ class MeasureActivity(activity.Activity):
 	        os.chmod(self._jobject.file_path, 0777)
 	        self.existing = False	
 
-
         self.ji = JournalInteraction(self._jobject.file_path, self.existing)
         self.wave = DrawWaveform()
         self.audiograb = AudioGrab(self.wave.new_buffer, self.ji)
         self.side_toolbar = SideToolbar(self.wave)
         self.text_box = TextBox()
-
 
         self.box3 = gtk.HBox(False, 0)
         self.box3.pack_start(self.wave,True,True,0)
@@ -83,7 +79,8 @@ class MeasureActivity(activity.Activity):
 
         self.set_canvas(self.box1)		
 
-        toolbox = Toolbar(self, self.wave, self.audiograb, self.ji, self.text_box)
+        toolbox = Toolbar(self, self.wave, self.audiograb, self.ji, \
+                          self.text_box)
         self.set_toolbox(toolbox)
         toolbox.show()
 
@@ -92,8 +89,6 @@ class MeasureActivity(activity.Activity):
         self.first = True
 
         gobject.timeout_add(config.REFRESH_TIME, self.waveform_refresh)
-
-
 
     def set_show_hide_windows(self, window_id=1):
         """Shows the appropriate window identified by the window_id
@@ -116,7 +111,6 @@ class MeasureActivity(activity.Activity):
             self.side_toolbar.box1.hide_all()
             self.active_context_status = 2
             return
-	
 
     def get_show_hide_windows(self):
         """Gets which window is being shown
@@ -124,12 +118,9 @@ class MeasureActivity(activity.Activity):
         If 1 is returned means camera context"""
         return self.active_context_status
 
-
-
     def waveform_refresh(self):
         self.wave.queue_draw()
         return self.active_status 						
-
 
     def on_quit(self,data=None):	
         self.audiograb.on_activity_quit()	
@@ -149,15 +140,16 @@ class MeasureActivity(activity.Activity):
 		        self.waveform_refresh)        
         self.ACTIVE = self.props.active
 
-
+    """
+    Write the project to the Journal
+    """
     def write_file(self, file_path):
-        self.metadata['fulltext'] = 'blah blah'
+        print "write file"
 
+    """
+    Read a project in and then run it
+    """
     def read_file(self, file_path):
-        pass
-
+        print "read file"
 
 gtk.gdk.threads_init()
-
-
-
