@@ -204,7 +204,6 @@ class DrawWaveform(gtk.DrawingArea):
         consecutive points"""
         return self.draw_interval
 
-
     def _init_background(self):
         if self._back_surf:
 	        return
@@ -248,7 +247,6 @@ class DrawWaveform(gtk.DrawingArea):
 
         cr.stroke()	
 
-
     def _expose(self, widget, event):
         """This function is the "expose" event handler and does all the 
         drawing"""
@@ -261,10 +259,9 @@ class DrawWaveform(gtk.DrawingArea):
             self._init_background()
             self.window.draw_drawable(self.get_style().bg_gc[0], \
                                       self._back_surf, 0, 0, 0, 0, \
-                                      config.WINDOW_W, config.WINDOW_H)									
-
-            #Iterate for each graph                                                            
-            for graph_id in self.graph_id:              							
+                                      config.WINDOW_W, config.WINDOW_H)
+            #Iterate for each graph 
+            for graph_id in self.graph_id:
                 if self.graph_show_state[graph_id] == True:  
                     span = self.Xend[graph_id]-self.Xstart[graph_id]
 
@@ -290,8 +287,6 @@ class DrawWaveform(gtk.DrawingArea):
                         self.y_mag_bias_multiplier = 1					
                         """ Depending upon the X span of the graph, deciding 
                         the total number of points to take """
-
-         
                     else:
                         ############## FFT ###############		
                         Fs = 48000
@@ -310,7 +305,7 @@ class DrawWaveform(gtk.DrawingArea):
                     if self.source[graph_id]==0:
                         self.buffers=self.main_buffers
                     else:
-                        pass        #write code here that gets data from file
+                        pass  #write code here that gets data from file
                     ###############################################
 
                     ########### Scaling the values ################
@@ -357,7 +352,6 @@ class DrawWaveform(gtk.DrawingArea):
                     else:
                         self.window.draw_points(self._line_gc, lines)
                     ###############################################
-
                     
         """
         ## DISPLAYING FRAMERATE FOR DEBUGGGIN
@@ -369,7 +363,6 @@ class DrawWaveform(gtk.DrawingArea):
                                 layout)
         """
         return True
-
 
     def set_side_toolbar_reference(self, side_toolbar):
         self.side_toolbar_copy = side_toolbar
@@ -415,7 +408,7 @@ class DrawWaveform(gtk.DrawingArea):
             color = client.get_string("/desktop/sugar/user/color")
         except:
             color = profile.get_color()
-        stroke = color.get_stroke_color()
+        stroke,fill = color.split(",")
         colorstring = stroke.strip()
         if colorstring[0] == '#': 
             colorstring = colorstring[1:]
@@ -433,7 +426,7 @@ class DrawWaveform(gtk.DrawingArea):
             color = client.get_string("/desktop/sugar/user/color")
         except:
             color = profile.get_color()
-        fill = color.get_fill_color()
+        stroke,fill = color.split(",")
         colorstring = fill.strip()
         if colorstring[0] == '#': 
             colorstring = colorstring[1:]

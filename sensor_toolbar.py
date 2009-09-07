@@ -141,10 +141,7 @@ class SensorToolbar(gtk.Toolbar):
                 client = gconf.client_get_default()
                 username = client.get_string("/desktop/suagr/user/nick")
             except:
-                try:
-                    username = profile.get_nick_name()
-                except:
-                    username = "Sugar user"
+                username = profile.get_nick_name()
             self.ji.start_new_session(username, Xscale, Yscale,\
                                       self.logginginterval_status)
             self.ag.set_logging_params(True, interval, False)
@@ -262,6 +259,3 @@ class SensorToolbar(gtk.Toolbar):
         if self.wave.get_invert_state()==True:
             self.string_for_textbox += self._STR3
         self.textbox_copy.set_data_params(0, self.string_for_textbox)
-
-
-
