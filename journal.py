@@ -1,7 +1,8 @@
 #! /usr/bin/python
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, OLPC
+#    Copyright (C) 2007, Arjun Sarwal
+#    Copyright (C) 2009, Walter Bender
 #    
 #    	
 #    This program is free software; you can redistribute it and/or modify
@@ -34,6 +35,7 @@ import csv
 import os
 import gtk
 import dbus
+import gconf
 import tempfile
 import time
 from os import environ
@@ -183,8 +185,13 @@ class JournalInteraction():
                     self.jobject.metadata['keep'] = '0'
                     self.jobject.metadata['buddies'] = ''
                     self.jobject.metadata['preview'] = ''
-                    self.jobject.metadata['icon-color'] = \
-                        profile.get_color().to_string()
+                    try:
+                        client = gconf.client_get_default()
+                        self.jobject.metadata['icon-color'] = \
+                            client.get_string("/desktop/sugar/user/color")
+                    except:
+                        self.jobject.metadata['icon-color'] = \
+                            profile.get_color().to_string()
                     self.jobject.metadata['mime_type'] = 'text/csv'
                     self.jobject.file_path = self.filepath
                     datastore.write(self.jobject)
@@ -341,7 +348,13 @@ class JournalInteraction():
                 jobject.metadata['keep'] = '0'
                 jobject.metadata['buddies'] = ''
                 jobject.metadata['preview'] = ''
-                jobject.metadata['icon-color'] = profile.get_color().to_string()
+                try:
+                    client = gconf.client_get_default()
+                    jobject.metadata['icon-color'] = \
+                        client.get_string("/desktop/sugar/user/color")
+                except:
+                    jobject.metadata['icon-color'] = \
+                        profile.get_color().to_string()
                 jobject.metadata['mime_type'] = 'image/png'
                 jobject.file_path = file_path
                 datastore.write(jobject)

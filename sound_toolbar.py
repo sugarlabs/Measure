@@ -20,6 +20,7 @@
 
 import pygtk
 import gtk
+import gconf
 from time import *
 from gettext import gettext as _
 
@@ -172,7 +173,14 @@ class SoundToolbar(gtk.Toolbar):
             Xscale = (1.00/self.ag.get_sampling_rate())
             Yscale = 0.0
             interval = self.interval_convert()
-            username = profile.get_nick_name()
+            try:
+                client = gconf.client_get_default()
+                username = client.get_string("/desktop/suagr/user/nick")
+            except:
+                try:
+                    username = profile.get_nick_name()
+                except:
+                    username = "Sugar user"
             self.ji.start_new_session(username, Xscale, Yscale,\
                                       self.logginginterval_status)
             self.ag.set_logging_params(True, interval, True)

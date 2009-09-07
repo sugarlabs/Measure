@@ -22,6 +22,7 @@ import pygst
 pygst.require("0.10")
 import pygtk
 import gtk
+import gconf
 import cairo
 import gobject
 import time
@@ -409,7 +410,11 @@ class DrawWaveform(gtk.DrawingArea):
 
     def get_stroke_color_from_sugar(self):
         """Returns in (r,g,b) format the stroke color from the Sugar profile"""
-        color = profile.get_color()
+        try:
+            client = gconf.client_get_default()
+            color = client.get_string("/desktop/sugar/user/color")
+        except:
+            color = profile.get_color()
         stroke = color.get_stroke_color()
         colorstring = stroke.strip()
         if colorstring[0] == '#': 
@@ -423,7 +428,11 @@ class DrawWaveform(gtk.DrawingArea):
 
     def get_fill_color_from_sugar(self):
         """Returns in (r,g,b) format the fill color from the Sugar profile"""
-        color = profile.get_color()
+        try:
+            client = gconf.client_get_default()
+            color = client.get_string("/desktop/sugar/user/color")
+        except:
+            color = profile.get_color()
         fill = color.get_fill_color()
         colorstring = fill.strip()
         if colorstring[0] == '#': 
