@@ -28,7 +28,6 @@ from struct import unpack
 from string import find
 import config 		#This has all the golabals
 
-
 class AudioGrab():
 
 
@@ -36,6 +35,7 @@ class AudioGrab():
 
         self.callable1 = callable1
         self.ji = journal
+        self.sensor = None
 
         self.temp_buffer = []
         self.picture_buffer = []
@@ -129,6 +129,9 @@ class AudioGrab():
         """Returns state of queueing the buffer"""
         return not self.dont_queue_the_buffer
 
+    def set_sensor(self, sensor):
+        self.sensor = sensor
+
     def _emit_for_logging(self, buf):
         """Sends the data for logging"""
         if self.buffer_interval_logging==0:
@@ -139,7 +142,13 @@ class AudioGrab():
                 self.waveform_id+=1
             else:
                 temp_buf = list(unpack( str(int(len(buf))/2)+'h' , buf))
+                # save value to Journal
                 self.ji.write_value(temp_buf[0])
+                # display value on Sensor toolbar
+                try:
+                    self.sensor.set_sample_value(str(temp_buf[0]))
+                except:
+                    pass
 
     def start_sound_device(self):
         """Start or Restart grabbing data from the audio capture"""

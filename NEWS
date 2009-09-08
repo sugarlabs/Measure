@@ -2,6 +2,7 @@
 * fixed toolbar display bug
 * cleaned up sound record code
 * caught exception causing resume from journal crash
+* added display of sample value to toolbar
 
 25
 * Added invert button to invert time-based waveform

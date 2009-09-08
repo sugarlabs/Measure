@@ -51,6 +51,7 @@ class SensorToolbar(gtk.Toolbar):
 
         self.wave = wave
         self.ag = audiograb
+        self.ag.set_sensor(self)
         self.textbox_copy = textbox
         self.ji = journal
     
@@ -82,6 +83,11 @@ class SensorToolbar(gtk.Toolbar):
         self._invert.connect('clicked', self._invert_control_cb)
         self.wave.set_invert_state(False)
         ######################################################
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
+        separator.show()
 
         self.loginterval_img = gtk.Image()
         self.loginterval_img.set_from_file(config.ICONS_DIR + \
@@ -118,6 +124,25 @@ class SensorToolbar(gtk.Toolbar):
         self._record.set_tooltip(_('Start Recording'))
         self._record.connect('clicked', self.record_control)
         ########################################################
+
+        ##################### Sample Value #####################
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        self.insert(separator, -1)
+        separator.show()
+
+        self.sample_value = gtk.Label("-")
+        self.sample_value.show()
+        self.sample_value_toolitem = gtk.ToolItem()
+        self.sample_value_toolitem.add(self.sample_value)
+        self.insert(self.sample_value_toolitem, -1)
+        self.sample_value_toolitem.show()
+        ########################################################
+
+    def set_sample_value(self, label="x"):
+        self.sample_value.set_text(label)
+        self.sample_value.show()
 
     def record_control(self, data=None):
         """Depending upon the selected interval, does either

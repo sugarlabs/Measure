@@ -114,6 +114,11 @@ class SoundToolbar(gtk.Toolbar):
         self.freq_low_img_tool.show()
         self.freq_high_img_tool.show()
 
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
+        separator.show()
+
         ################## pause button ####################
         self._pause = ToolButton('media-playback-pause')
         self.insert(self._pause, -1)
@@ -121,6 +126,11 @@ class SoundToolbar(gtk.Toolbar):
         self._pause.set_tooltip(_('Freeze the display'))
         self._pause.connect('clicked', self._pauseplay_control_cb)
         ####################################################
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
+        separator.show()
 
         self.loginterval_img = gtk.Image()
         self.loginterval_img.set_from_file(config.ICONS_DIR + \
