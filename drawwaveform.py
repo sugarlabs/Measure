@@ -427,7 +427,7 @@ class DrawWaveform(gtk.DrawingArea):
             client = gconf.client_get_default()
             color = client.get_string("/desktop/sugar/user/color")
         except:
-            color = profile.get_color()
+            color = profile.get_color().to_string()
         stroke,fill = color.split(",")
         colorstring = fill.strip()
         if colorstring[0] == '#': 
