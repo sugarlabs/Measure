@@ -20,7 +20,6 @@
 
 import pygtk
 import gtk
-import gconf
 from time import *
 from gettext import gettext as _
 
@@ -29,7 +28,10 @@ import config  	#This has all the globals
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
-from sugar import profile
+try:
+    import gconf
+except:
+    from sugar import profile
 
 class SoundToolbar(gtk.Toolbar):
 

@@ -22,7 +22,6 @@ import pygst
 pygst.require("0.10")
 import pygtk
 import gtk
-import gconf
 import cairo
 import gobject
 import time
@@ -32,7 +31,10 @@ import os
 import audioop
 import math
 from gtk import gdk
-from sugar import profile
+try:
+    import gconf
+except:
+    from sugar import profile
 from numpy.oldnumeric import *
 from numpy.fft import *
 

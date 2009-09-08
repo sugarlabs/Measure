@@ -35,7 +35,7 @@ import csv
 import os
 import gtk
 import dbus
-import gconf
+
 import tempfile
 import time
 from os import environ
@@ -44,7 +44,10 @@ from numpy import array
 from gettext import gettext as _
 
 from sugar.datastore import datastore
-from sugar import profile
+try:
+    import gconf
+except:
+    from sugar import profile
 
 class JournalInteraction():
     def __init__(self, file_path, existing):
