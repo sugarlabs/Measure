@@ -185,7 +185,7 @@ class SoundToolbar(gtk.Toolbar):
             self.ag.set_logging_params(True, interval, True)
             config.LOGGING_IN_SESSION = True
             self.logging_status = True
-            self._record.set_icon('media-playback-stop')
+            self._record.set_icon('record-stop')
             self._record.show()
             self._record.set_tooltip(_('Stop Recording'))
             if interval==0:
