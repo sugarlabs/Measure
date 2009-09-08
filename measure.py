@@ -46,8 +46,15 @@ class MeasureActivity(activity.Activity):
     def __init__(self, handle):
 
         activity.Activity.__init__(self, handle)
-        act_root = environ['SUGAR_ACTIVITY_ROOT'] 
-        tmp_dir = join(act_root, 'data')	   
+
+        try:
+            tmp_dir = os.path.join(activity.get_activity_root(), "data")
+        except:
+            # Early versions of Sugar (e.g., 656) didn't support
+            # get_activity_root()
+            tmp_dir = os.path.join( \
+                os.environ['HOME'], \
+                ".sugar/default/org.laptop.MeasureActivity/data")
 
         self.active_status = True
         self.ACTIVE = True
