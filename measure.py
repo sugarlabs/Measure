@@ -1,7 +1,9 @@
 #!/usr/bin/python
 #
-#    Copyright (C) 2007, OLPC
 #    Written by Arjun Sarwal <arjun@laptop.org>
+#    Copyright (C) 2007, Arjun Sarwal
+#    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #    	
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -127,7 +129,7 @@ class MeasureActivity(activity.Activity):
 
     def waveform_refresh(self):
         self.wave.queue_draw()
-        return self.active_status 						
+        return self.active_status
 
     def on_quit(self,data=None):	
         self.audiograb.on_activity_quit()	
@@ -142,9 +144,9 @@ class MeasureActivity(activity.Activity):
 	        self.active_status = False 
         elif (self.props.active and not self.ACTIVE):
 	        self.audiograb.resume_grabbing()
-	        self.active_status = True                
+	        self.active_status = True
 	        gobject.timeout_add(config.REFRESH_TIME, \
-		        self.waveform_refresh)        
+		        self.waveform_refresh)
         self.ACTIVE = self.props.active
 
     """

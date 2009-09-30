@@ -3,6 +3,7 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #    
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
 
 import pygtk
 import gtk
+import gobject
 from time import *
 from gettext import gettext as _
 
@@ -49,9 +51,13 @@ class SoundToolbar(gtk.Toolbar):
         self._STR2 = _("Frequency Base ")
         self._STR3 = _(" Invert ")
         self._STR_SCALEX = ""
-        self._STR_XAXIS1 = _("X Axis Scale: 1 division = ")
-        self._STR_XAXIS2 = _("ms ")
-        self._STR_XAXIS3 = _("Hz ")
+        self._STR_XAXIS_TEXT = _("X Axis Scale: 1 division = %(division)s %(unit)s")
+        # TRANSLATORS: This is milli seconds.
+        self._ms = _('ms')
+        # TRANSLATORS: This is Hertz, so 1/second.
+        self._Hz = _('Hz')
+
+        self._update_page_size_id = None
 
         self.string_for_textbox = ""
 
@@ -96,8 +102,7 @@ class SoundToolbar(gtk.Toolbar):
 
         ################ frequency control #################
         self.adjustmentf = gtk.Adjustment(70, 10, 70 ,20, 20, 0.0)
-        self.adjustmentf.connect("value_changed", self.cb_page_sizef, \
-                                 self.adjustmentf)
+        self.adjustmentf.connect("value_changed", self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.adjustmentf)
         self._freq_range.set_draw_value(False)
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
@@ -169,6 +174,8 @@ class SoundToolbar(gtk.Toolbar):
         self._record.set_tooltip(_('Start Recording'))
         self._record.connect('clicked', self.record_control)
         ####################################################
+
+        self._update_page_size()
 
     def record_control(self, data=None):
         """Depending upon the selected interval, does either
@@ -266,41 +273,41 @@ class SoundToolbar(gtk.Toolbar):
             self._update_string_for_textbox()
         return False
 
-    def cb_page_sizef(self, get, data=None):
-        if(get.value>=10 and get.value<20):
-            self._freq_range.set_value(10)
-            self.ag.set_sampling_rate(4000)
-            self.wave.set_freq_range(1)
-        if(get.value>=20 and get.value<46):
-            self._freq_range.set_value(30)
-            self.ag.set_sampling_rate(4000)
-            self.wave.set_freq_range(2)
-        if(get.value>=46 and get.value<62):
-            self._freq_range.set_value(50)
-            self.ag.set_sampling_rate(16000)
-            self.wave.set_freq_range(3)
-        if(get.value>=62 and get.value<=70):
-            self._freq_range.set_value(70)
-            self.ag.set_sampling_rate(48000)
-            self.wave.set_freq_range(4)
-        self._update_string_for_textbox()
+    def cb_page_sizef(self, data=None):
+        if self._update_page_size_id:
+            gobject.source_remove(self._update_page_size_id)
+        self._update_page_size_id = \
+            gobject.timeout_add(250, self._update_page_size)
         return True
 
-    def calculate_x_axis_scale(self):	
-        sampling_rate = self.ag.get_sampling_rate()
-        draw_interval = self.wave.get_drawing_interval()
-        if self.wave.get_fft_mode() == False:
-            scale = (50000.0/sampling_rate)/draw_interval
-            #TODO: fix this [:4] bad bad hack!
-            self._STR_SCALEX = self._STR_XAXIS1 + str(scale)[:4] + \
-                               self._STR_XAXIS2
-            return
-        else:
-            #TODO: fix this [:4] bad bad hack!
-            scale = 1.04167/draw_interval
-            self._STR_SCALEX = self._STR_XAXIS1 + str(scale)[:4] + \
-                               self._STR_XAXIS3
-            return
+    def _update_page_size(self):
+        self._update_page_size_id = None
+
+        if(self.adjustmentf.value>=10 and self.adjustmentf.value<20):
+            self._freq_range.set_value(10)
+            freq_div = 1000
+            time_div = 0.001
+
+        if(self.adjustmentf.value>=20 and self.adjustmentf.value<46):
+            self._freq_range.set_value(30)
+            freq_div = 500
+            time_div = 0.0005
+
+        if(self.adjustmentf.value>=46 and self.adjustmentf.value<62):
+            self._freq_range.set_value(50)
+            freq_div = 250
+            time_div = 0.00025
+
+        if(self.adjustmentf.value>=62 and self.adjustmentf.value<=70):
+            self._freq_range.set_value(70)
+            freq_div = 25
+            time_div = 0.00005
+
+        self.wave.set_div(time_div, freq_div)
+
+        self._update_string_for_textbox()
+
+        return False
 
     def context_off(self):
         """When some other context is switched to and the sound context 
@@ -323,7 +330,11 @@ class SoundToolbar(gtk.Toolbar):
         self._update_string_for_textbox()
 
     def _update_string_for_textbox(self):
-        self.calculate_x_axis_scale()
+        if self.wave.get_fft_mode() == False:
+            self._STR_SCALEX = self._STR_XAXIS_TEXT % {'unit': self._ms, 'division': self.wave.time_div*1000} 
+        else:
+            self._STR_SCALEX = self._STR_XAXIS_TEXT % {'unit': self._Hz, 'division': self.wave.freq_div} 
+
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\t")
         if self.wave.get_fft_mode() == False:

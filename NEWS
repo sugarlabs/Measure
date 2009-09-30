@@ -1,3 +1,9 @@
+28
+* numerous patches to speed up code by Benjamin and Sebastian Berg
+
+27
+* added exceot for gconf for old builds
+
 26
 * fixed toolbar display bug
 * cleaned up sound record code

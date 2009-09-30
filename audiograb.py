@@ -3,6 +3,7 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #    	
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@ import gst
 import gobject
 import os
 import subprocess
-from struct import unpack
+import numpy as np
 from string import find
 import config 		#This has all the golabals
 
@@ -37,7 +38,7 @@ class AudioGrab():
         self.ji = journal
         self.sensor = None
 
-        self.temp_buffer = []
+        self.temp_buffer = [0]
         self.picture_buffer = []
 
         self.draw_graph_status = False
@@ -86,19 +87,19 @@ class AudioGrab():
         """Sets whether the handoff signal would generate an interrupt or not"""
         self.fakesink.set_property("signal-handoffs",handoff_state)
 
-    def _new_buffer(self,buf):
+    def _new_buffer(self, buf):
         if self.dont_queue_the_buffer == False:
-            self.callable1(str(buf))
+            self.temp_buffer = buf
+            self.callable1(buf)
         else:
             pass
 
     def on_buffer(self, element, buffer, pad):		
         """The function that is called whenever new data is available
         This is the signal handler for the handoff signal"""
-        self.temp_buffer = buffer
+        temp_buffer = np.fromstring(buffer, 'int16')
         if self.dont_queue_the_buffer == False:
-            gobject.timeout_add(config.AUDIO_BUFFER_TIMEOUT,\
-                                self._new_buffer, self.temp_buffer)
+            self._new_buffer(temp_buffer)
         else:
             pass
         if self.logging_state==True:
@@ -108,9 +109,7 @@ class AudioGrab():
                 self.ji.stop_session()
             else:
                 if self.counter_buffer == self.buffer_interval_logging:
-                    #gobject.timeout_add(300, self._emit_for_logging, \
-                    #                    self.temp_buffer)
-                    self._emit_for_logging(str(self.temp_buffer))
+                    self._emit_for_logging(temp_buffer)
                     self.counter_buffer=0
                 self.counter_buffer+=1
             # If a record is to be written, thats all for the logging session
@@ -141,12 +140,11 @@ class AudioGrab():
                 self.ji.take_screenshot(self.waveform_id)
                 self.waveform_id+=1
             else:
-                temp_buf = list(unpack( str(int(len(buf))/2)+'h' , buf))
                 # save value to Journal
-                self.ji.write_value(temp_buf[0])
+                self.ji.write_value(buf[0])
                 # display value on Sensor toolbar
                 try:
-                    self.sensor.set_sample_value(str(temp_buf[0]))
+                    self.sensor.set_sample_value(str(buf[0]))
                 except:
                     pass
 
@@ -197,9 +195,7 @@ class AudioGrab():
 
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
-        self.picture_buffer = \
-            list(unpack(str(int(len(str(self.temp_buffer)))/2)+'h',\
-                 str(self.temp_buffer)))
+        self.picture_buffer = self.temp_buffer.copy()
 
     def set_logging_state(self, start_stop=False):
         """Sets whether buffer is to be emited for logging (True) or not

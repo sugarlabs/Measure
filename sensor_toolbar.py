@@ -3,6 +3,7 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #    	
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@ import gtk
 import time
 from gettext import gettext as _
 
-import config  	#This has all the globals
+import config          #This has all the globals
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
@@ -172,7 +173,7 @@ class SensorToolbar(gtk.Toolbar):
             self._record.set_tooltip(_('Stop Recording'))
         else:
             if self.logging_status == True: 
-                self.ag.set_logging_params(False)                
+                self.ag.set_logging_params(False)
                 time.sleep(0.2)
                 self.ji.stop_session()                
                 config.LOGGING_IN_SESSION = False
@@ -258,7 +259,7 @@ class SensorToolbar(gtk.Toolbar):
 
     def context_off(self):
         self.ag.pause_grabbing()
-	
+        
     def context_on(self):
         self.ag.resume_grabbing()
         self.ag.set_dc_mode(True)
