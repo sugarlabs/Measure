@@ -234,6 +234,8 @@ class DrawWaveform(gtk.DrawingArea):
     def do_size_allocate(self, allocation):
         gtk.DrawingArea.do_size_allocate(self, allocation)
         self._update_mode()
+        if self.window is not None:
+            self._create_background_pixmap()
 
     def _indirect_queue_draw(self):
         if self.window == None:
@@ -272,10 +274,10 @@ class DrawWaveform(gtk.DrawingArea):
 
         self._trigger_line_gc.set_foreground(clr)
 
+        self._create_background_pixmap()
 
+    def _create_background_pixmap(self):
         # Background pixmap
-        clr = colormap.alloc_color(0, 65535, 0, False, False)
-
         back_surf = gdk.Pixmap(self.window, self._tick_size, self._tick_size)
         cr = back_surf.cairo_create()
 
@@ -296,9 +298,9 @@ class DrawWaveform(gtk.DrawingArea):
             x = x + self._tick_size
 
         x = 0
-        y = 0
+        y = (self.allocation.height % self._tick_size) / 2 - self._tick_size
 
-        for j in range(0, 2):
+        for j in range(0, 3):
             cr.move_to(x, y)
             cr.rel_line_to(self._tick_size, 0)
             y = y + self._tick_size
