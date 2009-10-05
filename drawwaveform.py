@@ -53,13 +53,17 @@ class DrawWaveform(gtk.DrawingArea):
 
         gtk.DrawingArea.__init__(self)
 
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.add_events(gtk.gdk.BUTTON_PRESS_MASK | \
+                        gtk.gdk.PROPERTY_CHANGE_MASK)
 
         self._input_freq = input_frequency
         self.stroke_color = None
         self.triggering = self.TRIGGER_NONE
         self.trigger_xpos = 0.0
         self.trigger_ypos = 0.5
+
+        self.active = False
+        self._redraw_atom = gtk.gdk.atom_intern('MeasureRedraw')
 
         self.buffers = np.array([])
         self.main_buffers = np.array([])
@@ -208,11 +212,13 @@ class DrawWaveform(gtk.DrawingArea):
         if not self.context:
             self.handler_unblock(self.expose_event_id)
         self.context = True
+        self._indirect_queue_draw()
 
     def set_context_off(self):
         if self.context:
             self.handler_block(self.expose_event_id)
         self.context = False
+        self._indirect_queue_draw()
 
     def set_invert_state(self, invert_state):
         self.invert = invert_state
@@ -228,6 +234,16 @@ class DrawWaveform(gtk.DrawingArea):
     def do_size_allocate(self, allocation):
         gtk.DrawingArea.do_size_allocate(self, allocation)
         self._update_mode()
+
+    def _indirect_queue_draw(self):
+        if self.window == None:
+            return
+        self.window.property_change(self._redraw_atom, self._redraw_atom,
+            32, gtk.gdk.PROP_MODE_REPLACE, []);
+
+    def do_property_notify_event(self, event):
+        if event.atom == self._redraw_atom:
+            self.queue_draw()
 
     def do_realize(self):
         gtk.DrawingArea.do_realize(self)
@@ -300,8 +316,9 @@ class DrawWaveform(gtk.DrawingArea):
 
     def _expose(self, widget, event):
         """This function is the "expose" event handler and does all the drawing"""
+
         #######################Real time drawing###################################
-        if self.context:
+        if self.context and self.active:
 
             #Iterate for each graph                                                            
             for graph_id in self.graph_id:                                          
@@ -310,6 +327,7 @@ class DrawWaveform(gtk.DrawingArea):
                     samples = math.ceil(self.allocation.width/self.draw_interval)
                     if len(buf) == 0:
                         # We don't have enough data to plot.
+                        self._indirect_queue_draw()
                         return
 
                     x_offset = 0
@@ -360,14 +378,20 @@ class DrawWaveform(gtk.DrawingArea):
                         Fs = 48000
                         nfft = 65536
 
-                        # Multiply input with the window
-                        np.multiply(buf, self.fft_window, buf)
+                        try:
+                            # Multiply input with the window
+                            np.multiply(buf, self.fft_window, buf)
 
-                        # Should be fast enough even without power of 2 stuff.
-                        self.fftx = np.fft.rfft(buf)
-                        self.fftx = abs(self.fftx)
-                        data = np.multiply(self.fftx, 0.02, self.fftx)
-                        ##################################
+                            # Should be fast enough even without power of 2 stuff.
+                            self.fftx = np.fft.rfft(buf)
+                            self.fftx = abs(self.fftx)
+                            data = np.multiply(self.fftx, 0.02, self.fftx)
+                            ##################################
+                        except ValueError:
+                            # TODO: Figure out how this can happen.
+                            #       Shape mismatch between window and buf
+                            self._indirect_queue_draw()
+                            return True
 
                     ################Scaling the values###################
                     if config.CONTEXT == 2:
@@ -402,7 +426,8 @@ class DrawWaveform(gtk.DrawingArea):
                     else:
                         self.window.draw_points(self._line_gc[graph_id], lines)
                     ############################################################
-                            
+
+            self._indirect_queue_draw()
         """
         ## DISPLAYING FRAMERATE FOR DEBUGGGIN
         fr = 1.0/( time.time()-self.pr_time)
@@ -485,6 +510,13 @@ class DrawWaveform(gtk.DrawingArea):
             self.draw_interval = self.allocation.width/(float(samples)/self.input_step)
 
             self.fft_window = None
+
+    def set_active(self, active):
+        self.active = active
+        self._indirect_queue_draw()
+
+    def get_active(self):
+        return self.active
 
     def get_stroke_color_from_sugar(self):
         """Returns in (r,g,b) format the stroke color from the Sugar profile"""

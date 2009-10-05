@@ -97,7 +97,7 @@ class MeasureActivity(activity.Activity):
 
         self.first = True
 
-        gobject.timeout_add(config.REFRESH_TIME, self.waveform_refresh)
+        self.wave.set_active(True)
 
     def set_show_hide_windows(self, window_id=1):
         """Shows the appropriate window identified by the window_id
@@ -127,10 +127,6 @@ class MeasureActivity(activity.Activity):
         If 1 is returned means camera context"""
         return self.active_context_status
 
-    def waveform_refresh(self):
-        self.wave.queue_draw()
-        return self.active_status
-
     def on_quit(self,data=None):	
         self.audiograb.on_activity_quit()	
         self.ji.on_quit()
@@ -145,9 +141,9 @@ class MeasureActivity(activity.Activity):
         elif (self.props.active and not self.ACTIVE):
 	        self.audiograb.resume_grabbing()
 	        self.active_status = True
-	        gobject.timeout_add(config.REFRESH_TIME, \
-		        self.waveform_refresh)
+
         self.ACTIVE = self.props.active
+        self.wave.set_active(self.ACTIVE)
 
     """
     Write the project to the Journal
