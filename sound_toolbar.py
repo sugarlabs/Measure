@@ -100,9 +100,10 @@ class SoundToolbar(gtk.Toolbar):
         self.freq_high_img_tool.add(self.freq_high_img)
 
         ################ frequency control #################
-        self.adjustmentf = gtk.Adjustment(70, 10, 70 ,20, 20, 0.0)
+        self.adjustmentf = gtk.Adjustment(.5, 0, 1.0, 0.01, 0.1, 0)
         self.adjustmentf.connect("value_changed", self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.adjustmentf)
+        self._freq_range.set_inverted(True)
         self._freq_range.set_draw_value(False)
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self._freq_range.set_size_request(120,15)
@@ -304,25 +305,13 @@ class SoundToolbar(gtk.Toolbar):
     def _update_page_size(self):
         self._update_page_size_id = None
 
-        if(self.adjustmentf.value>=10 and self.adjustmentf.value<20):
-            self._freq_range.set_value(10)
-            freq_div = 1000
-            time_div = 0.001
+        new_value = round(self.adjustmentf.value*100.0)/100.0
+        if self.adjustmentf.value != new_value:
+            self.adjustmentf.value = new_value
+            return False
 
-        if(self.adjustmentf.value>=20 and self.adjustmentf.value<46):
-            self._freq_range.set_value(30)
-            freq_div = 500
-            time_div = 0.0005
-
-        if(self.adjustmentf.value>=46 and self.adjustmentf.value<62):
-            self._freq_range.set_value(50)
-            freq_div = 250
-            time_div = 0.00025
-
-        if(self.adjustmentf.value>=62 and self.adjustmentf.value<=70):
-            self._freq_range.set_value(70)
-            freq_div = 25
-            time_div = 0.00005
+        time_div = 0.001*max(self.adjustmentf.value, 0.05)
+        freq_div = 1000*max(self.adjustmentf.value, 0.01)
 
         self.wave.set_div(time_div, freq_div)
 
