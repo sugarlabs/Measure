@@ -72,7 +72,6 @@ class SensorToolbar(gtk.Toolbar):
         ####################### Voltage ######################
         self._voltage = ToolButton('bias-off')
         self.insert(self._voltage, -1)
-        self._voltage.show()
         self._voltage.set_tooltip(_('Voltage Sensor'))
         self._voltage.connect('clicked', self.set_resistance_voltage_mode,\
                               'voltage')
@@ -81,7 +80,6 @@ class SensorToolbar(gtk.Toolbar):
         ####################### invert #######################
         self._invert = ToolButton('invert')
         self.insert(self._invert, -1)
-        self._invert.show()
         self._invert.set_tooltip(_('Invert'))
         self._invert.connect('clicked', self._invert_control_cb)
         self.wave.set_invert_state(False)
@@ -90,7 +88,6 @@ class SensorToolbar(gtk.Toolbar):
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
-        separator.show()
 
         self.loginterval_img = gtk.Image()
         self.loginterval_img.set_from_file(config.ICONS_DIR + \
@@ -98,8 +95,6 @@ class SensorToolbar(gtk.Toolbar):
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
-        self.loginterval_img.show()
-        self.loginterval_img_tool.show()
 
         ################### Logging Interval ##################
         self._loginterval_combo = ComboBox()
@@ -116,14 +111,12 @@ class SensorToolbar(gtk.Toolbar):
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
         self.insert(self._loginterval_tool,-1)
-        self._loginterval_tool.show()
         self.logginginterval_status = '1second'		
         ########################################################
 
         ########### Start Logging/Stop Logging #################
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
-        self._record.show()
         self._record.set_tooltip(_('Start Recording'))
         self._record.connect('clicked', self.record_control)
         ########################################################
@@ -133,15 +126,33 @@ class SensorToolbar(gtk.Toolbar):
         separator.props.draw = False
         separator.set_expand(True)
         self.insert(separator, -1)
-        separator.show()
 
         self.sample_value = gtk.Label("-")
-        self.sample_value.show()
         self.sample_value_toolitem = gtk.ToolItem()
         self.sample_value_toolitem.add(self.sample_value)
         self.insert(self.sample_value_toolitem, -1)
-        self.sample_value_toolitem.show()
         ########################################################
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
+
+        ################# Trigger Setup #################
+        self._trigger_combo = ComboBox()
+        self.trigger = [_('None'), _('Rising Edge') , _('Falling Edge') ]
+        self.trigger_conf = [wave.TRIGGER_NONE, wave.TRIGGER_POS, \
+            wave.TRIGGER_NEG]
+
+        self._trigger_changed_id = self._trigger_combo.connect("changed",\
+                                       self.update_trigger_control)
+
+        for i, s in enumerate(self.trigger):
+            self._trigger_combo.append_item(i, s, None)
+        self._trigger_combo.set_active(0)
+
+        self._trigger_tool = ToolComboBox(self._trigger_combo)
+        self.insert(self._trigger_tool,-1)
+        self.show_all()
 
     def set_sample_value(self, label="x"):
         self.sample_value.set_text(label)
@@ -207,6 +218,13 @@ class SensorToolbar(gtk.Toolbar):
             if (self._loginterval_combo.get_active() == 3):
                 self.logginginterval_status = '30minute'		
 
+    def update_trigger_control(self, *args):
+        active = self._trigger_combo.get_active()
+        if active == -1:
+            return
+
+        self.wave.set_trigger(self.trigger_conf[active])
+
     def set_resistance_voltage_mode(self, data=None, mode_to_set='resistance'):
         if mode_to_set == 'resistance' and self.get_mode()=='voltage' :
             self.set_mode('resistance')
@@ -269,6 +287,7 @@ class SensorToolbar(gtk.Toolbar):
         #self.boost_state = self.ag.get_mic_boost()
         self.ag.set_capture_gain(0)
         self.ag.set_mic_boost(False)
+        self.update_trigger_control()
 
     def _update_string_for_textbox(self):
         self.string_for_textbox = ""
