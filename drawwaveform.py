@@ -249,6 +249,8 @@ class DrawWaveform(gtk.DrawingArea):
 
     def do_realize(self):
         gtk.DrawingArea.do_realize(self)
+        # force a native X window to exist
+        xid = self.window.xid
 
         colormap = self.get_colormap()
 
