@@ -26,6 +26,7 @@ import pygtk
 import gtk
 import gobject
 import time
+import dbus
 import config 		#This has all the globals
 import os, sys
 import tempfile
@@ -33,15 +34,39 @@ from os import environ
 from os.path import join
 
 from journal import JournalInteraction
-from audiograb import AudioGrab
+import audiograb
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from toolbar_top import Toolbar
 from textbox import TextBox
 
-import logging
 from sugar.activity import activity
 from sugar.datastore import datastore
+
+# Initialize logging.
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
+
+def _get_hardware():
+    # This is so horribly convoluted :-(
+    bus = dbus.SystemBus()
+ 
+    comp_obj = bus.get_object('org.freedesktop.Hal', \
+            '/org/freedesktop/Hal/devices/computer')
+    dev = dbus.Interface (comp_obj, 'org.freedesktop.Hal.Device')
+    if dev.PropertyExists('system.hardware.vendor') and \
+            dev.PropertyExists('system.hardware.version'):
+        if dev.GetProperty ('system.hardware.vendor') == 'OLPC':
+            if dev.GetProperty('system.hardware.version') == '1.5':
+                return 'xo1.5'
+            elif dev.GetProperty('system.hardware.version') == '1.0':
+                return 'xo1'
+    elif 'olpc' in dev.GetProperty('system.kernel.version'): # this is not good
+        return 'xo1'
+    else:
+        return 'unknown'
 
 class MeasureActivity(activity.Activity):
 
@@ -74,7 +99,17 @@ class MeasureActivity(activity.Activity):
 
         self.ji = JournalInteraction(self._jobject.file_path, self.existing)
         self.wave = DrawWaveform()
-        self.audiograb = AudioGrab(self.wave.new_buffer, self.ji)
+        
+        hw = _get_hardware()
+        if hw == 'xo1.5':
+            self.audiograb = \
+                audiograb.AudioGrab_XO_1_5(self.wave.new_buffer, self.ji)
+        elif hw == 'xo1':
+            self.audiograb = \
+                audiograb.AudioGrab_XO_1(self.wave.new_buffer, self.ji)
+        else:
+            log.error('Sorry, we do not support your hardware yet.')
+
         self.side_toolbar = SideToolbar(self.wave)
         self.text_box = TextBox()
 
