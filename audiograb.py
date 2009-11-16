@@ -204,40 +204,6 @@ class AudioGrab:
         data at the end of idle-add"""
         self.callable1 = callable1
 
-
-    def set_sensor_type(self, sensor_type=1):
-        """Set the type of sensor you want to use. Set sensor_type according 
-        to the following
-        0 - AC coupling with Bias Off --> Very rarely used.
-            Use when connecting a dynamic microphone externally
-        1 - AC coupling with Bias On --> The default settings. 
-            The internal MIC uses these
-        2 - DC coupling with Bias Off --> Used when using a voltage
-            output sensor. For example LM35 which gives output proportional
-            to temperature
-        3 - DC coupling with Bias On --> Used with resistive sensors.
-            For example"""
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-
     def start_grabbing(self):
         """Called right at the start of the Activity"""
         self.start_sound_device()
@@ -488,6 +454,39 @@ class AudioGrab_XO_1(AudioGrab):
             # in case alsamixer doesn't report a percentage
             return 0
         
+    def set_sensor_type(self, sensor_type=1):
+        """Set the type of sensor you want to use. Set sensor_type according 
+        to the following
+        0 - AC coupling with Bias Off --> Very rarely used.
+            Use when connecting a dynamic microphone externally
+        1 - AC coupling with Bias On --> The default settings. 
+            The internal MIC uses these
+        2 - DC coupling with Bias Off --> Used when using a voltage
+            output sensor. For example LM35 which gives output proportional
+            to temperature
+        3 - DC coupling with Bias On --> Used with resistive sensors.
+            For example"""
+        if sensor_type==0:
+	        self.set_dc_mode(False)
+	        self.set_bias(False)
+	        self.set_capture_gain(50)
+	        self.set_mic_boost(True)
+        elif sensor_type==1:
+	        self.set_dc_mode(False)
+	        self.set_bias(True)
+	        self.set_capture_gain(40)
+	        self.set_mic_boost(True)
+        elif sensor_type==2:
+	        self.set_dc_mode(True)
+	        self.set_bias(False)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+        elif sensor_type==3:
+	        self.set_dc_mode(True)
+	        self.set_bias(True)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+
     def on_activity_quit(self):
         """When Activity quits"""
         self.set_mic_boost(config.QUIT_MIC_BOOST)
@@ -641,6 +640,38 @@ class AudioGrab_XO_1_5(AudioGrab):
         p = p[:find(p,"%]")]
         return int(p)
 
+    def set_sensor_type(self, sensor_type=1):
+        """Set the type of sensor you want to use. Set sensor_type according 
+        to the following
+        0 - AC coupling with Bias Off --> Very rarely used.
+            Use when connecting a dynamic microphone externally
+        1 - AC coupling with Bias On --> The default settings. 
+            The internal MIC uses these
+        2 - DC coupling with Bias Off --> Used when using a voltage
+            output sensor. For example LM35 which gives output proportional
+            to temperature
+        3 - DC coupling with Bias On --> Used with resistive sensors.
+            For example"""
+        if sensor_type==0:
+	        self.set_dc_mode(False)
+	        self.set_bias(False)
+	        self.set_capture_gain(80)
+	        self.set_mic_boost(True)
+        elif sensor_type==1:
+	        self.set_dc_mode(False)
+	        self.set_bias(True)
+	        self.set_capture_gain(80)
+	        self.set_mic_boost(True)
+        elif sensor_type==2:
+	        self.set_dc_mode(True)
+	        self.set_bias(False)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+        elif sensor_type==3:
+	        self.set_dc_mode(True)
+	        self.set_bias(True)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
 
     def on_activity_quit(self):
         """When Activity quits"""
