@@ -25,9 +25,6 @@ from sugar.activity import activity
 MEASURE_ROOT = activity.get_bundle_path()
 ICONS_DIR = MEASURE_ROOT + '/icons'
 
-#In milliseconds, the delay interval after which the waveform draw function will be queued"
-REFRESH_TIME = 30
-
 #Multiplied with width and height to set placement of text
 TEXT_X_M = 0.65
 TEXT_Y_M = 0.70

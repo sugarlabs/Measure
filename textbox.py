@@ -15,13 +15,9 @@ class TextBox:
 		self.box_main = gtk.HBox()
 		self.text_buffer = gtk.TextBuffer()
 		self.text_box = gtk.TextView(self.text_buffer)
-		self.box_main.pack_start(self.text_box, False, True, 0)
+		self.box_main.pack_start(self.text_box, True, True, 0)
 		self.box_main.show_all()
 		#gobject.timeout_add(300, self.refresh_text_box)
-
-
-		self._SIZE_X = 1200
-		self._SIZE_Y = 50
 
 		self._data_params = []
 		self._data_show_state = []
@@ -32,7 +28,6 @@ class TextBox:
 
 	def _set_default_data_params(self):
 		self._data_params.append('Time Scale')
-				
 
 
 	def _set_default_data_show_state(self):
@@ -41,9 +36,6 @@ class TextBox:
 	
 	def write_text(self, text_to_show=''):
 		self.text_buffer.set_text(text_to_show)
-		self.text_box.set_size_request(self._SIZE_X, self._SIZE_Y)
-		self.text_box.realize()
-
 
 	def refresh_text_box(self):
 		print "within textbox.py refresh_textbox called"

@@ -71,7 +71,6 @@ class SoundToolbar(gtk.Toolbar):
         ###################### time ########################
         self._time = ToolButton('domain-time2')
         self.insert(self._time, -1)
-        self._time.show()
         self._time.set_tooltip(_('Time base'))
         self._time.connect('clicked', self._timefreq_control_cb, True)
         ####################################################
@@ -101,9 +100,10 @@ class SoundToolbar(gtk.Toolbar):
         self.freq_high_img_tool.add(self.freq_high_img)
 
         ################ frequency control #################
-        self.adjustmentf = gtk.Adjustment(70, 10, 70 ,20, 20, 0.0)
+        self.adjustmentf = gtk.Adjustment(.5, 0, 1.0, 0.01, 0.1, 0)
         self.adjustmentf.connect("value_changed", self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.adjustmentf)
+        self._freq_range.set_inverted(True)
         self._freq_range.set_draw_value(False)
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self._freq_range.set_size_request(120,15)
@@ -124,12 +124,10 @@ class SoundToolbar(gtk.Toolbar):
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
-        separator.show()
 
         ################## pause button ####################
         self._pause = ToolButton('media-playback-pause')
         self.insert(self._pause, -1)
-        self._pause.show()
         self._pause.set_tooltip(_('Freeze the display'))
         self._pause.connect('clicked', self._pauseplay_control_cb)
         ####################################################
@@ -145,8 +143,6 @@ class SoundToolbar(gtk.Toolbar):
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
-        self.loginterval_img.show()
-        self.loginterval_img_tool.show()
 
         ################# Logging Interval #################
         self._loginterval_combo = ComboBox()
@@ -163,17 +159,36 @@ class SoundToolbar(gtk.Toolbar):
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
         self.insert(self._loginterval_tool,-1)
-        self._loginterval_tool.show()
         self.logginginterval_status = 'picture'		
         ####################################################
 
         ############## Start Logging/Stop Logging ##########
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
-        self._record.show()
         self._record.set_tooltip(_('Start Recording'))
         self._record.connect('clicked', self.record_control)
         ####################################################
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
+
+        ################# Trigger Setup #################
+        self._trigger_combo = ComboBox()
+        self.trigger = [_('None'), _('Rising Edge') , _('Falling Edge') ]
+        self.trigger_conf = [wave.TRIGGER_NONE, wave.TRIGGER_POS, \
+            wave.TRIGGER_NEG]
+
+        self._trigger_changed_id = self._trigger_combo.connect("changed",\
+                                       self.update_trigger_control)
+
+        for i, s in enumerate(self.trigger):
+            self._trigger_combo.append_item(i, s, None)
+        self._trigger_combo.set_active(0)
+
+        self._trigger_tool = ToolComboBox(self._trigger_combo)
+        self.insert(self._trigger_tool,-1)
+        self.show_all()
 
         self._update_page_size()
 
@@ -242,6 +257,13 @@ class SoundToolbar(gtk.Toolbar):
             if (self._loginterval_combo.get_active() == 4):
                 self.logginginterval_status = '30minute'		
 
+    def update_trigger_control(self, *args):
+        active = self._trigger_combo.get_active()
+        if active == -1:
+            return
+
+        self.wave.set_trigger(self.trigger_conf[active])
+
     def _pauseplay_control_cb(self, data=None):
         if self.ag.get_freeze_the_display()==True:
             self.ag.set_freeze_the_display(False)
@@ -283,25 +305,13 @@ class SoundToolbar(gtk.Toolbar):
     def _update_page_size(self):
         self._update_page_size_id = None
 
-        if(self.adjustmentf.value>=10 and self.adjustmentf.value<20):
-            self._freq_range.set_value(10)
-            freq_div = 1000
-            time_div = 0.001
+        new_value = round(self.adjustmentf.value*100.0)/100.0
+        if self.adjustmentf.value != new_value:
+            self.adjustmentf.value = new_value
+            return False
 
-        if(self.adjustmentf.value>=20 and self.adjustmentf.value<46):
-            self._freq_range.set_value(30)
-            freq_div = 500
-            time_div = 0.0005
-
-        if(self.adjustmentf.value>=46 and self.adjustmentf.value<62):
-            self._freq_range.set_value(50)
-            freq_div = 250
-            time_div = 0.00025
-
-        if(self.adjustmentf.value>=62 and self.adjustmentf.value<=70):
-            self._freq_range.set_value(70)
-            freq_div = 25
-            time_div = 0.00005
+        time_div = 0.001*max(self.adjustmentf.value, 0.05)
+        freq_div = 1000*max(self.adjustmentf.value, 0.01)
 
         self.wave.set_div(time_div, freq_div)
 
@@ -328,6 +338,7 @@ class SoundToolbar(gtk.Toolbar):
         self.wave.set_fft_mode(False)
         self.wave.set_mag_params(self.g, self.y_mag)
         self._update_string_for_textbox()
+        self.update_trigger_control()
 
     def _update_string_for_textbox(self):
         if self.wave.get_fft_mode() == False:
