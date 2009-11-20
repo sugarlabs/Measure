@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-04 21:03+0000\n"
+"POT-Creation-Date: 2009-09-30 15:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,177 +20,141 @@ msgstr ""
 msgid "Measure"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/toolbar_top.py:44
+#: /home/walter/Desktop/measure.activity/toolbar_top.py:45
 msgid "Sound"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/toolbar_top.py:48
+#: /home/walter/Desktop/measure.activity/toolbar_top.py:49
 msgid "Sensors"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/journal.py:217
+#: /home/walter/Desktop/measure.activity/journal.py:228
 msgid "Session: "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/journal.py:218
+#: /home/walter/Desktop/measure.activity/journal.py:229
 msgid "User: "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/journal.py:219
+#: /home/walter/Desktop/measure.activity/journal.py:230
 msgid "Interval: "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/journal.py:338
+#: /home/walter/Desktop/measure.activity/journal.py:349
 msgid "Waveform "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/logging_ui.py:39
-#: /home/walter/Desktop/measure.activity/logging_ui.py:45
-msgid "Picture"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:39
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:112
-msgid "1 second"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:39
-msgid "5 seconds"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:39
-msgid "1 minute"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:39
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
-msgid "5 minutes"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:39
-msgid "1 hour"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:63
-#: /home/walter/Desktop/measure.activity/logging_ui.py:91
-#: /home/walter/Desktop/measure.activity/logging_ui.py:100
-msgid "Start Logging"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/logging_ui.py:87
-msgid "Stop Logging"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sheet_ui.py:37
-msgid "Show sheet and graphs"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sheet_ui.py:42
-msgid "Show waveform"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:42
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:45
 msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO) "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:43
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:46
 msgid "Bias/Offset Enabled  "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:44
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:47
 msgid "Bias/Offset Disabled "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:45
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:55
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:48
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
 msgid " Invert "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:65
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:67
 msgid "Resistance Sensor"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:74
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:76
 msgid "Voltage Sensor"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:83
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:85
 msgid "Invert"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:149
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:106
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:114
+msgid "1 second"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:106
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:153
 msgid "30 seconds"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:105
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:150
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:106
+msgid "5 minutes"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:107
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:154
 msgid "30 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:125
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:158
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:170
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:188
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:199
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:127
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:183
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:174
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:203
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:214
 msgid "Start Recording"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:148
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:184
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:173
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:199
 msgid "Stop Recording"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:49
 msgid "Sound "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:53
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:50
 msgid "Time Base      "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:54
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
 msgid "Frequency Base "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:57
-msgid "X Axis Scale: 1 division = "
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:54
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:56
+msgid "ms"
 msgstr ""
 
 #: /home/walter/Desktop/measure.activity/sound_toolbar.py:58
-msgid "ms "
+msgid "Hz"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:59
-msgid "Hz "
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:74
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:75
 msgid "Time base"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:82
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:83
 msgid "Frequency base"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:128
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:239
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:133
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:254
 msgid "Freeze the display"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:149
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:153
 msgid "Now"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:149
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:153
 msgid "2 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:150
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:154
 msgid "10 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:234
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:249
 msgid "Unfreeze the display"
 msgstr ""
