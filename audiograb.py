@@ -4,6 +4,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009, Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+#    Copyright (C) 2009, Sayamindu Dasgupta
 #    	
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -29,11 +30,15 @@ import numpy as np
 from string import find
 import config 		#This has all the golabals
 
-class AudioGrab():
+# Initialize logging.
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
 
 
+class AudioGrab:
     def __init__(self, callable1, journal):
-
         self.callable1 = callable1
         self.ji = journal
         self.sensor = None
@@ -51,22 +56,10 @@ class AudioGrab():
         self.count_temp = 0
         self.entry_count = 0
 
-
         self.waveform_id = 1
         self.logging_state = False
         self.buffer_interval_logging = 0
         self.counter_buffer = 0
-
-        ####Variables for saving and resuming state of sound device######
-        self.master  = self.get_master()
-        self.PCM = self.get_PCM_gain()
-        self.mic = self.get_mic_gain()
-        self.bias = config.BIAS
-        self.dcmode =  config.DC_MODE_ENABLE
-        self.capture_gain  = config.CAPTURE_GAIN
-        self.mic_boost = config.MIC_BOOST
-        #################################################################
-
 
         self.pipeline = gst.Pipeline("pipeline")
         self.alsasrc = gst.element_factory_make("alsasrc", "alsa-source")
@@ -159,28 +152,6 @@ class AudioGrab():
         gst.event_new_flush_stop()
         self.pipeline.set_state(gst.STATE_NULL)
 
-
-    def save_state(self):
-        """Saves the state of all audio controls"""
-        self.master = self.get_master()
-        self.PCM = self.get_PCM_gain()
-        self.mic = self.get_mic_gain()
-        self.bias = self.get_bias()
-        self.dcmode =  self.get_dc_mode()
-        self.capture_gain  = self.get_capture_gain()
-        self.mic_boost = self.get_mic_boost()
-
-    def resume_state(self):
-        """Put back all audio control settings from the saved state"""
-        self.set_master(self.master)
-        self.set_PCM_gain(self.PCM )
-        self.set_mic_gain(self.mic)
-        self.set_bias(self.bias)
-        self.set_dc_mode(self.dcmode)
-        self.set_capture_gain(self.capture_gain)
-        self.set_mic_boost(self.mic_boost)
-
-
     def set_logging_params(self, start_stop=False, interval=0, screenshot=True):
         """Configures for logging of data i.e. starts or stops a session
         Sets an interval if logging interval is to be started
@@ -211,6 +182,80 @@ class AudioGrab():
         """Resets the counter buffer used to keep track of after how many
         buffers to emit a buffer for logging"""
         self.counter_buffer = 0
+
+    def set_sampling_rate(self, sr):
+        """Sets the sampling rate of the capture device
+        Sampling rate must be given as an integer for example 16000 for
+        setting 16Khz sampling rate
+        The sampling rate would be set in the device to the nearest available"""
+        self.pause_grabbing()
+        caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (sr, )
+        self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
+        self.resume_grabbing()
+
+
+    def get_sampling_rate(self):
+        """Gets the sampling rate of the capture device"""
+        return int(self.caps1.get_property("caps")[0]['rate'] )
+
+
+    def set_callable1(self, callable1):
+        """Sets the callable to the drawing function for giving the
+        data at the end of idle-add"""
+        self.callable1 = callable1
+
+    def start_grabbing(self):
+        """Called right at the start of the Activity"""
+        self.start_sound_device()
+
+    def pause_grabbing(self):
+        """When Activity goes into background"""
+        self.save_state()
+        self.stop_sound_device()
+
+    def resume_grabbing(self):
+        """When Activity becomes active after going to background"""
+        self.start_sound_device()
+        self.resume_state()
+   
+
+    def stop_grabbing(self):
+        self.stop_sound_device()
+        self.set_handoff_signal(False)
+
+class AudioGrab_XO_1(AudioGrab):
+    def __init__(self, callable1, journal):
+        AudioGrab.__init__(self, callable1, journal)
+
+        ####Variables for saving and resuming state of sound device######
+        self.master  = self.get_master()
+        self.PCM = self.get_PCM_gain()
+        self.mic = self.get_mic_gain()
+        self.bias = config.BIAS
+        self.dcmode =  config.DC_MODE_ENABLE
+        self.capture_gain  = config.CAPTURE_GAIN
+        self.mic_boost = config.MIC_BOOST
+        #################################################################
+
+    def save_state(self):
+        """Saves the state of all audio controls"""
+        self.master = self.get_master()
+        self.PCM = self.get_PCM_gain()
+        self.mic = self.get_mic_gain()
+        self.bias = self.get_bias()
+        self.dcmode =  self.get_dc_mode()
+        self.capture_gain  = self.get_capture_gain()
+        self.mic_boost = self.get_mic_boost()
+
+    def resume_state(self):
+        """Put back all audio control settings from the saved state"""
+        self.set_master(self.master)
+        self.set_PCM_gain(self.PCM )
+        self.set_mic_gain(self.mic)
+        self.set_bias(self.bias)
+        self.set_dc_mode(self.dcmode)
+        self.set_capture_gain(self.capture_gain)
+        self.set_mic_boost(self.mic_boost)
 
     def mute_master(self):
         """Mutes the Master Control"""
@@ -408,29 +453,7 @@ class AudioGrab():
         except:
             # in case alsamixer doesn't report a percentage
             return 0
-
-    def set_sampling_rate(self, sr):
-        """Sets the sampling rate of the capture device
-        Sampling rate must be given as an integer for example 16000 for
-        setting 16Khz sampling rate
-        The sampling rate would be set in the device to the nearest available"""
-        self.pause_grabbing()
-        caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (sr, )
-        self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
-        self.resume_grabbing()
-
-
-    def get_sampling_rate(self):
-        """Gets the sampling rate of the capture device"""
-        return int(self.caps1.get_property("caps")[0]['rate'] )
-
-
-    def set_callable1(self, callable1):
-        """Sets the callable to the drawing function for giving the
-        data at the end of idle-add"""
-        self.callable1 = callable1
-
-
+        
     def set_sensor_type(self, sensor_type=1):
         """Set the type of sensor you want to use. Set sensor_type according 
         to the following
@@ -464,36 +487,6 @@ class AudioGrab():
 	        self.set_capture_gain(0)
 	        self.set_mic_boost(False)
 
-
-    def start_grabbing(self):
-        """Called right at the start of the Activity"""
-        self.start_sound_device()
-        #self.set_handoff_signal(True)
-        ####Sound device settings at start####
-        #self.set_sampling_rate(config.RATE)
-        #self.set_mic_boost(config.MIC_BOOST)
-        #self.set_dc_mode(config.DC_MODE_ENABLE)
-        #self.set_capture_gain(config.CAPTURE_GAIN)
-        #self.set_bias(config.BIAS)
-        ######################################
-
-
-
-    def pause_grabbing(self):
-        """When Activity goes into background"""
-        self.save_state()
-        self.stop_sound_device()
-
-    def resume_grabbing(self):
-        """When Activity becomes active after going to background"""
-        self.start_sound_device()
-        self.resume_state()
-   
-
-    def stop_grabbing(self):
-        self.stop_sound_device()
-        self.set_handoff_signal(False)
-
     def on_activity_quit(self):
         """When Activity quits"""
         self.set_mic_boost(config.QUIT_MIC_BOOST)
@@ -504,6 +497,186 @@ class AudioGrab():
         self.stop_sound_device()
 
 
+class AudioGrab_XO_1_5(AudioGrab):
+    def __init__(self, callable1, journal):
+        AudioGrab.__init__(self, callable1, journal)
+
+        ####Variables for saving and resuming state of sound device######
+        self.master  = self.get_master()
+        self.bias = config.BIAS
+        self.dcmode =  config.DC_MODE_ENABLE
+        self.capture_gain  = config.CAPTURE_GAIN
+        self.mic_boost = config.MIC_BOOST
+        #################################################################
+
+    def save_state(self):
+        """Saves the state of all audio controls"""
+        self.master = self.get_master()
+        self.bias = self.get_bias()
+        self.dcmode =  self.get_dc_mode()
+        self.capture_gain  = self.get_capture_gain()
+        self.mic_boost = self.get_mic_boost()
+
+    def resume_state(self):
+        """Put back all audio control settings from the saved state"""
+        self.set_master(self.master)
+        self.set_bias(self.bias)
+        self.set_dc_mode(self.dcmode)
+        self.set_capture_gain(self.capture_gain)
+        self.set_mic_boost(self.mic_boost)
 
 
+    def mute_master(self):
+        """Mutes the Master Control"""
+        os.system("amixer set Master mute")
+
+    def unmute_master(self):
+        """Unmutes the Master Control"""
+        os.system("amixer set Master unmute")
+
+    def set_master(self, master_val ):
+        """Sets the Master gain slider settings 
+        master_val must be given as an integer between 0 and 100 indicating the
+        percentage of the slider to be set"""
+        log.debug('Setting master')
+        os.system("amixer set Master " + str(master_val) + "%")
+
+
+    def get_master(self):
+        """Gets the Master gain slider settings. The value returned is an
+        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
+        log.debug('Getting master')
+        p = str(subprocess.Popen(["amixer", "get", "Master"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
+        p = p[find(p,"Front Left:"):]
+        p = p[find(p,"[")+1:]
+        p = p[:find(p,"%]")]
+        return int(p)
+
+    def set_bias(self,bias_state=False):
+        log.debug('Setting bias')
+        """Sets the Bias control
+        pass False to disable and True to enable"""
+        if bias_state==False:
+	        bias_str="Off"
+        else:
+	        bias_str="80%"
+        os.system("amixer set 'DC Input Bias' " + bias_str)
+
+    def get_bias(self):
+        """Returns the setting of Bias control 
+        i.e. True: Enabled and False: Disabled"""
+        log.debug('Getting bias')
+        p = str(subprocess.Popen(["amixer", "get", "'DC Input Bias'"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
+        p = p[find(p,"Item0:"):]
+        if 'Off' in p:
+	        return False
+        else:
+	        return True
+
+    def set_dc_mode(self, dc_mode = False):
+        """Sets the DC Mode Enable control
+        pass False to mute and True to unmute"""
+        log.debug('Setting DC mode')
+        if dc_mode==False:
+	        dcm_str="mute"
+        else:
+	        dcm_str="unmute"
+        os.system("amixer set 'DC Mode Enable' " + dcm_str)
+
+    def get_dc_mode(self):
+        """Returns the setting of DC Mode Enable control 
+        i .e. True: Unmuted and False: Muted"""
+        log.debug('Getting DC mode')
+        p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
+        p = p[find(p,"Mono:"):]
+        p = p[find(p,"[")+1:]
+        p = p[:find(p,"]")]
+        if p=="on" :
+	        return True
+        else:
+	        return False
+
+    def set_mic_boost(self, mic_boost=False):
+        """Sets the Mic Boost +20dB control
+        pass False to mute and True to unmute"""
+        log.debug('Setting mic boost')
+        if mic_boost==False:
+	        mb_str="0dB"
+        else:
+	        mb_str="30dB"
+        os.system("amixer set 'Analog Mic Boost' " + mb_str)
+
+    def get_mic_boost(self):
+        """Returns the setting of Mic Boost +20dB control 
+        i.e. True: Unmuted and False: Muted"""
+        log.debug('Getting mic boost')
+        p = str(subprocess.Popen(["amixer", "get", "'Analog Mic Boost'"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
+        p = p[find(p,"Item0:"):]
+        if '0dB' in p:
+	        return False
+        else:
+	        return True		
+
+    def set_capture_gain(self, capture_val):
+        """Sets the Capture gain slider settings 
+        capture_val must be given as an integer between 0 and 100 indicating the
+        percentage of the slider to be set"""
+        log.debug('Setting capture gain')
+        os.system("amixer set Capture " + str(capture_val) + "%")
+
+
+    def get_capture_gain(self):
+        """Gets the Capture gain slider settings. The value returned is an
+        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
+        log.debug('Getting capture gain')
+        p = str(subprocess.Popen(["amixer", "get", "Capture"], \
+                                 stdout=subprocess.PIPE).communicate()[0])
+        p = p[find(p,"Front Left:"):]
+        p = p[find(p,"[")+1:]
+        p = p[:find(p,"%]")]
+        return int(p)
+
+    def set_sensor_type(self, sensor_type=1):
+        """Set the type of sensor you want to use. Set sensor_type according 
+        to the following
+        0 - AC coupling with Bias Off --> Very rarely used.
+            Use when connecting a dynamic microphone externally
+        1 - AC coupling with Bias On --> The default settings. 
+            The internal MIC uses these
+        2 - DC coupling with Bias Off --> Used when using a voltage
+            output sensor. For example LM35 which gives output proportional
+            to temperature
+        3 - DC coupling with Bias On --> Used with resistive sensors.
+            For example"""
+        if sensor_type==0:
+	        self.set_dc_mode(False)
+	        self.set_bias(False)
+	        self.set_capture_gain(80)
+	        self.set_mic_boost(True)
+        elif sensor_type==1:
+	        self.set_dc_mode(False)
+	        self.set_bias(True)
+	        self.set_capture_gain(80)
+	        self.set_mic_boost(True)
+        elif sensor_type==2:
+	        self.set_dc_mode(True)
+	        self.set_bias(False)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+        elif sensor_type==3:
+	        self.set_dc_mode(True)
+	        self.set_bias(True)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+
+    def on_activity_quit(self):
+        """When Activity quits"""
+        self.set_dc_mode(config.QUIT_DC_MODE_ENABLE)
+        self.set_capture_gain(config.QUIT_CAPTURE_GAIN)
+        self.set_bias(config.QUIT_BIAS)
+        self.stop_sound_device()
 

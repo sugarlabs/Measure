@@ -331,10 +331,11 @@ class SoundToolbar(gtk.Toolbar):
     def context_on(self):
         """When the sound context is switched on"""
         self.ag.start_sound_device()
-        self.ag.set_dc_mode(False)
-        self.ag.set_bias(True)
-        self.ag.set_capture_gain(self.capture_gain)
-        self.ag.set_mic_boost(self.mic_boost)
+        #self.ag.set_dc_mode(False)
+        #self.ag.set_bias(True)
+        #self.ag.set_capture_gain(self.capture_gain)
+        #self.ag.set_mic_boost(self.mic_boost)
+        self.ag.set_sensor_type(1)
         self.wave.set_fft_mode(False)
         self.wave.set_mag_params(self.g, self.y_mag)
         self._update_string_for_textbox()
