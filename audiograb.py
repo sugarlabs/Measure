@@ -146,7 +146,6 @@ class AudioGrab:
         gst.event_new_flush_start()
         self.pipeline.set_state(gst.STATE_PLAYING)
 
-
     def stop_sound_device(self):
         """Stop grabbing data from capture device"""
         gst.event_new_flush_stop()
@@ -193,11 +192,9 @@ class AudioGrab:
         self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
         self.resume_grabbing()
 
-
     def get_sampling_rate(self):
         """Gets the sampling rate of the capture device"""
         return int(self.caps1.get_property("caps")[0]['rate'] )
-
 
     def set_callable1(self, callable1):
         """Sets the callable to the drawing function for giving the
@@ -218,7 +215,6 @@ class AudioGrab:
         self.start_sound_device()
         self.resume_state()
    
-
     def stop_grabbing(self):
         self.stop_sound_device()
         self.set_handoff_signal(False)
@@ -398,7 +394,6 @@ class AudioGrab_XO_1(AudioGrab):
 	        return True
         else:
 	        return False
-	
 
     def set_capture_gain(self, capture_val):
         """Sets the Capture gain slider settings 

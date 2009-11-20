@@ -108,7 +108,9 @@ class MeasureActivity(activity.Activity):
             self.audiograb = \
                 audiograb.AudioGrab_XO_1(self.wave.new_buffer, self.ji)
         else:
-            log.error('Sorry, we do not support your hardware yet.')
+            self.audiograb = \
+                audiograb.AudioGrab_XO_1(self.wave.new_buffer, self.ji)
+            # log.error('Sorry, we do not support your hardware yet.')
 
         self.side_toolbar = SideToolbar(self.wave)
         self.text_box = TextBox()
