@@ -50,11 +50,11 @@ log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
 def _get_hardware():
-    # This is so horribly convoluted :-(
+    """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
     bus = dbus.SystemBus()
  
-    comp_obj = bus.get_object('org.freedesktop.Hal', \
-            '/org/freedesktop/Hal/devices/computer')
+    comp_obj = bus.get_object('org.freedesktop.Hal',
+                              '/org/freedesktop/Hal/devices/computer')
     dev = dbus.Interface (comp_obj, 'org.freedesktop.Hal.Device')
     if dev.PropertyExists('system.hardware.vendor') and \
             dev.PropertyExists('system.hardware.version'):
@@ -79,9 +79,8 @@ class MeasureActivity(activity.Activity):
         except:
             # Early versions of Sugar (e.g., 656) didn't support
             # get_activity_root()
-            tmp_dir = os.path.join( \
-                os.environ['HOME'], \
-                ".sugar/default/org.laptop.MeasureActivity/data")
+            tmp_dir = os.path.join(os.environ['HOME'],
+                          ".sugar/default/org.laptop.MeasureActivity/data")
 
         self.active_status = True
         self.ACTIVE = True
@@ -93,23 +92,23 @@ class MeasureActivity(activity.Activity):
 	        self.existing = True
         else: 
 	        #logging.debug('1.1 Launched from frame or from Mesh View')
-	        self._jobject.file_path =str(tempfile.mkstemp(dir=tmp_dir)[1]) 
+	        self._jobject.file_path = str(tempfile.mkstemp(dir=tmp_dir)[1])
 	        os.chmod(self._jobject.file_path, 0777)
 	        self.existing = False	
 
         self.ji = JournalInteraction(self._jobject.file_path, self.existing)
         self.wave = DrawWaveform()
         
-        hw = _get_hardware()
-        if hw == 'xo1.5':
+        self.hw = _get_hardware()
+        if self.hw == 'xo1.5':
             self.audiograb = \
                 audiograb.AudioGrab_XO_1_5(self.wave.new_buffer, self.ji)
-        elif hw == 'xo1':
+        elif self.hw == 'xo1':
             self.audiograb = \
                 audiograb.AudioGrab_XO_1(self.wave.new_buffer, self.ji)
-        else:
+        else: # Use 1.5 settings as default, 0)
             self.audiograb = \
-                audiograb.AudioGrab_XO_1(self.wave.new_buffer, self.ji)
+                audiograb.AudioGrab_Unknown(self.wave.new_buffer, self.ji)
             # log.error('Sorry, we do not support your hardware yet.')
 
         self.side_toolbar = SideToolbar(self.wave)
@@ -125,8 +124,7 @@ class MeasureActivity(activity.Activity):
 
         self.set_canvas(self.box1)		
 
-        toolbox = Toolbar(self, self.wave, self.audiograb, self.ji, \
-                          self.text_box)
+        toolbox = Toolbar(self)
         self.set_toolbox(toolbox)
         toolbox.show()
 
@@ -183,15 +181,11 @@ class MeasureActivity(activity.Activity):
         self.wave.set_active(self.ACTIVE)
 
     """
-    Write the project to the Journal
-    """
     def write_file(self, file_path):
         print "write file"
 
-    """
-    Read a project in and then run it
-    """
     def read_file(self, file_path):
         print "read file"
+    """
 
 gtk.gdk.threads_init()

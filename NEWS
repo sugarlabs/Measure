@@ -1,12 +1,16 @@
-29
+30
+* tweaked parameters for XO 1.5 (mic boost=False)
+* cleaned up code for non-OLPC hardware
+* eliminate sensor toolbar for non-XO hardware
 
+29
 * support for XO 1.5 (thanks to Sayamindu Dasgupta)
 
 28
 * numerous patches to speed up code by Benjamin and Sebastian Berg
 
 27
-* added exceot for gconf for old builds
+* added exception handling for gconf for old builds
 
 26
 * fixed toolbar display bug

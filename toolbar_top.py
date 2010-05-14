@@ -32,22 +32,29 @@ from sensor_toolbar import SensorToolbar
 # from logging_ui import LogToolbar
 from gettext import gettext as _
 
+def is_xo(hw):
+    """ Return True if this is xo hardware """
+    if hw == 'xo1' or hw == 'xo1.5':
+        return True
+    return False
+
 class Toolbar(ActivityToolbox):
 
-    def __init__(self, activity, wave, audiograb, journal, textbox):
+    def __init__(self, activity):
 
         ActivityToolbox.__init__(self, activity)
 
         self._SOUND_TOOLBAR = 1
         self._SENSOR_TOOLBAR = 2
 
-        self._sound_toolbar = SoundToolbar(wave, audiograb, textbox, journal)
+        self._sound_toolbar = SoundToolbar(activity)
         self.add_toolbar(_('Sound'), self._sound_toolbar)
         self._sound_toolbar.show()
 
-        self._sensors_toolbar = SensorToolbar(wave, audiograb, textbox, journal)
-        self.add_toolbar(_('Sensors'), self._sensors_toolbar)
-        self._sensors_toolbar.show()
+        if is_xo(activity.hw):
+            self._sensors_toolbar = SensorToolbar(activity)
+            self.add_toolbar(_('Sensors'), self._sensors_toolbar)
+            self._sensors_toolbar.show()
 
         """
         self._camera_toolbar = CameraToolbar(activity, camera_ui)
@@ -64,24 +71,26 @@ class Toolbar(ActivityToolbox):
         """
 
         self.connect("current-toolbar-changed", self._toolbar_changed_cb)
-        self.wave = wave
+        self.wave = activity.wave
         self.activity = activity
         self.toolbar_active_id = 1
         self.set_current_toolbar(self._SOUND_TOOLBAR)
 
 
     def _toolbar_changed_cb(self, tbox, num):
+        """ Callback for changing the primary toolbar  """
         if num==0:                              #Activity
 	        pass
 
-        elif num==self._SOUND_TOOLBAR:                           #Sound
+        elif num==self._SOUND_TOOLBAR:          #Sound
             self.activity.set_show_hide_windows(self._SOUND_TOOLBAR)
-            self._sensors_toolbar.context_off()
+            if is_xo(self.activity.hw):
+                self._sensors_toolbar.context_off()
             time.sleep(0.5)
             self._sound_toolbar.context_on()
             config.CONTEXT = self._SOUND_TOOLBAR
 
-        elif num==self._SENSOR_TOOLBAR:                            #Sensor
+        elif num==self._SENSOR_TOOLBAR:         #Sensor
             self._sound_toolbar.context_off()
             time.sleep(0.5)
             self._sensors_toolbar.context_on()

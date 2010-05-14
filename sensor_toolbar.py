@@ -37,26 +37,27 @@ except:
 # 'Sensor' toolbar class
 class SensorToolbar(gtk.Toolbar):
 
-    def __init__(self, wave, audiograb, textbox, journal):
+    def __init__(self, activity):
 
         gtk.Toolbar.__init__(self)
 
         self._STR_BASIC = \
-          _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO) ")
-        self._STR1 = _("Bias/Offset Enabled  ")
-        self._STR2 = _("Bias/Offset Disabled ")
-        self._STR3 = _(" Invert ")
+        _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
+        + " "
+        self._STR1 = _("Bias/Offset Enabled") + " "
+        self._STR2 = _("Bias/Offset Disabled") + " "
+        self._STR3 = _(" Invert") + " "
 
         self.gain_state = None
         self.boost_state = None        
 
         self.string_for_textbox = ""
 
-        self.wave = wave
-        self.ag = audiograb
+        self.wave = activity.wave
+        self.ag = activity.audiograb
         self.ag.set_sensor(self)
-        self.textbox_copy = textbox
-        self.ji = journal
+        self.textbox_copy = activity.text_box
+        self.ji = activity.ji
     
         self.logging_status = False
 
@@ -65,7 +66,7 @@ class SensorToolbar(gtk.Toolbar):
         self.insert(self._resistance, -1)
         self._resistance.show()
         self._resistance.set_tooltip(_('Resistance Sensor'))
-        self._resistance.connect('clicked', self.set_resistance_voltage_mode,\
+        self._resistance.connect('clicked', self.set_resistance_voltage_mode,
                                  'resistance')
         ######################################################
 
@@ -73,7 +74,7 @@ class SensorToolbar(gtk.Toolbar):
         self._voltage = ToolButton('bias-off')
         self.insert(self._voltage, -1)
         self._voltage.set_tooltip(_('Voltage Sensor'))
-        self._voltage.connect('clicked', self.set_resistance_voltage_mode,\
+        self._voltage.connect('clicked', self.set_resistance_voltage_mode,
                               'voltage')
         ######################################################
 
@@ -90,18 +91,17 @@ class SensorToolbar(gtk.Toolbar):
         self.insert(separator, -1)
 
         self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(config.ICONS_DIR + \
-                                           '/sample_rate.svg')
+        self.loginterval_img.set_from_file(config.ICONS_DIR+'/sample_rate.svg')
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
 
         ################### Logging Interval ##################
         self._loginterval_combo = ComboBox()
-        self.interval = [_('1 second') , _('30 seconds'),  _('5 minutes'),\
+        self.interval = [_('1 second') , _('30 seconds'),  _('5 minutes'),
                          _('30 minutes')]
 
-        self._interval_changed_id = self._loginterval_combo.connect("changed",\
+        self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
 
         for i, s in enumerate(self.interval):
@@ -155,7 +155,7 @@ class SensorToolbar(gtk.Toolbar):
                 username = client.get_string("/desktop/suagr/user/nick")
             except:
                 username = profile.get_nick_name()
-            self.ji.start_new_session(username, Xscale, Yscale,\
+            self.ji.start_new_session(username, Xscale, Yscale,
                                       self.logginginterval_status)
             self.ag.set_logging_params(True, interval, False)
             config.LOGGING_IN_SESSION = True
@@ -219,16 +219,12 @@ class SensorToolbar(gtk.Toolbar):
         return False
 
     def _invert_control_cb(self, data=None):
-        print "invert_control_cb; current state: " + \
-              str(self.wave.get_invert_state())
         if self.wave.get_invert_state()==True:
             self.wave.set_invert_state(False)
-            print "invert_control_cb; changing to False"
             self._invert.set_icon('invert')
             self._invert.show()
         else:
             self.wave.set_invert_state(True)
-            print "invert_control_cb; changing to True"
             self._invert.set_icon('invert2')
             self._invert.show()
         self._update_string_for_textbox()

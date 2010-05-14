@@ -23,12 +23,11 @@
 import pygst
 pygst.require("0.10")
 import gst
+import gst.interfaces
 import gobject
-import os
-import subprocess
 import numpy as np
 from string import find
-import config 		#This has all the golabals
+import config 		#This has all the globals
 
 # Initialize logging.
 import logging
@@ -67,14 +66,38 @@ class AudioGrab:
         self.caps1 = gst.element_factory_make("capsfilter", "caps1")
         self.pipeline.add(self.caps1)
         caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % \
-                  (config.RATE, )
+                  (config.RATE)
         self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
         self.fakesink = gst.element_factory_make("fakesink", "fsink")
         self.pipeline.add(self.fakesink)		
         self.fakesink.connect("handoff", self.on_buffer)	
-        self.fakesink.set_property("signal-handoffs",True) 
+        self.fakesink.set_property("signal-handoffs", True) 
         gst.element_link_many(self.alsasrc, self.caps1, self.fakesink)
         self.dont_queue_the_buffer = False
+
+        self._mixer = gst.element_factory_make('alsamixer')
+        rc = self._mixer.set_state(gst.STATE_PAUSED)
+        assert rc == gst.STATE_CHANGE_SUCCESS
+
+        log.debug('controls: %r', [t.props.untranslated_label \
+                                   for t in self._mixer.list_tracks()])
+        self._dc_control = self._find_control(['dc mode'])
+        self._mic_bias_control = self._find_control(['mic bias',
+                                     'dc input bias', 'V_REFOUT'])
+        self._mic_boost_control = self._find_control(['mic boost',
+                                     'analog mic boost'])
+        self._mic_gain_control = self._find_control(['mic'])
+        self._capture_control = self._find_control(['capture'])
+        self._master_control = self._find_control(['master'])
+
+        ####Variables for saving and resuming state of sound device######
+        self.master  = self.get_master()
+        self.bias = config.BIAS
+        self.dcmode =  config.DC_MODE_ENABLE
+        self.capture_gain  = config.CAPTURE_GAIN
+        self.mic_boost = config.MIC_BOOST
+        self.mic = self.get_mic_gain()
+        #################################################################
 
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
@@ -219,25 +242,37 @@ class AudioGrab:
         self.stop_sound_device()
         self.set_handoff_signal(False)
 
-class AudioGrab_XO_1(AudioGrab):
-    def __init__(self, callable1, journal):
-        AudioGrab.__init__(self, callable1, journal)
+    def _find_control(self, prefixes):
+        """Try to find a mixer control matching one of the prefixes.
 
-        ####Variables for saving and resuming state of sound device######
-        self.master  = self.get_master()
-        self.PCM = self.get_PCM_gain()
-        self.mic = self.get_mic_gain()
-        self.bias = config.BIAS
-        self.dcmode =  config.DC_MODE_ENABLE
-        self.capture_gain  = config.CAPTURE_GAIN
-        self.mic_boost = config.MIC_BOOST
-        #################################################################
+        The control with the best match (smallest difference in length
+        between label and prefix) will be returned. If no match is found,
+        None is returned.
+        """
+        def best_prefix(label, prefixes):
+            matches = [len(label)-len(p) for p in prefixes if label.startswith(p)]
+            if not matches:
+                return None
+
+            matches.sort()
+            return matches[0]
+
+        controls = []
+        for track in self._mixer.list_tracks():
+            label = track.props.untranslated_label.lower()
+            diff = best_prefix(label, prefixes)
+            if diff is not None:
+                controls.append((track, diff))
+
+        controls.sort(key=lambda e: e[1])
+        if controls:
+            return controls[0][0]
+
+        return None
 
     def save_state(self):
         """Saves the state of all audio controls"""
         self.master = self.get_master()
-        self.PCM = self.get_PCM_gain()
-        self.mic = self.get_mic_gain()
         self.bias = self.get_bias()
         self.dcmode =  self.get_dc_mode()
         self.capture_gain  = self.get_capture_gain()
@@ -246,209 +281,179 @@ class AudioGrab_XO_1(AudioGrab):
     def resume_state(self):
         """Put back all audio control settings from the saved state"""
         self.set_master(self.master)
-        self.set_PCM_gain(self.PCM )
-        self.set_mic_gain(self.mic)
         self.set_bias(self.bias)
         self.set_dc_mode(self.dcmode)
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
 
+    def _get_mute(self, control, name, default):
+        if not control:
+            log.warning('No %s control, returning constant mute status', name)
+            return default
+
+        value = bool(control.flags & gst.interfaces.MIXER_TRACK_MUTE)
+        log.debug('Getting %s (%s) mute status: %r', name,
+            control.props.untranslated_label, value)
+        return value
+
+    def _set_mute(self, control, name, value):
+        if not control:
+            log.warning('No %s control, not setting mute', name)
+            return
+
+        self._mixer.set_mute(control, value)
+        log.debug('Set mute for %s (%s) to %r', name,
+            control.props.untranslated_label, value)
+
+    def _get_volume(self, control, name):
+        if not control:
+            log.warning('No %s control, returning constant volume', name)
+            return 100
+
+        hw_volume = self._mixer.get_volume(control)[0]
+        min_vol = control.min_volume
+        max_vol = control.max_volume
+        percent = (hw_volume - min_vol)*100//(max_vol - min_vol)
+        log.debug('Getting %s (%s) volume: %d (%d)', name,
+            control.props.untranslated_label, percent, hw_volume)
+        return percent
+
+    def _set_volume(self, control, name, value):
+        if not control:
+            log.warning('No %s control, not setting volume', name)
+            return
+
+        min_vol = control.min_volume
+        max_vol = control.max_volume
+        hw_volume = value*(max_vol - min_vol)//100 + min_vol
+        self._mixer.set_volume(control, (hw_volume,)*control.num_channels)
+        log.debug('Set volume of %s (%s) to %d (%d)', name,
+            control.props.untranslated_label, value, hw_volume)
+
     def mute_master(self):
         """Mutes the Master Control"""
-        os.system("amixer set Master mute")
+        self._set_mute(self._master_control, 'Master', True)
 
     def unmute_master(self):
         """Unmutes the Master Control"""
-        os.system("amixer set Master unmute")
+        self._set_mute(self._master_control, 'Master', False)
 
-    def mute_PCM(self):
-        """Mutes the PCM Control"""
-        os.system("amixer set PCM mute")
-
-    def unmute_PCM(self):
-        """Unmutes the PCM Control"""
-        os.system("amixer set PCM unmute")
-
-    def mute_mic(self):
-        """Mutes the Mic Control"""
-        os.system("amixer set Mic mute")
-
-    def unmute_mic(self):
-        """Unmutes the Mic Control"""
-        os.system("amixer set Mic unmute")
-
-    def set_master(self, master_val ):
+    def set_master(self, master_val):
         """Sets the Master gain slider settings 
         master_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        os.system("amixer set Master " + str(master_val) + "%")
-
+        self._set_volume(self._master_control, 'Master', master_val)
 
     def get_master(self):
         """Gets the Master gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "Master"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Front Left:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"%]")]
-        return int(p)
-
-    def get_mix_for_recording(self):
-        """Returns True if Mix is set as recording device and False if it
-        isn't """
-        p = str(subprocess.Popen(["amixer", "get", "Mix", "capture", "cap"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"]")]
-        if p=="on" :
-	        return True
-        else:
-	        return False
-
-    def get_mic_for_recording(self):
-        """Returns True if mic is set as recording device and False if it
-        isn't """
-        p = str(subprocess.Popen(["amixer", "get", "Mic", "capture", "cap"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"]")]
-        if p=="on" :
-	        return True
-        else:
-	        return False
-
-    def set_mic_for_recording(self):
-        """Sets Mic as the default recording source"""
-        os.system("amixer set Mic capture cap")
-
-    def set_mix_for_recording(self):
-        """Sets Mix as the default recording source"""
-        os.system("amixer set Mix capture cap")
-
+        return self._get_volume(self._master_control, 'master')
 
     def set_bias(self,bias_state=False):
-        """Sets the Bias control
-        pass False to disable and True to enable"""
-        if bias_state==False:
-	        bias_str="mute"
+        """Enables / disables bias voltage. On XO-1.5 it uses the 80% setting.
+        """
+        if not isinstance(self._mic_bias_control, gst.interfaces.MixerOptions):
+            return self._set_mute(self._mic_bias_control, 'Mic Bias', not bias_state)
+
+        values = self._mic_bias_control.get_values()
+        # We assume that the values are sorted from lowest (=off) to highest.
+        # Since they are mixed strings ("Off", "50%", etc.), we cannot easily
+        # ensure this ourselves by sorting with the default sort order.
+        if bias_state:
+            self._mixer.set_option(self._mic_bias_control, values[-1])
         else:
-	        bias_str="unmute"
-        os.system("amixer set 'V_REFOUT Enable' " + bias_str)
+            self._mixer.set_option(self._mic_bias_control, values[0])
 
     def get_bias(self):
-        """Returns the setting of Bias control 
-        i.e. True: Enabled and False: Disabled"""
-        p = str(subprocess.Popen(["amixer", "get", "'V_REFOUT Enable'"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"]")]
-        if p=="on" :
-	        return True
-        else:
-	        return False
+        """Check whether bias voltage is enabled."""
+        if not isinstance(self._mic_bias_control, gst.interfaces.MixerOptions):
+            return not self._get_mute(self._mic_bias_control, 'Mic Bias', False)
+
+        values = self._mic_bias_control.get_values()
+        current = self._mixer.get_option(self._mic_bias_control)
+        # same ordering assertion as in set_bias() applies
+        if current == values[0]:
+            return False
+
+        return True
 
     def set_dc_mode(self, dc_mode = False):
         """Sets the DC Mode Enable control
         pass False to mute and True to unmute"""
-        if dc_mode==False:
-	        dcm_str="mute"
-        else:
-	        dcm_str="unmute"
-        os.system("amixer set 'DC Mode Enable' " + dcm_str)
+        self._set_mute(self._dc_control, 'DC mode', not dc_mode)
 
     def get_dc_mode(self):
         """Returns the setting of DC Mode Enable control 
         i .e. True: Unmuted and False: Muted"""
-        p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"]")]
-        if p=="on" :
-	        return True
-        else:
-	        return False
+        return not self._get_mute(self._dc_control, 'DC mode', False)
 
     def set_mic_boost(self, mic_boost=False):
-        """Sets the Mic Boost +20dB control
-        pass False to mute and True to unmute"""
-        if mic_boost==False:
-	        mb_str="mute"
+        """Set Mic Boost.
+        True = +20dB, False = 0dB"""
+        if not isinstance(self._mic_boost_control, gst.interfaces.MixerOptions):
+            return self._set_mute(self._mic_boost_control, 'Mic Boost', mic_boost)
+
+        values = self._mic_boost_control.get_values()
+        if '20dB' not in values or '0dB' not in values:
+            logging.error("Mic Boost (%s) is an option list, but doesn't "
+                "contain 0dB and 20dB settings", 
+                self._mic_boost_control.props.label)
+            return
+
+        if mic_boost:
+            self._mixer.set_option(self._mic_boost_control, '20dB')
         else:
-	        mb_str="unmute"
-        os.system("amixer set 'Mic Boost (+20dB)' " + mb_str)
+            self._mixer.set_option(self._mic_boost_control, '0dB')
 
     def get_mic_boost(self):
-        """Returns the setting of Mic Boost +20dB control 
-        i.e. True: Unmuted and False: Muted"""
-        p = str(subprocess.Popen(["amixer", "get", "'Mic Boost (+20dB)'"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"]")]
-        if p=="on" :
-	        return True
-        else:
-	        return False
+        """Return Mic Boost setting.
+        True = +20dB, False = 0dB"""
+        if not isinstance(self._mic_boost_control, gst.interfaces.MixerOptions):
+            return self._get_mute(self._mic_boost_control, 'Mic Boost', False)
+
+        values = self._mic_boost_control.get_values()
+        if '20dB' not in values or '0dB' not in values:
+            logging.error("Mic Boost (%s) is an option list, but doesn't "
+                "contain 0dB and 20dB settings", 
+                self._mic_boost_control.props.label)
+            return False
+
+        current = self._mixer.get_option(self._mic_boost_control)
+        if current == '20dB':
+            return True
+
+        return False
 
     def set_capture_gain(self, capture_val):
         """Sets the Capture gain slider settings 
         capture_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        os.system("amixer set Capture " + str(capture_val) + "%")
-
+        self._set_volume(self._capture_control, 'Capture', capture_val)
 
     def get_capture_gain(self):
         """Gets the Capture gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "Capture"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Front Left:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"%]")]
-        return int(p)
-
-
-    def set_PCM_gain(self, PCM_val):
-        """Sets the PCM gain slider settings 
-        PCM_val must be given as an integer between 0 and 100 indicating the
-        percentage of the slider to be set"""
-        os.system("amixer set PCM " + str(PCM_val) + "%")
-
-    def get_PCM_gain(self):
-        """Gets the PCM gain slider settings. The value returned is an
-        indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "PCM"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Front Left:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"%]")]
-        return int(p)
+        return self._get_volume(self._capture_control, 'Capture')
 
     def set_mic_gain(self, mic_val):
-        """Sets the MIC gain slider settings 
+        """Sets the MIC gain slider settings
         mic_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        os.system("amixer set Mic " + str(mic_val) + "%")
+        self._set_volume(self._mic_gain_control, 'Mic', mic_val)
 
     def get_mic_gain(self):
-        """Gets the MIC gain slider settings. The value returned is an 
-        indicative of the percentage 0 - 100%"""
-        p = str(subprocess.Popen(["amixer", "get", "Mic"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"%]")]
-        try:
-            return int(p)
-        except:
-            # in case alsamixer doesn't report a percentage
-            return 0
-        
+        """Gets the MIC gain slider settings. The value returned is an
+        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
+        return self._get_volume(self._mic_gain_control, 'Mic')
+
+    def mute_mic(self):
+        """Mutes the Mic Control"""
+        self._set_mute(self._mic_mute_control, 'Mic', True)
+
+    def unmute_mic(self):
+        """Unmutes the Mic Control"""
+        self._set_mute(self._mic_mute_control, 'Mic', False)
+
     def set_sensor_type(self, sensor_type=1):
         """Set the type of sensor you want to use. Set sensor_type according 
         to the following
@@ -488,165 +493,34 @@ class AudioGrab_XO_1(AudioGrab):
         self.set_dc_mode(config.QUIT_DC_MODE_ENABLE)
         self.set_capture_gain(config.QUIT_CAPTURE_GAIN)
         self.set_bias(config.QUIT_BIAS)
-        self.set_PCM_gain(config.QUIT_PCM)
         self.stop_sound_device()
 
 
-class AudioGrab_XO_1_5(AudioGrab):
-    def __init__(self, callable1, journal):
-        AudioGrab.__init__(self, callable1, journal)
-
-        ####Variables for saving and resuming state of sound device######
-        self.master  = self.get_master()
-        self.bias = config.BIAS
-        self.dcmode =  config.DC_MODE_ENABLE
-        self.capture_gain  = config.CAPTURE_GAIN
-        self.mic_boost = config.MIC_BOOST
-        #################################################################
-
-    def save_state(self):
-        """Saves the state of all audio controls"""
-        self.master = self.get_master()
-        self.bias = self.get_bias()
-        self.dcmode =  self.get_dc_mode()
-        self.capture_gain  = self.get_capture_gain()
-        self.mic_boost = self.get_mic_boost()
-
-    def resume_state(self):
-        """Put back all audio control settings from the saved state"""
-        self.set_master(self.master)
-        self.set_bias(self.bias)
-        self.set_dc_mode(self.dcmode)
-        self.set_capture_gain(self.capture_gain)
-        self.set_mic_boost(self.mic_boost)
-
-
-    def mute_master(self):
-        """Mutes the Master Control"""
-        os.system("amixer set Master mute")
-
-    def unmute_master(self):
-        """Unmutes the Master Control"""
-        os.system("amixer set Master unmute")
-
-    def set_master(self, master_val ):
-        """Sets the Master gain slider settings 
-        master_val must be given as an integer between 0 and 100 indicating the
-        percentage of the slider to be set"""
-        log.debug('Setting master')
-        os.system("amixer set Master " + str(master_val) + "%")
-
-
-    def get_master(self):
-        """Gets the Master gain slider settings. The value returned is an
-        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        log.debug('Getting master')
-        p = str(subprocess.Popen(["amixer", "get", "Master"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Front Left:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"%]")]
-        return int(p)
-
-    def set_bias(self,bias_state=False):
-        log.debug('Setting bias')
-        """Sets the Bias control
-        pass False to disable and True to enable"""
-        if bias_state==False:
-	        bias_str="Off"
-        else:
-	        bias_str="80%"
-        os.system("amixer set 'DC Input Bias' " + bias_str)
-
-    def get_bias(self):
-        """Returns the setting of Bias control 
-        i.e. True: Enabled and False: Disabled"""
-        log.debug('Getting bias')
-        p = str(subprocess.Popen(["amixer", "get", "'DC Input Bias'"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Item0:"):]
-        if 'Off' in p:
-	        return False
-        else:
-	        return True
-
-    def set_dc_mode(self, dc_mode = False):
-        """Sets the DC Mode Enable control
-        pass False to mute and True to unmute"""
-        log.debug('Setting DC mode')
-        if dc_mode==False:
-	        dcm_str="mute"
-        else:
-	        dcm_str="unmute"
-        os.system("amixer set 'DC Mode Enable' " + dcm_str)
-
-    def get_dc_mode(self):
-        """Returns the setting of DC Mode Enable control 
-        i .e. True: Unmuted and False: Muted"""
-        log.debug('Getting DC mode')
-        p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Mono:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"]")]
-        if p=="on" :
-	        return True
-        else:
-	        return False
-
-    def set_mic_boost(self, mic_boost=False):
-        """Sets the Mic Boost +20dB control
-        pass False to mute and True to unmute"""
-        log.debug('Setting mic boost')
-        if mic_boost==False:
-	        mb_str="0dB"
-        else:
-	        mb_str="30dB"
-        os.system("amixer set 'Analog Mic Boost' " + mb_str)
-
-    def get_mic_boost(self):
-        """Returns the setting of Mic Boost +20dB control 
-        i.e. True: Unmuted and False: Muted"""
-        log.debug('Getting mic boost')
-        p = str(subprocess.Popen(["amixer", "get", "'Analog Mic Boost'"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Item0:"):]
-        if '0dB' in p:
-	        return False
-        else:
-	        return True		
-
-    def set_capture_gain(self, capture_val):
-        """Sets the Capture gain slider settings 
-        capture_val must be given as an integer between 0 and 100 indicating the
-        percentage of the slider to be set"""
-        log.debug('Setting capture gain')
-        os.system("amixer set Capture " + str(capture_val) + "%")
-
-
-    def get_capture_gain(self):
-        """Gets the Capture gain slider settings. The value returned is an
-        integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        log.debug('Getting capture gain')
-        p = str(subprocess.Popen(["amixer", "get", "Capture"], \
-                                 stdout=subprocess.PIPE).communicate()[0])
-        p = p[find(p,"Front Left:"):]
-        p = p[find(p,"[")+1:]
-        p = p[:find(p,"%]")]
-        return int(p)
-
+class AudioGrab_XO_1(AudioGrab):
     def set_sensor_type(self, sensor_type=1):
-        """Set the type of sensor you want to use. Set sensor_type according 
-        to the following
-        0 - AC coupling with Bias Off --> Very rarely used.
-            Use when connecting a dynamic microphone externally
-        1 - AC coupling with Bias On --> The default settings. 
-            The internal MIC uses these
-        2 - DC coupling with Bias Off --> Used when using a voltage
-            output sensor. For example LM35 which gives output proportional
-            to temperature
-        3 - DC coupling with Bias On --> Used with resistive sensors.
-            For example"""
+        if sensor_type==0:
+	        self.set_dc_mode(False)
+	        self.set_bias(False)
+	        self.set_capture_gain(50)
+	        self.set_mic_boost(True)
+        elif sensor_type==1:
+	        self.set_dc_mode(False)
+	        self.set_bias(True)
+	        self.set_capture_gain(40)
+	        self.set_mic_boost(True)
+        elif sensor_type==2:
+	        self.set_dc_mode(True)
+	        self.set_bias(False)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+        elif sensor_type==3:
+	        self.set_dc_mode(True)
+	        self.set_bias(True)
+	        self.set_capture_gain(0)
+	        self.set_mic_boost(False)
+
+class AudioGrab_XO_1_5(AudioGrab):
+    def set_sensor_type(self, sensor_type=1):
         if sensor_type==0:
 	        self.set_dc_mode(False)
 	        self.set_bias(False)
@@ -668,10 +542,14 @@ class AudioGrab_XO_1_5(AudioGrab):
 	        self.set_capture_gain(0)
 	        self.set_mic_boost(False)
 
-    def on_activity_quit(self):
-        """When Activity quits"""
-        self.set_dc_mode(config.QUIT_DC_MODE_ENABLE)
-        self.set_capture_gain(config.QUIT_CAPTURE_GAIN)
-        self.set_bias(config.QUIT_BIAS)
-        self.stop_sound_device()
+class AudioGrab_Unknown(AudioGrab):
+    def set_sensor_type(self, sensor_type=1):
+        if sensor_type==0:
+	        self.set_bias(False)
+	        self.set_capture_gain(50)
+	        self.set_mic_boost(True)
+        elif sensor_type==1:
+	        self.set_bias(True)
+	        self.set_capture_gain(40)
+	        self.set_mic_boost(True)
 

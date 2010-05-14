@@ -37,21 +37,22 @@ except:
 
 class SoundToolbar(gtk.Toolbar):
 
-    def __init__(self, wave, audiograb, textbox, journal):
+    def __init__(self, activity):
 
         gtk.Toolbar.__init__(self)
 
-        self.wave = wave
-        self.ag = audiograb
-        self.textbox_copy = textbox
-        self.ji = journal
+        self.wave = activity.wave
+        self.ag = activity.audiograb
+        self.textbox_copy = activity.text_box
+        self.ji = activity.ji
 
-        self._STR_BASIC = _("Sound ")
-        self._STR1 = _("Time Base      ")
-        self._STR2 = _("Frequency Base ")
-        self._STR3 = _(" Invert ")
+        self._STR_BASIC = _("Sound") + " "
+        self._STR1 = _("Time Base") + " "
+        self._STR2 = _("Frequency Base") + " "
+        self._STR3 = _(" Invert") + " "
         self._STR_SCALEX = ""
-        self._STR_XAXIS_TEXT = _("X Axis Scale: 1 division = %(division)s %(unit)s")
+        self._STR_XAXIS_TEXT = \
+            _("X Axis Scale: 1 division = %(division)s %(unit)s")
         # TRANSLATORS: This is milli seconds.
         self._ms = _('ms')
         # TRANSLATORS: This is Hertz, so 1/second.
@@ -138,18 +139,17 @@ class SoundToolbar(gtk.Toolbar):
         separator.show()
 
         self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(config.ICONS_DIR + \
-                                           '/sample_rate.svg')
+        self.loginterval_img.set_from_file(config.ICONS_DIR+'sample_rate.svg')
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
 
         ################# Logging Interval #################
         self._loginterval_combo = ComboBox()
-        self.interval = [_('Now'), _('30 seconds') , _('2 minutes'),  \
+        self.interval = [_('Now'), _('30 seconds') , _('2 minutes'),
                          _('10 minutes') , _('30 minutes') ]
 
-        self._interval_changed_id = self._loginterval_combo.connect("changed",\
+        self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
 
         for i, s in enumerate(self.interval):
@@ -176,10 +176,10 @@ class SoundToolbar(gtk.Toolbar):
         ################# Trigger Setup #################
         self._trigger_combo = ComboBox()
         self.trigger = [_('None'), _('Rising Edge') , _('Falling Edge') ]
-        self.trigger_conf = [wave.TRIGGER_NONE, wave.TRIGGER_POS, \
-            wave.TRIGGER_NEG]
+        self.trigger_conf = [self.wave.TRIGGER_NONE, self.wave.TRIGGER_POS,
+            self.wave.TRIGGER_NEG]
 
-        self._trigger_changed_id = self._trigger_combo.connect("changed",\
+        self._trigger_changed_id = self._trigger_combo.connect("changed",
                                        self.update_trigger_control)
 
         for i, s in enumerate(self.trigger):
@@ -204,7 +204,7 @@ class SoundToolbar(gtk.Toolbar):
                 username = client.get_string("/desktop/suagr/user/nick")
             except:
                 username = profile.get_nick_name()
-            self.ji.start_new_session(username, Xscale, Yscale,\
+            self.ji.start_new_session(username, Xscale, Yscale,
                                       self.logginginterval_status)
             self.ag.set_logging_params(True, interval, True)
             config.LOGGING_IN_SESSION = True
@@ -343,9 +343,11 @@ class SoundToolbar(gtk.Toolbar):
 
     def _update_string_for_textbox(self):
         if self.wave.get_fft_mode() == False:
-            self._STR_SCALEX = self._STR_XAXIS_TEXT % {'unit': self._ms, 'division': self.wave.time_div*1000} 
+            self._STR_SCALEX = self._STR_XAXIS_TEXT % \
+                {'unit': self._ms, 'division': self.wave.time_div*1000} 
         else:
-            self._STR_SCALEX = self._STR_XAXIS_TEXT % {'unit': self._Hz, 'division': self.wave.freq_div} 
+            self._STR_SCALEX = self._STR_XAXIS_TEXT % \
+                {'unit': self._Hz, 'division': self.wave.freq_div} 
 
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\t")
