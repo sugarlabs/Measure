@@ -63,6 +63,8 @@ def _get_hardware():
                 return 'xo1.5'
             else:
                 return 'xo1'
+        else:
+            return 'unknown'
     elif os.path.exists('/etc/olpc-release') or \
          os.path.exists('/sys/power/olpc-pm'):
         return 'xo1'
