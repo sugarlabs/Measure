@@ -28,7 +28,7 @@ import gobject
 import time
 import dbus
 import config 		#This has all the globals
-import os, sys
+import os
 import tempfile
 from os import environ
 from os.path import join
@@ -61,10 +61,13 @@ def _get_hardware():
         if dev.GetProperty ('system.hardware.vendor') == 'OLPC':
             if dev.GetProperty('system.hardware.version') == '1.5':
                 return 'xo1.5'
-            elif dev.GetProperty('system.hardware.version') == '1.0':
+            else:
                 return 'xo1'
-    elif 'olpc' in dev.GetProperty('system.kernel.version'): # this is not good
+    elif os.path.exists('/etc/olpc-release') or \
+         os.path.exists('/sys/power/olpc-pm'):
         return 'xo1'
+    # elif 'olpc' in dev.GetProperty('system.kernel.version'):
+    #     return 'xo1'
     else:
         return 'unknown'
 
@@ -100,6 +103,7 @@ class MeasureActivity(activity.Activity):
         self.wave = DrawWaveform()
         
         self.hw = _get_hardware()
+        print "running on %s hardware" % (self.hw)
         if self.hw == 'xo1.5':
             self.audiograb = \
                 audiograb.AudioGrab_XO_1_5(self.wave.new_buffer, self.ji)
