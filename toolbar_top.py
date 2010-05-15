@@ -32,7 +32,7 @@ from sensor_toolbar import SensorToolbar
 # from logging_ui import LogToolbar
 from gettext import gettext as _
 
-def is_xo(hw):
+def _is_xo(hw):
     """ Return True if this is xo hardware """
     if hw == 'xo1' or hw == 'xo1.5':
         return True
@@ -44,14 +44,14 @@ class Toolbar(ActivityToolbox):
 
         ActivityToolbox.__init__(self, activity)
 
-        self._SOUND_TOOLBAR = 1
-        self._SENSOR_TOOLBAR = 2
+        self._SOUND_TOOLBAR = config.SOUND
+        self._SENSOR_TOOLBAR = config.SENSOR
 
         self._sound_toolbar = SoundToolbar(activity)
         self.add_toolbar(_('Sound'), self._sound_toolbar)
         self._sound_toolbar.show()
 
-        if is_xo(activity.hw):
+        if _is_xo(activity.hw):
             self._sensors_toolbar = SensorToolbar(activity)
             self.add_toolbar(_('Sensors'), self._sensors_toolbar)
             self._sensors_toolbar.show()
@@ -84,7 +84,7 @@ class Toolbar(ActivityToolbox):
 
         elif num==self._SOUND_TOOLBAR:          #Sound
             self.activity.set_show_hide_windows(self._SOUND_TOOLBAR)
-            if is_xo(self.activity.hw):
+            if _is_xo(self.activity.hw):
                 self._sensors_toolbar.context_off()
             time.sleep(0.5)
             self._sound_toolbar.context_on()

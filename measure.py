@@ -151,7 +151,8 @@ class MeasureActivity(activity.Activity):
             #self.box3.pack_start(self.side_toolbar.box1,False,True,0)	
             #self.box3.show_all()
             self.wave.set_context_on()
-            self.side_toolbar.box1.show_all()
+            # self.side_toolbar.box1.show_all()
+            self.side_toolbar.set_show_hide(True, config.SOUND)
             self.active_context_status = 1
             return
 	
@@ -159,7 +160,8 @@ class MeasureActivity(activity.Activity):
             #self.box3.pack_start(self.wave,True,True,0)
             #self.box3.show_all()
             self.wave.set_context_on()
-            self.side_toolbar.box1.hide_all()
+            # self.side_toolbar.box1.hide_all()
+            self.side_toolbar.set_show_hide(True, config.SENSOR)
             self.active_context_status = 2
             return
 

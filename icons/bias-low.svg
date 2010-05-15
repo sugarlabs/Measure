@@ -15,14 +15,14 @@
      id="bias-on"
      style="display:block">
 	<g
-   id="Bias_Off"
+   id="Bias_Low"
    style="display:inline">
 		<g
    id="g6">
 			<path
    d="m 55,45 c 0,5.5 -4.5,10 -10,10 H 10 C 4.5,55 0,50.5 0,45 V 10 C 0,4.5 4.5,0 10,0 h 35 c 5.5,0 10,4.5 10,10 v 35 z"
    id="path8"
-   style="fill:#808284" />
+   style="fill:#none" />
 		</g>
 		<g
    id="g10">

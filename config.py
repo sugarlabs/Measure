@@ -50,9 +50,9 @@ QUIT_BIAS = True
 QUIT_PCM = 70
 
 #Which context is active on start
-# 1 - sound
-# 2 - sensors
-CONTEXT = 1
+SOUND = 1
+SENSOR = 2
+CONTEXT = SOUND
 
 #How many maximum screenshots Measure will save while recording in Sound context
 SOUND_MAX_WAVE_LOGS = 10

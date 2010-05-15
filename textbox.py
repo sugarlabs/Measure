@@ -7,7 +7,6 @@ import config  	#This has all the globals
 
 from sugar.graphics.toolbutton import ToolButton
 
-
 # Textbox class
 class TextBox:
 
@@ -37,8 +36,8 @@ class TextBox:
 	def write_text(self, text_to_show=''):
 		self.text_buffer.set_text(text_to_show)
 
+
 	def refresh_text_box(self):
-		print "within textbox.py refresh_textbox called"
 		self._set_final_string()		
 		self.write_text(self._final_string)
 		return True
@@ -46,7 +45,6 @@ class TextBox:
 
 	def _set_final_string(self):
 		self._final_string = self._data_params[0]		 
-
 
 
 	def set_data_params(self, param_id = 0 , value = None):
@@ -65,7 +63,6 @@ class TextBox:
 		self.refresh_text_box()
 		
 	
-
 	def set_data_show_state(self, param_id = 0 , state = True):
 		self._data_show_state[param_id] = state
 					

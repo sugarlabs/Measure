@@ -1,7 +1,9 @@
 30
+* eliminate dependency on amixer (thanks to Sascha Silbe)
 * tweaked parameters for XO 1.5 (mic boost=False)
 * cleaned up code for non-OLPC hardware
 * eliminate sensor toolbar for non-XO hardware
+* improved hardware detection logic
 
 29
 * support for XO 1.5 (thanks to Sayamindu Dasgupta)
