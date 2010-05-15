@@ -10,22 +10,24 @@
    viewBox="0 0 55.125 55"
    id="svg2"
    xml:space="preserve"><defs
-     id="defs20" /><g
+     id="defs20">
+	
+
+		
+		
+		
+			
+	</defs><g
      transform="matrix(1,0,0,-1,0,55)"
-     id="bias-on"
-     style="display:block">
-	<g
-   id="Bias_Low"
-   style="display:inline">
-		<g
-   id="g6">
+     id="g6"
+     style="fill:none">
 			<path
    d="m 55,45 c 0,5.5 -4.5,10 -10,10 H 10 C 4.5,55 0,50.5 0,45 V 10 C 0,4.5 4.5,0 10,0 h 35 c 5.5,0 10,4.5 10,10 v 35 z"
    id="path8"
-   style="fill:#none" />
-		</g>
-		<g
-   id="g10">
+   style="fill:none" />
+		</g><g
+     transform="matrix(1,0,0,-1,0,55)"
+     id="g10">
 			
 				<line
    x1="21.789"
@@ -38,14 +40,10 @@
    points="17,23.46      21.789,27.5 17,31.54    "
    id="polyline14"
    style="fill:none;stroke:#ffffff;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round" />
-		</g>
-		
-			<line
-   x1="49.5"
-   x2="28.5"
-   y1="13"
-   y2="13"
-   id="line16"
-   style="fill:none;stroke:#ffffff;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round" />
-	</g>
-</g></svg>
+		</g><line
+     x1="49.5"
+     x2="28.5"
+     y1="42"
+     y2="42"
+     id="line16"
+     style="fill:none;stroke:#ffffff;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round" /></svg>
