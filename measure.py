@@ -111,7 +111,7 @@ class MeasureActivity(activity.Activity):
                 audiograb.AudioGrab_Unknown(self.wave.new_buffer, self.ji)
             # log.error('Sorry, we do not support your hardware yet.')
 
-        self.side_toolbar = SideToolbar(self.wave)
+        self.side_toolbar = SideToolbar(self)
         self.text_box = TextBox()
 
         self.box3 = gtk.HBox(False, 0)
@@ -133,6 +133,7 @@ class MeasureActivity(activity.Activity):
         self.first = True
 
         self.wave.set_active(True)
+        self.wave.set_context_on()
 
     def set_show_hide_windows(self, window_id=1):
         """Shows the appropriate window identified by the window_id

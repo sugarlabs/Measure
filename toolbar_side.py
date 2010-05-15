@@ -1,17 +1,17 @@
 #! /usr/bin/python
 import pygtk
 import gtk
-import os
 
 import config  	#This has all the globals
 
 
 class SideToolbar(gtk.DrawingArea):
 
-    def __init__(self, wave):
+    def __init__(self, activity):
         gtk.DrawingArea.__init__(self)
 
-        self.wave_copy = wave
+        self.wave_copy = activity.wave
+        self.ag = activity.audiograb
         self.show_toolbar = True
 
         self.adjustmenty = gtk.Adjustment(3.0, 0.0, 4.0 ,0.1, 0.1, 0.0)
@@ -40,19 +40,19 @@ class SideToolbar(gtk.DrawingArea):
     def cb_page_sizey(self, get, data=None):
         if(get.value<=1.5):		
             self.wave_copy.y_mag= get.value
-            os.system("amixer set 'Capture' 50%, 0% unmute captur")
+            self.ag.set_capture_gain(0)
             self.wave_copy.g = 1            #0dB
         if(get.value>1.5 and get.value<=2.5 ):
             self.wave_copy.y_mag= (get.value*1.5)		
-            os.system("amixer set 'Capture' 50%, 25% unmute captur")
+            self.ag.set_capture_gain(25)
             self.wave_copy.g = 1.9952       #6dB
         if(get.value>2.5 and get.value<=3.5 ):
             self.wave_copy.y_mag= (get.value*3)
-            os.system("amixer set 'Capture' 50%, 50% unmute captur")
+            self.ag.set_capture_gain(50)
             self.wave_copy.g = 3.981        #12dB
         if(get.value>3.5 and get.value<=4.0 ):
-            self.wave_copy.y_mag= (get.value*4)						
-            os.system("amixer set 'Capture' 50%, 100% unmute captur")
+            self.wave_copy.y_mag= (get.value*4)
+            self.ag.set_capture_gain(100)
             self.wave_copy.g = 13.335       #22.5dB
         return True	
 
