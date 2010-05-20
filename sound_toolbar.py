@@ -34,7 +34,6 @@ try:
     import gconf
 except:
     from sugar import profile
-
 class SoundToolbar(gtk.Toolbar):
 
     def __init__(self, activity):
@@ -62,7 +61,7 @@ class SoundToolbar(gtk.Toolbar):
 
         self.string_for_textbox = ""
 
-        self.g = 1.0
+        self.gain = 1.0
         self.y_mag = 3.0
         self.capture_gain = config.CAPTURE_GAIN
         self.mic_boost = config.MIC_BOOST
@@ -322,7 +321,7 @@ class SoundToolbar(gtk.Toolbar):
     def context_off(self):
         """When some other context is switched to and the sound context 
         is switched off"""
-        self.g, self.y_mag = self.wave.get_mag_params()
+        self.gain, self.y_mag = self.wave.get_mag_params()
         self.capture_gain = self.ag.get_capture_gain()
         self.mic_boost = self.ag.get_mic_boost()
         self.ag.stop_sound_device()
@@ -337,7 +336,7 @@ class SoundToolbar(gtk.Toolbar):
         #self.ag.set_mic_boost(self.mic_boost)
         self.ag.set_sensor_type(1)
         self.wave.set_fft_mode(False)
-        self.wave.set_mag_params(self.g, self.y_mag)
+        self.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
         self.update_trigger_control()
 

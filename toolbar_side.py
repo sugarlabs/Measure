@@ -10,13 +10,13 @@ class SideToolbar(gtk.DrawingArea):
     def __init__(self, activity):
         gtk.DrawingArea.__init__(self)
 
-        self.wave_copy = activity.wave
+        self.wave = activity.wave
         self.ag = activity.audiograb
         self.show_toolbar = True
 
         self.mode = config.SOUND
 
-        self.adjustmenty = gtk.Adjustment(3.0, 0.0, 4.0 ,0.1, 0.1, 0.0)
+        self.adjustmenty = gtk.Adjustment(3.0, 0.0, 4.0, 0.1, 0.1, 0.0)
         self.adjustmenty.connect("value_changed", self.cb_page_sizey,
 	        self.adjustmenty)
         self.yscrollbar = gtk.VScale(self.adjustmenty)
@@ -38,36 +38,24 @@ class SideToolbar(gtk.DrawingArea):
         ##test  
         self.set_show_hide(False)
 
-
-    def cb_page_sizey(self, get, data=None):
+    def cb_page_sizey(self, adjy, data=None):
         if self.mode == config.SOUND:
-            if(get.value<=1.5):	
-                self.wave_copy.y_mag= get.value
+            if(adjy.value<=1.5):	
+                self.wave.set_mag_params(1.0, adjy.value)        #0dB
                 self.ag.set_capture_gain(0)
-                self.wave_copy.g = 1            #0dB
-            elif(get.value>1.5 and get.value<=2.5 ):
-                self.wave_copy.y_mag= (get.value*1.5)		
+            elif(adjy.value>1.5 and adjy.value<=2.5 ):
+                self.wave.set_mag_params(1.9952, adjy.value*1.5) #6dB
                 self.ag.set_capture_gain(25)
-                self.wave_copy.g = 1.9952       #6dB
-            elif(get.value>2.5 and get.value<=3.5 ):
-                self.wave_copy.y_mag= (get.value*3)
+            elif(adjy.value>2.5 and adjy.value<=3.5 ):
+                self.wave.set_mag_params(3.981, adjy.value*3.0) #12dB
                 self.ag.set_capture_gain(50)
-                self.wave_copy.g = 3.981        #12dB
-            else: #(get.value>3.5 and get.value<=4.0 ):
-                self.wave_copy.y_mag= (get.value*4)
-                self.ag.set_capture_gain(100)
-                self.wave_copy.g = 13.335       #22.5dB
-        else:
-            if(get.value<=1.5):		
-                self.wave_copy.b = -10000
-            elif(get.value>1.5 and get.value<=2.5 ):
-                self.wave_copy.b = -5000
-            elif(get.value>2.5 and get.value<=3.5 ):
-                self.wave_copy.b = 0
             else:
-                self.wave_copy.b = 10000
+                self.wave.set_mag_params(13.335, adjy.value*4.0) #22.5dB
+                self.ag.set_capture_gain(100)
+            self.wave.set_bias_param(0)
+        else:
+            self.wave.set_bias_param(int((adjy.value-2)*100))
         return True	
-
 
     def set_show_hide(self, show=True, mode=config.SOUND):
         self.show_toolbar = show

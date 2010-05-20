@@ -44,8 +44,8 @@ class SensorToolbar(gtk.Toolbar):
         self._STR_BASIC = \
         _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
         + " "
-        self._STR1 = _("Bias/Offset Enabled") + " "
-        self._STR2 = _("Bias/Offset Disabled") + " "
+        self._STR1 = _("Bias/Offset Enabled") + " (Ω) "
+        self._STR2 = _("Bias/Offset Disabled") + " (V) "
         self._STR3 = _(" Invert") + " "
 
         self.gain_state = None
@@ -100,8 +100,8 @@ class SensorToolbar(gtk.Toolbar):
 
         ################### Logging Interval ##################
         self._loginterval_combo = ComboBox()
-        self.interval = [_('1 second') , _('30 seconds'),  _('5 minutes'),
-                         _('30 minutes')]
+        self.interval = [_('1/10 second'), _('1 second') , _('30 seconds'),
+                         _('5 minutes'), _('30 minutes')]
 
         self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
@@ -113,7 +113,7 @@ class SensorToolbar(gtk.Toolbar):
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
         self.insert(self._loginterval_tool,-1)
-        self.logginginterval_status = '1second'		
+        self.logginginterval_status = '1 second'		
         ########################################################
 
         ########### Start Logging/Stop Logging #################
@@ -177,29 +177,25 @@ class SensorToolbar(gtk.Toolbar):
                 self._record.set_tooltip(_('Start Recording'))
 
     def interval_convert(self):
-        """Converts picture/1second/5seconds/1minute/5minutes to an integer
-        which denotes the number of times the audiograb buffer must be called
-        before a value is written.
+        """Converts interval string to an integer that denotes the number
+        of times the audiograb buffer must be called before a value is written.
         When set to 0, the whole of current buffer will be written"""
-        if self.logginginterval_status == '1second':
-            return 89
-        elif self.logginginterval_status == '30second':
-            return 2667
-        elif self.logginginterval_status == '5minute':
-            return 26667
-        elif self.logginginterval_status == '30minute':
-            return 160000
+        interval_dictionary = {'1/10 second':9, '1 second':89,
+                               '30 seconds':2667,
+                               '5 minutes':26667, '30 minutes':160000}
+        try:
+            return interval_dictionary[self.logginginterval_status]
+        except:
+            print "logging interval status = %s" %\
+                  (str(self.logginginterval_status))
+            return 0
             
     def loginterval_control(self, combobox):
-        if (self._loginterval_combo.get_active() != -1):
-            if (self._loginterval_combo.get_active() == 0):
-                self.logginginterval_status = '1second'		
-            if (self._loginterval_combo.get_active() == 1):
-                self.logginginterval_status = '30second'		
-            if (self._loginterval_combo.get_active() == 2):
-                self.logginginterval_status = '5minute'		
-            if (self._loginterval_combo.get_active() == 3):
-                self.logginginterval_status = '30minute'		
+        if self._loginterval_combo.get_active() != -1:
+            intervals = ['1/10 second', '1 second', '30 seconds',
+                         '5 minutes', '30 minutes']
+            self.logginginterval_status = \
+                              intervals[self._loginterval_combo.get_active()]
 
     def set_resistance_voltage_mode(self, data=None, mode_to_set='resistance'):
         if mode_to_set == 'resistance' and self.get_mode()=='voltage' :
@@ -242,9 +238,9 @@ class SensorToolbar(gtk.Toolbar):
 
     def set_mode(self, mode='resistance'):
         if mode=='resistance':
-            self.ag.set_bias(True)
+            self.ag.set_sensor_type(3) # bias on
         else:
-            self.ag.set_bias(False)
+            self.ag.set_sensor_type(2) # bias off
         return 
 
     def context_off(self):
@@ -252,13 +248,11 @@ class SensorToolbar(gtk.Toolbar):
         
     def context_on(self):
         self.ag.resume_grabbing()
-        self.ag.set_dc_mode(True)
-        self.ag.set_bias(True)
+        if self.get_mode() == 'voltage':
+            self.ag.set_sensor_type(2)
+        else:
+            self.ag.set_sensor_type(3)
         self._update_string_for_textbox()
-        #self.gain_state = self.ag.get_capture_gain()
-        #self.boost_state = self.ag.get_mic_boost()
-        self.ag.set_capture_gain(0)
-        self.ag.set_mic_boost(False)
         self.wave.set_trigger(self.wave.TRIGGER_NONE)
 
     def _update_string_for_textbox(self):
