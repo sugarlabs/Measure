@@ -27,6 +27,12 @@ from gettext import gettext as _
 
 import config  	#This has all the globals
 
+# Initialize logging.
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
+
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
@@ -83,23 +89,15 @@ class SoundToolbar(gtk.Toolbar):
         self._freq.connect('clicked', self._timefreq_control_cb, False)
         ####################################################
 
-        #self.time_freq_state = self.wave.get_fft_mode()
-        #self._time.set_active(not(self.time_freq_state))
-        #self._freq.set_active(self.time_freq_state)
-
-        self.freq_low_img = gtk.Image()
-        self.freq_high_img = gtk.Image()
-
-        self.freq_low_img.set_from_file(config.ICONS_DIR + '/freq-high.svg')
-        self.freq_high_img.set_from_file(config.ICONS_DIR + '/freq-low.svg')
-
-        self.freq_low_img_tool = gtk.ToolItem()
-        self.freq_high_img_tool = gtk.ToolItem()
-
-        self.freq_low_img_tool.add(self.freq_low_img)
-        self.freq_high_img_tool.add(self.freq_high_img)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
 
         ################ frequency control #################
+	self._freq_stepper_up = ToolButton('freq-high')
+	self._freq_stepper_up.set_tooltip(_('Zoom out'))
+	self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
+
         self.adjustmentf = gtk.Adjustment(.5, 0, 1.0, 0.01, 0.1, 0)
         self.adjustmentf.connect("value_changed", self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.adjustmentf)
@@ -107,19 +105,19 @@ class SoundToolbar(gtk.Toolbar):
         self._freq_range.set_draw_value(False)
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self._freq_range.set_size_request(120,15)
+
+	self._freq_stepper_down = ToolButton('freq-low')
+	self._freq_stepper_down.set_tooltip(_('Zoom in'))
+	self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
+
         self._freq_range_tool = gtk.ToolItem()
         self._freq_range_tool.add(self._freq_range)
+
+	self.insert(self._freq_stepper_up, -1)
+	self.insert(self._freq_range_tool, -1)
+	self.insert(self._freq_stepper_down, -1)
+
         ####################################################
-
-        self.insert(self.freq_low_img_tool,-1)
-        self.insert(self._freq_range_tool, -1)
-        self.insert(self.freq_high_img_tool,-1)		
-
-        self.freq_low_img.show()
-        self.freq_high_img.show()
-
-        self.freq_low_img_tool.show()
-        self.freq_high_img_tool.show()
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
@@ -293,6 +291,20 @@ class SoundToolbar(gtk.Toolbar):
             self._freq.show()
             self._update_string_for_textbox()
         return False
+
+    def _freq_stepper_up_cb(self, data=None):
+	new_value = self._freq_range.get_value() + (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
+	if new_value <= self.adjustmentf.get_upper():
+	    self._freq_range.set_value(new_value)
+	else:
+	    self._freq_range.set_value(self.adjustmentf.get_upper())
+
+    def _freq_stepper_down_cb(self, data=None):
+	new_value = self._freq_range.get_value() - (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
+	if new_value >= self.adjustmentf.get_lower():
+	    self._freq_range.set_value(new_value)
+	else:
+	    self._freq_range.set_value(self.adjustmentf.get_lower())
 
     def cb_page_sizef(self, data=None):
         if self._update_page_size_id:
