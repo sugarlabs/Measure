@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-30 15:11+0000\n"
+"POT-Creation-Date: 2010-06-09 10:11-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,11 +20,12 @@ msgstr ""
 msgid "Measure"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/toolbar_top.py:45
+#: /home/walter/Desktop/measure.activity/toolbar_top.py:51
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:48
 msgid "Sound"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/toolbar_top.py:49
+#: /home/walter/Desktop/measure.activity/toolbar_top.py:56
 msgid "Sensors"
 msgstr ""
 
@@ -44,77 +45,79 @@ msgstr ""
 msgid "Waveform "
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:45
-msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO) "
-msgstr ""
-
 #: /home/walter/Desktop/measure.activity/sensor_toolbar.py:46
-msgid "Bias/Offset Enabled  "
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:47
-msgid "Bias/Offset Disabled "
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 
 #: /home/walter/Desktop/measure.activity/sensor_toolbar.py:48
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
-msgid " Invert "
+msgid "Bias/Offset Enabled"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:67
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:49
+msgid "Bias/Offset Disabled"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
+msgid " Invert"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:71
 msgid "Resistance Sensor"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:76
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:79
 msgid "Voltage Sensor"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:85
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:87
 msgid "Invert"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:106
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:114
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
+msgid "1/10 second"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:112
 msgid "1 second"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:106
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:153
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:148
 msgid "30 seconds"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:106
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:105
 msgid "5 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:107
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:154
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:105
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:149
 msgid "30 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:127
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:183
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:174
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:203
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:214
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:123
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:178
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:167
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:217
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:228
 msgid "Start Recording"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:173
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:199
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:168
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:213
 msgid "Stop Recording"
 msgstr ""
 
 #: /home/walter/Desktop/measure.activity/sound_toolbar.py:49
-msgid "Sound "
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:74
+msgid "Time Base"
 msgstr ""
 
 #: /home/walter/Desktop/measure.activity/sound_toolbar.py:50
-msgid "Time Base      "
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
-msgid "Frequency Base "
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:82
+msgid "Frequency Base"
 msgstr ""
 
 #: /home/walter/Desktop/measure.activity/sound_toolbar.py:54
@@ -130,31 +133,35 @@ msgstr ""
 msgid "Hz"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:75
-msgid "Time base"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:83
-msgid "Frequency base"
-msgstr ""
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:133
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:254
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:131
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:275
 msgid "Freeze the display"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:153
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:148
 msgid "Now"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:153
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:148
 msgid "2 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:154
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:149
 msgid "10 minutes"
 msgstr ""
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:249
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:177
+msgid "None"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:177
+msgid "Rising Edge"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:177
+msgid "Falling Edge"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:270
 msgid "Unfreeze the display"
 msgstr ""
