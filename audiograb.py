@@ -310,7 +310,11 @@ class AudioGrab:
             log.warning('No %s control, returning constant volume', name)
             return 100
 
-        hw_volume = self._mixer.get_volume(control)[0]
+        try:
+            hw_volume = self._mixer.get_volume(control)[0]
+        except IndexError:
+            log.debug('ERROR getting control %s', control)
+            return 100
         min_vol = control.min_volume
         max_vol = control.max_volume
         percent = (hw_volume - min_vol)*100//(max_vol - min_vol)
