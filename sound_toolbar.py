@@ -36,6 +36,11 @@ except:
     from sugar import profile
 class SoundToolbar(gtk.Toolbar):
 
+    SAMPLE_30_SEC = "Every 30 sec."
+    SAMPLE_2_MIN = "Every 2 min."
+    SAMPLE_10_MIN = "Every 10 min."
+    SAMPLE_30_MIN = "Every 30 min."
+
     def __init__(self, activity):
 
         gtk.Toolbar.__init__(self)
@@ -142,29 +147,33 @@ class SoundToolbar(gtk.Toolbar):
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
+        
 
         ################# Logging Interval #################
         self._loginterval_combo = ComboBox()
-        self.interval = [_('Now'), _('30 seconds') , _('2 minutes'),
-                         _('10 minutes') , _('30 minutes') ]
-
+        self.interval = [_(self.SAMPLE_30_SEC), 
+                         _(self.SAMPLE_2_MIN), 
+                         _(self.SAMPLE_10_MIN) , 
+                         _(self.SAMPLE_30_MIN) ]
+        self._loginterval_combo.set_tooltip_text("Sampling interval")
+        
         self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
 
         for i, s in enumerate(self.interval):
             self._loginterval_combo.append_item(i, s, None)
-            if s == 'Now':
+            if s == self.SAMPLE_30_SEC:
                 self._loginterval_combo.set_active(i)
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
         self.insert(self._loginterval_tool,-1)
-        self.logginginterval_status = 'picture'		
+        self.logginginterval_status = '30second'		
         ####################################################
 
         ############## Start Logging/Stop Logging ##########
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
-        self._record.set_tooltip(_('Start Recording'))
+        self._record.set_tooltip(_('Start Sampling'))
         self._record.connect('clicked', self.record_control)
         ####################################################
 
@@ -210,11 +219,11 @@ class SoundToolbar(gtk.Toolbar):
             self.logging_status = True
             self._record.set_icon('record-stop')
             self._record.show()
-            self._record.set_tooltip(_('Stop Recording'))
+            self._record.set_tooltip(_('Stop sampling'))
             if interval==0:
                 self._record.set_icon('media-record')
                 self._record.show()
-                self._record.set_tooltip(_('Start Recording'))
+                self._record.set_tooltip(_('Start sampling'))
                 self.record_state = False
 		config.LOGGING_IN_SESSION = False
 		self.logging_status = False
@@ -245,15 +254,15 @@ class SoundToolbar(gtk.Toolbar):
 
     def loginterval_control(self, combobox):
         if (self._loginterval_combo.get_active() != -1):
+#            if (self._loginterval_combo.get_active() == 0):
+#                self.logginginterval_status = 'picture'		
             if (self._loginterval_combo.get_active() == 0):
-                self.logginginterval_status = 'picture'		
-            if (self._loginterval_combo.get_active() == 1):
                 self.logginginterval_status = '30second'		
-            if (self._loginterval_combo.get_active() == 2):
+            if (self._loginterval_combo.get_active() == 1):
                 self.logginginterval_status = '2minute'		
-            if (self._loginterval_combo.get_active() == 3):
+            if (self._loginterval_combo.get_active() == 2):
                 self.logginginterval_status = '10minute'		
-            if (self._loginterval_combo.get_active() == 4):
+            if (self._loginterval_combo.get_active() == 3):
                 self.logginginterval_status = '30minute'		
 
     def update_trigger_control(self, *args):

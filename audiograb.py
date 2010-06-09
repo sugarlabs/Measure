@@ -27,6 +27,7 @@ import gst.interfaces
 import gobject
 import numpy as np
 from string import find
+import time
 import config
 
 # Initialize logging.
@@ -129,15 +130,18 @@ class AudioGrab:
                 self.waveform_id = 1
                 self.logging_state = False
                 self.ji.stop_session()
+                log.debug(">>> Stop session 1")
             else:
                 if self.counter_buffer == self.buffer_interval_logging:
                     self._emit_for_logging(temp_buffer)
+                    log.debug('Log entry written: %s', time.ctime())
                     self.counter_buffer=0
                 self.counter_buffer+=1
             # If a record is to be written, thats all for the logging session
             if self.buffer_interval_logging == 0:
                 self.logging_state = False
                 self.ji.stop_session()
+                log.debug(">>> Stop session 2")
                 self.waveform_id = 1
         return False
 
