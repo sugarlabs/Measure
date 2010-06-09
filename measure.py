@@ -189,12 +189,11 @@ class MeasureActivity(activity.Activity):
         self.ACTIVE = self.props.active
         self.wave.set_active(self.ACTIVE)
 
-    """
+
     def write_file(self, file_path):
-        print "write file"
+        return
 
     def read_file(self, file_path):
-        print "read file"
-    """
+        return
 
 gtk.gdk.threads_init()
