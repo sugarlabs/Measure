@@ -71,7 +71,7 @@ class SoundToolbar(gtk.Toolbar):
         ###################### time ########################
         self._time = ToolButton('domain-time2')
         self.insert(self._time, -1)
-        self._time.set_tooltip(_('Time base'))
+        self._time.set_tooltip(_('Time Base'))
         self._time.connect('clicked', self._timefreq_control_cb, True)
         ####################################################
 
@@ -79,7 +79,7 @@ class SoundToolbar(gtk.Toolbar):
         self._freq = ToolButton('domain-freq')
         self.insert(self._freq, -1)
         self._freq.show()
-        self._freq.set_tooltip(_('Frequency base'))
+        self._freq.set_tooltip(_('Frequency Base'))
         self._freq.connect('clicked', self._timefreq_control_cb, False)
         ####################################################
 
