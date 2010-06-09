@@ -27,7 +27,7 @@ import gst.interfaces
 import gobject
 import numpy as np
 from string import find
-import config 		#This has all the globals
+import config
 
 # Initialize logging.
 import logging
@@ -37,13 +37,17 @@ logging.basicConfig()
 
 
 class AudioGrab:
+    """ The interface between measure and the audio device """
+
     def __init__(self, callable1, journal):
+        """ Initialize the class: callable1 is a data buffer; 
+            journal is used for logging """
         self.callable1 = callable1
         self.ji = journal
         self.sensor = None
 
         self.temp_buffer = [0]
-        self.picture_buffer = []
+        self.picture_buffer = [] # place to hold screen grabs
 
         self.draw_graph_status = False
         self.f = None
@@ -60,6 +64,7 @@ class AudioGrab:
         self.buffer_interval_logging = 0
         self.counter_buffer = 0
 
+        # Set up gst pipeline
         self.pipeline = gst.Pipeline("pipeline")
         self.alsasrc = gst.element_factory_make("alsasrc", "alsa-source")
         self.pipeline.add(self.alsasrc)
@@ -79,6 +84,7 @@ class AudioGrab:
         rc = self._mixer.set_state(gst.STATE_PAUSED)
         assert rc == gst.STATE_CHANGE_SUCCESS
 
+        # Query the available controls
         log.debug('controls: %r', [t.props.untranslated_label \
                                    for t in self._mixer.list_tracks()])
         self._dc_control = self._find_control(['dc mode'])
@@ -90,21 +96,21 @@ class AudioGrab:
         self._capture_control = self._find_control(['capture'])
         self._master_control = self._find_control(['master'])
 
-        ####Variables for saving and resuming state of sound device######
+        # Variables for saving and resuming state of sound device
         self.master  = self.get_master()
         self.bias = config.BIAS
         self.dcmode =  config.DC_MODE_ENABLE
         self.capture_gain  = config.CAPTURE_GAIN
         self.mic_boost = config.MIC_BOOST
         self.mic = self.get_mic_gain()
-        #################################################################
 
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
-        self.fakesink.set_property("signal-handoffs",handoff_state)
+        self.fakesink.set_property("signal-handoffs", handoff_state)
 
     def _new_buffer(self, buf):
-        if self.dont_queue_the_buffer == False:
+        """ Use a new buffer """
+        if not self.dont_queue_the_buffer:
             self.temp_buffer = buf
             self.callable1(buf)
         else:
@@ -114,11 +120,11 @@ class AudioGrab:
         """The function that is called whenever new data is available
         This is the signal handler for the handoff signal"""
         temp_buffer = np.fromstring(buffer, 'int16')
-        if self.dont_queue_the_buffer == False:
+        if not self.dont_queue_the_buffer:
             self._new_buffer(temp_buffer)
         else:
             pass
-        if self.logging_state==True:
+        if self.logging_state:
             if self.waveform_id == config.SOUND_MAX_WAVE_LOGS:
                 self.waveform_id = 1
                 self.logging_state = False
@@ -129,13 +135,13 @@ class AudioGrab:
                     self.counter_buffer=0
                 self.counter_buffer+=1
             # If a record is to be written, thats all for the logging session
-            if self.buffer_interval_logging ==0:
+            if self.buffer_interval_logging == 0:
                 self.logging_state = False
                 self.ji.stop_session()
                 self.waveform_id = 1
         return False
 
-    def set_freeze_the_display(self, freeze = False):
+    def set_freeze_the_display(self, freeze=False):
         """Useful when just the display is needed to be frozen, but logging 
         should continue"""
         self.dont_queue_the_buffer = not freeze
@@ -149,7 +155,7 @@ class AudioGrab:
 
     def _emit_for_logging(self, buf):
         """Sends the data for logging"""
-        if self.buffer_interval_logging==0:
+        if self.buffer_interval_logging == 0:
             self.ji.take_screenshot()
         else:
             if self.screenshot == True:
@@ -250,7 +256,8 @@ class AudioGrab:
         None is returned.
         """
         def best_prefix(label, prefixes):
-            matches = [len(label)-len(p) for p in prefixes if label.startswith(p)]
+            matches =\
+                [len(label)-len(p) for p in prefixes if label.startswith(p)]
             if not matches:
                 return None
 
@@ -310,11 +317,12 @@ class AudioGrab:
             log.warning('No %s control, returning constant volume', name)
             return 100
 
-        try:
+        try: # sometimes control is not None and yet it is not a tuple?
             hw_volume = self._mixer.get_volume(control)[0]
         except IndexError:
             log.debug('ERROR getting control %s', control)
             return 100
+
         min_vol = control.min_volume
         max_vol = control.max_volume
         percent = (hw_volume - min_vol)*100//(max_vol - min_vol)
@@ -357,7 +365,8 @@ class AudioGrab:
         """Enables / disables bias voltage. On XO-1.5 it uses the 80% setting.
         """
         if not isinstance(self._mic_bias_control, gst.interfaces.MixerOptions):
-            return self._set_mute(self._mic_bias_control, 'Mic Bias', not bias_state)
+            return self._set_mute(self._mic_bias_control, 'Mic Bias', 
+                                  not bias_state)
 
         values = self._mic_bias_control.get_values()
         # We assume that the values are sorted from lowest (=off) to highest.
@@ -395,7 +404,8 @@ class AudioGrab:
         """Set Mic Boost.
         True = +20dB, False = 0dB"""
         if not isinstance(self._mic_boost_control, gst.interfaces.MixerOptions):
-            return self._set_mute(self._mic_boost_control, 'Mic Boost', mic_boost)
+            return self._set_mute(self._mic_boost_control, 'Mic Boost',
+                                  mic_boost)
 
         values = self._mic_boost_control.get_values()
         if '20dB' not in values or '0dB' not in values:
