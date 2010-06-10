@@ -24,9 +24,7 @@ import pygst
 pygst.require("0.10")
 import gst
 import gst.interfaces
-import gobject
 import numpy as np
-from string import find
 import time
 import config
 
@@ -36,6 +34,10 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
+SENSOR_AC_NO_BIAS = 0
+SENSOR_AC_BIAS = 1
+SENSOR_DC_NO_BIAS = 2
+SENSOR_DC_BIAS = 3
 
 class AudioGrab:
     """ The interface between measure and the audio device """
@@ -169,10 +171,7 @@ class AudioGrab:
                 # save value to Journal
                 self.ji.write_value(buf[0])
                 # display value on Sensor toolbar
-                try:
-                    self.sensor.set_sample_value(str(buf[0]))
-                except:
-                    pass
+                self.sensor.set_sample_value(str(buf[0]))
 
     def start_sound_device(self):
         """Start or Restart grabbing data from the audio capture"""
@@ -472,38 +471,37 @@ class AudioGrab:
         """Unmutes the Mic Control"""
         self._set_mute(self._mic_mute_control, 'Mic', False)
 
-    def set_sensor_type(self, sensor_type=1):
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         """Set the type of sensor you want to use. Set sensor_type according 
         to the following
-        0 - AC coupling with Bias Off --> Very rarely used.
+        SENSOR_AC_NO_BIAS - AC coupling with Bias Off --> Very rarely used.
             Use when connecting a dynamic microphone externally
-        1 - AC coupling with Bias On --> The default settings. 
+        SENSOR_AC_BIAS - AC coupling with Bias On --> The default settings. 
             The internal MIC uses these
-        2 - DC coupling with Bias Off --> Used when using a voltage
+        SENSOR_DC_NO_BIAS - DC coupling with Bias Off --> Used when using a voltage
             output sensor. For example LM35 which gives output proportional
             to temperature
-        3 - DC coupling with Bias On --> Used with resistive sensors.
+        SENSOR_DC_BIAS - DC coupling with Bias On --> Used with resistive sensors.
             For example"""
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (False, False, 50, True),
+            SENSOR_AC_BIAS: (False, True, 40, True),
+            SENSOR_DC_NO_BIAS: (True, False, 0, False),
+            SENSOR_DC_BIAS: (True, True, 0, False),
+        }
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)
+
+    def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
+        """Helper to modify (some) of the sensor settings."""
+        if mode is not None:
+            self.set_dc_mode(mode)
+        if bias is not None:
+            self.set_bias(bias)
+        if gain is not None:
+            self.set_capture_gain(gain)
+        if boost is not None:
+            self.set_mic_boost(boost)
 
     def on_activity_quit(self):
         """When Activity quits"""
@@ -515,59 +513,24 @@ class AudioGrab:
 
 
 class AudioGrab_XO_1(AudioGrab):
-    def set_sensor_type(self, sensor_type=1):
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
+    pass
 
 class AudioGrab_XO_1_5(AudioGrab):
-    def set_sensor_type(self, sensor_type=1):
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(80)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(80)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (False, False, 80, True),
+            SENSOR_AC_BIAS: (False, True, 80, True),
+            SENSOR_DC_NO_BIAS: (True, False, 0, False),
+            SENSOR_DC_BIAS: (True, True, 0, False),
+        }
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)
 
 class AudioGrab_Unknown(AudioGrab):
-    def set_sensor_type(self, sensor_type=1):
-        if sensor_type==0:
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (None, False, 50, True),
+            SENSOR_AC_BIAS: (None, True, 40, True),
+        }
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)

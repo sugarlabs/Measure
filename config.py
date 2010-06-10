@@ -17,13 +17,15 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+"""
+Global configuration for Measure.
+"""
+
 import os
-import os.path
-import tempfile
 from sugar.activity import activity
 
 MEASURE_ROOT = activity.get_bundle_path()
-ICONS_DIR = MEASURE_ROOT + '/icons'
+ICONS_DIR = os.path.join(MEASURE_ROOT, 'icons')
 
 #Multiplied with width and height to set placement of text
 TEXT_X_M = 0.65
