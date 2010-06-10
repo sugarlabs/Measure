@@ -34,8 +34,16 @@ try:
     import gconf
 except:
     from sugar import profile
+
+# Initialize logging.
+#import logging
+#log = logging.getLogger('Measure')
+#log.setLevel(logging.DEBUG)
+#logging.basicConfig()
+
 class SoundToolbar(gtk.Toolbar):
 
+    SAMPLE_NOW = "Capture now"
     SAMPLE_30_SEC = "Every 30 sec."
     SAMPLE_2_MIN = "Every 2 min."
     SAMPLE_10_MIN = "Every 10 min."
@@ -151,7 +159,8 @@ class SoundToolbar(gtk.Toolbar):
 
         ################# Logging Interval #################
         self._loginterval_combo = ComboBox()
-        self.interval = [_(self.SAMPLE_30_SEC), 
+        self.interval = [_(self.SAMPLE_NOW),
+                         _(self.SAMPLE_30_SEC), 
                          _(self.SAMPLE_2_MIN), 
                          _(self.SAMPLE_10_MIN) , 
                          _(self.SAMPLE_30_MIN) ]
@@ -162,18 +171,18 @@ class SoundToolbar(gtk.Toolbar):
 
         for i, s in enumerate(self.interval):
             self._loginterval_combo.append_item(i, s, None)
-            if s == self.SAMPLE_30_SEC:
+            if s == self.SAMPLE_NOW:
                 self._loginterval_combo.set_active(i)
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
         self.insert(self._loginterval_tool,-1)
-        self.logginginterval_status = '30second'		
+        self.logginginterval_status = 'picture'		
         ####################################################
 
         ############## Start Logging/Stop Logging ##########
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
-        self._record.set_tooltip(_('Start Sampling'))
+        self._record.set_tooltip(_('Capture sample now'))
         self._record.connect('clicked', self.record_control)
         ####################################################
 
@@ -201,7 +210,7 @@ class SoundToolbar(gtk.Toolbar):
         self._update_page_size()
 
     def record_control(self, data=None):
-        """Depending upon the selected interval, does either
+        """Depending upon the selected interval, either starts/stops
         a logging session, or just logs the current buffer"""
         if config.LOGGING_IN_SESSION == False:
             Xscale = (1.00/self.ag.get_sampling_rate())
@@ -219,14 +228,12 @@ class SoundToolbar(gtk.Toolbar):
             self.logging_status = True
             self._record.set_icon('record-stop')
             self._record.show()
-            self._record.set_tooltip(_('Stop sampling'))
             if interval==0:
                 self._record.set_icon('media-record')
                 self._record.show()
-                self._record.set_tooltip(_('Start sampling'))
                 self.record_state = False
-		config.LOGGING_IN_SESSION = False
-		self.logging_status = False
+                config.LOGGING_IN_SESSION = False
+                self.logging_status = False
         else:
             if self.logging_status == True:
                 self.ag.set_logging_params(False)
@@ -234,7 +241,7 @@ class SoundToolbar(gtk.Toolbar):
                 self.logging_status = False
                 self._record.set_icon('media-record')
                 self._record.show()
-                self._record.set_tooltip(_('Start Recording'))
+        self._set_record_button_tooltip()
 
     def interval_convert(self):
         """Converts picture/time interval to an integer which denotes the number
@@ -253,17 +260,34 @@ class SoundToolbar(gtk.Toolbar):
             return 160000
 
     def loginterval_control(self, combobox):
+        """ The combo box has changed. Set the logging interval
+        status correctly and then set the tooltip on the record
+        button properly depending upon whether logging is currently
+        in progress or not. """
         if (self._loginterval_combo.get_active() != -1):
-#            if (self._loginterval_combo.get_active() == 0):
-#                self.logginginterval_status = 'picture'		
             if (self._loginterval_combo.get_active() == 0):
-                self.logginginterval_status = '30second'		
+                self.logginginterval_status = 'picture'		
             if (self._loginterval_combo.get_active() == 1):
-                self.logginginterval_status = '2minute'		
+                self.logginginterval_status = '30second'		
             if (self._loginterval_combo.get_active() == 2):
-                self.logginginterval_status = '10minute'		
+                self.logginginterval_status = '2minute'		
             if (self._loginterval_combo.get_active() == 3):
-                self.logginginterval_status = '30minute'		
+                self.logginginterval_status = '10minute'		
+            if (self._loginterval_combo.get_active() == 4):
+                self.logginginterval_status = '30minute'
+            self._set_record_button_tooltip()
+
+    def _set_record_button_tooltip(self):
+        """ Determines the tool tip for the record button. The tool tip	
+        text depends upon whether sampling is currently on and whether
+        the sampling interval > 0. """
+        if config.LOGGING_IN_SESSION == True:
+            self._record.set_tooltip(_('Stop sampling'))
+        else:   # No sampling in progress
+            if (self._loginterval_combo.get_active() == 0):
+                self._record.set_tooltip(_('Capture sample now'))
+            else:
+                self._record.set_tooltip(_('Start sampling'))
 
     def update_trigger_control(self, *args):
         active = self._trigger_combo.get_active()
