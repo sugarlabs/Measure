@@ -103,10 +103,12 @@ class AudioGrab:
         self.capture_gain  = config.CAPTURE_GAIN
         self.mic_boost = config.MIC_BOOST
         self.mic = self.get_mic_gain()
+        return
 
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
         self.fakesink.set_property("signal-handoffs", handoff_state)
+        return
 
     def _new_buffer(self, buf):
         """ Use a new buffer """
@@ -115,6 +117,7 @@ class AudioGrab:
             self.callable1(buf)
         else:
             pass
+        return
 
     def on_buffer(self, element, buffer, pad):		
         """The function that is called whenever new data is available
@@ -145,6 +148,7 @@ class AudioGrab:
         """Useful when just the display is needed to be frozen, but logging 
         should continue"""
         self.dont_queue_the_buffer = not freeze
+        return
 
     def get_freeze_the_display(self):
         """Returns state of queueing the buffer"""
@@ -152,6 +156,7 @@ class AudioGrab:
 
     def set_sensor(self, sensor):
         self.sensor = sensor
+        return
 
     def _emit_for_logging(self, buf):
         """Sends the data for logging"""
@@ -169,16 +174,19 @@ class AudioGrab:
                     self.sensor.set_sample_value(str(buf[0]))
                 except:
                     pass
+        return
 
     def start_sound_device(self):
         """Start or Restart grabbing data from the audio capture"""
         gst.event_new_flush_start()
         self.pipeline.set_state(gst.STATE_PLAYING)
+        return
 
     def stop_sound_device(self):
         """Stop grabbing data from capture device"""
         gst.event_new_flush_stop()
         self.pipeline.set_state(gst.STATE_NULL)
+        return
 
     def set_logging_params(self, start_stop=False, interval=0, screenshot=True):
         """Configures for logging of data i.e. starts or stops a session
@@ -191,25 +199,30 @@ class AudioGrab:
 	    #    self.take_picture()
         self.reset_counter_buffer()
         self.screenshot = screenshot
+        return
 
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
         self.picture_buffer = self.temp_buffer.copy()
+        return
 
     def set_logging_state(self, start_stop=False):
         """Sets whether buffer is to be emited for logging (True) or not
         (False)"""
         self.logging_state = start_stop
+        return
 
     def set_buffer_interval_logging(self, interval=0):
         """Sets the number of buffers after which a buffer needs to be
         emitted"""
         self.buffer_interval_logging = interval
+        return
 
     def reset_counter_buffer(self):
         """Resets the counter buffer used to keep track of after how many
         buffers to emit a buffer for logging"""
         self.counter_buffer = 0
+        return
 
     def set_sampling_rate(self, sr):
         """Sets the sampling rate of the capture device
@@ -220,6 +233,7 @@ class AudioGrab:
         caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (sr, )
         self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
         self.resume_grabbing()
+        return
 
     def get_sampling_rate(self):
         """Gets the sampling rate of the capture device"""
@@ -229,24 +243,29 @@ class AudioGrab:
         """Sets the callable to the drawing function for giving the
         data at the end of idle-add"""
         self.callable1 = callable1
+        return
 
     def start_grabbing(self):
         """Called right at the start of the Activity"""
         self.start_sound_device()
+        return
 
     def pause_grabbing(self):
         """When Activity goes into background"""
         self.save_state()
         self.stop_sound_device()
+        return
 
     def resume_grabbing(self):
         """When Activity becomes active after going to background"""
         self.start_sound_device()
         self.resume_state()
+        return
    
     def stop_grabbing(self):
         self.stop_sound_device()
         self.set_handoff_signal(False)
+        return
 
     def _find_control(self, prefixes):
         """Try to find a mixer control matching one of the prefixes.
@@ -284,6 +303,7 @@ class AudioGrab:
         self.dcmode =  self.get_dc_mode()
         self.capture_gain  = self.get_capture_gain()
         self.mic_boost = self.get_mic_boost()
+        return
 
     def resume_state(self):
         """Put back all audio control settings from the saved state"""
@@ -292,6 +312,7 @@ class AudioGrab:
         self.set_dc_mode(self.dcmode)
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
+        return
 
     def _get_mute(self, control, name, default):
         if not control:
@@ -311,6 +332,7 @@ class AudioGrab:
         self._mixer.set_mute(control, value)
         log.debug('Set mute for %s (%s) to %r', name,
             control.props.untranslated_label, value)
+        return
 
     def _get_volume(self, control, name):
         if not control:
@@ -341,20 +363,24 @@ class AudioGrab:
         self._mixer.set_volume(control, (hw_volume,)*control.num_channels)
         log.debug('Set volume of %s (%s) to %d (%d)', name,
             control.props.untranslated_label, value, hw_volume)
+        return
 
     def mute_master(self):
         """Mutes the Master Control"""
         self._set_mute(self._master_control, 'Master', True)
+        return
 
     def unmute_master(self):
         """Unmutes the Master Control"""
         self._set_mute(self._master_control, 'Master', False)
+        return
 
     def set_master(self, master_val):
         """Sets the Master gain slider settings 
         master_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
         self._set_volume(self._master_control, 'Master', master_val)
+        return
 
     def get_master(self):
         """Gets the Master gain slider settings. The value returned is an
@@ -376,6 +402,7 @@ class AudioGrab:
             self._mixer.set_option(self._mic_bias_control, values[-1])
         else:
             self._mixer.set_option(self._mic_bias_control, values[0])
+        return
 
     def get_bias(self):
         """Check whether bias voltage is enabled."""
@@ -394,6 +421,7 @@ class AudioGrab:
         """Sets the DC Mode Enable control
         pass False to mute and True to unmute"""
         self._set_mute(self._dc_control, 'DC mode', not dc_mode)
+        return
 
     def get_dc_mode(self):
         """Returns the setting of DC Mode Enable control 
@@ -418,6 +446,7 @@ class AudioGrab:
             self._mixer.set_option(self._mic_boost_control, '20dB')
         else:
             self._mixer.set_option(self._mic_boost_control, '0dB')
+        return
 
     def get_mic_boost(self):
         """Return Mic Boost setting.
@@ -443,6 +472,7 @@ class AudioGrab:
         capture_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
         self._set_volume(self._capture_control, 'Capture', capture_val)
+        return
 
     def get_capture_gain(self):
         """Gets the Capture gain slider settings. The value returned is an
@@ -454,6 +484,7 @@ class AudioGrab:
         mic_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
         self._set_volume(self._mic_gain_control, 'Mic', mic_val)
+        return
 
     def get_mic_gain(self):
         """Gets the MIC gain slider settings. The value returned is an
@@ -463,10 +494,12 @@ class AudioGrab:
     def mute_mic(self):
         """Mutes the Mic Control"""
         self._set_mute(self._mic_mute_control, 'Mic', True)
+        return
 
     def unmute_mic(self):
         """Unmutes the Mic Control"""
         self._set_mute(self._mic_mute_control, 'Mic', False)
+        return
 
     def set_sensor_type(self, sensor_type=1):
         """Set the type of sensor you want to use. Set sensor_type according 
@@ -480,6 +513,8 @@ class AudioGrab:
             to temperature
         3 - DC coupling with Bias On --> Used with resistive sensors.
             For example"""
+        log.debug('------------------')
+        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('Generic', sensor_type))
         if sensor_type==0:
 	        self.set_dc_mode(False)
 	        self.set_bias(False)
@@ -500,18 +535,26 @@ class AudioGrab:
 	        self.set_bias(True)
 	        self.set_capture_gain(0)
 	        self.set_mic_boost(False)
+        log.debug('------------------')
+        return
 
     def on_activity_quit(self):
         """When Activity quits"""
+        log.debug('------------------')
+        log.debug('ACTIVITY QUIT')
         self.set_mic_boost(config.QUIT_MIC_BOOST)
         self.set_dc_mode(config.QUIT_DC_MODE_ENABLE)
         self.set_capture_gain(config.QUIT_CAPTURE_GAIN)
         self.set_bias(config.QUIT_BIAS)
         self.stop_sound_device()
-
+        log.debug('------------------')
+        return
 
 class AudioGrab_XO_1(AudioGrab):
     def set_sensor_type(self, sensor_type=1):
+        log.debug('------------------')
+        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('XO1', sensor_type))
+
         if sensor_type==0:
 	        self.set_dc_mode(False)
 	        self.set_bias(False)
@@ -525,16 +568,21 @@ class AudioGrab_XO_1(AudioGrab):
         elif sensor_type==2:
 	        self.set_dc_mode(True)
 	        self.set_bias(False)
-	        self.set_capture_gain(0)
+	        self.set_capture_gain(0) # needs testing
 	        self.set_mic_boost(False)
         elif sensor_type==3:
 	        self.set_dc_mode(True)
 	        self.set_bias(True)
-	        self.set_capture_gain(0)
+	        self.set_capture_gain(0) # needs testing
 	        self.set_mic_boost(False)
+
+        log.debug('------------------')
 
 class AudioGrab_XO_1_5(AudioGrab):
     def set_sensor_type(self, sensor_type=1):
+        log.debug('------------------')
+        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('XO1.5', sensor_type))
+
         if sensor_type==0:
 	        self.set_dc_mode(False)
 	        self.set_bias(False)
@@ -548,16 +596,20 @@ class AudioGrab_XO_1_5(AudioGrab):
         elif sensor_type==2:
 	        self.set_dc_mode(True)
 	        self.set_bias(False)
-	        self.set_capture_gain(0)
+	        self.set_capture_gain(80) # needs to be tested
 	        self.set_mic_boost(False)
         elif sensor_type==3:
 	        self.set_dc_mode(True)
 	        self.set_bias(True)
-	        self.set_capture_gain(0)
+	        self.set_capture_gain(80) # tested with a variety of sensors
 	        self.set_mic_boost(False)
+
+        log.debug('------------------')
 
 class AudioGrab_Unknown(AudioGrab):
     def set_sensor_type(self, sensor_type=1):
+        log.debug('------------------')
+        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('unknown', sensor_type))
         if sensor_type==0:
 	        self.set_bias(False)
 	        self.set_capture_gain(50)
@@ -567,3 +619,4 @@ class AudioGrab_Unknown(AudioGrab):
 	        self.set_capture_gain(40)
 	        self.set_mic_boost(True)
 
+        log.debug('------------------')
