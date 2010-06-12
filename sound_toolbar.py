@@ -42,10 +42,10 @@ except:
     from sugar import profile
 
 # Initialize logging.
-#import logging
-#log = logging.getLogger('Measure')
-#log.setLevel(logging.DEBUG)
-#logging.basicConfig()
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
 
 class SoundToolbar(gtk.Toolbar):
 
@@ -86,6 +86,7 @@ class SoundToolbar(gtk.Toolbar):
         self.mic_boost = config.MIC_BOOST
 
         self.logging_status = False
+        self._record = None
 
         ###################### time ########################
         self._time = ToolButton('domain-time2')
@@ -107,9 +108,9 @@ class SoundToolbar(gtk.Toolbar):
         self.insert(separator, -1)
 
         ################ frequency control #################
-	self._freq_stepper_up = ToolButton('freq-high')
-	self._freq_stepper_up.set_tooltip(_('Zoom out'))
-	self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
+        self._freq_stepper_up = ToolButton('freq-high')
+        self._freq_stepper_up.set_tooltip(_('Zoom out'))
+        self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
 
         self.adjustmentf = gtk.Adjustment(.5, 0, 1.0, 0.01, 0.1, 0)
         self.adjustmentf.connect("value_changed", self.cb_page_sizef)
@@ -119,16 +120,16 @@ class SoundToolbar(gtk.Toolbar):
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self._freq_range.set_size_request(120,15)
 
-	self._freq_stepper_down = ToolButton('freq-low')
-	self._freq_stepper_down.set_tooltip(_('Zoom in'))
-	self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
+        self._freq_stepper_down = ToolButton('freq-low')
+        self._freq_stepper_down.set_tooltip(_('Zoom in'))
+        self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
 
         self._freq_range_tool = gtk.ToolItem()
         self._freq_range_tool.add(self._freq_range)
 
-	self.insert(self._freq_stepper_up, -1)
-	self.insert(self._freq_range_tool, -1)
-	self.insert(self._freq_stepper_down, -1)
+        self.insert(self._freq_stepper_up, -1)
+        self.insert(self._freq_range_tool, -1)
+        self.insert(self._freq_stepper_down, -1)
 
         ####################################################
 
@@ -249,13 +250,13 @@ class SoundToolbar(gtk.Toolbar):
         if self.logginginterval_status == 'picture':
             return 0
         elif self.logginginterval_status == '30second':
-            return 2667
+            return 30   #2667
         elif self.logginginterval_status == '2minute':
-            return 10668
+            return 120 #10668
         elif self.logginginterval_status == '10minute':
-            return 53340
+            return 600 #53340
         elif self.logginginterval_status == '30minute':
-            return 160000
+            return 1800 #160000
 
     def loginterval_control(self, combobox):
         """ The combo box has changed. Set the logging interval
@@ -279,6 +280,8 @@ class SoundToolbar(gtk.Toolbar):
         """ Determines the tool tip for the record button. The tool tip	
         text depends upon whether sampling is currently on and whether
         the sampling interval > 0. """
+        if self._record == None:
+            return
         if config.LOGGING_IN_SESSION == True:
             self._record.set_tooltip(_('Stop sampling'))
         else:   # No sampling in progress

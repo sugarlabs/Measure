@@ -27,6 +27,7 @@ import gst.interfaces
 import numpy as np
 import time
 import config
+from threading import Timer
 
 # Initialize logging.
 import logging
@@ -65,8 +66,7 @@ class AudioGrab:
         self.waveform_id = 1
         self.logging_state = False
         self.buffer_interval_logging = 0
-        self.counter_buffer = 0
-
+        
         # Set up gst pipeline
         self.pipeline = gst.Pipeline("pipeline")
         self.alsasrc = gst.element_factory_make("alsasrc", "alsa-source")
@@ -107,6 +107,10 @@ class AudioGrab:
         self.mic_boost = config.MIC_BOOST
         self.mic = self.get_mic_gain()
 
+        # Timer for interval sampling and switch to indicate when to capture
+        self.capture_timer = None
+        self.capture_interval_sample = False
+
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
         self.fakesink.set_property("signal-handoffs", handoff_state)
@@ -132,18 +136,15 @@ class AudioGrab:
                 self.waveform_id = 1
                 self.logging_state = False
                 self.ji.stop_session()
-                log.debug(">>> Stop session 1")
             else:
-                if self.counter_buffer == self.buffer_interval_logging:
+                if self.capture_interval_sample  or self.buffer_interval_logging == 0:
                     self._emit_for_logging(temp_buffer)
-                    log.debug('Log entry written: %s', time.ctime())
-                    self.counter_buffer=0
-                self.counter_buffer+=1
-            # If a record is to be written, thats all for the logging session
+                    self.capture_interval_sample = False
+            # If an immediate record is to be written, that's all 
+            # for the logging session
             if self.buffer_interval_logging == 0:
                 self.logging_state = False
                 self.ji.stop_session()
-                log.debug(">>> Stop session 2")
                 self.waveform_id = 1
         return False
 
@@ -188,13 +189,30 @@ class AudioGrab:
         Sets an interval if logging interval is to be started
         Sets if screenshot of waveform is to be taken or values need to be 
         written"""
-        self.logging_state = start_stop 
+        self.logging_state = start_stop
         self.set_buffer_interval_logging(interval)
-        #if interval==0:
-	    #    self.take_picture()
-        self.reset_counter_buffer()
+        if not start_stop:
+            if self.capture_timer:
+                self.capture_timer.cancel()
+                self.capture_timer = None
+                self.capture_interval_sample = False
+        elif interval != 0:
+            self.make_timer()
         self.screenshot = screenshot
 
+    def sample_now(self):
+        """ Log the current sample now. This method is called from the
+        capture_timer object when the interval expires. """
+        self.capture_interval_sample = True
+        self.make_timer()
+
+    def make_timer(self):
+        """ Create the next timer that will go off at the proper interval.
+        This is used when the user has selected a sampling interval > 0
+        and the logging_state is True. """
+        self.capture_timer = Timer(self.buffer_interval_logging, self.sample_now)
+        self.capture_timer.start()
+   
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
         self.picture_buffer = self.temp_buffer.copy()
@@ -208,11 +226,6 @@ class AudioGrab:
         """Sets the number of buffers after which a buffer needs to be
         emitted"""
         self.buffer_interval_logging = interval
-
-    def reset_counter_buffer(self):
-        """Resets the counter buffer used to keep track of after how many
-        buffers to emit a buffer for logging"""
-        self.counter_buffer = 0
 
     def set_sampling_rate(self, sr):
         """Sets the sampling rate of the capture device
