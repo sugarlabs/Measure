@@ -414,6 +414,8 @@ class DrawWaveform(gtk.DrawingArea):
                         data *= (self.allocation.height/32767.0 * self.y_mag)
                     else:
                         data *= (-self.allocation.height/32767.0 * self.y_mag)
+                    data -= self.bias
+
                     if self.fft_show:
                         data += self.allocation.height - 3
                     else:
@@ -435,11 +437,11 @@ class DrawWaveform(gtk.DrawingArea):
                             y = int(self.trigger_ypos * self.allocation.height)
                             length = int(self._TRIGGER_LINE_THICKNESS * 3.5)
                             self.window.draw_line(self._trigger_line_gc,
-                                                  x - length, y + self.bias,
-                                                  x + length, y + self.bias)
+                                                  x - length, y,
+                                                  x + length, y)
                             self.window.draw_line(self._trigger_line_gc,
-                                                  x, y + self.bias - length,
-                                                  x, y + self.bias - length)
+                                                  x, y - length,
+                                                  x, y - length)
 
                     if self.type[graph_id] == 0:
                         self.window.draw_lines(self._line_gc[graph_id], lines)
