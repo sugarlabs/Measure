@@ -42,6 +42,7 @@ import config  	#This has all the globals
 
 
 class DrawWaveform(gtk.DrawingArea):
+    """ Handles all the drawing of waveforms """
 
     __gtype_name__ = "MeasureDrawWaveform"
 
@@ -195,6 +196,7 @@ class DrawWaveform(gtk.DrawingArea):
         
 
     def set_max_samples(self, num):
+        """ Maximum no. of samples in ringbuffer """
         if self.max_samples == num:
             return
         new_buffer = RingBuffer1d(num, dtype='int16')
@@ -204,6 +206,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.max_samples = num
 
     def new_buffer(self, buf):
+        """ Append a new buffer to the ringbuffer """
         self.ringbuffer.append(buf)
         return True
 
@@ -220,9 +223,11 @@ class DrawWaveform(gtk.DrawingArea):
         self._indirect_queue_draw()
 
     def set_invert_state(self, invert_state):
+        """ In sensor mode, we can invert the plot """
         self.invert = invert_state
 
     def get_invert_state(self):
+        """ Return the current state of the invert flag """
         return self.invert
 
     def get_drawing_interval(self):
