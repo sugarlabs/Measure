@@ -77,11 +77,11 @@ class DrawWaveform(gtk.DrawingArea):
         self.avg=''
         self.pp=''
         self.count=0
-        self.invert=False
+        self.invert=True
 
         self.y_mag = 3.0
         self.gain = 1.0  # (not in dB) introduced by Capture Gain and Mic Boost
-        self.bias = 0
+        self.bias = 0    # vertical position fine-tuning from slider
         self._freq_range = 4 # See comment in sound_toolbar.py
         self.draw_interval = 10
         self.num_of_points = 115
@@ -410,7 +410,10 @@ class DrawWaveform(gtk.DrawingArea):
                     if config.CONTEXT == 2:
                         self.y_mag = 1.0
 
-                    data *= (-self.allocation.height/32767.0 * self.y_mag)
+                    if self.invert:
+                        data *= (self.allocation.height/32767.0 * self.y_mag)
+                    else:
+                        data *= (-self.allocation.height/32767.0 * self.y_mag)
                     if self.fft_show:
                         data += self.allocation.height - 3
                     else:
