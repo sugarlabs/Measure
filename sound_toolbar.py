@@ -329,6 +329,10 @@ class SoundToolbar(gtk.Toolbar):
         return False
 
     def _freq_stepper_up_cb(self, data=None):
+        """Moves the horizontal zoom slider to the left one notch, where
+        one notch is 1/100 of the total range. This correspond to zooming
+        out as a larger number of Hertz or milliseconds will be
+        represented by the same space on the screen."""
 	new_value = self._freq_range.get_value() + (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
 	if new_value <= self.adjustmentf.get_upper():
 	    self._freq_range.set_value(new_value)
@@ -336,6 +340,9 @@ class SoundToolbar(gtk.Toolbar):
 	    self._freq_range.set_value(self.adjustmentf.get_upper())
 
     def _freq_stepper_down_cb(self, data=None):
+        """Moves the horizontal zoom slider to the right one notch, where
+        one notch is 1/100 of the total range. This corresponds to zooming
+        in."""
 	new_value = self._freq_range.get_value() - (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
 	if new_value >= self.adjustmentf.get_lower():
 	    self._freq_range.set_value(new_value)
