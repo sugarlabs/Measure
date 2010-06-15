@@ -4,6 +4,8 @@
 * cleaned up code for non-OLPC hardware
 * eliminate sensor toolbar for non-XO hardware
 * improved hardware detection logic
+* added 1/10 second sample interval for sensor data
+* added additional bias control for sensor data
 
 29
 * support for XO 1.5 (thanks to Sayamindu Dasgupta)

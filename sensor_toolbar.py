@@ -52,7 +52,7 @@ class SensorToolbar(gtk.Toolbar):
         self.gain_state = None
         self.boost_state = None        
 
-        self.b = 0
+        # self.b = 0
 
         self.string_for_textbox = ""
 

@@ -24,12 +24,13 @@ import pygst
 pygst.require("0.10")
 import gst
 import gst.interfaces
-import gobject
 import numpy as np
 import os
 import subprocess
 from string import find
+import time
 import config
+from threading import Timer
 
 # Initialize logging.
 import logging
@@ -37,6 +38,10 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
+SENSOR_AC_NO_BIAS = 0
+SENSOR_AC_BIAS = 1
+SENSOR_DC_NO_BIAS = 2
+SENSOR_DC_BIAS = 3
 
 class AudioGrab:
     """ The interface between measure and the audio device """
@@ -64,6 +69,7 @@ class AudioGrab:
         self.waveform_id = 1
         self.logging_state = False
         self.buffer_interval_logging = 0
+
         self.counter_buffer = 0
 
         self._hardwired = False # Query controls or use hardwired names
@@ -114,6 +120,10 @@ class AudioGrab:
         self.mic = self.get_mic_gain()
         return
 
+        # Timer for interval sampling and switch to indicate when to capture
+        self.capture_timer = None
+        self.capture_interval_sample = False
+
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
         self.fakesink.set_property("signal-handoffs", handoff_state)
@@ -142,11 +152,12 @@ class AudioGrab:
                 self.logging_state = False
                 self.ji.stop_session()
             else:
-                if self.counter_buffer == self.buffer_interval_logging:
+                if self.capture_interval_sample or\
+                   self.buffer_interval_logging == 0:
                     self._emit_for_logging(temp_buffer)
-                    self.counter_buffer=0
-                self.counter_buffer+=1
-            # If a record is to be written, thats all for the logging session
+                    self.capture_interval_sample = False
+            # If an immediate record is to be written, that's all 
+            # for the logging session
             if self.buffer_interval_logging == 0:
                 self.logging_state = False
                 self.ji.stop_session()
@@ -203,14 +214,31 @@ class AudioGrab:
         Sets an interval if logging interval is to be started
         Sets if screenshot of waveform is to be taken or values need to be 
         written"""
-        self.logging_state = start_stop 
+        self.logging_state = start_stop
         self.set_buffer_interval_logging(interval)
-        #if interval==0:
-	    #    self.take_picture()
-        self.reset_counter_buffer()
+        if not start_stop:
+            if self.capture_timer:
+                self.capture_timer.cancel()
+                self.capture_timer = None
+                self.capture_interval_sample = False
+        elif interval != 0:
+            self.make_timer()
         self.screenshot = screenshot
         return
 
+    def sample_now(self):
+        """ Log the current sample now. This method is called from the
+        capture_timer object when the interval expires. """
+        self.capture_interval_sample = True
+        self.make_timer()
+
+    def make_timer(self):
+        """ Create the next timer that will go off at the proper interval.
+        This is used when the user has selected a sampling interval > 0
+        and the logging_state is True. """
+        self.capture_timer = Timer(self.buffer_interval_logging, self.sample_now)
+        self.capture_timer.start()
+   
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
         self.picture_buffer = self.temp_buffer.copy()
@@ -601,122 +629,70 @@ class AudioGrab:
             except:
                 return(0)
 
-    def set_sensor_type(self, sensor_type=1):
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         """Set the type of sensor you want to use. Set sensor_type according 
         to the following
-        0 - AC coupling with Bias Off --> Very rarely used.
+        SENSOR_AC_NO_BIAS - AC coupling with Bias Off --> Very rarely used.
             Use when connecting a dynamic microphone externally
-        1 - AC coupling with Bias On --> The default settings. 
+        SENSOR_AC_BIAS - AC coupling with Bias On --> The default settings. 
             The internal MIC uses these
-        2 - DC coupling with Bias Off --> Used when using a voltage
+        SENSOR_DC_NO_BIAS - DC coupling with Bias Off --> measuring voltage
             output sensor. For example LM35 which gives output proportional
             to temperature
-        3 - DC coupling with Bias On --> Used with resistive sensors.
-            For example"""
-        log.debug('------------------')
-        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('Generic', sensor_type))
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(0)
-	        self.set_mic_boost(False)
-        log.debug('------------------')
+        SENSOR_DC_BIAS - DC coupling with Bias On --> measuing resistance.
+        """
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (False, False, 50, True),
+            SENSOR_AC_BIAS: (False, True, 40, True),
+            SENSOR_DC_NO_BIAS: (True, False, 0, False),
+            SENSOR_DC_BIAS: (True, True, 0, False),
+        }
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)
+        return
+
+    def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
+        """Helper to modify (some) of the sensor settings."""
+        if mode is not None:
+            self.set_dc_mode(mode)
+        if bias is not None:
+            self.set_bias(bias)
+        if gain is not None:
+            self.set_capture_gain(gain)
+        if boost is not None:
+            self.set_mic_boost(boost)
         return
 
     def on_activity_quit(self):
         """When Activity quits"""
-        log.debug('------------------')
-        log.debug('ACTIVITY QUIT')
         self.set_mic_boost(config.QUIT_MIC_BOOST)
         self.set_dc_mode(config.QUIT_DC_MODE_ENABLE)
         self.set_capture_gain(config.QUIT_CAPTURE_GAIN)
         self.set_bias(config.QUIT_BIAS)
         self.stop_sound_device()
-        log.debug('------------------')
         return
 
 class AudioGrab_XO_1(AudioGrab):
-    def set_sensor_type(self, sensor_type=1):
-        log.debug('------------------')
-        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('XO1', sensor_type))
-
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(0) # needs testing
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(0) # needs testing
-	        self.set_mic_boost(False)
-
-        log.debug('------------------')
+    pass
 
 class AudioGrab_XO_1_5(AudioGrab):
-    def set_sensor_type(self, sensor_type=1):
-        log.debug('------------------')
-        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('XO1.5', sensor_type))
-
-        if sensor_type==0:
-	        self.set_dc_mode(False)
-	        self.set_bias(False)
-	        self.set_capture_gain(80)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_dc_mode(False)
-	        self.set_bias(True)
-	        self.set_capture_gain(80)
-	        self.set_mic_boost(True)
-        elif sensor_type==2:
-	        self.set_dc_mode(True)
-	        self.set_bias(False)
-	        self.set_capture_gain(80) # needs to be tested
-	        self.set_mic_boost(False)
-        elif sensor_type==3:
-	        self.set_dc_mode(True)
-	        self.set_bias(True)
-	        self.set_capture_gain(80) # tested with a variety of sensors
-	        self.set_mic_boost(False)
-
-        log.debug('------------------')
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (False, False, 80, True),
+            SENSOR_AC_BIAS: (False, True, 80, True),
+            SENSOR_DC_NO_BIAS: (True, False, 0, False),
+            SENSOR_DC_BIAS: (True, True, 0, False),
+        }
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)
+        return
 
 class AudioGrab_Unknown(AudioGrab):
-    def set_sensor_type(self, sensor_type=1):
-        log.debug('------------------')
-        log.debug('HARDWARE %s, SENSOR TYPE %d' % ('unknown', sensor_type))
-        if sensor_type==0:
-	        self.set_bias(False)
-	        self.set_capture_gain(50)
-	        self.set_mic_boost(True)
-        elif sensor_type==1:
-	        self.set_bias(True)
-	        self.set_capture_gain(40)
-	        self.set_mic_boost(True)
-
-        log.debug('------------------')
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (None, False, 50, True),
+            SENSOR_AC_BIAS: (None, True, 40, True),
+        }
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)
+        return

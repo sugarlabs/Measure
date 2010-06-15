@@ -27,6 +27,12 @@ from gettext import gettext as _
 
 import config  	#This has all the globals
 
+# Initialize logging.
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
+
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
@@ -34,7 +40,20 @@ try:
     import gconf
 except:
     from sugar import profile
+
+# Initialize logging.
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
+
 class SoundToolbar(gtk.Toolbar):
+
+    SAMPLE_NOW = "Capture now"
+    SAMPLE_30_SEC = "Every 30 sec."
+    SAMPLE_2_MIN = "Every 2 min."
+    SAMPLE_10_MIN = "Every 10 min."
+    SAMPLE_30_MIN = "Every 30 min."
 
     def __init__(self, activity):
 
@@ -67,6 +86,7 @@ class SoundToolbar(gtk.Toolbar):
         self.mic_boost = config.MIC_BOOST
 
         self.logging_status = False
+        self._record = None
 
         ###################### time ########################
         self._time = ToolButton('domain-time2')
@@ -83,23 +103,15 @@ class SoundToolbar(gtk.Toolbar):
         self._freq.connect('clicked', self._timefreq_control_cb, False)
         ####################################################
 
-        #self.time_freq_state = self.wave.get_fft_mode()
-        #self._time.set_active(not(self.time_freq_state))
-        #self._freq.set_active(self.time_freq_state)
-
-        self.freq_low_img = gtk.Image()
-        self.freq_high_img = gtk.Image()
-
-        self.freq_low_img.set_from_file(config.ICONS_DIR + '/freq-high.svg')
-        self.freq_high_img.set_from_file(config.ICONS_DIR + '/freq-low.svg')
-
-        self.freq_low_img_tool = gtk.ToolItem()
-        self.freq_high_img_tool = gtk.ToolItem()
-
-        self.freq_low_img_tool.add(self.freq_low_img)
-        self.freq_high_img_tool.add(self.freq_high_img)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
 
         ################ frequency control #################
+        self._freq_stepper_up = ToolButton('freq-high')
+        self._freq_stepper_up.set_tooltip(_('Zoom out'))
+        self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
+
         self.adjustmentf = gtk.Adjustment(.5, 0, 1.0, 0.01, 0.1, 0)
         self.adjustmentf.connect("value_changed", self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.adjustmentf)
@@ -107,19 +119,19 @@ class SoundToolbar(gtk.Toolbar):
         self._freq_range.set_draw_value(False)
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self._freq_range.set_size_request(120,15)
+
+        self._freq_stepper_down = ToolButton('freq-low')
+        self._freq_stepper_down.set_tooltip(_('Zoom in'))
+        self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
+
         self._freq_range_tool = gtk.ToolItem()
         self._freq_range_tool.add(self._freq_range)
-        ####################################################
 
-        self.insert(self.freq_low_img_tool,-1)
+        self.insert(self._freq_stepper_up, -1)
         self.insert(self._freq_range_tool, -1)
-        self.insert(self.freq_high_img_tool,-1)		
+        self.insert(self._freq_stepper_down, -1)
 
-        self.freq_low_img.show()
-        self.freq_high_img.show()
-
-        self.freq_low_img_tool.show()
-        self.freq_high_img_tool.show()
+        ####################################################
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
@@ -142,18 +154,23 @@ class SoundToolbar(gtk.Toolbar):
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
+        
 
         ################# Logging Interval #################
         self._loginterval_combo = ComboBox()
-        self.interval = [_('Now'), _('30 seconds') , _('2 minutes'),
-                         _('10 minutes') , _('30 minutes') ]
-
+        self.interval = [_(self.SAMPLE_NOW),
+                         _(self.SAMPLE_30_SEC), 
+                         _(self.SAMPLE_2_MIN), 
+                         _(self.SAMPLE_10_MIN) , 
+                         _(self.SAMPLE_30_MIN) ]
+        self._loginterval_combo.set_tooltip_text("Sampling interval")
+        
         self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
 
         for i, s in enumerate(self.interval):
             self._loginterval_combo.append_item(i, s, None)
-            if s == 'Now':
+            if s == self.SAMPLE_NOW:
                 self._loginterval_combo.set_active(i)
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
@@ -164,7 +181,7 @@ class SoundToolbar(gtk.Toolbar):
         ############## Start Logging/Stop Logging ##########
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
-        self._record.set_tooltip(_('Start Recording'))
+        self._record.set_tooltip(_('Capture sample now'))
         self._record.connect('clicked', self.record_control)
         ####################################################
 
@@ -192,7 +209,7 @@ class SoundToolbar(gtk.Toolbar):
         self._update_page_size()
 
     def record_control(self, data=None):
-        """Depending upon the selected interval, does either
+        """Depending upon the selected interval, either starts/stops
         a logging session, or just logs the current buffer"""
         if config.LOGGING_IN_SESSION == False:
             Xscale = (1.00/self.ag.get_sampling_rate())
@@ -210,14 +227,12 @@ class SoundToolbar(gtk.Toolbar):
             self.logging_status = True
             self._record.set_icon('record-stop')
             self._record.show()
-            self._record.set_tooltip(_('Stop Recording'))
             if interval==0:
                 self._record.set_icon('media-record')
                 self._record.show()
-                self._record.set_tooltip(_('Start Recording'))
                 self.record_state = False
-		config.LOGGING_IN_SESSION = False
-		self.logging_status = False
+                config.LOGGING_IN_SESSION = False
+                self.logging_status = False
         else:
             if self.logging_status == True:
                 self.ag.set_logging_params(False)
@@ -225,7 +240,7 @@ class SoundToolbar(gtk.Toolbar):
                 self.logging_status = False
                 self._record.set_icon('media-record')
                 self._record.show()
-                self._record.set_tooltip(_('Start Recording'))
+        self._set_record_button_tooltip()
 
     def interval_convert(self):
         """Converts picture/time interval to an integer which denotes the number
@@ -235,15 +250,19 @@ class SoundToolbar(gtk.Toolbar):
         if self.logginginterval_status == 'picture':
             return 0
         elif self.logginginterval_status == '30second':
-            return 2667
+            return 30   #2667
         elif self.logginginterval_status == '2minute':
-            return 10668
+            return 120 #10668
         elif self.logginginterval_status == '10minute':
-            return 53340
+            return 600 #53340
         elif self.logginginterval_status == '30minute':
-            return 160000
+            return 1800 #160000
 
     def loginterval_control(self, combobox):
+        """ The combo box has changed. Set the logging interval
+        status correctly and then set the tooltip on the record
+        button properly depending upon whether logging is currently
+        in progress or not. """
         if (self._loginterval_combo.get_active() != -1):
             if (self._loginterval_combo.get_active() == 0):
                 self.logginginterval_status = 'picture'		
@@ -254,7 +273,22 @@ class SoundToolbar(gtk.Toolbar):
             if (self._loginterval_combo.get_active() == 3):
                 self.logginginterval_status = '10minute'		
             if (self._loginterval_combo.get_active() == 4):
-                self.logginginterval_status = '30minute'		
+                self.logginginterval_status = '30minute'
+            self._set_record_button_tooltip()
+
+    def _set_record_button_tooltip(self):
+        """ Determines the tool tip for the record button. The tool tip	
+        text depends upon whether sampling is currently on and whether
+        the sampling interval > 0. """
+        if self._record == None:
+            return
+        if config.LOGGING_IN_SESSION == True:
+            self._record.set_tooltip(_('Stop sampling'))
+        else:   # No sampling in progress
+            if (self._loginterval_combo.get_active() == 0):
+                self._record.set_tooltip(_('Capture sample now'))
+            else:
+                self._record.set_tooltip(_('Start sampling'))
 
     def update_trigger_control(self, *args):
         active = self._trigger_combo.get_active()
@@ -293,6 +327,27 @@ class SoundToolbar(gtk.Toolbar):
             self._freq.show()
             self._update_string_for_textbox()
         return False
+
+    def _freq_stepper_up_cb(self, data=None):
+        """Moves the horizontal zoom slider to the left one notch, where
+        one notch is 1/100 of the total range. This correspond to zooming
+        out as a larger number of Hertz or milliseconds will be
+        represented by the same space on the screen."""
+	new_value = self._freq_range.get_value() + (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
+	if new_value <= self.adjustmentf.get_upper():
+	    self._freq_range.set_value(new_value)
+	else:
+	    self._freq_range.set_value(self.adjustmentf.get_upper())
+
+    def _freq_stepper_down_cb(self, data=None):
+        """Moves the horizontal zoom slider to the right one notch, where
+        one notch is 1/100 of the total range. This corresponds to zooming
+        in."""
+	new_value = self._freq_range.get_value() - (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
+	if new_value >= self.adjustmentf.get_lower():
+	    self._freq_range.set_value(new_value)
+	else:
+	    self._freq_range.set_value(self.adjustmentf.get_lower())
 
     def cb_page_sizef(self, data=None):
         if self._update_page_size_id:
