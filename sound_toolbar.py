@@ -163,7 +163,10 @@ class SoundToolbar(gtk.Toolbar):
                          _(self.SAMPLE_2_MIN), 
                          _(self.SAMPLE_10_MIN) , 
                          _(self.SAMPLE_30_MIN) ]
-        self._loginterval_combo.set_tooltip_text("Sampling interval")
+        try:
+            self._loginterval_combo.set_tooltip_text("Sampling interval")
+        except AttributeError:
+            pass
         
         self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
@@ -182,6 +185,7 @@ class SoundToolbar(gtk.Toolbar):
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
         self._record.set_tooltip(_('Capture sample now'))
+        
         self._record.connect('clicked', self.record_control)
         ####################################################
 
