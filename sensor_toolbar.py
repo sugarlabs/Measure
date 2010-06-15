@@ -30,6 +30,9 @@ import config          #This has all the globals
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
 try:
     import gconf
 except:
@@ -42,12 +45,14 @@ class SensorToolbar(gtk.Toolbar):
 
         gtk.Toolbar.__init__(self)
 
+        self.mode = 'resistance'
+
         self._STR_BASIC = \
         _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
         + " "
-        self._STR1 = _("Bias/Offset Enabled") + " (Ω) "
-        self._STR2 = _("Bias/Offset Disabled") + " (V) "
-        self._STR3 = _(" Invert") + " "
+        self._STR_R = _("Bias/Offset Enabled") + " (Ω) "
+        self._STR_V = _("Bias/Offset Disabled") + " (V) "
+        self._STR_I = _(" Invert") + " "
 
         self.gain_state = None
         self.boost_state = None        
@@ -199,23 +204,24 @@ class SensorToolbar(gtk.Toolbar):
                               intervals[self._loginterval_combo.get_active()]
 
     def set_resistance_voltage_mode(self, data=None, mode_to_set='resistance'):
-        if mode_to_set == 'resistance' and self.get_mode()=='voltage' :
-            self.set_mode('resistance')
+        self.set_mode(mode_to_set)
+        if mode_to_set == 'resistance':
             self._resistance.set_icon('bias-on2')
             self._voltage.set_icon('bias-off')
             self._resistance.show()
             self._voltage.show()
             self._update_string_for_textbox()
             return False
-        if mode_to_set == 'voltage' and self.get_mode()=='resistance' :
-            self.set_mode('voltage')
+        elif mode_to_set == 'voltage':
             self._resistance.set_icon('bias-on')
             self._voltage.set_icon('bias-off2')
             self._resistance.show()
             self._voltage.show()
             self._update_string_for_textbox()
             return False
-        return False
+        else:
+            logging.error("unknown mode %s" % (mode_to_set))
+            return False
 
     def _invert_control_cb(self, data=None):
         if self.wave.get_invert_state()==True:
@@ -230,15 +236,13 @@ class SensorToolbar(gtk.Toolbar):
         return False
 
     def get_mode(self):
-        if self.ag.get_bias()==False and self.ag.get_dc_mode()==True :
-            return 'voltage'
-        elif self.ag.get_bias()==True and self.ag.get_dc_mode()==True :
-            return 'resistance'
-        else:
-            return 'error'
+        """ Resitive or voltage mode? """
+        return self.mode
 
     def set_mode(self, mode='resistance'):
-        if mode=='resistance':
+        """ Set the mixer settings to match the current mode """
+        self.mode = mode
+        if self.mode=='resistance':
             self.ag.set_sensor_type(3) # bias on
         else:
             self.ag.set_sensor_type(2) # bias off
@@ -257,12 +261,13 @@ class SensorToolbar(gtk.Toolbar):
         self.wave.set_trigger(self.wave.TRIGGER_NONE)
 
     def _update_string_for_textbox(self):
+        """ Update the status field """
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\n")
-        if self.ag.get_bias() == True:
-            self.string_for_textbox += self._STR1
+        if self.mode == 'resistance':
+            self.string_for_textbox += self._STR_R
         else:
-            self.string_for_textbox += self._STR2
+            self.string_for_textbox += self._STR_V
         if self.wave.get_invert_state()==True:
-            self.string_for_textbox += self._STR3
+            self.string_for_textbox += self._STR_I
         self.textbox_copy.set_data_params(0, self.string_for_textbox)
