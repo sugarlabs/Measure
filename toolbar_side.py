@@ -54,7 +54,7 @@ class SideToolbar(gtk.DrawingArea):
                 self.ag.set_capture_gain(100)
             self.wave.set_bias_param(0)
         else:
-            self.wave.set_bias_param(int((adjy.value-2)*100))
+            self.wave.set_bias_param(int((adjy.value-2)*300))
         return True	
 
     def set_show_hide(self, show=True, mode=config.SOUND):
