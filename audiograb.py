@@ -26,6 +26,8 @@ import gst
 import gst.interfaces
 import gobject
 import numpy as np
+import os
+import subprocess
 from string import find
 import config
 
@@ -64,6 +66,8 @@ class AudioGrab:
         self.buffer_interval_logging = 0
         self.counter_buffer = 0
 
+        self._hardwired = False # Query controls or use hardwired names
+
         # Set up gst pipeline
         self.pipeline = gst.Pipeline("pipeline")
         self.alsasrc = gst.element_factory_make("alsasrc", "alsa-source")
@@ -78,6 +82,7 @@ class AudioGrab:
         self.fakesink.connect("handoff", self.on_buffer)	
         self.fakesink.set_property("signal-handoffs", True) 
         gst.element_link_many(self.alsasrc, self.caps1, self.fakesink)
+
         self.dont_queue_the_buffer = False
 
         self._mixer = gst.element_factory_make('alsamixer')
@@ -85,16 +90,20 @@ class AudioGrab:
         assert rc == gst.STATE_CHANGE_SUCCESS
 
         # Query the available controls
-        log.debug('controls: %r', [t.props.untranslated_label \
-                                   for t in self._mixer.list_tracks()])
-        self._dc_control = self._find_control(['dc mode'])
-        self._mic_bias_control = self._find_control(['mic bias',
-                                     'dc input bias', 'V_REFOUT'])
-        self._mic_boost_control = self._find_control(['mic boost',
-                                     'analog mic boost'])
-        self._mic_gain_control = self._find_control(['mic'])
-        self._capture_control = self._find_control(['capture'])
-        self._master_control = self._find_control(['master'])
+        try: # F11+
+            log.debug('controls: %r', [t.props.untranslated_label \
+                                       for t in self._mixer.list_tracks()])
+            self._dc_control = self._find_control(['dc mode'])
+            self._mic_bias_control = self._find_control(['mic bias',
+                                                         'dc input bias',
+                                                         'V_REFOUT'])
+            self._mic_boost_control = self._find_control(['mic boost',
+                                                          'analog mic boost'])
+            self._mic_gain_control = self._find_control(['mic'])
+            self._capture_control = self._find_control(['capture'])
+            self._master_control = self._find_control(['master'])
+        except: # F9- (To do: what is the specific exception raised?)
+            self._hardwired = True
 
         # Variables for saving and resuming state of sound device
         self.master  = self.get_master()
@@ -155,6 +164,7 @@ class AudioGrab:
         return not self.dont_queue_the_buffer
 
     def set_sensor(self, sensor):
+        """Keep a reference to the sensot toolbar for logging"""
         self.sensor = sensor
         return
 
@@ -263,6 +273,7 @@ class AudioGrab:
         return
    
     def stop_grabbing(self):
+        """Not used ???"""
         self.stop_sound_device()
         self.set_handoff_signal(False)
         return
@@ -315,6 +326,7 @@ class AudioGrab:
         return
 
     def _get_mute(self, control, name, default):
+        """Get mute status of a control"""
         if not control:
             log.warning('No %s control, returning constant mute status', name)
             return default
@@ -325,6 +337,7 @@ class AudioGrab:
         return value
 
     def _set_mute(self, control, name, value):
+        """Mute a control"""
         if not control:
             log.warning('No %s control, not setting mute', name)
             return
@@ -335,6 +348,7 @@ class AudioGrab:
         return
 
     def _get_volume(self, control, name):
+        """Get volume of a control and convert to a scale of 0-100"""
         if not control:
             log.warning('No %s control, returning constant volume', name)
             return 100
@@ -353,10 +367,12 @@ class AudioGrab:
         return percent
 
     def _set_volume(self, control, name, value):
+        """Sets the level of a control on a scale of 0-100"""
         if not control:
             log.warning('No %s control, not setting volume', name)
             return
 
+        # convert value to scale of control
         min_vol = control.min_volume
         max_vol = control.max_volume
         hw_volume = value*(max_vol - min_vol)//100 + min_vol
@@ -367,139 +383,223 @@ class AudioGrab:
 
     def mute_master(self):
         """Mutes the Master Control"""
-        self._set_mute(self._master_control, 'Master', True)
+        if not self._hardwired:
+            self._set_mute(self._master_control, 'Master', True)
+        else:
+            os.system("amixer set Master mute")
         return
 
     def unmute_master(self):
         """Unmutes the Master Control"""
-        self._set_mute(self._master_control, 'Master', False)
+        if not self._hardwired:
+            self._set_mute(self._master_control, 'Master', False)
+        else:
+            os.system("amixer set Master unmute")
         return
 
     def set_master(self, master_val):
         """Sets the Master gain slider settings 
         master_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        self._set_volume(self._master_control, 'Master', master_val)
+        if not self._hardwired:
+            self._set_volume(self._master_control, 'Master', master_val)
+        else:
+            os.system("amixer set Master " + str(master_val) + "%")
         return
 
     def get_master(self):
         """Gets the Master gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        return self._get_volume(self._master_control, 'master')
+        if not self._hardwired:
+            return self._get_volume(self._master_control, 'master')
+        else:
+            p = str(subprocess.Popen(["amixer", "get", "Master"],
+                                     stdout=subprocess.PIPE).communicate()[0])
+            p = p[find(p,"Front Left:"):]
+            p = p[find(p,"[")+1:]
+            p = p[:find(p,"%]")]
+            return int(p)
 
-    def set_bias(self,bias_state=False):
+    def set_bias(self, bias_state=False):
         """Enables / disables bias voltage. On XO-1.5 it uses the 80% setting.
         """
-        if not isinstance(self._mic_bias_control, gst.interfaces.MixerOptions):
-            return self._set_mute(self._mic_bias_control, 'Mic Bias', 
-                                  not bias_state)
+        if not self._hardwired:
+            if not isinstance(self._mic_bias_control,
+                              gst.interfaces.MixerOptions):
+                return self._set_mute(self._mic_bias_control, 'Mic Bias', 
+                                      not bias_state)
 
-        values = self._mic_bias_control.get_values()
-        # We assume that the values are sorted from lowest (=off) to highest.
-        # Since they are mixed strings ("Off", "50%", etc.), we cannot easily
-        # ensure this ourselves by sorting with the default sort order.
-        if bias_state:
-            self._mixer.set_option(self._mic_bias_control, values[-1])
+            values = self._mic_bias_control.get_values()
+            # We assume that values are sorted from lowest (=off) to highest.
+            # Since they are mixed strings ("Off", "50%", etc.), we cannot
+            # easily ensure this by sorting with the default sort order.
+            if bias_state:
+                self._mixer.set_option(self._mic_bias_control, values[-1])
+            else:
+                self._mixer.set_option(self._mic_bias_control, values[0])
         else:
-            self._mixer.set_option(self._mic_bias_control, values[0])
+            if bias_state==False:
+	        bias_str="mute"
+            else:
+	        bias_str="unmute"
+            os.system("amixer set 'V_REFOUT Enable' " + bias_str)
         return
 
     def get_bias(self):
         """Check whether bias voltage is enabled."""
-        if not isinstance(self._mic_bias_control, gst.interfaces.MixerOptions):
-            return not self._get_mute(self._mic_bias_control, 'Mic Bias', False)
-
-        values = self._mic_bias_control.get_values()
-        current = self._mixer.get_option(self._mic_bias_control)
-        # same ordering assertion as in set_bias() applies
-        if current == values[0]:
+        if not self._hardwired:
+            if not isinstance(self._mic_bias_control,
+                              gst.interfaces.MixerOptions):
+                return not self._get_mute(self._mic_bias_control, 'Mic Bias',
+                                          False)
+            values = self._mic_bias_control.get_values()
+            current = self._mixer.get_option(self._mic_bias_control)
+            # same ordering assertion as in set_bias() applies
+            if current == values[0]:
+                return False
+            return True
+        else:
+            p = str(subprocess.Popen(["amixer", "get", "'V_REFOUT Enable'"],
+                                     stdout=subprocess.PIPE).communicate()[0])
+            p = p[find(p,"Mono:"):]
+            p = p[find(p,"[")+1:]
+            p = p[:find(p,"]")]
+            if p=="on":
+	        return True
             return False
-
-        return True
 
     def set_dc_mode(self, dc_mode = False):
         """Sets the DC Mode Enable control
         pass False to mute and True to unmute"""
-        self._set_mute(self._dc_control, 'DC mode', not dc_mode)
+        if not self._hardwired:
+            self._set_mute(self._dc_control, 'DC mode', not dc_mode)
+        else:
+            if dc_mode==False:
+	        dcm_str="mute"
+            else:
+	        dcm_str="unmute"
+            os.system("amixer set 'DC Mode Enable' " + dcm_str)
         return
 
     def get_dc_mode(self):
         """Returns the setting of DC Mode Enable control 
         i .e. True: Unmuted and False: Muted"""
-        return not self._get_mute(self._dc_control, 'DC mode', False)
+        if not self._hardwired:
+            return not self._get_mute(self._dc_control, 'DC mode', False)
+        else:
+            p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"],
+                                     stdout=subprocess.PIPE).communicate()[0])
+            p = p[find(p,"Mono:"):]
+            p = p[find(p,"[")+1:]
+            p = p[:find(p,"]")]
+            if p=="on":
+	        return True
+            else:
+	        return False
 
     def set_mic_boost(self, mic_boost=False):
         """Set Mic Boost.
         True = +20dB, False = 0dB"""
-        if not isinstance(self._mic_boost_control, gst.interfaces.MixerOptions):
-            return self._set_mute(self._mic_boost_control, 'Mic Boost',
-                                  mic_boost)
-
-        values = self._mic_boost_control.get_values()
-        if '20dB' not in values or '0dB' not in values:
-            logging.error("Mic Boost (%s) is an option list, but doesn't "
-                "contain 0dB and 20dB settings", 
-                self._mic_boost_control.props.label)
-            return
-
-        if mic_boost:
-            self._mixer.set_option(self._mic_boost_control, '20dB')
+        if not self._hardwired:
+            if not isinstance(self._mic_boost_control,
+                              gst.interfaces.MixerOptions):
+                return self._set_mute(self._mic_boost_control, 'Mic Boost',
+                                      mic_boost)
+            values = self._mic_boost_control.get_values()
+            if '20dB' not in values or '0dB' not in values:
+                logging.error("Mic Boost (%s) is an option list, but doesn't "
+                              "contain 0dB and 20dB settings", 
+                              self._mic_boost_control.props.label)
+                return
+            if mic_boost:
+                self._mixer.set_option(self._mic_boost_control, '20dB')
+            else:
+                self._mixer.set_option(self._mic_boost_control, '0dB')
         else:
-            self._mixer.set_option(self._mic_boost_control, '0dB')
+            if mic_boost==False:
+	        mb_str="mute"
+            else:
+	        mb_str="unmute"
+            os.system("amixer set 'Mic Boost (+20dB)' " + mb_str)
         return
 
     def get_mic_boost(self):
         """Return Mic Boost setting.
         True = +20dB, False = 0dB"""
-        if not isinstance(self._mic_boost_control, gst.interfaces.MixerOptions):
-            return self._get_mute(self._mic_boost_control, 'Mic Boost', False)
-
-        values = self._mic_boost_control.get_values()
-        if '20dB' not in values or '0dB' not in values:
-            logging.error("Mic Boost (%s) is an option list, but doesn't "
-                "contain 0dB and 20dB settings", 
-                self._mic_boost_control.props.label)
+        if not self._hardwired:
+            if not isinstance(self._mic_boost_control,
+                              gst.interfaces.MixerOptions):
+                return self._get_mute(self._mic_boost_control, 'Mic Boost',
+                                      False)
+            values = self._mic_boost_control.get_values()
+            if '20dB' not in values or '0dB' not in values:
+                logging.error("Mic Boost (%s) is an option list, but doesn't "
+                              "contain 0dB and 20dB settings", 
+                              self._mic_boost_control.props.label)
+                return False
+            current = self._mixer.get_option(self._mic_boost_control)
+            if current == '20dB':
+                return True
             return False
-
-        current = self._mixer.get_option(self._mic_boost_control)
-        if current == '20dB':
-            return True
-
-        return False
+        else:
+            p = str(subprocess.Popen(["amixer", "get", "'Mic Boost (+20dB)'"],
+                                     stdout=subprocess.PIPE).communicate()[0])
+            p = p[find(p,"Mono:"):]
+            p = p[find(p,"[")+1:]
+            p = p[:find(p,"]")]
+            if p=="on":
+	        return True
+            else:
+	        return False
 
     def set_capture_gain(self, capture_val):
         """Sets the Capture gain slider settings 
         capture_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        self._set_volume(self._capture_control, 'Capture', capture_val)
+        if not self._hardwired:
+            self._set_volume(self._capture_control, 'Capture', capture_val)
+        else:
+            os.system("amixer set Capture " + str(capture_val) + "%")
         return
 
     def get_capture_gain(self):
         """Gets the Capture gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        return self._get_volume(self._capture_control, 'Capture')
+        if not self._hardwired:
+            return self._get_volume(self._capture_control, 'Capture')
+        else:
+            p = str(subprocess.Popen(["amixer", "get", "Capture"],
+                                     stdout=subprocess.PIPE).communicate()[0])
+            p = p[find(p,"Front Left:"):]
+            p = p[find(p,"[")+1:]
+            p = p[:find(p,"%]")]
+            return int(p)
 
     def set_mic_gain(self, mic_val):
         """Sets the MIC gain slider settings
         mic_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        self._set_volume(self._mic_gain_control, 'Mic', mic_val)
+        if not self._hardwired:
+            self._set_volume(self._mic_gain_control, 'Mic', mic_val)
+        else:
+            os.system("amixer set Mic " + str(mic_val) + "%")
         return
 
     def get_mic_gain(self):
         """Gets the MIC gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%"""
-        return self._get_volume(self._mic_gain_control, 'Mic')
-
-    def mute_mic(self):
-        """Mutes the Mic Control"""
-        self._set_mute(self._mic_mute_control, 'Mic', True)
-        return
-
-    def unmute_mic(self):
-        """Unmutes the Mic Control"""
-        self._set_mute(self._mic_mute_control, 'Mic', False)
-        return
+        if not self._hardwired:
+            return self._get_volume(self._mic_gain_control, 'Mic')
+        else:
+            p = str(subprocess.Popen(["amixer", "get", "Mic"],
+                                     stdout=subprocess.PIPE).communicate()[0])
+            try:
+                p = p[find(p,"Mono:"):]
+                p = p[find(p,"[")+1:]
+                p = p[:find(p,"%]")]
+                return int(p)
+            except:
+                return(0)
 
     def set_sensor_type(self, sensor_type=1):
         """Set the type of sensor you want to use. Set sensor_type according 
