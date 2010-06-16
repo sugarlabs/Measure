@@ -34,9 +34,7 @@ from gettext import gettext as _
 
 def _is_xo(hw):
     """ Return True if this is xo hardware """
-    if hw == 'xo1' or hw == 'xo1.5':
-        return True
-    return False
+    return hw in ['xo1','xo1.5']:
 
 class Toolbar(ActivityToolbox):
 
