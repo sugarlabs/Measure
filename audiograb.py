@@ -38,8 +38,8 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
-SENSOR_AC_NO_BIAS = 0
-SENSOR_AC_BIAS = 1
+SENSOR_AC_NO_BIAS = 'external'
+SENSOR_AC_BIAS = 'sound'
 SENSOR_DC_NO_BIAS = 'voltage'
 SENSOR_DC_BIAS = 'resistance'
 

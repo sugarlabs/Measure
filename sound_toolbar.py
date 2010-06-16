@@ -338,7 +338,9 @@ class SoundToolbar(gtk.Toolbar):
         one notch is 1/100 of the total range. This correspond to zooming
         out as a larger number of Hertz or milliseconds will be
         represented by the same space on the screen."""
-	new_value = self._freq_range.get_value() + (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
+	new_value = self._freq_range.get_value() +\
+                    (self.adjustmentf.get_upper() -\
+                    self.adjustmentf.get_lower())/100.0
 	if new_value <= self.adjustmentf.get_upper():
 	    self._freq_range.set_value(new_value)
 	else:
@@ -396,7 +398,7 @@ class SoundToolbar(gtk.Toolbar):
         #self.ag.set_bias(True)
         #self.ag.set_capture_gain(self.capture_gain)
         #self.ag.set_mic_boost(self.mic_boost)
-        self.ag.set_sensor_type(1)
+        self.ag.set_sensor_type("sound")
         self.wave.set_fft_mode(False)
         self.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
