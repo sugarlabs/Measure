@@ -14,7 +14,7 @@ class SideToolbar(gtk.DrawingArea):
         self.ag = activity.audiograb
         self.show_toolbar = True
 
-        self.mode = config.SOUND
+        self.mode = config.CONTEXT
 
         self.adjustmenty = gtk.Adjustment(3.0, 0.0, 4.0, 0.1, 0.1, 0.0)
         self.adjustmenty.connect("value_changed", self.cb_page_sizey,
@@ -39,7 +39,7 @@ class SideToolbar(gtk.DrawingArea):
         self.set_show_hide(False)
 
     def cb_page_sizey(self, adjy, data=None):
-        if self.mode == config.SOUND:
+        if self.mode == 'sound':
             if(adjy.value<=1.5):	
                 self.wave.set_mag_params(1.0, adjy.value)        #0dB
                 self.ag.set_capture_gain(0)
@@ -53,11 +53,11 @@ class SideToolbar(gtk.DrawingArea):
                 self.wave.set_mag_params(13.335, adjy.value*4.0) #22.5dB
                 self.ag.set_capture_gain(100)
             self.wave.set_bias_param(0)
-        else:
+        elif self.mode == 'sensor':
             self.wave.set_bias_param(int((adjy.value-2)*300))
         return True	
 
-    def set_show_hide(self, show=True, mode=config.SOUND):
+    def set_show_hide(self, show=True, mode='sound'):
         self.show_toolbar = show
         self.set_mode(mode)
         #self.yscrollbar.show(self.show_toolbar)
@@ -67,10 +67,10 @@ class SideToolbar(gtk.DrawingArea):
 
     def set_mode(self, window_id=1):
         self.mode = window_id
-        if self.mode == config.SOUND:
+        if self.mode == 'sound':
             self.img_high.set_from_file(config.ICONS_DIR + '/amp-high.svg')
             self.img_low.set_from_file(config.ICONS_DIR + '/amp-low.svg')
-        else:
+        elif self.mode == 'sensor':
             self.img_high.set_from_file(config.ICONS_DIR + '/bias-high.svg')
             self.img_low.set_from_file(config.ICONS_DIR + '/bias-low.svg')
         return
