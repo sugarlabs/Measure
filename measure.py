@@ -74,8 +74,10 @@ def _get_hardware():
         return 'unknown'
 
 class MeasureActivity(activity.Activity):
+    """ Oscilliscope Sugar activity """
 
     def __init__(self, handle):
+        """ Init canvas, toolbars, etc. """
 
         activity.Activity.__init__(self, handle)
 
@@ -121,8 +123,8 @@ class MeasureActivity(activity.Activity):
         self.text_box = TextBox()
 
         self.box3 = gtk.HBox(False, 0)
-        self.box3.pack_start(self.wave,True,True,0)
-        self.box3.pack_start(self.side_toolbar.box1,False,True,0)	
+        self.box3.pack_start(self.wave, True, True,0)
+        self.box3.pack_start(self.side_toolbar.box1, False, True, 0)
 
         self.box1 = gtk.VBox(False,0)
         self.box1.pack_start(self.box3, True, True, 0)
@@ -141,35 +143,25 @@ class MeasureActivity(activity.Activity):
         self.wave.set_active(True)
         self.wave.set_context_on()
 
-    def set_show_hide_windows(self, window_id=1):
-        """Shows the appropriate window identified by the window_id
-        1 --> sound
-        2 --> sensors
-        """
-        if window_id==1: 
-            #self.box3.pack_start(self.wave,True,True,0)
-            #self.box3.pack_start(self.side_toolbar.box1,False,True,0)	
-            #self.box3.show_all()
+    def set_show_hide_windows(self, mode='sound'):
+        """Shows the appropriate window identified by the mode """
+        if mode == 'sound': 
             self.wave.set_context_on()
-            # self.side_toolbar.box1.show_all()
-            self.side_toolbar.set_show_hide(True, config.SOUND)
-            self.active_context_status = 1
+            self.side_toolbar.set_show_hide(True, mode)
             return
-	
-        elif window_id==2:
-            #self.box3.pack_start(self.wave,True,True,0)
-            #self.box3.show_all()
+        elif mode == 'sensor':
             self.wave.set_context_on()
-            # self.side_toolbar.box1.hide_all()
-            self.side_toolbar.set_show_hide(True, config.SENSOR)
-            self.active_context_status = 2
+            self.side_toolbar.set_show_hide(True, mode)
             return
 
-    def on_quit(self,data=None):	
+    def on_quit(self,data=None):
+        """Clean up, close journal on quit"""
         self.audiograb.on_activity_quit()	
         self.ji.on_quit()
+        return
 
     def _activeCb( self, widget, pspec ):
+        """ Callback to handle starting/pausing capture when active/idle """
         if(self.first == True):
 	        self.audiograb.start_grabbing()
 	        self.first = False
@@ -182,12 +174,14 @@ class MeasureActivity(activity.Activity):
 
         self.ACTIVE = self.props.active
         self.wave.set_active(self.ACTIVE)
-
+        return
 
     def write_file(self, file_path):
+        """ Write data to journal on quit """
         return
 
     def read_file(self, file_path):
+        """ Read data from journal on start """
         return
 
 gtk.gdk.threads_init()
