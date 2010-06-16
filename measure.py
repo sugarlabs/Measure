@@ -74,10 +74,14 @@ def _get_hardware():
         return 'unknown'
 
 class MeasureActivity(activity.Activity):
-    """ Oscilliscope Sugar activity """
+    """ Oscilloscope Sugar activity """
 
     def __init__(self, handle):
-        """ Init canvas, toolbars, etc. """
+        """ Init canvas, toolbars, etc.
+        The toolbars are in toolbar_top.py and toolbar_side.py
+        The audio controls are in audiograb.py
+        The rendering happens in drawwaveform.py
+        Logging (Journal interactions) are in journal.py """
 
         activity.Activity.__init__(self, handle)
 
@@ -91,7 +95,7 @@ class MeasureActivity(activity.Activity):
 
         self.active_status = True
         self.ACTIVE = True
-        self.connect( "notify::active", self._activeCb )
+        self.connect("notify::active", self._active_cb)
         self.connect("destroy", self.on_quit)	
 
         if self._jobject.file_path:
@@ -160,7 +164,7 @@ class MeasureActivity(activity.Activity):
         self.ji.on_quit()
         return
 
-    def _activeCb( self, widget, pspec ):
+    def _active_cb( self, widget, pspec ):
         """ Callback to handle starting/pausing capture when active/idle """
         if(self.first == True):
 	        self.audiograb.start_grabbing()
