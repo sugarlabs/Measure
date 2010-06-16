@@ -53,20 +53,6 @@ class Toolbar(ActivityToolbox):
             self.add_toolbar(_('Sensors'), self._sensors_toolbar)
             self._sensors_toolbar.show()
 
-        """
-        self._camera_toolbar = CameraToolbar(activity, camera_ui)
-        self.add_toolbar('Camera', self._camera_toolbar)
-        self._camera_toolbar.show()
-
-        self._wifi_toolbar = MeasureToolbar(wave, audiograb)
-        self.add_toolbar('Wireless', self._wifi_toolbar)
-        self._wifi_toolbar.show()
-
-        self._log_toolbar = LogToolbar(audiograb, journal, activity)
-        self.add_toolbar('Log View', self._log_toolbar)
-        self._log_toolbar.show()
-        """
-
         self.connect("current-toolbar-changed", self._toolbar_changed_cb)
         self.wave = activity.wave
         self.activity = activity
@@ -88,25 +74,5 @@ class Toolbar(ActivityToolbox):
             self._sensors_toolbar.context_on()
 
         config.CONTEXT = TOOLBAR[num]
-
-        """
-        # for when we implement other sensors
-        elif num==3:                            #Camera
-	        self.activity.set_show_hide_windows(1)
-	        self._sound_toolbar.context_off()
-	        self.wave.set_context_off()
-	        time.sleep(0.5)
-	        self._camera_toolbar.set_context_on()
-        elif num==4:        
-	        self.wave.set_context_off()
-	        self._sound_toolbar.context_off()
-	        self._camera_toolbar.set_context_off()
-	        time.sleep(0.5)
-        elif num==5:
-	        self.wave.set_context_off() 
-	        self._sound_toolbar.context_off()
-	        self._camera_toolbar.set_context_off()
-	        time.sleep(0.5)
-        """
         return True
 
