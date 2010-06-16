@@ -223,7 +223,7 @@ class SensorToolbar(gtk.Toolbar):
             return False
 
     def _invert_control_cb(self, data=None):
-        """ Callback for Intert Button """
+        """ Callback for Invert Button """
         if self.wave.get_invert_state()==True:
             self.wave.set_invert_state(False)
             self._invert.set_icon('invert')
@@ -234,10 +234,6 @@ class SensorToolbar(gtk.Toolbar):
             self._invert.show()
         self._update_string_for_textbox()
         return False
-
-    def get_mode(self):
-        """ Resistance or voltage mode? """
-        return self.mode
 
     def set_mode(self, mode='resistance'):
         """ Set the mixer settings to match the current mode. """
