@@ -162,7 +162,7 @@ class AudioGrab:
                 self.logging_state = False
                 self.ji.stop_session()
                 self.waveform_id = 1
-        if config.CONTEXT == config.SENSOR:
+        if config.CONTEXT == 'sensor':
             try:
                 self.sensor.set_sample_value(str(temp_buffer[0]))
             except:

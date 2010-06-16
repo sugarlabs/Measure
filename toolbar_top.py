@@ -44,9 +44,6 @@ class Toolbar(ActivityToolbox):
 
         ActivityToolbox.__init__(self, activity)
 
-        self._SOUND_TOOLBAR = config.SOUND
-        self._SENSOR_TOOLBAR = config.SENSOR
-
         self._sound_toolbar = SoundToolbar(activity)
         self.add_toolbar(_('Sound'), self._sound_toolbar)
         self._sound_toolbar.show()
@@ -74,31 +71,27 @@ class Toolbar(ActivityToolbox):
         self.wave = activity.wave
         self.activity = activity
         self.toolbar_active_id = 1
-        self.set_current_toolbar(self._SOUND_TOOLBAR)
+        self.set_current_toolbar('sound')
 
 
     def _toolbar_changed_cb(self, tbox, num):
         """ Callback for changing the primary toolbar  """
-        if num==0:                              #Activity
-	        pass
-
-        elif num==self._SOUND_TOOLBAR:          #Sound
-            self.activity.set_show_hide_windows(self._SOUND_TOOLBAR)
+        if config.TOOLBAR[num]=='sound':
+            self.activity.set_show_hide_windows(config.TOOLBAR[num])
             if _is_xo(self.activity.hw):
                 self._sensors_toolbar.context_off()
             time.sleep(0.5)
             self._sound_toolbar.context_on()
-            config.CONTEXT = self._SOUND_TOOLBAR
-
-        elif num==self._SENSOR_TOOLBAR:         #Sensor
+        elif config.TOOLBAR[num]=='sensor':
+            self.activity.set_show_hide_windows(config.TOOLBAR[num])
             self._sound_toolbar.context_off()
             time.sleep(0.5)
             self._sensors_toolbar.context_on()
-            self.activity.set_show_hide_windows(self._SENSOR_TOOLBAR)
-            config.CONTEXT = self._SENSOR_TOOLBAR
 
+        config.CONTEXT = TOOLBAR[num]
         self.toolbar_active_id = num
         """
+        # for when we implement other sensors
         elif num==3:                            #Camera
 	        self.activity.set_show_hide_windows(1)
 	        self._sound_toolbar.context_off()

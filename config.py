@@ -51,10 +51,11 @@ QUIT_CAPTURE_GAIN = 100
 QUIT_BIAS = True
 QUIT_PCM = 70
 
+#Toolbars
+TOOLBARS = ['project','sound','sensor']
+
 #Which context is active on start
-SOUND = 1
-SENSOR = 2
-CONTEXT = SOUND
+CONTEXT = 'sound'
 
 #How many maximum screenshots Measure will save while recording in Sound context
 SOUND_MAX_WAVE_LOGS = 10

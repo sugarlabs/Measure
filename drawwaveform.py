@@ -105,7 +105,7 @@ class DrawWaveform(gtk.DrawingArea):
         self._TRIGGER_LINE_THICKNESS = 3
         self._FOREGROUND_LINE_THICKNESS = 6
 
-        self.logging_status = False
+        # self.logging_status = False
         self.f = None
         self.stop = False
         self.fft_show = False
@@ -412,7 +412,7 @@ class DrawWaveform(gtk.DrawingArea):
                             return True
 
                     ################Scaling the values###################
-                    if config.CONTEXT == 2:
+                    if config.CONTEXT == 'sensor':
                         self.y_mag = 1.0
 
                     if self.invert:
