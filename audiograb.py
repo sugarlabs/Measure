@@ -40,8 +40,8 @@ logging.basicConfig()
 
 SENSOR_AC_NO_BIAS = 0
 SENSOR_AC_BIAS = 1
-SENSOR_DC_NO_BIAS = 2
-SENSOR_DC_BIAS = 3
+SENSOR_DC_NO_BIAS = 'voltage'
+SENSOR_DC_BIAS = 'resistance'
 
 class AudioGrab:
     """ The interface between measure and the audio device """
@@ -648,11 +648,14 @@ class AudioGrab:
             SENSOR_DC_BIAS: (True, True, 0, False),
         }
         mode, bias, gain, boost = PARAMETERS[sensor_type]
+        log.debug("====================================")
+        log.debug("Set Sensor Type to %d" % (sensor_type))
         self._set_sensor_type(mode, bias, gain, boost)
+        log.debug("====================================")
         return
 
     def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
-        """Helper to modify (some) of the sensor settings."""
+        """Helper to modify (some) of the sensor settings."""  
         if mode is not None:
             self.set_dc_mode(mode)
         if bias is not None:
@@ -683,8 +686,11 @@ class AudioGrab_XO_1_5(AudioGrab):
             SENSOR_DC_NO_BIAS: (True, False, 0, False),
             SENSOR_DC_BIAS: (True, True, 0, False),
         }
+        log.debug("====================================")
+        log.debug("Set Sensor Type to %d" % (sensor_type))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
+        log.debug("====================================")
         return
 
 class AudioGrab_Unknown(AudioGrab):
@@ -693,6 +699,9 @@ class AudioGrab_Unknown(AudioGrab):
             SENSOR_AC_NO_BIAS: (None, False, 50, True),
             SENSOR_AC_BIAS: (None, True, 40, True),
         }
+        log.debug("====================================")
+        log.debug("Set Sensor Type to %d" % (sensor_type))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
+        log.debug("====================================")
         return

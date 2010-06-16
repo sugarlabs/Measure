@@ -242,10 +242,7 @@ class SensorToolbar(gtk.Toolbar):
     def set_mode(self, mode='resistance'):
         """ Set the mixer settings to match the current mode. """
         self.mode = mode
-        if self.mode=='resistance':
-            self.ag.set_sensor_type(3) # bias on
-        else:
-            self.ag.set_sensor_type(2) # bias off
+        self.ag.set_sensor_type(self.mode)
         return 
 
     def context_off(self):
@@ -255,10 +252,7 @@ class SensorToolbar(gtk.Toolbar):
     def context_on(self):
         """ Called when sensor toolbar is selected. """
         self.ag.resume_grabbing()
-        if self.get_mode() == 'voltage':
-            self.ag.set_sensor_type(2)
-        else:
-            self.ag.set_sensor_type(3)
+        self.ag.set_sensor_type(self.mode)
         self._update_string_for_textbox()
         self.wave.set_trigger(self.wave.TRIGGER_NONE)
 
