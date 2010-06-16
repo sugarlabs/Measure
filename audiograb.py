@@ -58,7 +58,7 @@ class AudioGrab:
 
         self.draw_graph_status = False
         self.f = None
-        self.logging_status = False
+        # self.logging_status = False
         self.screenshot = True
 
         self.rate = 48000		
@@ -118,11 +118,11 @@ class AudioGrab:
         self.capture_gain  = config.CAPTURE_GAIN
         self.mic_boost = config.MIC_BOOST
         self.mic = self.get_mic_gain()
-        return
 
         # Timer for interval sampling and switch to indicate when to capture
         self.capture_timer = None
         self.capture_interval_sample = False
+        return
 
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
