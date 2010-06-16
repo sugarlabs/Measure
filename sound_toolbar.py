@@ -2,7 +2,7 @@
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009,10 Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #    
 #    This program is free software; you can redistribute it and/or modify
@@ -48,6 +48,7 @@ log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
 class SoundToolbar(gtk.Toolbar):
+    """ Set up the toolbar for audio (analog) capture mode """
 
     SAMPLE_NOW = "Capture now"
     SAMPLE_30_SEC = "Every 30 sec."
@@ -56,7 +57,7 @@ class SoundToolbar(gtk.Toolbar):
     SAMPLE_30_MIN = "Every 30 min."
 
     def __init__(self, activity):
-
+        """ Initialize the toolbar controls. """
         gtk.Toolbar.__init__(self)
 
         self.wave = activity.wave
@@ -85,29 +86,27 @@ class SoundToolbar(gtk.Toolbar):
         self.capture_gain = config.CAPTURE_GAIN
         self.mic_boost = config.MIC_BOOST
 
-        self.logging_status = False
+        # self.logging_status = False
         self._record = None
 
-        ###################### time ########################
+        # Set up Time-domain Button
         self._time = ToolButton('domain-time2')
         self.insert(self._time, -1)
         self._time.set_tooltip(_('Time Base'))
         self._time.connect('clicked', self._timefreq_control_cb, True)
-        ####################################################
 
-        ###################### frequency ###################
+        # Set up Frequency-domain Button
         self._freq = ToolButton('domain-freq')
         self.insert(self._freq, -1)
         self._freq.show()
         self._freq.set_tooltip(_('Frequency Base'))
         self._freq.connect('clicked', self._timefreq_control_cb, False)
-        ####################################################
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
-        ################ frequency control #################
+        # Set up Frequency-control Slider and corresponding buttons
         self._freq_stepper_up = ToolButton('freq-high')
         self._freq_stepper_up.set_tooltip(_('Zoom out'))
         self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
@@ -131,18 +130,15 @@ class SoundToolbar(gtk.Toolbar):
         self.insert(self._freq_range_tool, -1)
         self.insert(self._freq_stepper_down, -1)
 
-        ####################################################
-
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
-        ################## pause button ####################
+        # Set up the Pause Button
         self._pause = ToolButton('media-playback-pause')
         self.insert(self._pause, -1)
         self._pause.set_tooltip(_('Freeze the display'))
         self._pause.connect('clicked', self._pauseplay_control_cb)
-        ####################################################
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
@@ -155,8 +151,7 @@ class SoundToolbar(gtk.Toolbar):
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool,-1)
         
-
-        ################# Logging Interval #################
+        # Set up the Logging-interval Combo box
         self._loginterval_combo = ComboBox()
         self.interval = [_(self.SAMPLE_NOW),
                          _(self.SAMPLE_30_SEC), 
@@ -165,7 +160,7 @@ class SoundToolbar(gtk.Toolbar):
                          _(self.SAMPLE_30_MIN) ]
         try:
             self._loginterval_combo.set_tooltip_text("Sampling interval")
-        except AttributeError:
+        except:
             pass
         
         self._interval_changed_id = self._loginterval_combo.connect("changed",
@@ -179,21 +174,19 @@ class SoundToolbar(gtk.Toolbar):
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
         self.insert(self._loginterval_tool,-1)
         self.logginginterval_status = 'picture'		
-        ####################################################
 
-        ############## Start Logging/Stop Logging ##########
+        # Set up Start/Stop Logging Button
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
         self._record.set_tooltip(_('Capture sample now'))
         
         self._record.connect('clicked', self.record_control)
-        ####################################################
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
-        ################# Trigger Setup #################
+        # Set up Trigger Combo box
         self._trigger_combo = ComboBox()
         self.trigger = [_('None'), _('Rising Edge') , _('Falling Edge') ]
         self.trigger_conf = [self.wave.TRIGGER_NONE, self.wave.TRIGGER_POS,
@@ -211,6 +204,7 @@ class SoundToolbar(gtk.Toolbar):
         self.show_all()
 
         self._update_page_size()
+        return
 
     def record_control(self, data=None):
         """Depending upon the selected interval, either starts/stops
@@ -228,7 +222,7 @@ class SoundToolbar(gtk.Toolbar):
                                       self.logginginterval_status)
             self.ag.set_logging_params(True, interval, True)
             config.LOGGING_IN_SESSION = True
-            self.logging_status = True
+            # self.logging_status = True
             self._record.set_icon('record-stop')
             self._record.show()
             if interval==0:
@@ -238,13 +232,14 @@ class SoundToolbar(gtk.Toolbar):
                 config.LOGGING_IN_SESSION = False
                 self.logging_status = False
         else:
-            if self.logging_status == True:
-                self.ag.set_logging_params(False)
-                config.LOGGING_IN_SESSION = False
-                self.logging_status = False
-                self._record.set_icon('media-record')
-                self._record.show()
+            # if self.logging_status == True:
+            self.ag.set_logging_params(False)
+            config.LOGGING_IN_SESSION = False
+            # self.logging_status = False
+            self._record.set_icon('media-record')
+            self._record.show()
         self._set_record_button_tooltip()
+        return
 
     def interval_convert(self):
         """Converts picture/time interval to an integer which denotes the number
@@ -270,15 +265,16 @@ class SoundToolbar(gtk.Toolbar):
         if (self._loginterval_combo.get_active() != -1):
             if (self._loginterval_combo.get_active() == 0):
                 self.logginginterval_status = 'picture'		
-            if (self._loginterval_combo.get_active() == 1):
+            elif (self._loginterval_combo.get_active() == 1):
                 self.logginginterval_status = '30second'		
-            if (self._loginterval_combo.get_active() == 2):
+            elif (self._loginterval_combo.get_active() == 2):
                 self.logginginterval_status = '2minute'		
-            if (self._loginterval_combo.get_active() == 3):
+            elif (self._loginterval_combo.get_active() == 3):
                 self.logginginterval_status = '10minute'		
-            if (self._loginterval_combo.get_active() == 4):
+            elif (self._loginterval_combo.get_active() == 4):
                 self.logginginterval_status = '30minute'
             self._set_record_button_tooltip()
+        return
 
     def _set_record_button_tooltip(self):
         """ Determines the tool tip for the record button. The tool tip	
@@ -293,15 +289,19 @@ class SoundToolbar(gtk.Toolbar):
                 self._record.set_tooltip(_('Capture sample now'))
             else:
                 self._record.set_tooltip(_('Start sampling'))
+        return
 
     def update_trigger_control(self, *args):
+        """ Callback for trigger control """
         active = self._trigger_combo.get_active()
         if active == -1:
             return
 
         self.wave.set_trigger(self.trigger_conf[active])
+        return
 
     def _pauseplay_control_cb(self, data=None):
+        """ Callback for Pause Button """
         if self.ag.get_freeze_the_display()==True:
             self.ag.set_freeze_the_display(False)
             self._pause.set_icon('media-playback-pause-insensitive')
@@ -315,6 +315,7 @@ class SoundToolbar(gtk.Toolbar):
         return False
 
     def _timefreq_control_cb(self, data=None, time_state=True):
+        """ Callback for Time and Freq. Buttons """
         if time_state==True and self.wave.get_fft_mode()==True:
             self.wave.set_fft_mode(False)
             self._time.set_icon('domain-time2')
@@ -400,6 +401,7 @@ class SoundToolbar(gtk.Toolbar):
         self.update_trigger_control()
 
     def _update_string_for_textbox(self):
+        """ Update the text at the bottom of the canvas """
         if self.wave.get_fft_mode() == False:
             self._STR_SCALEX = self._STR_XAXIS_TEXT % \
                 {'unit': self._ms, 'division': self.wave.time_div*1000} 
