@@ -69,7 +69,7 @@ class SensorToolbar(gtk.Toolbar):
         self.textbox_copy = activity.text_box
         self.ji = activity.ji
     
-        self.logging_status = False
+        # self.logging_status = False
 
         # Set up Resistance Button 
         self._resistance = ToolButton('bias-on2')
@@ -164,20 +164,20 @@ class SensorToolbar(gtk.Toolbar):
                                       self.logginginterval_status)
             self.ag.set_logging_params(True, interval, False)
             config.LOGGING_IN_SESSION = True
-            self.logging_status = True
+            # self.logging_status = True
             self._record.set_icon('record-stop')
             self._record.show()
             self._record.set_tooltip(_('Stop Recording'))
         else:
-            if self.logging_status == True: 
-                self.ag.set_logging_params(False)
-                time.sleep(0.2)
-                self.ji.stop_session()                
-                config.LOGGING_IN_SESSION = False
-                self.logging_status = False
-                self._record.set_icon('media-record')
-                self._record.show()
-                self._record.set_tooltip(_('Start Recording'))
+            # if self.logging_status == True: 
+            self.ag.set_logging_params(False)
+            time.sleep(0.2)
+            self.ji.stop_session()                
+            config.LOGGING_IN_SESSION = False
+            # self.logging_status = False
+            self._record.set_icon('media-record')
+            self._record.show()
+            self._record.set_tooltip(_('Start Recording'))
 
     def interval_convert(self):
         """Converts interval string to an integer that denotes the number
