@@ -83,10 +83,6 @@ class SideToolbar(gtk.DrawingArea):
         self.show_toolbar = show
         self.set_mode(mode)
 
-    def get_show_hide(self):
-        """ Return toolbar visibility """
-        return self.show_toolbar
-
     def set_mode(self, mode='sound'):
         """ Set the toolbar to either 'sound' or 'sensor' """
         self.mode = mode
