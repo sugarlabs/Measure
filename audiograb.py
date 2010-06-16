@@ -676,10 +676,13 @@ class AudioGrab:
         return
 
 class AudioGrab_XO_1(AudioGrab):
+    """ Use default parameters for OLPC XO 1.0 laptop """
     pass
 
 class AudioGrab_XO_1_5(AudioGrab):
+    """ Override parameters for OLPC XO 1.5 laptop """
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        """Helper to modify (some) of the sensor settings."""  
         PARAMETERS = {
             SENSOR_AC_NO_BIAS: (False, False, 80, True),
             SENSOR_AC_BIAS: (False, True, 80, True),
@@ -694,7 +697,9 @@ class AudioGrab_XO_1_5(AudioGrab):
         return
 
 class AudioGrab_Unknown(AudioGrab):
+    """ Override parameters for generic hardware """
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        """Helper to modify (some) of the sensor settings."""  
         PARAMETERS = {
             SENSOR_AC_NO_BIAS: (None, False, 50, True),
             SENSOR_AC_BIAS: (None, True, 40, True),
