@@ -162,6 +162,11 @@ class AudioGrab:
                 self.logging_state = False
                 self.ji.stop_session()
                 self.waveform_id = 1
+        if config.CONTEXT == config.SENSOR:
+            try:
+                self.sensor.set_sample_value(str(temp_buffer[0]))
+            except:
+                pass
         return False
 
     def set_freeze_the_display(self, freeze=False):
@@ -649,7 +654,7 @@ class AudioGrab:
         }
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         log.debug("====================================")
-        log.debug("Set Sensor Type to %d" % (sensor_type))
+        log.debug("Set Sensor Type to %s" % (str(sensor_type)))
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug("====================================")
         return
@@ -690,7 +695,7 @@ class AudioGrab_XO_1_5(AudioGrab):
             SENSOR_DC_BIAS: (True, True, 0, False),
         }
         log.debug("====================================")
-        log.debug("Set Sensor Type to %d" % (sensor_type))
+        log.debug("Set Sensor Type to %s" % (str(sensor_type)))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug("====================================")
@@ -705,7 +710,7 @@ class AudioGrab_Unknown(AudioGrab):
             SENSOR_AC_BIAS: (None, True, 40, True),
         }
         log.debug("====================================")
-        log.debug("Set Sensor Type to %d" % (sensor_type))
+        log.debug("Set Sensor Type to %s" % (str(sensor_type)))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug("====================================")
