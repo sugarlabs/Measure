@@ -70,6 +70,6 @@ class Toolbar(ActivityToolbox):
             time.sleep(0.5)
             self._sensors_toolbar.context_on()
 
-        config.CONTEXT = TOOLBARS[num]
+        config.CONTEXT = config.TOOLBARS[num]
         return True
 
