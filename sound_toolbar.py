@@ -355,6 +355,7 @@ class SoundToolbar(gtk.Toolbar):
 	    self._freq_range.set_value(self.adjustmentf.get_lower())
 
     def cb_page_sizef(self, data=None):
+        """ Callback to scale the 'page size' (zoom in and out) """
         if self._update_page_size_id:
             gobject.source_remove(self._update_page_size_id)
         self._update_page_size_id = \
@@ -362,6 +363,7 @@ class SoundToolbar(gtk.Toolbar):
         return True
 
     def _update_page_size(self):
+        """ Set up the scaling of the display """
         self._update_page_size_id = None
 
         new_value = round(self.adjustmentf.value*100.0)/100.0
