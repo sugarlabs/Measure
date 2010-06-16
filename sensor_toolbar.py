@@ -52,8 +52,8 @@ class SensorToolbar(gtk.Toolbar):
         self._STR_BASIC = \
         _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
         + " "
-        self._STR_R = _("Bias/Offset Enabled") + " (Ω) "
-        self._STR_V = _("Bias/Offset Disabled") + " (V) "
+        self._STR_R = _("Bias/Offset Enabled") + " " + _("Ohms") + " "
+        self._STR_V = _("Bias/Offset Disabled") + " " + _("Volts") + " "
         self._STR_I = _(" Invert") + " "
 
         self.gain_state = None
