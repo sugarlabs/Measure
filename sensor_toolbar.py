@@ -236,7 +236,7 @@ class SensorToolbar(gtk.Toolbar):
         return False
 
     def get_mode(self):
-        """ Resitive or voltage mode? """
+        """ Resistance or voltage mode? """
         return self.mode
 
     def set_mode(self, mode='resistance'):
