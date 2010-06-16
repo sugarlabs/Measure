@@ -29,7 +29,6 @@ from sugar.activity.activity import ActivityToolbox
 
 from sound_toolbar import SoundToolbar
 from sensor_toolbar import SensorToolbar
-# from logging_ui import LogToolbar
 from gettext import gettext as _
 
 def _is_xo(hw):
@@ -59,13 +58,13 @@ class Toolbar(ActivityToolbox):
 
     def _toolbar_changed_cb(self, tbox, num):
         """ Callback for changing the primary toolbar  """
-        if config.TOOLBAR[num]=='sound':
+        if config.TOOLBAR[num] == 'sound':
             self.activity.set_show_hide_windows(config.TOOLBAR[num])
             if _is_xo(self.activity.hw):
                 self._sensors_toolbar.context_off()
             time.sleep(0.5)
             self._sound_toolbar.context_on()
-        elif config.TOOLBAR[num]=='sensor':
+        elif config.TOOLBAR[num] == 'sensor':
             self.activity.set_show_hide_windows(config.TOOLBAR[num])
             self._sound_toolbar.context_off()
             time.sleep(0.5)
