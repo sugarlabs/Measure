@@ -71,7 +71,7 @@ class Toolbar(ActivityToolbox):
         self.wave = activity.wave
         self.activity = activity
         self.toolbar_active_id = 1
-        self.set_current_toolbar('sound')
+        self.set_current_toolbar(config.TOOLBARS.index('sound'))
 
 
     def _toolbar_changed_cb(self, tbox, num):
