@@ -2,7 +2,7 @@
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009,10 Walter Bender
 #    
 #    	
 #    This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from gettext import gettext as _
 
 def _is_xo(hw):
     """ Return True if this is xo hardware """
-    return hw in ['xo1','xo1.5']:
+    return hw in ['xo1','xo1.5']
 
 class Toolbar(ActivityToolbox):
 
@@ -58,18 +58,18 @@ class Toolbar(ActivityToolbox):
 
     def _toolbar_changed_cb(self, tbox, num):
         """ Callback for changing the primary toolbar  """
-        if config.TOOLBAR[num] == 'sound':
-            self.activity.set_show_hide_windows(config.TOOLBAR[num])
+        if config.TOOLBARS[num] == 'sound':
+            self.activity.set_show_hide_windows(config.TOOLBARS[num])
             if _is_xo(self.activity.hw):
                 self._sensors_toolbar.context_off()
             time.sleep(0.5)
             self._sound_toolbar.context_on()
-        elif config.TOOLBAR[num] == 'sensor':
-            self.activity.set_show_hide_windows(config.TOOLBAR[num])
+        elif config.TOOLBARS[num] == 'sensor':
+            self.activity.set_show_hide_windows(config.TOOLBARS[num])
             self._sound_toolbar.context_off()
             time.sleep(0.5)
             self._sensors_toolbar.context_on()
 
-        config.CONTEXT = TOOLBAR[num]
+        config.CONTEXT = TOOLBARS[num]
         return True
 
