@@ -70,9 +70,8 @@ class Toolbar(ActivityToolbox):
         self.connect("current-toolbar-changed", self._toolbar_changed_cb)
         self.wave = activity.wave
         self.activity = activity
-        self.toolbar_active_id = 1
         self.set_current_toolbar(config.TOOLBARS.index('sound'))
-
+        return
 
     def _toolbar_changed_cb(self, tbox, num):
         """ Callback for changing the primary toolbar  """
@@ -89,7 +88,7 @@ class Toolbar(ActivityToolbox):
             self._sensors_toolbar.context_on()
 
         config.CONTEXT = TOOLBAR[num]
-        self.toolbar_active_id = num
+
         """
         # for when we implement other sensors
         elif num==3:                            #Camera
@@ -110,15 +109,4 @@ class Toolbar(ActivityToolbox):
 	        time.sleep(0.5)
         """
         return True
-
-
-    def get_which_toolbar_active(self):
-        """Returns which toolbar is active
-        Activity toolbar - 1
-        Sound toolbar 	 - 2
-        Sensors toolbar  - 3
-        """
-        return self.toolbar_active_id
-
-
 
