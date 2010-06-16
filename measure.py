@@ -165,12 +165,6 @@ class MeasureActivity(activity.Activity):
             self.active_context_status = 2
             return
 
-    def get_show_hide_windows(self):
-        """Gets which window is being shown
-        If 0 is returned means waveform window is being shown
-        If 1 is returned means camera context"""
-        return self.active_context_status
-
     def on_quit(self,data=None):	
         self.audiograb.on_activity_quit()	
         self.ji.on_quit()
