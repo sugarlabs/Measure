@@ -24,7 +24,6 @@ import gtk
 import cairo
 import gobject
 import time
-import pango
 import os
 import audioop
 import math
@@ -33,12 +32,12 @@ from ringbuffer import RingBuffer1d
 from gtk import gdk
 try:
     import gconf
-except:
+except ImportError: # older Sugar didn't use gconf
     from sugar import profile
 
 from gettext import gettext as _
 
-import config  	#This has all the globals
+import config
 
 
 class DrawWaveform(gtk.DrawingArea):
@@ -74,11 +73,11 @@ class DrawWaveform(gtk.DrawingArea):
 
         self._tick_size = 50
 
-        self.rms=''
-        self.avg=''
-        self.pp=''
-        self.count=0
-        self.invert=True
+        self.rms = ''
+        self.avg = ''
+        self.pp = ''
+        self.count = 0
+        self.invert = False
 
         self.y_mag = 3.0
         self.gain = 1.0  # (not in dB) introduced by Capture Gain and Mic Boost
@@ -115,21 +114,19 @@ class DrawWaveform(gtk.DrawingArea):
         self.scaleY = ""
 
         self._back_surf = None        
-        self.pango_context = self.create_pango_context()
-        #self.font_desc = pango.FontDescription('Serif 6')
         self.expose_event_id = self.connect("expose_event", self._expose)
 
         self.pr_time = 0
-        self.MAX_GRAPHS = config.MAX_GRAPHS     #Maximum simultaneous graphs
+        self.MAX_GRAPHS = config.MAX_GRAPHS     # Maximum simultaneous graphs
 
-        self.graph_show_state=[]
-        self.Xstart =[]
+        self.graph_show_state = []
+        self.Xstart = []
         self.Ystart = []
-        self.Xend  = []
-        self.Yend  = []
-        self.type   = []
-        self.color  = []
-        self.source    = []
+        self.Xend = []
+        self.Yend = []
+        self.type = []
+        self.color = []
+        self.source = []
         self.graph_id = []
 
         for x in range (0, self.MAX_GRAPHS):
@@ -148,8 +145,12 @@ class DrawWaveform(gtk.DrawingArea):
         self.Ystart[0] = 0
         self.Xend[0] = 1150
         self.Yend[0] = 750
-        self.type[0]  = 0
-        self.color[0]  = self.get_stroke_color_from_sugar()
+        self.type[0] = 0
+
+        if config.SUGAR:
+            self.color[0] = self.get_stroke_color_from_sugar()
+        else:
+            self.color[0] = '#ffffff'
         self.source[0] = 0
 
         """
@@ -204,6 +205,7 @@ class DrawWaveform(gtk.DrawingArea):
         new_buffer.append(self.ringbuffer.read())
         self.ringbuffer = new_buffer
         self.max_samples = num
+        return
 
     def new_buffer(self, buf):
         """ Append a new buffer to the ringbuffer """
@@ -211,20 +213,25 @@ class DrawWaveform(gtk.DrawingArea):
         return True
 
     def set_context_on(self):
+        """ Return to an active state (context on) """
         if not self.context:
             self.handler_unblock(self.expose_event_id)
         self.context = True
         self._indirect_queue_draw()
+        return
 
     def set_context_off(self):
+        """ Return to an inactive state (context off) """
         if self.context:
             self.handler_block(self.expose_event_id)
         self.context = False
         self._indirect_queue_draw()
+        return
 
     def set_invert_state(self, invert_state):
         """ In sensor mode, we can invert the plot """
         self.invert = invert_state
+        return
 
     def get_invert_state(self):
         """ Return the current state of the invert flag """
@@ -236,22 +243,28 @@ class DrawWaveform(gtk.DrawingArea):
         return self.draw_interval
 
     def do_size_allocate(self, allocation):
+        """ Allocate a drawing area for the plot """
         gtk.DrawingArea.do_size_allocate(self, allocation)
         self._update_mode()
         if self.window is not None:
             self._create_background_pixmap()
+        return
 
     def _indirect_queue_draw(self):
-        if self.window == None:
+        if self.window is None:
             return
         self.window.property_change(self._redraw_atom, self._redraw_atom,
             32, gtk.gdk.PROP_MODE_REPLACE, []);
+        return
 
     def do_property_notify_event(self, event):
         if event.atom == self._redraw_atom:
             self.queue_draw()
+        return
 
     def do_realize(self):
+        """ Some initializations upon first 'realizing' the drawing area """
+
         gtk.DrawingArea.do_realize(self)
         # force a native X window to exist
         xid = self.window.xid
@@ -270,7 +283,10 @@ class DrawWaveform(gtk.DrawingArea):
 
             self._line_gc[graph_id].set_foreground(clr)
   
-        r, g, b = self.get_stroke_color_from_sugar()
+        if config.SUGAR:
+            r, g, b = self.get_stroke_color_from_sugar()
+        else:
+            r = g = b = 255
         clr = colormap.alloc_color(r, g, b, False, False)
 
         self._trigger_line_gc = self.window.new_gc(foreground=clr)
@@ -281,17 +297,16 @@ class DrawWaveform(gtk.DrawingArea):
         self._trigger_line_gc.set_foreground(clr)
 
         self._create_background_pixmap()
+        return
 
     def _create_background_pixmap(self):
-        # Background pixmap
+        """ Draw the gridlines for the plot """
+
         back_surf = gdk.Pixmap(self.window, self._tick_size, self._tick_size)
         cr = back_surf.cairo_create()
-
-        #background
         cr.set_source_rgb(0, 0, 0)
         cr.paint()
 
-        #grid
         cr.set_line_width(self._BACKGROUND_LINE_THICKNESS)
         cr.set_source_rgb(0.2, 0.2, 0.2)
 
@@ -316,8 +331,10 @@ class DrawWaveform(gtk.DrawingArea):
 
         del cr
         self.window.set_back_pixmap(back_surf, False)
+        return
 
     def do_button_press_event(self, event):
+        """ Set the trigger postion on a button-press event """
         self.trigger_xpos = event.x / float(self.allocation.width)
         self.trigger_ypos = event.y / float(self.allocation.height)
         return True
@@ -455,22 +472,15 @@ class DrawWaveform(gtk.DrawingArea):
                     ############################################################
 
             self._indirect_queue_draw()
-        """
-        ## DISPLAYING FRAMERATE FOR DEBUGGGIN
-        fr = 1.0/( time.time()-self.pr_time)
-        self.pr_time=time.time()
-        layout = pango.Layout(self.pango_context)
-        layout.set_text(str(fr) +self.debug_str)
-        self.window.draw_layout(self.get_style().white_gc, self.t_x, self.t_y,\
-                                layout)
-        """
         return True
 
+    """
     def set_side_toolbar_reference(self, side_toolbar):
         self.side_toolbar_copy = side_toolbar
 
     def set_electrical_ui_reference(self, electrical_ui):
         self.electrical_ui_copy = electrical_ui
+    """
 
     def set_graph_source(self, graph_id, source=0):
         """Sets from where the graph will get data 
@@ -479,8 +489,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.source[graph_id] = source
 
     def set_div(self, time_div=0.0001, freq_div=10):
-        """Set division
-        """        
+        """ Set division """        
         self.time_div = time_div
         self.freq_div = freq_div
 
@@ -558,16 +567,20 @@ class DrawWaveform(gtk.DrawingArea):
                 color = client.get_string("/desktop/sugar/user/color")
             except:
                 color = profile.get_color().to_string()
+
+            if color == None:
+                return(255, 255, 255)
+
             stroke,fill = color.split(",")
             colorstring = stroke.strip()
             if colorstring[0] == '#': 
                 colorstring = colorstring[1:]
-	        r,g,b = colorstring[:2], colorstring[2:4], colorstring[4:]
-	        r+=r
-	        g+=g
-	        b+=b
-	        r,g,b = [int(n, 16) for n in (r,g,b)]
-	        self.stroke_color = (r,g,b)
+	        r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
+	        r += r
+	        g += g
+	        b += b
+	        r, g, b = [int(n, 16) for n in (r, g, b)]
+	        self.stroke_color = (r, g, b)
 
         return self.stroke_color
 

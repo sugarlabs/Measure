@@ -1,6 +1,6 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009, Walter Bender
+#    Copyright (C) 2009,10 Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #    	
 #    This program is free software; you can redistribute it and/or modify
@@ -22,9 +22,16 @@ Global configuration for Measure.
 """
 
 import os
-from sugar.activity import activity
+try:
+    from sugar.activity import activity
+    SUGAR = True
+except ImportError:
+    SUGAR = False
 
-MEASURE_ROOT = activity.get_bundle_path()
+if SUGAR:
+    MEASURE_ROOT = activity.get_bundle_path()
+else:
+    MEASURE_ROOT = os.environ['HOME']
 ICONS_DIR = os.path.join(MEASURE_ROOT, 'icons')
 
 #Multiplied with width and height to set placement of text

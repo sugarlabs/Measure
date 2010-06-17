@@ -92,6 +92,7 @@ class AudioGrab:
         self.dont_queue_the_buffer = False
 
         self._mixer = gst.element_factory_make('alsamixer')
+        print self._mixer
         rc = self._mixer.set_state(gst.STATE_PAUSED)
         assert rc == gst.STATE_CHANGE_SUCCESS
 
@@ -102,8 +103,9 @@ class AudioGrab:
             self._dc_control = self._find_control(['dc mode'])
             self._mic_bias_control = self._find_control(['mic bias',
                                                          'dc input bias',
-                                                         'V_REFOUT'])
+                                                         'v_refout'])
             self._mic_boost_control = self._find_control(['mic boost',
+                                                          'internal mic boost',
                                                           'analog mic boost'])
             self._mic_gain_control = self._find_control(['mic'])
             self._capture_control = self._find_control(['capture'])
@@ -691,8 +693,8 @@ class AudioGrab_XO_1_5(AudioGrab):
         PARAMETERS = {
             SENSOR_AC_NO_BIAS: (False, False, 80, True),
             SENSOR_AC_BIAS: (False, True, 80, True),
-            SENSOR_DC_NO_BIAS: (True, False, 0, False),
-            SENSOR_DC_BIAS: (True, True, 0, False),
+            SENSOR_DC_NO_BIAS: (True, False, 80, False),
+            SENSOR_DC_BIAS: (True, True, 80, False),
         }
         log.debug("====================================")
         log.debug("Set Sensor Type to %s" % (str(sensor_type)))
