@@ -331,7 +331,7 @@ class JournalInteraction():
         gtk.threads_enter()
         act_root = environ['SUGAR_ACTIVITY_ROOT'] 
         tmp_dir = join(act_root, 'data')
-        file_path = str(tempfile.mkstemp(dir=tmp_dir)[1])
+        tmp_fd, file_path = tempfile.mkstemp(dir=tmp_dir)
         ###TODO: This is such a crappy way to write a file to the journal
         ### Ideally to be implemented with write_file and read_file methods
         os.chmod(file_path, 0777)   
@@ -366,6 +366,7 @@ class JournalInteraction():
                 jobject.destroy()
                 del jobject
         finally:
+            os.close(tmp_fd)
             os.remove(file_path)
             gtk.threads_leave()
 
