@@ -328,6 +328,7 @@ class JournalInteraction():
 
     def take_screenshot(self, waveform_id = 1):
         #file_path = os.path.join(tempfile.gettempdir(), '%i' % time.time())
+        gtk.threads_enter()
         act_root = environ['SUGAR_ACTIVITY_ROOT'] 
         tmp_dir = join(act_root, 'data')
         file_path = str(tempfile.mkstemp(dir=tmp_dir)[1])
@@ -366,6 +367,7 @@ class JournalInteraction():
                 del jobject
         finally:
             os.remove(file_path)
+            gtk.threads_leave()
 
 """
 #FOR TESTING JOURNALINTERACTION CLASS
