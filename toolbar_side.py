@@ -41,14 +41,16 @@ class SideToolbar(gtk.Toolbar):
         self.show_toolbar = True
 
         self.mode = config.CONTEXT
+        self.mode_values = {'sound':3, 'sensor':2}
 
         self.button_up = ToolButton('amp-high')
         self.button_up.set_tooltip(_('Increase amplitude'))
         self.button_up.connect('clicked', self._button_up_cb)
         self.button_up.show()
 
-        self.adjustmenty = gtk.Adjustment(3.0, 0.0, 4.0, 0.1, 0.1, 0.0)
-        self.adjustmenty.connect("value_changed", self.cb_page_sizey,
+        self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode], 0.0,
+                                          4.0, 0.1, 0.1, 0.0)
+        self.adjustmenty.connect("value_changed", self._yscrollbar_cb,
 	        self.adjustmenty)
         self.yscrollbar = gtk.VScale(self.adjustmenty)
         self.yscrollbar.set_draw_value(False)
@@ -67,7 +69,7 @@ class SideToolbar(gtk.Toolbar):
 
         self.set_show_hide(False)
 
-    def cb_page_sizey(self, adjy, data=None):
+    def _yscrollbar_cb(self, adjy, data=None):
         """ Callback for scrollbar """
         if self.mode == 'sound':
             if adjy.value <= 1.5:	
@@ -85,6 +87,7 @@ class SideToolbar(gtk.Toolbar):
             self.wave.set_bias_param(0)
         elif self.mode == 'sensor':
             self.wave.set_bias_param(int((adjy.value-2)*300))
+        self.mode_values[self.mode] = adjy.value
         return True
 
     def _button_up_cb(self, data=None):
@@ -127,4 +130,5 @@ class SideToolbar(gtk.Toolbar):
             self.button_up.set_tooltip(_('Increase bias'))
             self.button_down.set_icon('bias-low')
             self.button_down.set_tooltip(_('Decrease bias'))
+        self.yscrollbar.set_value(self.mode_values[self.mode])
         return
