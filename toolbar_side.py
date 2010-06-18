@@ -21,21 +21,31 @@
 
 import pygtk
 import gtk
+from gettext import gettext as _
+
+from sugar.graphics.toolbutton import ToolButton
 
 import config
 
-class SideToolbar(gtk.DrawingArea):
+#class SideToolbar(gtk.DrawingArea):
+class SideToolbar(gtk.Toolbar):
     """ A toolbar on the side of the canvas for adjusting gain/bias """
 
     def __init__(self, activity):
         """ Set up initial toolbars """
-        gtk.DrawingArea.__init__(self)
+        # gtk.DrawingArea.__init__(self)
+        gtk.Toolbar.__init__(self)
 
         self.wave = activity.wave
         self.ag = activity.audiograb
         self.show_toolbar = True
 
         self.mode = config.CONTEXT
+
+        self.button_up = ToolButton('amp-high')
+        self.button_up.set_tooltip(_('Increase amplitude'))
+        self.button_up.connect('clicked', self._button_up_cb)
+        self.button_up.show()
 
         self.adjustmenty = gtk.Adjustment(3.0, 0.0, 4.0, 0.1, 0.1, 0.0)
         self.adjustmenty.connect("value_changed", self.cb_page_sizey,
@@ -45,16 +55,15 @@ class SideToolbar(gtk.DrawingArea):
         self.yscrollbar.set_inverted(True)
         self.yscrollbar.set_update_policy(gtk.UPDATE_CONTINUOUS)
 		
-        self.img_high = gtk.Image()
-        self.img_low =  gtk.Image()		
-
-        self.img_high.set_from_file(config.ICONS_DIR + '/amp-high.svg')
-        self.img_low.set_from_file(config.ICONS_DIR + '/amp-low.svg')
+        self.button_down = ToolButton('amp-low')
+        self.button_down.set_tooltip(_('Decrease amplitude'))
+        self.button_down.connect('clicked', self._button_down_cb)
+        self.button_down.show()
 
         self.box1 = gtk.VBox(False,0)
-        self.box1.pack_start(self.img_high, False, True, 0)
+        self.box1.pack_start(self.button_up, False, True, 0)
         self.box1.pack_start(self.yscrollbar, True, True, 0)
-        self.box1.pack_start(self.img_low, False, True, 0)
+        self.box1.pack_start(self.button_down, False, True, 0)
 
         self.set_show_hide(False)
 
@@ -76,7 +85,29 @@ class SideToolbar(gtk.DrawingArea):
             self.wave.set_bias_param(0)
         elif self.mode == 'sensor':
             self.wave.set_bias_param(int((adjy.value-2)*300))
-        return True	
+        return True
+
+    def _button_up_cb(self, data=None):
+        """Moves slider up"""
+	new_value = self.yscrollbar.get_value() +\
+                    (self.adjustmenty.get_upper() -\
+                     self.adjustmenty.get_lower())/100.0
+	if new_value <= self.adjustmenty.get_upper():
+	    self.yscrollbar.set_value(new_value)
+	else:
+	    self.yscrollbar.set_value(self.adjustmenty.get_upper())
+        return True
+
+    def _button_down_cb(self, data=None):
+        """Moves slider down"""
+	new_value = self.yscrollbar.get_value() -\
+                    (self.adjustmenty.get_upper() -\
+                     self.adjustmenty.get_lower())/100.0
+	if new_value >= self.adjustmenty.get_lower():
+	    self.yscrollbar.set_value(new_value)
+	else:
+	    self.yscrollbar.set_value(self.adjustmenty.get_lower())
+        return True
 
     def set_show_hide(self, show=True, mode='sound'):
         """ Show or hide the toolbar """
@@ -87,9 +118,13 @@ class SideToolbar(gtk.DrawingArea):
         """ Set the toolbar to either 'sound' or 'sensor' """
         self.mode = mode
         if self.mode == 'sound':
-            self.img_high.set_from_file(config.ICONS_DIR + '/amp-high.svg')
-            self.img_low.set_from_file(config.ICONS_DIR + '/amp-low.svg')
+            self.button_up.set_icon('amp-high')
+            self.button_up.set_tooltip(_('Increase amplitude'))
+            self.button_down.set_icon('amp-low')
+            self.button_down.set_tooltip(_('Decrease amplitude'))
         elif self.mode == 'sensor':
-            self.img_high.set_from_file(config.ICONS_DIR + '/bias-high.svg')
-            self.img_low.set_from_file(config.ICONS_DIR + '/bias-low.svg')
+            self.button_up.set_icon('bias-high')
+            self.button_up.set_tooltip(_('Increase bias'))
+            self.button_down.set_icon('bias-low')
+            self.button_down.set_tooltip(_('Decrease bias'))
         return
