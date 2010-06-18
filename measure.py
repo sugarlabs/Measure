@@ -144,6 +144,7 @@ class MeasureActivity(activity.Activity):
 
         self.first = True
 
+        self.set_show_hide_windows()
         self.wave.set_active(True)
         self.wave.set_context_on()
 
