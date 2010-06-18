@@ -47,6 +47,7 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
+
 class SoundToolbar(gtk.Toolbar):
     """ Set up the toolbar for audio (analog) capture mode """
 
@@ -55,6 +56,9 @@ class SoundToolbar(gtk.Toolbar):
     SAMPLE_2_MIN = "Every 2 min."
     SAMPLE_10_MIN = "Every 10 min."
     SAMPLE_30_MIN = "Every 30 min."
+
+    LOWER = 0.0
+    UPPER = 1.0
 
     def __init__(self, activity):
         """ Initialize the toolbar controls. """
@@ -111,7 +115,7 @@ class SoundToolbar(gtk.Toolbar):
         self._freq_stepper_up.set_tooltip(_('Zoom out'))
         self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
 
-        self.adjustmentf = gtk.Adjustment(.5, 0, 1.0, 0.01, 0.1, 0)
+        self.adjustmentf = gtk.Adjustment(.5, self.LOWER, self.UPPER, 0.01, 0.1, 0)
         self.adjustmentf.connect("value_changed", self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.adjustmentf)
         self._freq_range.set_inverted(True)
@@ -339,22 +343,22 @@ class SoundToolbar(gtk.Toolbar):
         out as a larger number of Hertz or milliseconds will be
         represented by the same space on the screen."""
 	new_value = self._freq_range.get_value() +\
-                    (self.adjustmentf.get_upper() -\
-                    self.adjustmentf.get_lower())/100.0
-	if new_value <= self.adjustmentf.get_upper():
+                    (self.UPPER - self.LOWER)/100.0
+	if new_value <= self.UPPER:
 	    self._freq_range.set_value(new_value)
 	else:
-	    self._freq_range.set_value(self.adjustmentf.get_upper())
+	    self._freq_range.set_value(self.UPPER)
 
     def _freq_stepper_down_cb(self, data=None):
         """Moves the horizontal zoom slider to the right one notch, where
         one notch is 1/100 of the total range. This corresponds to zooming
         in."""
-	new_value = self._freq_range.get_value() - (self.adjustmentf.get_upper() - self.adjustmentf.get_lower())/100.0
-	if new_value >= self.adjustmentf.get_lower():
+	new_value = self._freq_range.get_value() -\
+                    (self.UPPER - self.LOWER)/100.0
+	if new_value >= self.LOWER:
 	    self._freq_range.set_value(new_value)
 	else:
-	    self._freq_range.set_value(self.adjustmentf.get_lower())
+	    self._freq_range.set_value(self.LOWER)
 
     def cb_page_sizef(self, data=None):
         """ Callback to scale the 'page size' (zoom in and out) """

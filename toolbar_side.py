@@ -31,6 +31,9 @@ import config
 class SideToolbar(gtk.Toolbar):
     """ A toolbar on the side of the canvas for adjusting gain/bias """
 
+    LOWER = 0.0
+    UPPER = 4.0
+
     def __init__(self, activity):
         """ Set up initial toolbars """
         # gtk.DrawingArea.__init__(self)
@@ -48,8 +51,8 @@ class SideToolbar(gtk.Toolbar):
         self.button_up.connect('clicked', self._button_up_cb)
         self.button_up.show()
 
-        self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode], 0.0,
-                                          4.0, 0.1, 0.1, 0.0)
+        self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode],
+                                          self.LOWER, self.UPPER, 0.1, 0.1, 0.0)
         self.adjustmenty.connect("value_changed", self._yscrollbar_cb,
 	        self.adjustmenty)
         self.yscrollbar = gtk.VScale(self.adjustmenty)
@@ -92,24 +95,20 @@ class SideToolbar(gtk.Toolbar):
 
     def _button_up_cb(self, data=None):
         """Moves slider up"""
-	new_value = self.yscrollbar.get_value() +\
-                    (self.adjustmenty.get_upper() -\
-                     self.adjustmenty.get_lower())/100.0
-	if new_value <= self.adjustmenty.get_upper():
+	new_value = self.yscrollbar.get_value() + (self.UPPER-self.LOWER)/100.0
+	if new_value <= self.UPPER:
 	    self.yscrollbar.set_value(new_value)
 	else:
-	    self.yscrollbar.set_value(self.adjustmenty.get_upper())
+	    self.yscrollbar.set_value(self.UPPER)
         return True
 
     def _button_down_cb(self, data=None):
         """Moves slider down"""
-	new_value = self.yscrollbar.get_value() -\
-                    (self.adjustmenty.get_upper() -\
-                     self.adjustmenty.get_lower())/100.0
-	if new_value >= self.adjustmenty.get_lower():
+	new_value = self.yscrollbar.get_value() - (self.UPPER-self.LOWER)/100.0
+	if new_value >= self.LOWER:
 	    self.yscrollbar.set_value(new_value)
 	else:
-	    self.yscrollbar.set_value(self.adjustmenty.get_lower())
+	    self.yscrollbar.set_value(self.LOWER)
         return True
 
     def set_show_hide(self, show=True, mode='sound'):
