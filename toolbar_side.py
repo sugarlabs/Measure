@@ -72,7 +72,7 @@ class SideToolbar(gtk.Toolbar):
         """ Callback for scrollbar """
         if self.mode == 'sound':
             self.activity.wave.set_mag_params(1.0, adjy.value)
-            aelf.activity.audiograb.set_capture_gain(adjy.value*\
+            self.activity.audiograb.set_capture_gain(adjy.value*\
                                      100/(self.UPPER-self.LOWER))
             self.activity.wave.set_bias_param(0)
         elif self.mode == 'sensor':

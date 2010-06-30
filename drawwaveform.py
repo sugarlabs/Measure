@@ -30,12 +30,6 @@ from math import floor, ceil
 from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 from gtk import gdk
-try:
-    import gconf
-    _using_gconf = True
-except ImportError: # older Sugar didn't use gconf
-    from sugar import profile
-    _using_gconf = False
 
 from gettext import gettext as _
 
@@ -63,7 +57,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK | \
                         gtk.gdk.PROPERTY_CHANGE_MASK)
 
-        self.using_gconf = _using_gconf
         self.activity = activity
         self._input_freq = input_frequency
         self.triggering = self.TRIGGER_NONE
@@ -153,7 +146,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.Xend[0] = 1150
         self.Yend[0] = 750
         self.type[0] = 0
-        self.color[0] = self.get_stroke_color_from_sugar()
+        self.color[0] = self.activity.stroke_color
         self.source[0] = 0
 
         """
@@ -556,20 +549,6 @@ class DrawWaveform(gtk.DrawingArea):
 
     def get_active(self):
         return self.active
-
-    def get_stroke_color_from_sugar(self):
-        """Returns in (r,g,b) format the stroke color from the Sugar profile"""
-        if self.using_gconf:
-            client = gconf.client_get_default()
-            color = client.get_string("/desktop/sugar/user/color")
-        else:
-            color = profile.get_color().to_string()
-
-        if color == None:
-            return("#ffffff")
-
-        stroke, fill = color.split(",")
-        return stroke.strip()
 
     def get_mag_params(self):
         return self.gain, self.y_mag

@@ -33,10 +33,6 @@ from sugar.graphics.toolcombobox import ToolComboBox
 import logging
 log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
-try:
-    import gconf
-except ImportError:
-    from sugar import profile
 
 
 class SensorToolbar(gtk.Toolbar):
@@ -148,11 +144,7 @@ class SensorToolbar(gtk.Toolbar):
             Xscale = (1.00/self.activity.audiograb.get_sampling_rate())
             Yscale = 0.0
             interval = self.interval_convert()
-            try:
-                client = gconf.client_get_default()
-                username = client.get_string("/desktop/suagr/user/nick")
-            except:
-                username = profile.get_nick_name()
+            username = self.activity.nick
             self.activity.ji.start_new_session(username, Xscale, Yscale,
                                       self.logginginterval_status)
             self.activity.audiograb.set_logging_params(True, interval, False)
@@ -205,16 +197,18 @@ class SensorToolbar(gtk.Toolbar):
             self._resistance.show()
             self._voltage.show()
             self._update_string_for_textbox()
-            self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                       '/bias-on2.svg')
+            if self.activity.new_sugar_system:
+                self.activity.mode_image.set_from_file(ICONS_DIR +\
+                                                           '/bias-on2.svg')
         elif mode_to_set == 'voltage':
             self._resistance.set_icon('bias-on')
             self._voltage.set_icon('bias-off2')
             self._resistance.show()
             self._voltage.show()
             self._update_string_for_textbox()
-            self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                       '/bias-off2.svg')
+            if self.activity.new_sugar_system:
+                self.activity.mode_image.set_from_file(ICONS_DIR +\
+                                                           '/bias-off2.svg')
         else:
             logging.error("unknown mode %s" % (mode_to_set))
         if self.activity.new_sugar_system:

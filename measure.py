@@ -53,15 +53,22 @@ from toolbar_side import SideToolbar
 from sound_toolbar import SoundToolbar
 from sensor_toolbar import SensorToolbar
 
-def _is_xo(hw):
-    """ Return True if this is xo hardware """
-    return hw in ['xo1','xo1.5']
+try:
+    import gconf
+    _using_gconf = True
+except ImportError: # older Sugar didn't use gconf
+    from sugar import profile
+    _using_gconf = False
 
 # Initialize logging.
 import logging
 log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
+
+def _is_xo(hw):
+    """ Return True if this is xo hardware """
+    return hw in ['xo1','xo1.5']
 
 def _get_hardware():
     """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
@@ -102,12 +109,15 @@ class MeasureActivity(activity.Activity):
 
         try:
             tmp_dir = path.join(activity.get_activity_root(), "data")
-        except:
+        except AttributeError:
             # Early versions of Sugar (e.g., 656) didn't support
             # get_activity_root()
             tmp_dir = path.join(environ['HOME'],
                           ".sugar/default/org.laptop.MeasureActivity/data")
-
+        self.using_gconf = _using_gconf
+        self.icon_colors = self.get_icon_colors_from_sugar()
+        self.stroke_color, self.fill_color = self.icon_colors.split(",")
+        self.nick = self.get_nick_from_sugar()
         self.active_status = True
         self.ACTIVE = True
         self.LOGGING_IN_SESSION = False
@@ -116,19 +126,17 @@ class MeasureActivity(activity.Activity):
         self.connect("destroy", self.on_quit)	
 
         if self._jobject.file_path:
-	        #logging.debug('1.0 Launched from journal')
-	        self.existing = True
+            self.existing = True
         else: 
-	        #logging.debug('1.1 Launched from frame or from Mesh View')
-	        self._jobject.file_path = str(mkstemp(dir=tmp_dir)[1])
-	        chmod(self._jobject.file_path, 0777)
-	        self.existing = False	
+            self._jobject.file_path = str(mkstemp(dir=tmp_dir)[1])
+            chmod(self._jobject.file_path, 0777)
+            self.existing = False	
 
-        self.ji = JournalInteraction(self._jobject.file_path, self.existing)
+        self.ji = JournalInteraction(self)
         self.wave = DrawWaveform(self)
         
         self.hw = _get_hardware()
-        print "running on %s hardware" % (self.hw)
+        log.debug("running on %s hardware" % (self.hw))
         if self.hw == 'xo1.5':
             self.audiograb = AudioGrab_XO_1_5(self.wave.new_buffer, self)
         elif self.hw == 'xo1':
@@ -208,11 +216,10 @@ class MeasureActivity(activity.Activity):
             _stop_button.show()
 
             self.set_toolbox(toolbox)
-
-        if not self.new_sugar_system:
-            toolbox.set_current_toolbar(TOOLBARS.index('sound'))
-        else:
             self._sound_button.set_expanded(True)
+
+        else:
+            toolbox.set_current_toolbar(TOOLBARS.index('sound'))
 
         toolbox.show()
 
@@ -229,18 +236,10 @@ class MeasureActivity(activity.Activity):
         if mode == 'sound': 
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
-            if not self.new_sugar_system:
-                toolbox.set_current_toolbar(TOOLBARS.index('sound'))
-            else:
-                self._sound_button.set_expanded(True)
             return
         elif mode == 'sensor':
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
-            if not self.new_sugar_system:
-                toolbox.set_current_toolbar(TOOLBARS.index('sensor'))
-            else:
-                self._sensor_button.set_expanded(True)
             return
 
     def on_quit(self,data=None):
@@ -297,5 +296,21 @@ class MeasureActivity(activity.Activity):
         sleep(0.5)
         self.sensor_toolbar.context_on()
         self.CONTEXT = 'sensor'
+
+    def get_icon_colors_from_sugar(self):
+        """Returns the icon colors from the Sugar profile"""
+        if self.using_gconf:
+            client = gconf.client_get_default()
+            return client.get_string("/desktop/sugar/user/color")
+        else:
+            return profile.get_color().to_string()
+
+    def get_nick_from_sugar(self):
+        """ Returns nick from Sugar """
+        if self.using_gconf:
+            client = gconf.client_get_default()
+            return client.get_string("/desktop/suagr/user/nick")
+        else:
+            return profile.get_nick_name()
 
 gtk.gdk.threads_init()

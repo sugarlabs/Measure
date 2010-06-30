@@ -35,10 +35,6 @@ logging.basicConfig()
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
 from sugar.graphics.toolcombobox import ToolComboBox
-try:
-    import gconf
-except ImportError:
-    from sugar import profile
 
 # Initialize logging.
 import logging
@@ -215,29 +211,25 @@ class SoundToolbar(gtk.Toolbar):
             Xscale = (1.00/self.activity.audiograb.get_sampling_rate())
             Yscale = 0.0
             interval = self.interval_convert()
-            try:
-                client = gconf.client_get_default()
-                username = client.get_string("/desktop/suagr/user/nick")
-            except:
-                username = profile.get_nick_name()
+            username = self.activity.nick
             self.activity.ji.start_new_session(username, Xscale, Yscale,
                                       self.logginginterval_status)
             self.activity.audiograb.set_logging_params(True, interval, True)
             self.activity.LOGGING_IN_SESSION = True
-            # self.logging_status = True
             self._record.set_icon('record-stop')
             self._record.show()
             if interval==0:
-                self._record.set_icon('media-record')
+                # Flash the stop button when grabbing just one image
+                self._record.set_icon('record-stop')
+                self._record.show()
+                gobject.timeout_add(250, self._record.set_icon, 'media-record')
                 self._record.show()
                 self.record_state = False
                 self.activity.LOGGING_IN_SESSION = False
                 self.logging_status = False
         else:
-            # if self.logging_status == True:
             self.activity.audiograb.set_logging_params(False)
             self.activity.LOGGING_IN_SESSION = False
-            # self.logging_status = False
             self._record.set_icon('media-record')
             self._record.show()
         self._set_record_button_tooltip()
@@ -330,8 +322,9 @@ class SoundToolbar(gtk.Toolbar):
             self._time.show()
             self._freq.show()
             self._update_string_for_textbox()
-            self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                       '/domain-time2.svg')
+            if self.activity.new_sugar_system:
+                self.activity.mode_image.set_from_file(ICONS_DIR +\
+                                                           '/domain-time2.svg')
         else:
             self.activity.wave.set_fft_mode(True)
             self._time.set_icon('domain-time')
@@ -339,8 +332,9 @@ class SoundToolbar(gtk.Toolbar):
             self._time.show()
             self._freq.show()
             self._update_string_for_textbox()
-            self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                       '/domain-freq2.svg')
+            if self.activity.new_sugar_system:
+                self.activity.mode_image.set_from_file(ICONS_DIR +\
+                                                           '/domain-freq2.svg')
         if self.activity.new_sugar_system:
             self.activity.sensor_toolbar._resistance.set_icon('bias-on')
             self.activity.sensor_toolbar._voltage.set_icon('bias-off')
