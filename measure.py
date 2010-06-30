@@ -25,23 +25,37 @@ pygst.require("0.10")
 import pygtk
 import gtk
 import gobject
-import time
 import dbus
-import config 		#This has all the globals
-import os
-import tempfile
-from os import environ
-from os.path import join
-
-from journal import JournalInteraction
-import audiograb
-from drawwaveform import DrawWaveform
-from toolbar_side import SideToolbar
-from toolbar_top import Toolbar
+from time import sleep
+from config import TOOLBARS, ICONS_DIR
+from tempfile import mkstemp
+from os import environ, path, chmod
 from textbox import TextBox
+from gettext import gettext as _
 
 from sugar.activity import activity
+try: # 0.86+ toolbar widgets
+    from sugar.bundle.activitybundle import ActivityBundle
+    from sugar.activity.widgets import ActivityToolbarButton
+    from sugar.activity.widgets import StopButton
+    from sugar.graphics.toolbarbox import ToolbarBox
+    from sugar.graphics.toolbarbox import ToolbarButton
+    _new_sugar_system = True
+except ImportError:
+    from sugar.activity.activity import ActivityToolbox
+    _new_sugar_system = False
 from sugar.datastore import datastore
+
+from journal import JournalInteraction
+from audiograb import AudioGrab_XO_1_5, AudioGrab_XO_1, AudioGrab_Unknown
+from drawwaveform import DrawWaveform
+from toolbar_side import SideToolbar
+from sound_toolbar import SoundToolbar
+from sensor_toolbar import SensorToolbar
+
+def _is_xo(hw):
+    """ Return True if this is xo hardware """
+    return hw in ['xo1','xo1.5']
 
 # Initialize logging.
 import logging
@@ -65,13 +79,14 @@ def _get_hardware():
                 return 'xo1'
         else:
             return 'unknown'
-    elif os.path.exists('/etc/olpc-release') or \
-         os.path.exists('/sys/power/olpc-pm'):
+    elif path.exists('/etc/olpc-release') or \
+         path.exists('/sys/power/olpc-pm'):
         return 'xo1'
     # elif 'olpc' in dev.GetProperty('system.kernel.version'):
     #     return 'xo1'
     else:
         return 'unknown'
+
 
 class MeasureActivity(activity.Activity):
     """ Oscilloscope Sugar activity """
@@ -86,15 +101,17 @@ class MeasureActivity(activity.Activity):
         activity.Activity.__init__(self, handle)
 
         try:
-            tmp_dir = os.path.join(activity.get_activity_root(), "data")
+            tmp_dir = path.join(activity.get_activity_root(), "data")
         except:
             # Early versions of Sugar (e.g., 656) didn't support
             # get_activity_root()
-            tmp_dir = os.path.join(os.environ['HOME'],
+            tmp_dir = path.join(environ['HOME'],
                           ".sugar/default/org.laptop.MeasureActivity/data")
 
         self.active_status = True
         self.ACTIVE = True
+        self.LOGGING_IN_SESSION = False
+        self.CONTEXT = ''
         self.connect("notify::active", self._active_cb)
         self.connect("destroy", self.on_quit)	
 
@@ -103,25 +120,23 @@ class MeasureActivity(activity.Activity):
 	        self.existing = True
         else: 
 	        #logging.debug('1.1 Launched from frame or from Mesh View')
-	        self._jobject.file_path = str(tempfile.mkstemp(dir=tmp_dir)[1])
-	        os.chmod(self._jobject.file_path, 0777)
+	        self._jobject.file_path = str(mkstemp(dir=tmp_dir)[1])
+	        chmod(self._jobject.file_path, 0777)
 	        self.existing = False	
 
         self.ji = JournalInteraction(self._jobject.file_path, self.existing)
-        self.wave = DrawWaveform()
+        self.wave = DrawWaveform(self)
         
         self.hw = _get_hardware()
         print "running on %s hardware" % (self.hw)
         if self.hw == 'xo1.5':
-            self.audiograb = \
-                audiograb.AudioGrab_XO_1_5(self.wave.new_buffer, self.ji)
+            self.audiograb = AudioGrab_XO_1_5(self.wave.new_buffer, self)
         elif self.hw == 'xo1':
-            self.audiograb = \
-                audiograb.AudioGrab_XO_1(self.wave.new_buffer, self.ji)
-        else: # Use 1.5 settings as default, 0)
-            self.audiograb = \
-                audiograb.AudioGrab_Unknown(self.wave.new_buffer, self.ji)
-            # log.error('Sorry, we do not support your hardware yet.')
+            self.audiograb = AudioGrab_XO_1(self.wave.new_buffer, self)
+        else:
+            self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
+
+        self.new_sugar_system = _new_sugar_system
 
         self.side_toolbar = SideToolbar(self)
         self.text_box = TextBox()
@@ -136,15 +151,76 @@ class MeasureActivity(activity.Activity):
 
         self.set_canvas(self.box1)		
 
-        toolbox = Toolbar(self)
-        self.set_toolbox(toolbox)
+        if self.new_sugar_system:
+            # Use 0.86 toolbar design
+            toolbox = ToolbarBox()
+
+            activity_button = ActivityToolbarButton(self)
+            toolbox.toolbar.insert(activity_button, 0)
+            activity_button.show()
+        else:
+            toolbox = ActivityToolbox(self)
+            self.set_toolbox(toolbox)
+            toolbox.connect("current-toolbar-changed", self._toolbar_changed_cb)
+
+        self.sound_toolbar = SoundToolbar(self)
+        if self.new_sugar_system:
+            self._sound_button = ToolbarButton(
+                page=self.sound_toolbar,
+                icon_name='sound-tools')
+            toolbox.toolbar.insert(self._sound_button, -1)
+            self._sound_button.show()
+        else:
+            toolbox.add_toolbar(_('Sound'), self.sound_toolbar)
+        self.sound_toolbar.show()
+
+        if _is_xo(self.hw):
+            self.sensor_toolbar = SensorToolbar(self)
+            if self.new_sugar_system:
+                self._sensor_button = ToolbarButton(
+                    page=self.sensor_toolbar,
+                    icon_name='sensor-tools')
+                toolbox.toolbar.insert(self._sensor_button, -1)
+                self._sensor_button.show()
+            else:
+                toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
+            self.sensor_toolbar.show()
+
+        if self.new_sugar_system:
+            _separator = gtk.SeparatorToolItem()
+            _separator.props.draw = True
+            _separator.set_expand(False)
+            toolbox.toolbar.insert(_separator, -1)
+            _separator.show()
+            self.mode_image = gtk.Image()
+            self.mode_image.set_from_file(ICONS_DIR + '/domain-time2.svg')
+            mode_image_tool = gtk.ToolItem()
+            mode_image_tool.add(self.mode_image)
+            toolbox.toolbar.insert(mode_image_tool,-1)
+            _separator = gtk.SeparatorToolItem()
+            _separator.props.draw = False
+            _separator.set_expand(True)
+            toolbox.toolbar.insert(_separator, -1)
+            _separator.show()
+            _stop_button = StopButton(self)
+            _stop_button.props.accelerator = _('<Ctrl>Q')
+            toolbox.toolbar.insert(_stop_button, -1)
+            _stop_button.show()
+
+            self.set_toolbox(toolbox)
+
+        if not self.new_sugar_system:
+            toolbox.set_current_toolbar(TOOLBARS.index('sound'))
+        else:
+            self._sound_button.set_expanded(True)
+
         toolbox.show()
 
         self.show_all()		
 
         self.first = True
 
-        self.set_show_hide_windows()
+        self.set_show_hide_windows('sound')
         self.wave.set_active(True)
         self.wave.set_context_on()
 
@@ -153,10 +229,18 @@ class MeasureActivity(activity.Activity):
         if mode == 'sound': 
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
+            if not self.new_sugar_system:
+                toolbox.set_current_toolbar(TOOLBARS.index('sound'))
+            else:
+                self._sound_button.set_expanded(True)
             return
         elif mode == 'sensor':
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
+            if not self.new_sugar_system:
+                toolbox.set_current_toolbar(TOOLBARS.index('sensor'))
+            else:
+                self._sensor_button.set_expanded(True)
             return
 
     def on_quit(self,data=None):
@@ -167,13 +251,13 @@ class MeasureActivity(activity.Activity):
 
     def _active_cb( self, widget, pspec ):
         """ Callback to handle starting/pausing capture when active/idle """
-        if(self.first == True):
+        if self.first:
 	        self.audiograb.start_grabbing()
 	        self.first = False
-        if (not self.props.active and self.ACTIVE):
+        if not self.props.active and self.ACTIVE:
 	        self.audiograb.pause_grabbing()
 	        self.active_status = False 
-        elif (self.props.active and not self.ACTIVE):
+        elif self.props.active and not self.ACTIVE:
 	        self.audiograb.resume_grabbing()
 	        self.active_status = True
 
@@ -188,5 +272,30 @@ class MeasureActivity(activity.Activity):
     def read_file(self, file_path):
         """ Read data from journal on start """
         return
+
+    def _toolbar_changed_cb(self, toolbox, num):
+        """ Callback for changing the primary toolbar (0.84-) """
+        if TOOLBARS[num] == 'sound':
+            self.set_sound_context()
+        elif TOOLBARS[num] == 'sensor':
+            self.set_sensor_context()
+        return True
+
+    def set_sound_context(self):
+        """ Called when sound toolbar is selected or button pushed """
+        self.set_show_hide_windows('sound')
+        if _is_xo(self.hw):
+            self.sensor_toolbar.context_off()
+        sleep(0.5)
+        self.sound_toolbar.context_on()
+        self.CONTEXT = 'sound'
+
+    def set_sensor_context(self):
+        """ Called when sensor toolbar is selected or button pushed """
+        self.set_show_hide_windows('sensor')
+        self.sound_toolbar.context_off()
+        sleep(0.5)
+        self.sensor_toolbar.context_on()
+        self.CONTEXT = 'sensor'
 
 gtk.gdk.threads_init()

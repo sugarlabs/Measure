@@ -21,18 +21,16 @@
 Global configuration for Measure.
 """
 
-import os
+from os import environ, path
 try:
     from sugar.activity import activity
+    MEASURE_ROOT = activity.get_bundle_path()
     SUGAR = True
 except ImportError:
+    MEASURE_ROOT = environ['HOME']
     SUGAR = False
 
-if SUGAR:
-    MEASURE_ROOT = activity.get_bundle_path()
-else:
-    MEASURE_ROOT = os.environ['HOME']
-ICONS_DIR = os.path.join(MEASURE_ROOT, 'icons')
+ICONS_DIR = path.join(MEASURE_ROOT, 'icons')
 
 #Multiplied with width and height to set placement of text
 TEXT_X_M = 0.65
@@ -58,14 +56,8 @@ QUIT_CAPTURE_GAIN = 100
 QUIT_BIAS = True
 QUIT_PCM = 70
 
-#Toolbars
+#Toolbars for 0.84- Sugar
 TOOLBARS = ['project','sound','sensor']
 
-#Which context is active on start
-CONTEXT = 'sound'
-
-#How many maximum screenshots Measure will save while recording in Sound context
+#Maximum no. of screenshots Measure will save while recording in Sound context
 SOUND_MAX_WAVE_LOGS = 10
-
-#To track if one context is logging, other wouldn't also do it simultaneously
-LOGGING_IN_SESSION = False

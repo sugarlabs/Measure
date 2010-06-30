@@ -4,7 +4,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009,10 Walter Bender
 #    
-#    	
+#
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -25,8 +25,6 @@ from gettext import gettext as _
 
 from sugar.graphics.toolbutton import ToolButton
 
-import config
-
 #class SideToolbar(gtk.DrawingArea):
 class SideToolbar(gtk.Toolbar):
     """ A toolbar on the side of the canvas for adjusting gain/bias """
@@ -36,14 +34,12 @@ class SideToolbar(gtk.Toolbar):
 
     def __init__(self, activity):
         """ Set up initial toolbars """
-        # gtk.DrawingArea.__init__(self)
         gtk.Toolbar.__init__(self)
 
-        self.wave = activity.wave
-        self.ag = activity.audiograb
+        self.activity = activity
         self.show_toolbar = True
 
-        self.mode = config.CONTEXT
+        self.mode = 'sound'
         self.mode_values = {'sound':3, 'sensor':2}
 
         self.button_up = ToolButton('amp-high')
@@ -54,12 +50,12 @@ class SideToolbar(gtk.Toolbar):
         self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode],
                                           self.LOWER, self.UPPER, 0.1, 0.1, 0.0)
         self.adjustmenty.connect("value_changed", self._yscrollbar_cb,
-	        self.adjustmenty)
+                                 self.adjustmenty)
         self.yscrollbar = gtk.VScale(self.adjustmenty)
         self.yscrollbar.set_draw_value(False)
         self.yscrollbar.set_inverted(True)
         self.yscrollbar.set_update_policy(gtk.UPDATE_CONTINUOUS)
-		
+
         self.button_down = ToolButton('amp-low')
         self.button_down.set_tooltip(_('Decrease amplitude'))
         self.button_down.connect('clicked', self._button_down_cb)
@@ -75,40 +71,32 @@ class SideToolbar(gtk.Toolbar):
     def _yscrollbar_cb(self, adjy, data=None):
         """ Callback for scrollbar """
         if self.mode == 'sound':
-            if adjy.value <= 1.5:	
-                self.wave.set_mag_params(1.0, adjy.value)        #0dB
-                self.ag.set_capture_gain(0)
-            elif adjy.value <= 2.5:
-                self.wave.set_mag_params(1.9952, adjy.value*1.5) #6dB
-                self.ag.set_capture_gain(25)
-            elif adjy.value <= 3.5:
-                self.wave.set_mag_params(3.981, adjy.value*3.0) #12dB
-                self.ag.set_capture_gain(50)
-            else:
-                self.wave.set_mag_params(13.335, adjy.value*4.0) #22.5dB
-                self.ag.set_capture_gain(100)
-            self.wave.set_bias_param(0)
+            self.activity.wave.set_mag_params(1.0, adjy.value)
+            aelf.activity.audiograb.set_capture_gain(adjy.value*\
+                                     100/(self.UPPER-self.LOWER))
+            self.activity.wave.set_bias_param(0)
         elif self.mode == 'sensor':
-            self.wave.set_bias_param(int((adjy.value-2)*300))
+            self.activity.wave.set_bias_param(int(300*\
+                                    (adjy.value - (self.UPPER-self.LOWER)/2)))
         self.mode_values[self.mode] = adjy.value
         return True
 
     def _button_up_cb(self, data=None):
         """Moves slider up"""
-	new_value = self.yscrollbar.get_value() + (self.UPPER-self.LOWER)/100.0
-	if new_value <= self.UPPER:
-	    self.yscrollbar.set_value(new_value)
-	else:
-	    self.yscrollbar.set_value(self.UPPER)
+        new_value = self.yscrollbar.get_value() + (self.UPPER-self.LOWER)/100.0
+        if new_value <= self.UPPER:
+            self.yscrollbar.set_value(new_value)
+        else:
+            self.yscrollbar.set_value(self.UPPER)
         return True
 
     def _button_down_cb(self, data=None):
         """Moves slider down"""
-	new_value = self.yscrollbar.get_value() - (self.UPPER-self.LOWER)/100.0
-	if new_value >= self.LOWER:
-	    self.yscrollbar.set_value(new_value)
-	else:
-	    self.yscrollbar.set_value(self.LOWER)
+        new_value = self.yscrollbar.get_value() - (self.UPPER-self.LOWER)/100.0
+        if new_value >= self.LOWER:
+            self.yscrollbar.set_value(new_value)
+        else:
+            self.yscrollbar.set_value(self.LOWER)
         return True
 
     def set_show_hide(self, show=True, mode='sound'):

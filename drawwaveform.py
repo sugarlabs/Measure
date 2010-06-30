@@ -26,19 +26,26 @@ import gobject
 import time
 import os
 import audioop
-import math
-import numpy as np
+from math import floor, ceil
+from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 from gtk import gdk
 try:
     import gconf
+    _using_gconf = True
 except ImportError: # older Sugar didn't use gconf
     from sugar import profile
+    _using_gconf = False
 
 from gettext import gettext as _
 
-import config
+from config import MAX_GRAPHS, SUGAR
 
+# Initialize logging.
+import logging
+log = logging.getLogger('Measure')
+log.setLevel(logging.DEBUG)
+logging.basicConfig()
 
 class DrawWaveform(gtk.DrawingArea):
     """ Handles all the drawing of waveforms """
@@ -49,15 +56,16 @@ class DrawWaveform(gtk.DrawingArea):
     TRIGGER_POS = 1
     TRIGGER_NEG = 2
 
-    def __init__(self, input_frequency=48000):
+    def __init__(self, activity, input_frequency=48000):
         """ Initialize drawing area and scope parameter """
         gtk.DrawingArea.__init__(self)
 
         self.add_events(gtk.gdk.BUTTON_PRESS_MASK | \
                         gtk.gdk.PROPERTY_CHANGE_MASK)
 
+        self.using_gconf = _using_gconf
+        self.activity = activity
         self._input_freq = input_frequency
-        self.stroke_color = None
         self.triggering = self.TRIGGER_NONE
         self.trigger_xpos = 0.0
         self.trigger_ypos = 0.5
@@ -65,8 +73,8 @@ class DrawWaveform(gtk.DrawingArea):
         self.active = False
         self._redraw_atom = gtk.gdk.atom_intern('MeasureRedraw')
 
-        self.buffers = np.array([])
-        self.main_buffers = np.array([])
+        self.buffers = array([])
+        self.main_buffers = array([])
         self.str_buffer=''
         self.peaks = []
         self.fftx = []
@@ -79,7 +87,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.count = 0
         self.invert = False
 
-        self.y_mag = 3.0
+        self.y_mag = 3.0 # additional scale factor for display
         self.gain = 1.0  # (not in dB) introduced by Capture Gain and Mic Boost
         self.bias = 0    # vertical position fine-tuning from slider
         self._freq_range = 4 # See comment in sound_toolbar.py
@@ -104,7 +112,6 @@ class DrawWaveform(gtk.DrawingArea):
         self._TRIGGER_LINE_THICKNESS = 3
         self._FOREGROUND_LINE_THICKNESS = 6
 
-        # self.logging_status = False
         self.f = None
         self.stop = False
         self.fft_show = False
@@ -117,7 +124,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.expose_event_id = self.connect("expose_event", self._expose)
 
         self.pr_time = 0
-        self.MAX_GRAPHS = config.MAX_GRAPHS     # Maximum simultaneous graphs
+        self.MAX_GRAPHS = MAX_GRAPHS     # Maximum simultaneous graphs
 
         self.graph_show_state = []
         self.Xstart = []
@@ -136,7 +143,7 @@ class DrawWaveform(gtk.DrawingArea):
             self.Xend.append(1000)
             self.Yend.append(500)
             self.type .append(0)
-            self.color.append([65535,0,0])
+            self.color.append("#FF0000")
             self.source.append(0)
             self.graph_id.append(x)
 
@@ -146,11 +153,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.Xend[0] = 1150
         self.Yend[0] = 750
         self.type[0] = 0
-
-        if config.SUGAR:
-            self.color[0] = self.get_stroke_color_from_sugar()
-        else:
-            self.color[0] = '#ffffff'
+        self.color[0] = self.get_stroke_color_from_sugar()
         self.source[0] = 0
 
         """
@@ -194,7 +197,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.debug_str="start"
 
         self.context = True
-        
 
     def set_max_samples(self, num):
         """ Maximum no. of samples in ringbuffer """
@@ -263,31 +265,29 @@ class DrawWaveform(gtk.DrawingArea):
         return
 
     def do_realize(self):
-        """ Some initializations upon first 'realizing' the drawing area """
+        """ Called when we are creating all of our window resources """
 
         gtk.DrawingArea.do_realize(self)
-        # force a native X window to exist
+
+        # Force a native X window to exist
         xid = self.window.xid
 
         colormap = self.get_colormap()
 
         self._line_gc = []
         for graph_id in self.graph_id:
-            r, g, b = self.color[graph_id]
-            clr = colormap.alloc_color(r, g, b, False, False)
+            if len(self.color) > graph_id:
+                clr = colormap.alloc_color(self.color[graph_id])
 
-            self._line_gc.append(self.window.new_gc(foreground=clr))
-            self._line_gc[graph_id].set_line_attributes(
-                self._FOREGROUND_LINE_THICKNESS, gdk.LINE_SOLID,
-                gdk.CAP_ROUND, gdk.JOIN_BEVEL)   
+                self._line_gc.append(self.window.new_gc(foreground=clr))
+                self._line_gc[graph_id].set_line_attributes(
+                    self._FOREGROUND_LINE_THICKNESS, gdk.LINE_SOLID,
+                    gdk.CAP_ROUND, gdk.JOIN_BEVEL)
 
-            self._line_gc[graph_id].set_foreground(clr)
+                self._line_gc[graph_id].set_foreground(clr)
   
-        if config.SUGAR:
-            r, g, b = self.get_stroke_color_from_sugar()
-        else:
-            r = g = b = 255
-        clr = colormap.alloc_color(r, g, b, False, False)
+        # Sugar stroke color
+        clr = colormap.alloc_color(self.color[0])
 
         self._trigger_line_gc = self.window.new_gc(foreground=clr)
         self._trigger_line_gc.set_line_attributes(
@@ -349,7 +349,7 @@ class DrawWaveform(gtk.DrawingArea):
             for graph_id in self.graph_id:
                 if self.graph_show_state[graph_id] == True:
                     buf = self.ringbuffer.read(None, self.input_step)
-                    samples = math.ceil(
+                    samples = ceil(
                                        self.allocation.width/self.draw_interval)
                     if len(buf) == 0:
                         # We don't have enough data to plot.
@@ -377,7 +377,7 @@ class DrawWaveform(gtk.DrawingArea):
                                 ints &= buf[samples-samples_to_end+1:\
                                             -samples_to_end-2] > ypos
 
-                                ints = np.where(ints)[0]
+                                ints = where(ints)[0]
                                 if len(ints) > 0:
                                     position = max(position, ints[-1])
 
@@ -387,7 +387,7 @@ class DrawWaveform(gtk.DrawingArea):
                                 ints &= buf[samples-samples_to_end+1:\
                                             -samples_to_end-2] < ypos
 
-                                ints = np.where(ints)[0]
+                                ints = where(ints)[0]
                                 if len(ints) > 0:
                                     position = max(position, ints[-1])
 
@@ -404,9 +404,9 @@ class DrawWaveform(gtk.DrawingArea):
 
                             data = buf[position-samples+samples_to_end:\
                                        position+samples_to_end+2].astype(
-                                                                     np.float64)
+                                                                     float64)
                         else:
-                            data = buf[-samples:].astype(np.float64)
+                            data = buf[-samples:].astype(float64)
 
                     else:
                         ###############FFT################ 
@@ -415,12 +415,12 @@ class DrawWaveform(gtk.DrawingArea):
 
                         try:
                             # Multiply input with the window
-                            np.multiply(buf, self.fft_window, buf)
+                            multiply(buf, self.fft_window, buf)
 
                             # Should be fast enough even without pow(2) stuff.
-                            self.fftx = np.fft.rfft(buf)
+                            self.fftx = fft.rfft(buf)
                             self.fftx = abs(self.fftx)
-                            data = np.multiply(self.fftx, 0.02, self.fftx)
+                            data = multiply(self.fftx, 0.02, self.fftx)
                             ##################################
                         except ValueError:
                             # TODO: Figure out how this can happen.
@@ -429,7 +429,7 @@ class DrawWaveform(gtk.DrawingArea):
                             return True
 
                     ################Scaling the values###################
-                    if config.CONTEXT == 'sensor':
+                    if self.activity.CONTEXT == 'sensor':
                         self.y_mag = 1.0
 
                     if self.invert:
@@ -447,7 +447,7 @@ class DrawWaveform(gtk.DrawingArea):
 
                     ##########The actual drawing of the graph##################
 
-                    lines = (np.arange(len(data), dtype='float32') *\
+                    lines = (arange(len(data), dtype='float32') *\
                             self.draw_interval) + x_offset
 
                     # Use ints or draw_lines will throw warnings
@@ -524,15 +524,15 @@ class DrawWaveform(gtk.DrawingArea):
         if self.fft_show:
             max_freq = (self.freq_div*self.get_ticks())
             wanted_step = 1.0/max_freq/2*self._input_freq
-            self.input_step = max(math.floor(wanted_step), 1)
+            self.input_step = max(floor(wanted_step), 1)
 
             self.draw_interval = 5.0
 
-            self.set_max_samples(math.ceil(self.allocation.width/float(
+            self.set_max_samples(ceil(self.allocation.width/float(
                                          self.draw_interval)*2)*self.input_step)
 
             # Create the (blackman) window
-            self.fft_window = np.blackman(math.ceil(self.allocation.width/float(
+            self.fft_window = blackman(ceil(self.allocation.width/float(
                                                          self.draw_interval)*2))
 
             self.draw_interval *= wanted_step/self.input_step
@@ -544,8 +544,7 @@ class DrawWaveform(gtk.DrawingArea):
             samples = time * self._input_freq
             self.set_max_samples(samples * self.max_samples_fact)
 
-            self.input_step = max(math.ceil(samples/(
-                                                  self.allocation.width/3.0)),1)
+            self.input_step = max(ceil(samples/(self.allocation.width/3.0)),1)
             self.draw_interval = self.allocation.width/(
                                                  float(samples)/self.input_step)
 
@@ -560,29 +559,17 @@ class DrawWaveform(gtk.DrawingArea):
 
     def get_stroke_color_from_sugar(self):
         """Returns in (r,g,b) format the stroke color from the Sugar profile"""
-        # Hitting gconf is a large overhead.
-        if self.stroke_color is None:
-            try:
-                client = gconf.client_get_default()
-                color = client.get_string("/desktop/sugar/user/color")
-            except:
-                color = profile.get_color().to_string()
+        if self.using_gconf:
+            client = gconf.client_get_default()
+            color = client.get_string("/desktop/sugar/user/color")
+        else:
+            color = profile.get_color().to_string()
 
-            if color == None:
-                return(255, 255, 255)
+        if color == None:
+            return("#ffffff")
 
-            stroke,fill = color.split(",")
-            colorstring = stroke.strip()
-            if colorstring[0] == '#': 
-                colorstring = colorstring[1:]
-	        r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
-	        r += r
-	        g += g
-	        b += b
-	        r, g, b = [int(n, 16) for n in (r, g, b)]
-	        self.stroke_color = (r, g, b)
-
-        return self.stroke_color
+        stroke, fill = color.split(",")
+        return stroke.strip()
 
     def get_mag_params(self):
         return self.gain, self.y_mag
