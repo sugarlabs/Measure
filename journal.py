@@ -313,6 +313,7 @@ class JournalInteraction():
         return array(records)
 
     def take_screenshot(self, waveform_id = 1):
+        """ Take a screenshot and save to the Journal """
         act_root = environ['SUGAR_ACTIVITY_ROOT'] 
         tmp_dir = join(act_root, 'data')
         tmp_fd, file_path = mkstemp(dir=tmp_dir)

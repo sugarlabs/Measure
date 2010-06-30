@@ -118,24 +118,14 @@ class SensorToolbar(gtk.Toolbar):
         self._record.set_tooltip(_('Start Recording'))
         self._record.connect('clicked', self.record_control)
 
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = False
-        separator.set_expand(True)
-        self.insert(separator, -1)
-
-        # A label for displaying the sample value
-        self.sample_value = gtk.Label("")
-        self.sample_value_toolitem = gtk.ToolItem()
-        self.sample_value_toolitem.add(self.sample_value)
-        self.insert(self.sample_value_toolitem, -1)
-
         self.show_all()
 
-    def set_sample_value(self, label=""):
-        """ Write a sample value to the toolbar label """
-        self.sample_value.set_text(str(label))
-        self.sample_value.show()
-
+    def set_sample_value(self, label=None):
+        """ Write a sample value to the textbox """
+        gtk.threads_enter()
+        self._update_string_for_textbox(label)
+        gtk.threads_leave()
+        
     def record_control(self, data=None):
         """Depending upon the selected interval, does either
         a logging session, or just logs the current buffer"""
@@ -246,7 +236,7 @@ class SensorToolbar(gtk.Toolbar):
         self._update_string_for_textbox()
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
 
-    def _update_string_for_textbox(self):
+    def _update_string_for_textbox(self, value=None):
         """ Update the status field at the bottom of the canvas. """
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\n")
@@ -254,6 +244,8 @@ class SensorToolbar(gtk.Toolbar):
             self.string_for_textbox += self._STR_R
         else:
             self.string_for_textbox += self._STR_V
-        if self.activity.wave.get_invert_state()==True:
+        if self.activity.wave.get_invert_state():
             self.string_for_textbox += self._STR_I
+        if value is not None:
+            self.string_for_textbox += "\t(%s)" % (str(value))
         self.activity.text_box.set_data_params(0, self.string_for_textbox)
