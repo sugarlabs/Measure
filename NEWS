@@ -1,11 +1,14 @@
 30
 * eliminate dependency on amixer (thanks to Sascha Silbe)
-* tweaked parameters for XO 1.5 (mic boost=False)
+* tweaked parameters for XO 1.5
 * cleaned up code for non-OLPC hardware
 * eliminate sensor toolbar for non-XO hardware
-* improved hardware detection logic
+* improved hardware-detection logic
 * added 1/10 second sample interval for sensor data
 * added additional bias control for sensor data
+* added tooltips for sliders (thanks to POSSE team)
+* improved labels for capture intervals (thanks to POSSE team)
+* added support for new toolbars
 
 29
 * support for XO 1.5 (thanks to Sayamindu Dasgupta)
