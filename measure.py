@@ -53,12 +53,15 @@ from toolbar_side import SideToolbar
 from sound_toolbar import SoundToolbar
 from sensor_toolbar import SensorToolbar
 
-import gconf
 try:
     from sugar import profile
     _using_gconf = False
 except ImportError:
     _using_gconf = True
+try:
+    import gconf
+except ImportError:
+    _using_gconf = False
 
 # Initialize logging.
 import logging
@@ -185,7 +188,7 @@ class MeasureActivity(activity.Activity):
             toolbox.add_toolbar(_('Sound'), self.sound_toolbar)
         self.sound_toolbar.show()
 
-        if not _is_xo(self.hw):
+        if _is_xo(self.hw):
             self.sensor_toolbar = SensorToolbar(self)
             if self.new_sugar_system:
                 self._sensor_button = ToolbarButton(
