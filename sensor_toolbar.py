@@ -22,7 +22,7 @@
 
 import pygtk
 import gtk
-from time import sleep
+import gobject
 from gettext import gettext as _
 
 from config import ICONS_DIR
@@ -53,13 +53,13 @@ class SensorToolbar(gtk.Toolbar):
         self._STR_I = _(" Invert") + " "
 
         self.gain_state = None
-        self.boost_state = None        
+        self.boost_state = None
 
         self.string_for_textbox = ""
 
         self.activity = activity
         self.activity.audiograb.set_sensor(self)
-    
+
         # Set up Resistance Button 
         if self.activity.new_sugar_system:
             self._resistance = ToolButton('bias-on')
@@ -122,10 +122,13 @@ class SensorToolbar(gtk.Toolbar):
 
     def set_sample_value(self, label=None):
         """ Write a sample value to the textbox """
+        """
         gtk.threads_enter()
         self._update_string_for_textbox(label)
         gtk.threads_leave()
-        
+        """
+        return
+
     def record_control(self, data=None):
         """Depending upon the selected interval, does either
         a logging session, or just logs the current buffer"""
@@ -144,8 +147,7 @@ class SensorToolbar(gtk.Toolbar):
             self._record.set_tooltip(_('Stop Recording'))
         else:
             self.activity.audiograb.set_logging_params(False)
-            sleep(0.2)
-            self.activity.ji.stop_session()                
+            gobject.timeout_add(250, self.activity.ji.stop_session)
             self.activity.LOGGING_IN_SESSION = False
             self._record.set_icon('media-record')
             self._record.show()
@@ -161,10 +163,10 @@ class SensorToolbar(gtk.Toolbar):
         try:
             return interval_dictionary[self.logginginterval_status]
         except:
-            print "logging interval status = %s" %\
-                  (str(self.logginginterval_status))
+            logging.error("logging interval status = %s" %\
+                              (str(self.logginginterval_status)))
             return 0
-            
+
     def loginterval_control(self, combobox):
         """ Callback from the Logging Interval Combo box: sets status """
         if self._loginterval_combo.get_active() != -1:
@@ -225,12 +227,12 @@ class SensorToolbar(gtk.Toolbar):
         """ Set the mixer settings to match the current mode. """
         self.mode = mode
         self.activity.audiograb.set_sensor_type(self.mode)
-        return 
+        return
 
     def context_off(self):
         """ Called when sensor toolbar is no longer selected. """
         self.activity.audiograb.pause_grabbing()
-        
+
     def context_on(self):
         """ Called when sensor toolbar is selected. """
         self.activity.audiograb.resume_grabbing()
