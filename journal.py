@@ -340,7 +340,7 @@ class JournalInteraction():
                 jobject.metadata['buddies'] = ''
                 jobject.metadata['preview'] = ''
                 jobject.metadata['icon-color'] = \
-                    self.activity.icon_color
+                    self.activity.icon_colors
                 jobject.metadata['mime_type'] = 'image/png'
                 jobject.file_path = file_path
                 datastore.write(jobject)
