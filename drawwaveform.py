@@ -23,9 +23,7 @@ import pygtk
 import gtk
 import cairo
 import gobject
-import time
 import os
-import audioop
 from math import floor, ceil
 from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
