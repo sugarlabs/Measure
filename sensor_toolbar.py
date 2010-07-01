@@ -190,6 +190,7 @@ class SensorToolbar(gtk.Toolbar):
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/bias-on2.svg')
+                self.activity.label.set_text(" " + _('Resistance Sensor'))
         elif mode_to_set == 'voltage':
             self._resistance.set_icon('bias-on')
             self._voltage.set_icon('bias-off2')
@@ -199,6 +200,7 @@ class SensorToolbar(gtk.Toolbar):
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/bias-off2.svg')
+                self.activity.label.set_text(" " + _('Voltage Sensor'))
         else:
             logging.error("unknown mode %s" % (mode_to_set))
         if self.activity.new_sugar_system:

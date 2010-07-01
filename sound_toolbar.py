@@ -325,6 +325,7 @@ class SoundToolbar(gtk.Toolbar):
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/domain-time2.svg')
+                self.activity.label.set_text(" " + _('Time Base'))
         else:
             self.activity.wave.set_fft_mode(True)
             self._time.set_icon('domain-time')
@@ -335,7 +336,9 @@ class SoundToolbar(gtk.Toolbar):
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/domain-freq2.svg')
-        if self.activity.new_sugar_system:
+                self.activity.label.set_text(" " + _('Frequency Base'))
+        if self.activity.new_sugar_system and \
+                hasattr(self.activity, "sensor_toolbar"):
             self.activity.sensor_toolbar._resistance.set_icon('bias-on')
             self.activity.sensor_toolbar._voltage.set_icon('bias-off')
         return False

@@ -53,12 +53,12 @@ from toolbar_side import SideToolbar
 from sound_toolbar import SoundToolbar
 from sensor_toolbar import SensorToolbar
 
+import gconf
 try:
-    import gconf
-    _using_gconf = True
-except ImportError: # older Sugar didn't use gconf
     from sugar import profile
     _using_gconf = False
+except ImportError:
+    _using_gconf = True
 
 # Initialize logging.
 import logging
@@ -174,6 +174,7 @@ class MeasureActivity(activity.Activity):
         self.sound_toolbar = SoundToolbar(self)
         if self.new_sugar_system:
             self._sound_button = ToolbarButton(
+                label=_('Sound'),
                 page=self.sound_toolbar,
                 icon_name='sound-tools')
             toolbox.toolbar.insert(self._sound_button, -1)
@@ -186,6 +187,7 @@ class MeasureActivity(activity.Activity):
             self.sensor_toolbar = SensorToolbar(self)
             if self.new_sugar_system:
                 self._sensor_button = ToolbarButton(
+                    label=_('Sensors'),
                     page=self.sensor_toolbar,
                     icon_name='sensor-tools')
                 toolbox.toolbar.insert(self._sensor_button, -1)
@@ -205,6 +207,15 @@ class MeasureActivity(activity.Activity):
             mode_image_tool = gtk.ToolItem()
             mode_image_tool.add(self.mode_image)
             toolbox.toolbar.insert(mode_image_tool,-1)
+
+            self.label = gtk.Label(" " + _('Time Base'))
+            self.label.set_line_wrap(True)
+            self.label.show()
+            _toolitem = gtk.ToolItem()
+            _toolitem.add(self.label)
+            toolbox.toolbar.insert(_toolitem, -1)
+            _toolitem.show()
+
             _separator = gtk.SeparatorToolItem()
             _separator.props.draw = False
             _separator.set_expand(True)
@@ -227,7 +238,8 @@ class MeasureActivity(activity.Activity):
 
         self.first = True
 
-        self.set_show_hide_windows('sound')
+        self.set_sound_context()
+        self.set_show_hide_windows()
         self.wave.set_active(True)
         self.wave.set_context_on()
 
