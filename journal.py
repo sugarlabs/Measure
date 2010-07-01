@@ -187,9 +187,8 @@ class JournalInteraction():
 	    try:
                 self.jobject = datastore.create()
                 try:
-                    self.jobject.metadata['title'] = \
-                        'Measure Activity log, ' + \
-                         str(self.logginginterval_status)
+                    self.jobject.metadata['title'] = "%s %s" %\
+                        (_("Measure Log"), str(self.logginginterval_status))
                     self.jobject.metadata['keep'] = '0'
                     self.jobject.metadata['buddies'] = ''
                     self.jobject.metadata['preview'] = ''
@@ -225,10 +224,10 @@ class JournalInteraction():
     def write_session_params(self):
         """Write the session parameters to temp_buffers"""
         self.num_rows+=1
-        self.temp_buffer.append(_('Session: ' + str(self.session_id)))
-        self.temp_buffer.append(_('User: ' + str(self.user)))
-        self.temp_buffer.append(_('Interval: ' +\
-                                      str(self.logginginterval_status)))
+        self.temp_buffer.append("%s: %s" % (_('Session'), str(self.session_id)))
+        self.temp_buffer.append("%s: %s" % (_('User'), str(self.user)))
+        self.temp_buffer.append("%s: %s" % (_('Interval'),
+                                           str(self.logginginterval_status)))
         ##TODO: Probably need to add a field for timing interval
         #self.temp_buffer.append(self.Xscale)
         #self.temp_buffer.append(self.Yscale)
@@ -312,7 +311,7 @@ class JournalInteraction():
             records.append(temp_row)
         return array(records)
 
-    def take_screenshot(self, waveform_id = 1):
+    def take_screenshot(self, waveform_id=1):
         """ Take a screenshot and save to the Journal """
         act_root = environ['SUGAR_ACTIVITY_ROOT'] 
         tmp_dir = join(act_root, 'data')
@@ -334,8 +333,8 @@ class JournalInteraction():
         try:
             jobject = datastore.create()
             try:
-                jobject.metadata['title'] = _('Waveform ' + str(waveform_id) +\
-                    ' ,from Measure Activity')
+                jobject.metadata['title'] = "%s %d" % (_('Waveform'),
+                                                       waveform_id)
                 jobject.metadata['keep'] = '0'
                 jobject.metadata['buddies'] = ''
                 jobject.metadata['preview'] = ''
