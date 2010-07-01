@@ -122,6 +122,7 @@ class MeasureActivity(activity.Activity):
         self.ACTIVE = True
         self.LOGGING_IN_SESSION = False
         self.CONTEXT = ''
+        self.adjustmentf = None # Freq. slider control
         self.connect("notify::active", self._active_cb)
         self.connect("destroy", self.on_quit)	
 
@@ -169,7 +170,8 @@ class MeasureActivity(activity.Activity):
         else:
             toolbox = ActivityToolbox(self)
             self.set_toolbox(toolbox)
-            toolbox.connect("current-toolbar-changed", self._toolbar_changed_cb)
+            toolbox.connect("current-toolbar-changed",
+                                 self._toolbar_changed_cb)
 
         self.sound_toolbar = SoundToolbar(self)
         if self.new_sugar_system:
@@ -183,7 +185,7 @@ class MeasureActivity(activity.Activity):
             toolbox.add_toolbar(_('Sound'), self.sound_toolbar)
         self.sound_toolbar.show()
 
-        if _is_xo(self.hw):
+        if not _is_xo(self.hw):
             self.sensor_toolbar = SensorToolbar(self)
             if self.new_sugar_system:
                 self._sensor_button = ToolbarButton(
@@ -216,6 +218,8 @@ class MeasureActivity(activity.Activity):
             toolbox.toolbar.insert(_toolitem, -1)
             _toolitem.show()
 
+            self.sound_toolbar.add_frequency_slider(toolbox.toolbar)
+
             _separator = gtk.SeparatorToolItem()
             _separator.props.draw = False
             _separator.set_expand(True)
@@ -233,6 +237,7 @@ class MeasureActivity(activity.Activity):
             toolbox.set_current_toolbar(TOOLBARS.index('sound'))
 
         toolbox.show()
+        self.sound_toolbar.update_page_size()
 
         self.show_all()		
 

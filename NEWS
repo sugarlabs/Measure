@@ -9,6 +9,7 @@
 * added tooltips for sliders (thanks to POSSE team)
 * improved labels for capture intervals (thanks to POSSE team)
 * added support for new toolbars
+* moved frequency slider to main toolbar
 
 29
 * support for XO 1.5 (thanks to Sayamindu Dasgupta)

@@ -98,38 +98,9 @@ class SoundToolbar(gtk.Toolbar):
         self._freq.set_tooltip(_('Frequency Base'))
         self._freq.connect('clicked', self._timefreq_control_cb, False)
 
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        self.insert(separator, -1)
-
         # Set up Frequency-control Slider and corresponding buttons
-        self._freq_stepper_up = ToolButton('freq-high')
-        self._freq_stepper_up.set_tooltip(_('Zoom out'))
-        self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
-
-        self.adjustmentf = gtk.Adjustment(0.5, self.LOWER, self.UPPER, 0.01,
-                                          0.1, 0)
-        self.adjustmentf.connect("value_changed", self.cb_page_sizef)
-        self._freq_range = gtk.HScale(self.adjustmentf)
-        self._freq_range.set_inverted(True)
-        self._freq_range.set_draw_value(False)
-        self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
-        self._freq_range.set_size_request(120,15)
-
-        self._freq_stepper_down = ToolButton('freq-low')
-        self._freq_stepper_down.set_tooltip(_('Zoom in'))
-        self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
-
-        self._freq_range_tool = gtk.ToolItem()
-        self._freq_range_tool.add(self._freq_range)
-
-        self.insert(self._freq_stepper_up, -1)
-        self.insert(self._freq_range_tool, -1)
-        self.insert(self._freq_stepper_down, -1)
-
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        self.insert(separator, -1)
+        if not self.activity.new_sugar_system:
+            self.add_frequency_slider(self)
 
         # Set up the Pause Button
         self._pause = ToolButton('media-playback-pause')
@@ -201,7 +172,41 @@ class SoundToolbar(gtk.Toolbar):
         self.insert(self._trigger_tool,-1)
         self.show_all()
 
-        self._update_page_size()
+        return
+
+    def add_frequency_slider(self, toolbar):
+        """ Either on the Sound toolbar or the Main toolbar """
+        self._freq_stepper_up = ToolButton('freq-high')
+        self._freq_stepper_up.set_tooltip(_('Zoom out'))
+        self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
+
+        self.activity.adjustmentf = gtk.Adjustment(0.5, self.LOWER, self.UPPER,
+                                                   0.01, 0.1, 0)
+        self.activity.adjustmentf.connect("value_changed", self.cb_page_sizef)
+        self._freq_range = gtk.HScale(self.activity.adjustmentf)
+        self._freq_range.set_inverted(True)
+        self._freq_range.set_draw_value(False)
+        self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
+        self._freq_range.set_size_request(120,15)
+
+        self._freq_stepper_down = ToolButton('freq-low')
+        self._freq_stepper_down.set_tooltip(_('Zoom in'))
+        self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
+
+        self._freq_range_tool = gtk.ToolItem()
+        self._freq_range_tool.add(self._freq_range)
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        toolbar.insert(separator, -1)
+
+        toolbar.insert(self._freq_stepper_up, -1)
+        toolbar.insert(self._freq_range_tool, -1)
+        toolbar.insert(self._freq_stepper_down, -1)
+
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        toolbar.insert(separator, -1)
         return
 
     def record_control(self, data=None):
@@ -367,24 +372,24 @@ class SoundToolbar(gtk.Toolbar):
 	    self._freq_range.set_value(self.LOWER)
 
     def cb_page_sizef(self, data=None):
-        """ Callback to scale the 'page size' (zoom in and out) """
+        """ Callback to scale the frequency range (zoom in and out) """
         if self._update_page_size_id:
             gobject.source_remove(self._update_page_size_id)
         self._update_page_size_id = \
-            gobject.timeout_add(250, self._update_page_size)
+            gobject.timeout_add(250, self.update_page_size)
         return True
 
-    def _update_page_size(self):
+    def update_page_size(self):
         """ Set up the scaling of the display """
         self._update_page_size_id = None
 
-        new_value = round(self.adjustmentf.value*100.0)/100.0
-        if self.adjustmentf.value != new_value:
-            self.adjustmentf.value = new_value
+        new_value = round(self.activity.adjustmentf.value*100.0)/100.0
+        if self.activity.adjustmentf.value != new_value:
+            self.activity.adjustmentf.value = new_value
             return False
 
-        time_div = 0.001*max(self.adjustmentf.value, 0.05)
-        freq_div = 1000*max(self.adjustmentf.value, 0.01)
+        time_div = 0.001*max(self.activity.adjustmentf.value, 0.05)
+        freq_div = 1000*max(self.activity.adjustmentf.value, 0.01)
 
         self.activity.wave.set_div(time_div, freq_div)
 
