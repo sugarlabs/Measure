@@ -81,6 +81,7 @@ class AudioGrab:
         self._capture_control = None
         self._mic_boost_control = None
         self._hardwired = False # Query controls or use hardwired names
+        self._display_value = True
 
         # Set up gst pipeline
         self.pipeline = gst.Pipeline("pipeline")
@@ -194,9 +195,12 @@ class AudioGrab:
                 self.logging_state = False
                 self.activity.ji.stop_session()
                 self.waveform_id = 1
-        if self.activity.CONTEXT == 'sensor':
-            if not self._hardwired: # don't display label on F9
+        if self.activity.CONTEXT == 'sensor' and not self.logging_state:
+            if self._display_value: # Display value every other time
                 self.sensor.set_sample_value(str(temp_buffer[0]))
+                self._display_value = False
+            else:
+                self._display_value = True
         return False
  
     def set_freeze_the_display(self, freeze=False):
@@ -226,10 +230,7 @@ class AudioGrab:
                 # save value to Journal
                 self.activity.ji.write_value(buf[0])
                 # display value on Sensor toolbar
-                try:
-                    self.sensor.set_sample_value(str(buf[0]))
-                except:
-                    pass
+                self.sensor.set_sample_value(str(buf[0]))
         return
 
     def start_sound_device(self):

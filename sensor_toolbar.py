@@ -122,11 +122,9 @@ class SensorToolbar(gtk.Toolbar):
 
     def set_sample_value(self, label=None):
         """ Write a sample value to the textbox """
-        """
         gtk.threads_enter()
         self._update_string_for_textbox(label)
         gtk.threads_leave()
-        """
         return
 
     def record_control(self, data=None):
