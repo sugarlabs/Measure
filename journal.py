@@ -86,8 +86,8 @@ class JournalInteraction():
             except:
                 log.error("Couldn't get session id or rows")
 
-        log.debug("$$journal.py: This is the file I will work on" +\
-            self.activity._jobject.file_path)
+        # log.debug("$$journal.py: This is the file I will work on" +\
+        #    self.activity._jobject.file_path)
     
     def __del__(self):
         pass
@@ -121,8 +121,8 @@ class JournalInteraction():
         self.num_rows+=1
         self.append_existing=False
         self.making_row=False
-        log.debug("$$journal.py: a new session has started; the session_id is"\
-              + str(self.session_id))
+        # log.debug("$$journal.py: a new session has started; the session_id is"\
+        #      + str(self.session_id))
         return self.session_id
 
     def continue_existing_session(self, session_id_to_continue=-1):
@@ -140,14 +140,14 @@ class JournalInteraction():
             self.apppend_session(self.session_id_to_continue)
             self.append_existing=False
             
-        if self.making_row==False:
+        if not self.making_row:
           #     self.write_session_params()
                 self.temp_buffer.append(value)
                 self.making_row = True
         else:   
             self.temp_buffer.append(value)
         self._stopped = False
-        log.debug("$$Journal.py: I just wrote this value" + str(value))
+        # log.debug("%s %s" % ("$$Journal.py: I just wrote this value", str(value)))
 
     def get_record(self, session_id=0):
         """Return list of values from logging session specified by session_id"""

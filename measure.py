@@ -26,7 +26,6 @@ import pygtk
 import gtk
 import gobject
 import dbus
-from time import sleep
 from config import TOOLBARS, ICONS_DIR
 from tempfile import mkstemp
 from os import environ, path, chmod
@@ -188,7 +187,7 @@ class MeasureActivity(activity.Activity):
             toolbox.add_toolbar(_('Sound'), self.sound_toolbar)
         self.sound_toolbar.show()
 
-        if _is_xo(self.hw):
+        if not _is_xo(self.hw):
             self.sensor_toolbar = SensorToolbar(self)
             if self.new_sugar_system:
                 self._sensor_button = ToolbarButton(
@@ -202,11 +201,7 @@ class MeasureActivity(activity.Activity):
             self.sensor_toolbar.show()
 
         if self.new_sugar_system:
-            _separator = gtk.SeparatorToolItem()
-            _separator.props.draw = True
-            _separator.set_expand(False)
-            toolbox.toolbar.insert(_separator, -1)
-            _separator.show()
+
             self.mode_image = gtk.Image()
             self.mode_image.set_from_file(ICONS_DIR + '/domain-time2.svg')
             mode_image_tool = gtk.ToolItem()
@@ -305,16 +300,14 @@ class MeasureActivity(activity.Activity):
         self.set_show_hide_windows('sound')
         if _is_xo(self.hw):
             self.sensor_toolbar.context_off()
-        sleep(0.5)
-        self.sound_toolbar.context_on()
+        gobject.timeout_add(500, self.sound_toolbar.context_on)
         self.CONTEXT = 'sound'
 
     def set_sensor_context(self):
         """ Called when sensor toolbar is selected or button pushed """
         self.set_show_hide_windows('sensor')
         self.sound_toolbar.context_off()
-        sleep(0.5)
-        self.sensor_toolbar.context_on()
+        gobject.timeout_add(500, self.sensor_toolbar.context_on)
         self.CONTEXT = 'sensor'
 
     def get_icon_colors_from_sugar(self):

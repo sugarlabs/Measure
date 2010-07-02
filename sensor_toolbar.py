@@ -157,9 +157,9 @@ class SensorToolbar(gtk.Toolbar):
         """Converts interval string to an integer that denotes the number
         of times the audiograb buffer must be called before a value is written.
         When set to 0, the whole of current buffer will be written"""
-        interval_dictionary = {'1/10 second':9, '1 second':89,
-                               '30 seconds':2667,
-                               '5 minutes':26667, '30 minutes':160000}
+        interval_dictionary = {'1/10 second':0.1, '1 second':1,
+                               '30 seconds':30,
+                               '5 minutes':300, '30 minutes':1800}
         try:
             return interval_dictionary[self.logginginterval_status]
         except:

@@ -100,7 +100,6 @@ class AudioGrab:
         self.dont_queue_the_buffer = False
 
         self._mixer = gst.element_factory_make('alsamixer')
-        print self._mixer
         rc = self._mixer.set_state(gst.STATE_PAUSED)
         assert rc == gst.STATE_CHANGE_SUCCESS
 
@@ -785,6 +784,8 @@ class AudioGrab:
         self.set_capture_gain(QUIT_CAPTURE_GAIN)
         self.set_bias(QUIT_BIAS)
         self.stop_sound_device()
+        if self.logging_state:
+            self.activity.ji.stop_session()
         return
 
 class AudioGrab_XO_1(AudioGrab):
