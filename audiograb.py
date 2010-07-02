@@ -32,7 +32,7 @@ from string import find
 import time
 from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
                    SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
-                   QUIT_CAPTURE_GAIN, QUIT_BIAS
+                   QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE
 from threading import Timer
 
 # Initialize logging.
@@ -81,7 +81,7 @@ class AudioGrab:
         self._capture_control = None
         self._mic_boost_control = None
         self._hardwired = False # Query controls or use hardwired names
-        self._display_value = True
+        self._display_value = DISPLAY_DUTY_CYCLE
 
         # Set up gst pipeline
         self.pipeline = gst.Pipeline("pipeline")
@@ -196,11 +196,11 @@ class AudioGrab:
                 self.activity.ji.stop_session()
                 self.waveform_id = 1
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
-            if self._display_value: # Display value every other time
+            if self._display_value == 0: # Display value at DISPLAY_DUTY_CYCLE rate
                 self.sensor.set_sample_value(str(temp_buffer[0]))
-                self._display_value = False
+                self._display_value = DISPLAY_DUTY_CYCLE
             else:
-                self._display_value = True
+                self._display_value -= 1
         return False
  
     def set_freeze_the_display(self, freeze=False):

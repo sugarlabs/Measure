@@ -61,3 +61,7 @@ TOOLBARS = ['project','sound','sensor']
 
 #Maximum no. of screenshots Measure will save while recording in Sound context
 SOUND_MAX_WAVE_LOGS = 10
+
+#Duty cycle of display value update
+DISPLAY_DUTY_CYCLE = 100
+
