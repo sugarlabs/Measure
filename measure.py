@@ -4,7 +4,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009, Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
-#    	
+#
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -22,7 +22,6 @@
 
 import pygst
 pygst.require("0.10")
-import pygtk
 import gtk
 import gobject
 import dbus
@@ -33,8 +32,7 @@ from textbox import TextBox
 from gettext import gettext as _
 
 from sugar.activity import activity
-try: # 0.86+ toolbar widgets
-    from sugar.bundle.activitybundle import ActivityBundle
+try:  # 0.86+ toolbar widgets
     from sugar.activity.widgets import ActivityToolbarButton
     from sugar.activity.widgets import StopButton
     from sugar.graphics.toolbarbox import ToolbarBox
@@ -43,7 +41,6 @@ try: # 0.86+ toolbar widgets
 except ImportError:
     from sugar.activity.activity import ActivityToolbox
     _new_sugar_system = False
-from sugar.datastore import datastore
 
 from journal import JournalInteraction
 from audiograb import AudioGrab_XO_1_5, AudioGrab_XO_1, AudioGrab_Unknown
@@ -68,20 +65,22 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
+
 def _is_xo(hw):
     """ Return True if this is xo hardware """
-    return hw in ['xo1','xo1.5']
+    return hw in ['xo1', 'xo1.5']
+
 
 def _get_hardware():
     """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
     bus = dbus.SystemBus()
- 
+
     comp_obj = bus.get_object('org.freedesktop.Hal',
                               '/org/freedesktop/Hal/devices/computer')
-    dev = dbus.Interface (comp_obj, 'org.freedesktop.Hal.Device')
+    dev = dbus.Interface(comp_obj, 'org.freedesktop.Hal.Device')
     if dev.PropertyExists('system.hardware.vendor') and \
             dev.PropertyExists('system.hardware.version'):
-        if dev.GetProperty ('system.hardware.vendor') == 'OLPC':
+        if dev.GetProperty('system.hardware.vendor') == 'OLPC':
             if dev.GetProperty('system.hardware.version') == '1.5':
                 return 'xo1.5'
             else:
@@ -124,20 +123,20 @@ class MeasureActivity(activity.Activity):
         self.ACTIVE = True
         self.LOGGING_IN_SESSION = False
         self.CONTEXT = ''
-        self.adjustmentf = None # Freq. slider control
+        self.adjustmentf = None  # Freq. slider control
         self.connect("notify::active", self._active_cb)
-        self.connect("destroy", self.on_quit)	
+        self.connect("destroy", self.on_quit)
 
         if self._jobject.file_path:
             self.existing = True
-        else: 
+        else:
             self._jobject.file_path = str(mkstemp(dir=tmp_dir)[1])
             chmod(self._jobject.file_path, 0777)
-            self.existing = False	
+            self.existing = False
 
         self.ji = JournalInteraction(self)
         self.wave = DrawWaveform(self)
-        
+
         self.hw = _get_hardware()
         log.debug("running on %s hardware" % (self.hw))
         if self.hw == 'xo1.5':
@@ -153,14 +152,14 @@ class MeasureActivity(activity.Activity):
         self.text_box = TextBox()
 
         self.box3 = gtk.HBox(False, 0)
-        self.box3.pack_start(self.wave, True, True,0)
+        self.box3.pack_start(self.wave, True, True, 0)
         self.box3.pack_start(self.side_toolbar.box1, False, True, 0)
 
-        self.box1 = gtk.VBox(False,0)
+        self.box1 = gtk.VBox(False, 0)
         self.box1.pack_start(self.box3, True, True, 0)
         self.box1.pack_start(self.text_box.box_main, False, True, 0)
 
-        self.set_canvas(self.box1)		
+        self.set_canvas(self.box1)
 
         if self.new_sugar_system:
             # Use 0.86 toolbar design
@@ -201,12 +200,11 @@ class MeasureActivity(activity.Activity):
             self.sensor_toolbar.show()
 
         if self.new_sugar_system:
-
             self.mode_image = gtk.Image()
             self.mode_image.set_from_file(ICONS_DIR + '/domain-time2.svg')
             mode_image_tool = gtk.ToolItem()
             mode_image_tool.add(self.mode_image)
-            toolbox.toolbar.insert(mode_image_tool,-1)
+            toolbox.toolbar.insert(mode_image_tool, -1)
 
             self.label = gtk.Label(" " + _('Time Base'))
             self.label.set_line_wrap(True)
@@ -237,7 +235,7 @@ class MeasureActivity(activity.Activity):
         toolbox.show()
         self.sound_toolbar.update_page_size()
 
-        self.show_all()		
+        self.show_all()
 
         self.first = True
 
@@ -248,7 +246,7 @@ class MeasureActivity(activity.Activity):
 
     def set_show_hide_windows(self, mode='sound'):
         """Shows the appropriate window identified by the mode """
-        if mode == 'sound': 
+        if mode == 'sound':
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
             return
@@ -257,23 +255,23 @@ class MeasureActivity(activity.Activity):
             self.side_toolbar.set_show_hide(True, mode)
             return
 
-    def on_quit(self,data=None):
+    def on_quit(self, data=None):
         """Clean up, close journal on quit"""
-        self.audiograb.on_activity_quit()	
+        self.audiograb.on_activity_quit()
         self.ji.on_quit()
         return
 
-    def _active_cb( self, widget, pspec ):
+    def _active_cb(self, widget, pspec):
         """ Callback to handle starting/pausing capture when active/idle """
         if self.first:
-	        self.audiograb.start_grabbing()
-	        self.first = False
+            self.audiograb.start_grabbing()
+            self.first = False
         if not self.props.active and self.ACTIVE:
-	        self.audiograb.pause_grabbing()
-	        self.active_status = False 
+            self.audiograb.pause_grabbing()
+            self.active_status = False
         elif self.props.active and not self.ACTIVE:
-	        self.audiograb.resume_grabbing()
-	        self.active_status = True
+            self.audiograb.resume_grabbing()
+            self.active_status = True
 
         self.ACTIVE = self.props.active
         self.wave.set_active(self.ACTIVE)
