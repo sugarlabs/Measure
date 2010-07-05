@@ -4,7 +4,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009, Walter Bender
 #    
-#    	
+#
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -22,7 +22,7 @@
 """
 journal.py 
 
-Start_new_session(user="", Xscale=0, Yscale=0) or
+Start_new_session(user="", Xscale=0, yscale=0) or
 continue_existing_session(session_id_to_continue=-1): must be called
 before every logging session for logging value by value, use
 write_value(value=0),for logging a whole set of values into one
@@ -37,12 +37,10 @@ even if one or more logging sessions are deleted
 
 
 import csv
-import os
 import gtk
-import dbus
 
 from tempfile import mkstemp
-from os import environ
+from os import environ, chmod, close, remove
 from os.path import join
 from numpy import array
 from gettext import gettext as _
@@ -63,7 +61,7 @@ class JournalInteraction():
 
         self.activity = activity
         self.session_id = 0
-        self.num_rows=0
+        self.num_rows = 0
         self.logginginterval_status = ' '
         self.writer1 = None
         self.writer2 = None
@@ -76,8 +74,8 @@ class JournalInteraction():
         self.jobject = None
    
         self.user = ""
-        self.Xscale = 0
-        self.Yscale = 0
+        self.xscale = 0
+        self.yscale = 0
         
         if self.activity.existing:
             try:
@@ -97,39 +95,40 @@ class JournalInteraction():
     
     def set_max_session_id(self):
         """Sets the existing maximum session_id if the file already exists"""
-        self.session_id = self.get_number_of_records();
+        self.session_id = self.get_number_of_records()
 
     def set_number_of_rows(self):
         """Sets the number of rows an existing file has"""
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
-        for row in reader:
-            self.num_rows+=1
+        # for row in reader:
+        #     self.num_rows += 1
+        self.num_rows += len(reader)
 
-    def set_session_params(self, user="", Xscale=0, Yscale=0):
+    def set_session_params(self, user="", xscale=0, yscale=0):
         self.user = user
-        self.Xscale = Xscale
-        self.Yscale = Yscale
-    
-    def start_new_session(self, user="", Xscale=0, Yscale=0, \
-                          logginginterval_status=' ' ):
+        self.xscale = xscale
+        self.yscale = yscale
+
+    def start_new_session(self, user="", xscale=0, yscale=0, \
+                          logginginterval_status=' '):
         """This needs to be called before starting any logging session"""
         self.user = user
-        self.Xscale = Xscale
-        self.Yscale = Yscale
+        self.xscale = xscale
+        self.yscale = yscale
         self.logginginterval_status = logginginterval_status
-        self.session_id+=1
-        self.num_rows+=1
-        self.append_existing=False
-        self.making_row=False
-        # log.debug("$$journal.py: a new session has started; the session_id is"\
+        self.session_id += 1
+        self.num_rows += 1
+        self.append_existing = False
+        self.making_row = False
+        # log.debug("$$journal.py: a new session has started; session_id is"\
         #      + str(self.session_id))
         return self.session_id
 
     def continue_existing_session(self, session_id_to_continue=-1):
         """Must be called before attempting to continue any logging session"""
-        self.append_existing=True
-        self.session_id_to_continue=session_id_to_continue
-        self.making_row=True
+        self.append_existing = True
+        self.session_id_to_continue = session_id_to_continue
+        self.making_row = True
 
     def write_value(self, value=0):
         """Append the value passed to temp_buffer if a logging session is
@@ -138,16 +137,17 @@ class JournalInteraction():
         to append it and then rewrite the whole row"""
         if self.append_existing:
             self.apppend_session(self.session_id_to_continue)
-            self.append_existing=False
+            self.append_existing = False
             
         if not self.making_row:
           #     self.write_session_params()
-                self.temp_buffer.append(value)
-                self.making_row = True
+            self.temp_buffer.append(value)
+            self.making_row = True
         else:   
             self.temp_buffer.append(value)
         self._stopped = False
-        # log.debug("%s %s" % ("$$Journal.py: I just wrote this value", str(value)))
+        # log.debug("%s %s" % ("$$Journal.py: I just wrote this value",
+        #                      str(value)))
 
     def get_record(self, session_id=0):
         """Return list of values from logging session specified by session_id"""
@@ -163,10 +163,11 @@ class JournalInteraction():
     def get_number_of_records(self):
         """Returns the of records"""
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
-        count=0
-        for row in reader:
-            count += 1
-        return count
+        return len(reader)
+        # count = 0
+        # for row in reader:
+        #     count += 1
+        # return count
 
     def stop_session(self):
         """Write the temp_buffer onto a file"""
@@ -178,13 +179,13 @@ class JournalInteraction():
                 writer1 = csv.writer(open(self.activity._jobject.file_path,
                                           "wb"))
                 self.activity.existing = True
-	    for datum in self.temp_buffer:
-		writer1.writerow( [ datum ] )
+            for datum in self.temp_buffer:
+                writer1.writerow( [ datum ] )
             del writer1
             self.temp_buffer = []
             self.making_row = False
             self.append_existing = False
-	    try:
+            try:
                 self.jobject = datastore.create()
                 try:
                     self.jobject.metadata['title'] = "%s %s" %\
@@ -208,29 +209,29 @@ class JournalInteraction():
         max = 0
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
         for row in reader:
-            if len(row)>max:
-                max=len(row)
+            if len(row) > max:
+                max = len(row)
         return max
     
     def write_record(self, values=[]):
         """Write a complete row specified by values
         If file doesn't exist, open a new file and write to it"""
      #   self.write_session_params()
-        self.temp_buffer+=values
+        self.temp_buffer += values
         self.stop_session()
         self._stopped = False
         log.debug("$$journal.py: Wrote record: " + str(values))
     
     def write_session_params(self):
         """Write the session parameters to temp_buffers"""
-        self.num_rows+=1
+        self.num_rows += 1
         self.temp_buffer.append("%s: %s" % (_('Session'), str(self.session_id)))
         self.temp_buffer.append("%s: %s" % (_('User'), str(self.user)))
         self.temp_buffer.append("%s: %s" % (_('Interval'),
                                            str(self.logginginterval_status)))
         ##TODO: Probably need to add a field for timing interval
-        #self.temp_buffer.append(self.Xscale)
-        #self.temp_buffer.append(self.Yscale)
+        #self.temp_buffer.append(self.xscale)
+        #self.temp_buffer.append(self.yscale)
     
     def get_session_params(self, session_id=-1):
         """TODO write this function"""
@@ -241,13 +242,13 @@ class JournalInteraction():
         session_id may be shifted around due to deletion and editing
         returns -1 i it doesn't find it"""
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
-        found=0
+        found = 0
         for i in range(0, self.num_rows):
             temp = reader.next()
-            if int(temp[0])==session_id:
+            if int(temp[0]) == session_id:
                 return found
             else:
-                found+=1
+                found += 1
         return -1
     
     def append_session(self, session_id=-1):
@@ -255,26 +256,26 @@ class JournalInteraction():
         data in self.temp_buffer so that further recording can be done"""
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
         data_new = []
-        #####Copy all data except row to be deleted, to a temporary buffer
+        # Copy all data except row to be deleted, to a temporary buffer
         for row in reader:
-            if int(row[0])!=session_id:
+            if int(row[0]) != session_id:
                 data_new.append(row)
             else:
-                self.temp_buffer=row
-        ##Write the temporary buffer to the file again   
+                self.temp_buffer = row
+        # Write the temporary buffer to the file again   
         writer = csv.writer(open(self.activity._jobject.file_path, "wb"))
         for i in range(0, len(data_new)):
             writer.writerow(data_new[i])
-        self.making_row= True
+        self.making_row = True
     
     def delete_record(self, session_id=-1):
         """Delete the record identified by its session_id"""
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
         data_new = []
         #found  = -1
-        ##Copy all data except row to be deleted, to a temporary buffer
+        # Copy all data except row to be deleted, to a temporary buffer
         for row in reader:
-            if int(row[0])!=session_id:
+            if int(row[0]) != session_id:
                 data_new.append(row)
                 #print row
             else:
@@ -282,8 +283,8 @@ class JournalInteraction():
         #if found==-1:
         #    return found
         #print data_new[5]
-        ####Write the temporary buffer to the file again   
-        self.num_rows=len(data_new)
+        # Write the temporary buffer to the file again   
+        self.num_rows = len(data_new)
         writer1 = csv.writer(open(self.activity._jobject.file_path, "w"))
         for i in range(0, len(data_new)):
             writer1.writerow(data_new[i])
@@ -316,17 +317,17 @@ class JournalInteraction():
         act_root = environ['SUGAR_ACTIVITY_ROOT'] 
         tmp_dir = join(act_root, 'data')
         tmp_fd, file_path = mkstemp(dir=tmp_dir)
-        ###TODO: This is such a crappy way to write a file to the journal
-        ### Ideally to be implemented with write_file and read_file methods
-        os.chmod(file_path, 0777)   
+        # TODO: This is such a crappy way to write a file to the journal
+        # Ideally to be implemented with write_file and read_file methods
+        chmod(file_path, 0777)   
         gtk.threads_enter()
         window = gtk.gdk.get_default_root_window()
         width, height = window.get_size()
         x_orig, y_orig = window.get_origin()
-        screenshot = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, has_alpha=False, \
-                                    bits_per_sample=8, width=width, \
+        screenshot = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, has_alpha=False,
+                                    bits_per_sample=8, width=width,
                                     height=height)
-        screenshot.get_from_drawable(window, window.get_colormap(), x_orig, \
+        screenshot.get_from_drawable(window, window.get_colormap(), x_orig,
                                      y_orig, 0, 0, width, height)
         screenshot.save(file_path, "png")
         gtk.threads_leave()
@@ -338,8 +339,7 @@ class JournalInteraction():
                 jobject.metadata['keep'] = '0'
                 jobject.metadata['buddies'] = ''
                 jobject.metadata['preview'] = ''
-                jobject.metadata['icon-color'] = \
-                    self.activity.icon_colors
+                jobject.metadata['icon-color'] = self.activity.icon_colors
                 jobject.metadata['mime_type'] = 'image/png'
                 jobject.file_path = file_path
                 datastore.write(jobject)
@@ -347,7 +347,5 @@ class JournalInteraction():
                 jobject.destroy()
                 del jobject
         finally:
-            os.close(tmp_fd)
-            os.remove(file_path)
-
-
+            close(tmp_fd)
+            remove(file_path)
