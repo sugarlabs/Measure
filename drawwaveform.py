@@ -4,7 +4,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009,10 Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
-#    	
+#
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -19,25 +19,20 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import pygtk
 import gtk
-import cairo
-import gobject
-import os
 from math import floor, ceil
 from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 from gtk import gdk
 
-from gettext import gettext as _
-
-from config import MAX_GRAPHS, SUGAR
+from config import MAX_GRAPHS
 
 # Initialize logging.
 import logging
 log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
+
 
 class DrawWaveform(gtk.DrawingArea):
     """ Handles all the drawing of waveforms """
@@ -66,7 +61,7 @@ class DrawWaveform(gtk.DrawingArea):
 
         self.buffers = array([])
         self.main_buffers = array([])
-        self.str_buffer=''
+        self.str_buffer = ''
         self.peaks = []
         self.fftx = []
 
@@ -78,28 +73,28 @@ class DrawWaveform(gtk.DrawingArea):
         self.count = 0
         self.invert = False
 
-        self.y_mag = 3.0 # additional scale factor for display
-        self.gain = 1.0  # (not in dB) introduced by Capture Gain and Mic Boost
-        self.bias = 0    # vertical position fine-tuning from slider
-        self._freq_range = 4 # See comment in sound_toolbar.py
+        self.y_mag = 3.0  # additional scale factor for display
+        self.gain = 1.0
+        self.bias = 0  # vertical position fine-tuning from slider
+        self._freq_range = 4
         self.draw_interval = 10
         self.num_of_points = 115
         self.details_iter = 50
         self.c = 1180
         self.m = 0.0238
         self.k = 0.0238
-        self.c2 = 139240    #c squared
+        self.c2 = 139240  # c squared
         self.rms = 0
         self.avg = 0
         self.Rv = 0
-        # constant to multiply with self.param2 while scaling values 
+        # constant to multiply with self.param2 while scaling values
         self.log_param1 = ""
         self.log_param2 = ""
         self.log_param3 = ""
         self.log_param4 = ""
         self.log_param5 = ""
 
-        self._BACKGROUND_LINE_THICKNESS =  0.8
+        self._BACKGROUND_LINE_THICKNESS = 0.8
         self._TRIGGER_LINE_THICKNESS = 3
         self._FOREGROUND_LINE_THICKNESS = 6
 
@@ -107,10 +102,10 @@ class DrawWaveform(gtk.DrawingArea):
         self.fft_show = False
         self.side_toolbar_copy = None
 
-        self.scaleX = str( 1.04167/self.draw_interval ) + " ms"
+        self.scaleX = str(1.04167 / self.draw_interval) + " ms"
         self.scaleY = ""
 
-        self._back_surf = None        
+        self._back_surf = None
         self.expose_event_id = self.connect("expose_event", self._expose)
 
         self.pr_time = 0
@@ -126,7 +121,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.source = []
         self.graph_id = []
 
-        for x in range (0, self.MAX_GRAPHS):
+        for x in range(0, self.MAX_GRAPHS):
             self.graph_show_state.append(False)
             self.Xstart.append(0)
             self.Ystart.append(50)
@@ -137,7 +132,7 @@ class DrawWaveform(gtk.DrawingArea):
             self.source.append(0)
             self.graph_id.append(x)
 
-        self.graph_show_state[0]=True
+        self.graph_show_state[0] = True
         self.Xstart[0] = 0
         self.Ystart[0] = 0
         self.Xend[0] = 1150
@@ -177,14 +172,14 @@ class DrawWaveform(gtk.DrawingArea):
 
         self.max_samples = 115
         self.max_samples_fact = 3
-        
-        self.time_div = 1.
-        self.freq_div = 1.
+
+        self.time_div = 1.0
+        self.freq_div = 1.0
         self.input_step = 1
-        
+
         self.ringbuffer = RingBuffer1d(self.max_samples, dtype='int16')
 
-        self.debug_str="start"
+        self.debug_str = "start"
 
         self.context = True
 
@@ -193,7 +188,7 @@ class DrawWaveform(gtk.DrawingArea):
         if self.max_samples == num:
             return
         new_buffer = RingBuffer1d(num, dtype='int16')
-        
+
         new_buffer.append(self.ringbuffer.read())
         self.ringbuffer = new_buffer
         self.max_samples = num
@@ -230,7 +225,7 @@ class DrawWaveform(gtk.DrawingArea):
         return self.invert
 
     def get_drawing_interval(self):
-        """Returns the pixel interval horizontally between plots of two 
+        """Returns the pixel interval horizontally between plots of two
         consecutive points"""
         return self.draw_interval
 
@@ -246,7 +241,7 @@ class DrawWaveform(gtk.DrawingArea):
         if self.window is None:
             return
         self.window.property_change(self._redraw_atom, self._redraw_atom,
-            32, gtk.gdk.PROP_MODE_REPLACE, []);
+            32, gtk.gdk.PROP_MODE_REPLACE, [])
         return
 
     def do_property_notify_event(self, event):
@@ -275,14 +270,14 @@ class DrawWaveform(gtk.DrawingArea):
                     gdk.CAP_ROUND, gdk.JOIN_BEVEL)
 
                 self._line_gc[graph_id].set_foreground(clr)
-  
+
         # Sugar stroke color
         clr = colormap.alloc_color(self.color[0])
 
         self._trigger_line_gc = self.window.new_gc(foreground=clr)
         self._trigger_line_gc.set_line_attributes(
             self._TRIGGER_LINE_THICKNESS, gdk.LINE_SOLID,
-            gdk.CAP_ROUND, gdk.JOIN_BEVEL)   
+            gdk.CAP_ROUND, gdk.JOIN_BEVEL)
 
         self._trigger_line_gc.set_foreground(clr)
 
@@ -332,15 +327,14 @@ class DrawWaveform(gtk.DrawingArea):
     def _expose(self, widget, event):
         """The "expose" event handler does all the drawing"""
 
-        ####################### Real time drawing ##############################
+        # Real time drawing
         if self.context and self.active:
 
             #Iterate for each graph
             for graph_id in self.graph_id:
-                if self.graph_show_state[graph_id] == True:
+                if self.graph_show_state[graph_id]:
                     buf = self.ringbuffer.read(None, self.input_step)
-                    samples = ceil(
-                                       self.allocation.width/self.draw_interval)
+                    samples = ceil(self.allocation.width / self.draw_interval)
                     if len(buf) == 0:
                         # We don't have enough data to plot.
                         self._indirect_queue_draw()
@@ -352,30 +346,31 @@ class DrawWaveform(gtk.DrawingArea):
                         if self.triggering != self.TRIGGER_NONE:
                             xpos = self.trigger_xpos
                             ypos = self.trigger_ypos
-                            samples_to_end = int(samples*(1-xpos))
+                            samples_to_end = int(samples * (1 - xpos))
 
                             ypos -= 0.5
                             ypos *= -32767.0 / self.y_mag
 
-                            x_offset = self.allocation.width * xpos -\
-                                 (samples - samples_to_end) * self.draw_interval
+                            x_offset = self.allocation.width\
+                                * xpos - (samples - samples_to_end)\
+                                * self.draw_interval
 
                             position = -1
                             if self.triggering and self.TRIGGER_POS:
-                                ints = buf[samples-samples_to_end:\
-                                           -samples_to_end-3] <= ypos
-                                ints &= buf[samples-samples_to_end+1:\
-                                            -samples_to_end-2] > ypos
+                                ints = buf[samples - samples_to_end:\
+                                               - samples_to_end - 3] <= ypos
+                                ints &= buf[samples - samples_to_end + 1:\
+                                                - samples_to_end - 2] > ypos
 
                                 ints = where(ints)[0]
                                 if len(ints) > 0:
                                     position = max(position, ints[-1])
 
                             if self.triggering and self.TRIGGER_NEG:
-                                ints = buf[samples-samples_to_end:\
-                                           -samples_to_end-3] >= ypos
-                                ints &= buf[samples-samples_to_end+1:\
-                                            -samples_to_end-2] < ypos
+                                ints = buf[samples - samples_to_end:\
+                                           -samples_to_end - 3] >= ypos
+                                ints &= buf[samples - samples_to_end + 1:\
+                                            -samples_to_end - 2] < ypos
 
                                 ints = where(ints)[0]
                                 if len(ints) > 0:
@@ -384,25 +379,22 @@ class DrawWaveform(gtk.DrawingArea):
                             if position == -1:
                                 position = len(buf) - samples_to_end - 2
                             else:
-                                position = position+samples-samples_to_end
+                                position = position + samples - samples_to_end
                                 try:
-                                    x_offset -= int((float(-buf[position]+ypos)\
-                                                           / (buf[position+1]-\
-                                         buf[position]))*self.draw_interval+0.5)
+                                    x_offset -=\
+                                        int((float(-buf[position] + ypos)\
+                                        / (buf[position + 1] - buf[position]))\
+                                        * self.draw_interval + 0.5)
                                 except:
                                     pass
 
-                            data = buf[position-samples+samples_to_end:\
-                                       position+samples_to_end+2].astype(
-                                                                     float64)
+                            data = buf[position - samples + samples_to_end:\
+                                position + samples_to_end + 2].astype(float64)
                         else:
                             data = buf[-samples:].astype(float64)
 
                     else:
-                        ###############FFT################ 
-                        Fs = 48000
-                        nfft = 65536
-
+                        # FFT
                         try:
                             # Multiply input with the window
                             multiply(buf, self.fft_window, buf)
@@ -411,34 +403,30 @@ class DrawWaveform(gtk.DrawingArea):
                             self.fftx = fft.rfft(buf)
                             self.fftx = abs(self.fftx)
                             data = multiply(self.fftx, 0.02, self.fftx)
-                            ##################################
                         except ValueError:
                             # TODO: Figure out how this can happen.
                             #       Shape mismatch between window and buf
                             self._indirect_queue_draw()
                             return True
 
-                    ################Scaling the values###################
+                    # Scaling the values
                     if self.activity.CONTEXT == 'sensor':
                         self.y_mag = 1.0
 
                     if self.invert:
-                        data *= (self.allocation.height/32767.0 * self.y_mag)
+                        data *= (self.allocation.height / 32767.0 * self.y_mag)
                     else:
-                        data *= (-self.allocation.height/32767.0 * self.y_mag)
+                        data *= (-self.allocation.height / 32767.0 * self.y_mag)
                     data -= self.bias
 
                     if self.fft_show:
                         data += self.allocation.height - 3
                     else:
-                        data += (self.allocation.height/2.0)
+                        data += (self.allocation.height / 2.0)
 
-                    ################################################
-
-                    ##########The actual drawing of the graph##################
-
-                    lines = (arange(len(data), dtype='float32') *\
-                            self.draw_interval) + x_offset
+                    # The actual drawing of the graph
+                    lines = (arange(len(data), dtype='float32')\
+                            * self.draw_interval) + x_offset
 
                     # Use ints or draw_lines will throw warnings
                     lines = zip(lines.astype('int'), data.astype('int'))
@@ -459,27 +447,18 @@ class DrawWaveform(gtk.DrawingArea):
                         self.window.draw_lines(self._line_gc[graph_id], lines)
                     else:
                         self.window.draw_points(self._line_gc[graph_id], lines)
-                    ############################################################
 
             self._indirect_queue_draw()
         return True
 
-    """
-    def set_side_toolbar_reference(self, side_toolbar):
-        self.side_toolbar_copy = side_toolbar
-
-    def set_electrical_ui_reference(self, electrical_ui):
-        self.electrical_ui_copy = electrical_ui
-    """
-
     def set_graph_source(self, graph_id, source=0):
-        """Sets from where the graph will get data 
+        """Sets from where the graph will get data
         0 - uses from audiograb
         1 - uses from file"""
         self.source[graph_id] = source
 
     def set_div(self, time_div=0.0001, freq_div=10):
-        """ Set division """        
+        """ Set division """
         self.time_div = time_div
         self.freq_div = freq_div
 
@@ -492,7 +471,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.triggering = trigger
 
     def get_ticks(self):
-        return self.allocation.width/float(self._tick_size)
+        return self.allocation.width / float(self._tick_size)
 
     def get_fft_mode(self):
         """Returns if FFT is ON (True) or OFF (False)"""
@@ -507,36 +486,37 @@ class DrawWaveform(gtk.DrawingArea):
         """See sound_toolbar to see what all frequency ranges are"""
         self._freq_range = freq_range
 
-    def _update_mode(self):        
+    def _update_mode(self):
         if self.allocation.width <= 0:
             return
 
         if self.fft_show:
-            max_freq = (self.freq_div*self.get_ticks())
-            wanted_step = 1.0/max_freq/2*self._input_freq
+            max_freq = (self.freq_div * self.get_ticks())
+            wanted_step = 1.0 / max_freq / 2 * self._input_freq
             self.input_step = max(floor(wanted_step), 1)
 
             self.draw_interval = 5.0
 
-            self.set_max_samples(ceil(self.allocation.width/float(
-                                         self.draw_interval)*2)*self.input_step)
+            self.set_max_samples(ceil(self.allocation.width\
+                             / float(self.draw_interval) * 2) * self.input_step)
 
             # Create the (blackman) window
-            self.fft_window = blackman(ceil(self.allocation.width/float(
-                                                         self.draw_interval)*2))
+            self.fft_window = blackman(ceil(self.allocation.width\
+                                               / float(self.draw_interval) * 2))
 
-            self.draw_interval *= wanted_step/self.input_step
+            self.draw_interval *= wanted_step / self.input_step
         else:
             # Factor is just for triggering:
-            time = (self.time_div*self.get_ticks())
+            time = (self.time_div * self.get_ticks())
             if time == 0:
                 return
             samples = time * self._input_freq
             self.set_max_samples(samples * self.max_samples_fact)
 
-            self.input_step = max(ceil(samples/(self.allocation.width/3.0)),1)
-            self.draw_interval = self.allocation.width/(
-                                                 float(samples)/self.input_step)
+            self.input_step = max(ceil(samples\
+                                           / (self.allocation.width / 3.0)), 1)
+            self.draw_interval = self.allocation.width\
+                                           / (float(samples) / self.input_step)
 
             self.fft_window = None
 

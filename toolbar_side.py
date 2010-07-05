@@ -3,7 +3,7 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009,10 Walter Bender
-#    
+#
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,13 +19,12 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import pygtk
 import gtk
 from gettext import gettext as _
 
 from sugar.graphics.toolbutton import ToolButton
 
-#class SideToolbar(gtk.DrawingArea):
+
 class SideToolbar(gtk.Toolbar):
     """ A toolbar on the side of the canvas for adjusting gain/bias """
 
@@ -40,7 +39,7 @@ class SideToolbar(gtk.Toolbar):
         self.show_toolbar = True
 
         self.mode = 'sound'
-        self.mode_values = {'sound':3, 'sensor':2}
+        self.mode_values = {'sound': 3, 'sensor': 2}
 
         self.button_up = ToolButton('amp-high')
         self.button_up.set_tooltip(_('Increase amplitude'))
@@ -48,7 +47,8 @@ class SideToolbar(gtk.Toolbar):
         self.button_up.show()
 
         self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode],
-                                          self.LOWER, self.UPPER, 0.1, 0.1, 0.0)
+                                          self.LOWER, self.UPPER,
+                                          0.1, 0.1, 0.0)
         self.adjustmenty.connect("value_changed", self._yscrollbar_cb,
                                  self.adjustmenty)
         self.yscrollbar = gtk.VScale(self.adjustmenty)
@@ -61,7 +61,7 @@ class SideToolbar(gtk.Toolbar):
         self.button_down.connect('clicked', self._button_down_cb)
         self.button_down.show()
 
-        self.box1 = gtk.VBox(False,0)
+        self.box1 = gtk.VBox(False, 0)
         self.box1.pack_start(self.button_up, False, True, 0)
         self.box1.pack_start(self.yscrollbar, True, True, 0)
         self.box1.pack_start(self.button_down, False, True, 0)
@@ -71,19 +71,25 @@ class SideToolbar(gtk.Toolbar):
     def _yscrollbar_cb(self, adjy, data=None):
         """ Callback for scrollbar """
         if self.mode == 'sound':
+            print "toolbar side: setting mag to 1.0, %f" % (adjy.value)
             self.activity.wave.set_mag_params(1.0, adjy.value)
-            self.activity.audiograb.set_capture_gain(adjy.value*\
-                                     100/(self.UPPER-self.LOWER))
+            print "toolbar side: setting capture gain to %f" %\
+                (adjy.value * 100 / (self.UPPER - self.LOWER))
+            self.activity.audiograb.set_capture_gain(
+                adjy.value * 100 / (self.UPPER - self.LOWER))
             self.activity.wave.set_bias_param(0)
         elif self.mode == 'sensor':
-            self.activity.wave.set_bias_param(int(300*\
-                                    (adjy.value - (self.UPPER-self.LOWER)/2)))
+            print "toolbar side: setting bias param to %f" %\
+                (300 * (adjy.value - (self.UPPER - self.LOWER) / 2))
+            self.activity.wave.set_bias_param(int(
+                    300 * (adjy.value - (self.UPPER - self.LOWER) / 2)))
         self.mode_values[self.mode] = adjy.value
         return True
 
     def _button_up_cb(self, data=None):
         """Moves slider up"""
-        new_value = self.yscrollbar.get_value() + (self.UPPER-self.LOWER)/100.0
+        new_value = self.yscrollbar.get_value() + (self.UPPER - self.LOWER)\
+            / 100.0
         if new_value <= self.UPPER:
             self.yscrollbar.set_value(new_value)
         else:
@@ -92,7 +98,8 @@ class SideToolbar(gtk.Toolbar):
 
     def _button_down_cb(self, data=None):
         """Moves slider down"""
-        new_value = self.yscrollbar.get_value() - (self.UPPER-self.LOWER)/100.0
+        new_value = self.yscrollbar.get_value() - (self.UPPER - self.LOWER)\
+            / 100.0
         if new_value >= self.LOWER:
             self.yscrollbar.set_value(new_value)
         else:

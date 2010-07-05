@@ -221,7 +221,7 @@ class AudioGrab:
         if self.buffer_interval_logging == 0:
             self.activity.ji.take_screenshot()
         else:
-            if self.screenshot == True:
+            if self.screenshot:
                 self.activity.ji.take_screenshot(self.waveform_id)
                 self.waveform_id += 1
             else:

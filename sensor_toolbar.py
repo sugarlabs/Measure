@@ -130,7 +130,7 @@ class SensorToolbar(gtk.Toolbar):
         """Depending upon the selected interval, does either
         a logging session, or just logs the current buffer"""
 
-        if self.activity.LOGGING_IN_SESSION == False:
+        if not self.activity.LOGGING_IN_SESSION:
             Xscale = (1.00 / self.activity.audiograb.get_sampling_rate())
             Yscale = 0.0
             interval = self.interval_convert()
@@ -209,7 +209,7 @@ class SensorToolbar(gtk.Toolbar):
 
     def _invert_control_cb(self, data=None):
         """ Callback for Invert Button """
-        if self.activity.wave.get_invert_state() == True:
+        if self.activity.wave.get_invert_state():
             self.activity.wave.set_invert_state(False)
             self._invert.set_icon('invert')
             self._invert.show()

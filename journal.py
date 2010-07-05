@@ -153,11 +153,11 @@ class JournalInteraction():
         """Return list of values from logging session specified by session_id"""
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
         for row in reader:
-            if int(row[0])==session_id:
-                temp =row
-        for i in range(0,len(temp)):
-            if i!=1:
-                temp[i]=int(temp[i])
+            if int(row[0]) == session_id:
+                temp = row
+        for i in range(0, len(temp)):
+            if i != 1:
+                temp[i] = int(temp[i])
         return temp
 
     def get_number_of_records(self):
@@ -165,19 +165,19 @@ class JournalInteraction():
         reader = csv.reader(open(self.activity._jobject.file_path, "rb"))
         count=0
         for row in reader:
-            count+=1
+            count += 1
         return count
 
     def stop_session(self):
         """Write the temp_buffer onto a file"""
-        if self._stopped == False:
+        if not self._stopped:
             if self.activity.existing:
                 writer1 = csv.writer(open(self.activity._jobject.file_path,
                                           "ab"))
             else:
                 writer1 = csv.writer(open(self.activity._jobject.file_path,
                                           "wb"))
-                self.activity.existing =  True
+                self.activity.existing = True
 	    for datum in self.temp_buffer:
 		writer1.writerow( [ datum ] )
             del writer1
