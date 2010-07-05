@@ -5,7 +5,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009,10 Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
-#    	
+#
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -20,7 +20,6 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import pygtk
 import gtk
 import gobject
 from gettext import gettext as _
@@ -52,30 +51,30 @@ class SensorToolbar(gtk.Toolbar):
         self._STR_V = _("Bias/Offset Disabled") + " " + _("Volts") + " "
         self._STR_I = _(" Invert") + " "
 
-        self.gain_state = None
-        self.boost_state = None
+        # self.gain_state = None
+        # self.boost_state = None
 
         self.string_for_textbox = ""
 
         self.activity = activity
         self.activity.audiograb.set_sensor(self)
 
-        # Set up Resistance Button 
+        # Set up Resistance Button
         if self.activity.new_sugar_system:
-            self._resistance = ToolButton('bias-on')
+            self.resistance = ToolButton('bias-on')
         else:
-            self._resistance = ToolButton('bias-on2')
-        self.insert(self._resistance, -1)
-        self._resistance.show()
-        self._resistance.set_tooltip(_('Resistance Sensor'))
-        self._resistance.connect('clicked', self.set_resistance_voltage_mode,
+            self.resistance = ToolButton('bias-on2')
+        self.insert(self.resistance, -1)
+        self.resistance.show()
+        self.resistance.set_tooltip(_('Resistance Sensor'))
+        self.resistance.connect('clicked', self.set_resistance_voltage_mode,
                                  'resistance')
 
         # Set up Voltage Button
-        self._voltage = ToolButton('bias-off')
-        self.insert(self._voltage, -1)
-        self._voltage.set_tooltip(_('Voltage Sensor'))
-        self._voltage.connect('clicked', self.set_resistance_voltage_mode,
+        self.voltage = ToolButton('bias-off')
+        self.insert(self.voltage, -1)
+        self.voltage.set_tooltip(_('Voltage Sensor'))
+        self.voltage.connect('clicked', self.set_resistance_voltage_mode,
                               'voltage')
 
         # Set up Invert Button
@@ -91,13 +90,13 @@ class SensorToolbar(gtk.Toolbar):
 
         # Set up Logging Interval combo box
         self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(ICONS_DIR+'/sample_rate.svg')
+        self.loginterval_img.set_from_file(ICONS_DIR + '/sample_rate.svg')
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
-        self.insert(self.loginterval_img_tool,-1)
+        self.insert(self.loginterval_img_tool, -1)
 
         self._loginterval_combo = ComboBox()
-        self.interval = [_('1/10 second'), _('1 second') , _('30 seconds'),
+        self.interval = [_('1/10 second'), _('1 second'), _('30 seconds'),
                          _('5 minutes'), _('30 minutes')]
 
         self._interval_changed_id = self._loginterval_combo.connect("changed",
@@ -109,8 +108,8 @@ class SensorToolbar(gtk.Toolbar):
                 self._loginterval_combo.set_active(i)
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
-        self.insert(self._loginterval_tool,-1)
-        self.logginginterval_status = '1 second'		
+        self.insert(self._loginterval_tool, -1)
+        self.logginginterval_status = '1 second'
 
         # Set up Logging/Stop Logging Button
         self._record = ToolButton('media-record')
@@ -132,7 +131,7 @@ class SensorToolbar(gtk.Toolbar):
         a logging session, or just logs the current buffer"""
 
         if self.activity.LOGGING_IN_SESSION == False:
-            Xscale = (1.00/self.activity.audiograb.get_sampling_rate())
+            Xscale = (1.00 / self.activity.audiograb.get_sampling_rate())
             Yscale = 0.0
             interval = self.interval_convert()
             username = self.activity.nick
@@ -155,12 +154,12 @@ class SensorToolbar(gtk.Toolbar):
         """Converts interval string to an integer that denotes the number
         of times the audiograb buffer must be called before a value is written.
         When set to 0, the whole of current buffer will be written"""
-        interval_dictionary = {'1/10 second':0.1, '1 second':1,
-                               '30 seconds':30,
-                               '5 minutes':300, '30 minutes':1800}
+        interval_dictionary = {'1/10 second': 0.1, '1 second': 1,
+                               '30 seconds': 30,
+                               '5 minutes': 300, '30 minutes': 1800}
         try:
             return interval_dictionary[self.logginginterval_status]
-        except:
+        except ValueError:
             logging.error("logging interval status = %s" %\
                               (str(self.logginginterval_status)))
             return 0
@@ -182,20 +181,20 @@ class SensorToolbar(gtk.Toolbar):
 
         self.set_mode(mode_to_set)
         if mode_to_set == 'resistance':
-            self._resistance.set_icon('bias-on2')
-            self._voltage.set_icon('bias-off')
-            self._resistance.show()
-            self._voltage.show()
+            self.resistance.set_icon('bias-on2')
+            self.voltage.set_icon('bias-off')
+            self.resistance.show()
+            self.voltage.show()
             self._update_string_for_textbox()
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/bias-on2.svg')
                 self.activity.label.set_text(" " + _('Resistance Sensor'))
         elif mode_to_set == 'voltage':
-            self._resistance.set_icon('bias-on')
-            self._voltage.set_icon('bias-off2')
-            self._resistance.show()
-            self._voltage.show()
+            self.resistance.set_icon('bias-on')
+            self.voltage.set_icon('bias-off2')
+            self.resistance.show()
+            self.voltage.show()
             self._update_string_for_textbox()
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
@@ -204,13 +203,13 @@ class SensorToolbar(gtk.Toolbar):
         else:
             logging.error("unknown mode %s" % (mode_to_set))
         if self.activity.new_sugar_system:
-            self.activity.sound_toolbar._time.set_icon('domain-time')
-            self.activity.sound_toolbar._freq.set_icon('domain-freq')
+            self.activity.sound_toolbar.time.set_icon('domain-time')
+            self.activity.sound_toolbar.freq.set_icon('domain-freq')
         return False
 
     def _invert_control_cb(self, data=None):
         """ Callback for Invert Button """
-        if self.activity.wave.get_invert_state()==True:
+        if self.activity.wave.get_invert_state() == True:
             self.activity.wave.set_invert_state(False)
             self._invert.set_icon('invert')
             self._invert.show()

@@ -4,7 +4,7 @@
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009,10 Walter Bender
 #    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
-#    
+#
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -19,7 +19,6 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import pygtk
 import gtk
 import gobject
 from gettext import gettext as _
@@ -86,17 +85,17 @@ class SoundToolbar(gtk.Toolbar):
         self._record = None
 
         # Set up Time-domain Button
-        self._time = ToolButton('domain-time2')
-        self.insert(self._time, -1)
-        self._time.set_tooltip(_('Time Base'))
-        self._time.connect('clicked', self._timefreq_control_cb, True)
+        self.time = ToolButton('domain-time2')
+        self.insert(self.time, -1)
+        self.time.set_tooltip(_('Time Base'))
+        self.time.connect('clicked', self._timefreq_control_cb, True)
 
         # Set up Frequency-domain Button
-        self._freq = ToolButton('domain-freq')
-        self.insert(self._freq, -1)
-        self._freq.show()
-        self._freq.set_tooltip(_('Frequency Base'))
-        self._freq.connect('clicked', self._timefreq_control_cb, False)
+        self.freq = ToolButton('domain-freq')
+        self.insert(self.freq, -1)
+        self.freq.show()
+        self.freq.set_tooltip(_('Frequency Base'))
+        self.freq.connect('clicked', self._timefreq_control_cb, False)
 
         # Set up Frequency-control Slider and corresponding buttons
         if not self.activity.new_sugar_system:
@@ -114,18 +113,18 @@ class SoundToolbar(gtk.Toolbar):
         separator.show()
 
         self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(ICONS_DIR+'sample_rate.svg')
+        self.loginterval_img.set_from_file(ICONS_DIR + 'sample_rate.svg')
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
-        self.insert(self.loginterval_img_tool,-1)
+        self.insert(self.loginterval_img_tool, -1)
         
         # Set up the Logging-interval Combo box
         self._loginterval_combo = ComboBox()
         self.interval = [_(self.SAMPLE_NOW),
                          _(self.SAMPLE_30_SEC), 
                          _(self.SAMPLE_2_MIN), 
-                         _(self.SAMPLE_10_MIN) , 
-                         _(self.SAMPLE_30_MIN) ]
+                         _(self.SAMPLE_10_MIN), 
+                         _(self.SAMPLE_30_MIN)]
         try:
             self._loginterval_combo.set_tooltip_text("Sampling interval")
         except:
@@ -140,8 +139,8 @@ class SoundToolbar(gtk.Toolbar):
                 self._loginterval_combo.set_active(i)
 
         self._loginterval_tool = ToolComboBox(self._loginterval_combo)
-        self.insert(self._loginterval_tool,-1)
-        self.logginginterval_status = 'picture'		
+        self.insert(self._loginterval_tool, -1)
+        self.logginginterval_status = 'picture'
 
         # Set up Start/Stop Logging Button
         self._record = ToolButton('media-record')
@@ -156,7 +155,7 @@ class SoundToolbar(gtk.Toolbar):
 
         # Set up Trigger Combo box
         self._trigger_combo = ComboBox()
-        self.trigger = [_('None'), _('Rising Edge') , _('Falling Edge') ]
+        self.trigger = [_('None'), _('Rising Edge'), _('Falling Edge')]
         self.trigger_conf = [self.activity.wave.TRIGGER_NONE,
                              self.activity.wave.TRIGGER_POS,
             self.activity.wave.TRIGGER_NEG]
@@ -169,7 +168,7 @@ class SoundToolbar(gtk.Toolbar):
         self._trigger_combo.set_active(0)
 
         self._trigger_tool = ToolComboBox(self._trigger_combo)
-        self.insert(self._trigger_tool,-1)
+        self.insert(self._trigger_tool, -1)
         self.show_all()
 
         return
@@ -187,7 +186,7 @@ class SoundToolbar(gtk.Toolbar):
         self._freq_range.set_inverted(True)
         self._freq_range.set_draw_value(False)
         self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
-        self._freq_range.set_size_request(120,15)
+        self._freq_range.set_size_request(120, 15)
 
         self._freq_stepper_down = ToolButton('freq-low')
         self._freq_stepper_down.set_tooltip(_('Zoom in'))
@@ -212,8 +211,8 @@ class SoundToolbar(gtk.Toolbar):
     def record_control(self, data=None):
         """Depending upon the selected interval, either starts/stops
         a logging session, or just logs the current buffer"""
-        if self.activity.LOGGING_IN_SESSION == False:
-            Xscale = (1.00/self.activity.audiograb.get_sampling_rate())
+        if not self.activity.LOGGING_IN_SESSION:
+            Xscale = (1.00 / self.activity.audiograb.get_sampling_rate())
             Yscale = 0.0
             interval = self.interval_convert()
             username = self.activity.nick
@@ -223,7 +222,7 @@ class SoundToolbar(gtk.Toolbar):
             self.activity.LOGGING_IN_SESSION = True
             self._record.set_icon('record-stop')
             self._record.show()
-            if interval==0:
+            if interval == 0:
                 # Flash the stop button when grabbing just one image
                 self._record.set_icon('record-stop')
                 self._record.show()
@@ -241,20 +240,20 @@ class SoundToolbar(gtk.Toolbar):
         return
 
     def interval_convert(self):
-        """Converts picture/time interval to an integer which denotes the number
+        """Converts picture/time interval to an integer that denotes the number
         of times the audiograb buffer must be called before a value is written.
         When set to 0, the whole of current buffer will be written
         1second= about 66 ticks at 48khz sampling"""
         if self.logginginterval_status == 'picture':
             return 0
         elif self.logginginterval_status == '30second':
-            return 30 #2667
+            return 30  #2667
         elif self.logginginterval_status == '2minute':
-            return 120 #10668
+            return 120  #10668
         elif self.logginginterval_status == '10minute':
-            return 600 #53340
+            return 600  #53340
         elif self.logginginterval_status == '30minute':
-            return 1800 #160000
+            return 1800  #160000
 
     def loginterval_control(self, combobox):
         """ The combo box has changed. Set the logging interval
@@ -263,27 +262,27 @@ class SoundToolbar(gtk.Toolbar):
         in progress or not. """
         if (self._loginterval_combo.get_active() != -1):
             if (self._loginterval_combo.get_active() == 0):
-                self.logginginterval_status = 'picture'		
+                self.logginginterval_status = 'picture'
             elif (self._loginterval_combo.get_active() == 1):
-                self.logginginterval_status = '30second'		
+                self.logginginterval_status = '30second'
             elif (self._loginterval_combo.get_active() == 2):
-                self.logginginterval_status = '2minute'		
+                self.logginginterval_status = '2minute'
             elif (self._loginterval_combo.get_active() == 3):
-                self.logginginterval_status = '10minute'		
+                self.logginginterval_status = '10minute'
             elif (self._loginterval_combo.get_active() == 4):
                 self.logginginterval_status = '30minute'
             self._set_record_button_tooltip()
         return
 
     def _set_record_button_tooltip(self):
-        """ Determines the tool tip for the record button. The tool tip	
+        """ Determines the tool tip for the record button. The tool tip
         text depends upon whether sampling is currently on and whether
         the sampling interval > 0. """
         if self._record == None:
             return
-        if self.activity.LOGGING_IN_SESSION == True:
+        if self.activity.LOGGING_IN_SESSION:
             self._record.set_tooltip(_('Stop sampling'))
-        else:   # No sampling in progress
+        else:  # No sampling in progress
             if (self._loginterval_combo.get_active() == 0):
                 self._record.set_tooltip(_('Capture sample now'))
             else:
@@ -301,7 +300,7 @@ class SoundToolbar(gtk.Toolbar):
 
     def _pauseplay_control_cb(self, data=None):
         """ Callback for Pause Button """
-        if self.activity.audiograb.get_freeze_the_display()==True:
+        if self.activity.audiograb.get_freeze_the_display():
             self.activity.audiograb.set_freeze_the_display(False)
             self._pause.set_icon('media-playback-pause-insensitive')
             self._pause.set_tooltip(_('Unfreeze the display'))
@@ -320,12 +319,12 @@ class SoundToolbar(gtk.Toolbar):
         if self.activity.CONTEXT != 'sound':
             self.activity.set_sound_context()
 
-        if time_state==True:
+        if time_state:
             self.activity.wave.set_fft_mode(False)
-            self._time.set_icon('domain-time2')
-            self._freq.set_icon('domain-freq')
-            self._time.show()
-            self._freq.show()
+            self.time.set_icon('domain-time2')
+            self.freq.set_icon('domain-freq')
+            self.time.show()
+            self.freq.show()
             self._update_string_for_textbox()
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
@@ -333,10 +332,10 @@ class SoundToolbar(gtk.Toolbar):
                 self.activity.label.set_text(" " + _('Time Base'))
         else:
             self.activity.wave.set_fft_mode(True)
-            self._time.set_icon('domain-time')
-            self._freq.set_icon('domain-freq2')
-            self._time.show()
-            self._freq.show()
+            self.time.set_icon('domain-time')
+            self.freq.set_icon('domain-freq2')
+            self.time.show()
+            self.freq.show()
             self._update_string_for_textbox()
             if self.activity.new_sugar_system:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
@@ -344,8 +343,8 @@ class SoundToolbar(gtk.Toolbar):
                 self.activity.label.set_text(" " + _('Frequency Base'))
         if self.activity.new_sugar_system and \
                 hasattr(self.activity, "sensor_toolbar"):
-            self.activity.sensor_toolbar._resistance.set_icon('bias-on')
-            self.activity.sensor_toolbar._voltage.set_icon('bias-off')
+            self.activity.sensor_toolbar.resistance.set_icon('bias-on')
+            self.activity.sensor_toolbar.voltage.set_icon('bias-off')
         return False
 
     def _freq_stepper_up_cb(self, data=None):
@@ -353,29 +352,29 @@ class SoundToolbar(gtk.Toolbar):
         one notch is 1/100 of the total range. This correspond to zooming
         out as a larger number of Hertz or milliseconds will be
         represented by the same space on the screen."""
-	new_value = self._freq_range.get_value() +\
-                    (self.UPPER - self.LOWER)/100.0
-	if new_value <= self.UPPER:
-	    self._freq_range.set_value(new_value)
-	else:
-	    self._freq_range.set_value(self.UPPER)
+        new_value = self._freq_range.get_value() +\
+                    (self.UPPER - self.LOWER) / 100.0
+        if new_value <= self.UPPER:
+            self._freq_range.set_value(new_value)
+        else:
+            self._freq_range.set_value(self.UPPER)
 
     def _freq_stepper_down_cb(self, data=None):
         """Moves the horizontal zoom slider to the right one notch, where
         one notch is 1/100 of the total range. This corresponds to zooming
         in."""
-	new_value = self._freq_range.get_value() -\
-                    (self.UPPER - self.LOWER)/100.0
-	if new_value >= self.LOWER:
-	    self._freq_range.set_value(new_value)
-	else:
-	    self._freq_range.set_value(self.LOWER)
+        new_value = self._freq_range.get_value() -\
+                    (self.UPPER - self.LOWER) / 100.0
+        if new_value >= self.LOWER:
+            self._freq_range.set_value(new_value)
+        else:
+            self._freq_range.set_value(self.LOWER)
 
     def cb_page_sizef(self, data=None):
         """ Callback to scale the frequency range (zoom in and out) """
         if self._update_page_size_id:
             gobject.source_remove(self._update_page_size_id)
-        self._update_page_size_id = \
+        self._update_page_size_id =\
             gobject.timeout_add(250, self.update_page_size)
         return True
 
@@ -383,7 +382,7 @@ class SoundToolbar(gtk.Toolbar):
         """ Set up the scaling of the display """
         self._update_page_size_id = None
 
-        new_value = round(self.activity.adjustmentf.value*100.0)/100.0
+        new_value = round(self.activity.adjustmentf.value * 100.0) / 100.0
         if self.activity.adjustmentf.value != new_value:
             self.activity.adjustmentf.value = new_value
             return False
@@ -400,9 +399,15 @@ class SoundToolbar(gtk.Toolbar):
     def context_off(self):
         """When some other context is switched to and the sound context 
         is switched off"""
+        print "context off: gain and y_mag were %f and %f" %\
+            (self.gain, self.y_mag)
         self.gain, self.y_mag = self.activity.wave.get_mag_params()
+        print "context off: gain and y_mag are %f and %f" %\
+            (self.gain, self.y_mag)
         self.capture_gain = self.activity.audiograb.get_capture_gain()
         self.mic_boost = self.activity.audiograb.get_mic_boost()
+        print "context off: capture gain %s and mic boost %s" %\
+              (str(self.capture_gain), str(self.mic_boost))
         self.activity.audiograb.stop_sound_device()
         self.activity.wave.set_fft_mode(False)
 
@@ -411,13 +416,15 @@ class SoundToolbar(gtk.Toolbar):
         self.activity.audiograb.start_sound_device()
         self.activity.audiograb.set_sensor_type("sound")
         self.activity.wave.set_fft_mode(False)
+        print "context on: gain and y_mag are %f and %f" %\
+              (self.gain, self.y_mag)
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
         self.update_trigger_control()
 
     def _update_string_for_textbox(self):
         """ Update the text at the bottom of the canvas """
-        if self.activity.wave.get_fft_mode() == False:
+        if not self.activity.wave.get_fft_mode():
             self._STR_SCALEX = self._STR_XAXIS_TEXT % \
                 {'unit': self._ms,
                  'division': self.activity.wave.time_div*1000} 
@@ -427,12 +434,11 @@ class SoundToolbar(gtk.Toolbar):
 
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\t")
-        if self.activity.wave.get_fft_mode() == False:
+        if not self.activity.wave.get_fft_mode():
             self.string_for_textbox += self._STR1
         else:
             self.string_for_textbox += self._STR2
-        if self.activity.wave.get_invert_state()==True:
+        if self.activity.wave.get_invert_state():
             self.string_for_textbox += self._STR3
         self.string_for_textbox += ("\n" + self._STR_SCALEX)
         self.activity.text_box.set_data_params(0, self.string_for_textbox)
-

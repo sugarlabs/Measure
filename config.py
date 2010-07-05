@@ -54,7 +54,6 @@ QUIT_MIC_BOOST = False
 QUIT_DC_MODE_ENABLE = False
 QUIT_CAPTURE_GAIN = 100
 QUIT_BIAS = True
-QUIT_PCM = 70
 
 #Toolbars for 0.84- Sugar
 TOOLBARS = ['project','sound','sensor']

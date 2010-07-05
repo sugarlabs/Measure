@@ -29,7 +29,6 @@ from numpy import fromstring
 import os
 import subprocess
 from string import find
-import time
 from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
                    SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
                    QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE
@@ -46,11 +45,12 @@ SENSOR_AC_BIAS = 'sound'
 SENSOR_DC_NO_BIAS = 'voltage'
 SENSOR_DC_BIAS = 'resistance'
 
+
 class AudioGrab:
     """ The interface between measure and the audio device """
 
     def __init__(self, callable1, activity):
-        """ Initialize the class: callable1 is a data buffer; 
+        """ Initialize the class: callable1 is a data buffer;
             journal is used for logging """
 
         self.callable1 = callable1
@@ -61,8 +61,6 @@ class AudioGrab:
         self.picture_buffer = [] # place to hold screen grabs
 
         self.draw_graph_status = False
-        self.f = None
-        # self.logging_status = False
         self.screenshot = True
 
         self.rate = 48000
@@ -91,11 +89,11 @@ class AudioGrab:
         self.pipeline.add(self.caps1)
         caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % \
                   (RATE)
-        self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
+        self.caps1.set_property("caps", gst.caps_from_string(caps_str))
         self.fakesink = gst.element_factory_make("fakesink", "fsink")
         self.pipeline.add(self.fakesink)
         self.fakesink.connect("handoff", self.on_buffer)
-        self.fakesink.set_property("signal-handoffs", True) 
+        self.fakesink.set_property("signal-handoffs", True)
         gst.element_link_many(self.alsasrc, self.caps1, self.fakesink)
 
         self.dont_queue_the_buffer = False
@@ -189,7 +187,7 @@ class AudioGrab:
                    self.buffer_interval_logging == 0:
                     self._emit_for_logging(temp_buffer)
                     self.capture_interval_sample = False
-            # If an immediate record is to be written, that's all 
+            # If an immediate record is to be written, that's all
             # for the logging session
             if self.buffer_interval_logging == 0:
                 self.logging_state = False
@@ -202,9 +200,9 @@ class AudioGrab:
             else:
                 self._display_value -= 1
         return False
- 
+
     def set_freeze_the_display(self, freeze=False):
-        """Useful when just the display is needed to be frozen, but logging 
+        """Useful when just the display is needed to be frozen, but logging
         should continue"""
         self.dont_queue_the_buffer = not freeze
         return
@@ -225,7 +223,7 @@ class AudioGrab:
         else:
             if self.screenshot == True:
                 self.activity.ji.take_screenshot(self.waveform_id)
-                self.waveform_id+=1
+                self.waveform_id += 1
             else:
                 # save value to Journal
                 self.activity.ji.write_value(buf[0])
@@ -248,7 +246,7 @@ class AudioGrab:
     def set_logging_params(self, start_stop=False, interval=0, screenshot=True):
         """Configures for logging of data i.e. starts or stops a session
         Sets an interval if logging interval is to be started
-        Sets if screenshot of waveform is to be taken or values need to be 
+        Sets if screenshot of waveform is to be taken or values need to be
         written"""
         self.logging_state = start_stop
         self.set_buffer_interval_logging(interval)
@@ -275,7 +273,7 @@ class AudioGrab:
         self.capture_timer = Timer(self.buffer_interval_logging,
                                    self.sample_now)
         self.capture_timer.start()
-   
+
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
         self.picture_buffer = self.temp_buffer.copy()
@@ -306,13 +304,13 @@ class AudioGrab:
         The sampling rate would be set in the device to the nearest available"""
         self.pause_grabbing()
         caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (sr, )
-        self.caps1.set_property("caps", gst.caps_from_string(caps_str) )
+        self.caps1.set_property("caps", gst.caps_from_string(caps_str))
         self.resume_grabbing()
         return
 
     def get_sampling_rate(self):
         """Gets the sampling rate of the capture device"""
-        return int(self.caps1.get_property("caps")[0]['rate'] )
+        return int(self.caps1.get_property("caps")[0]['rate'])
 
     def set_callable1(self, callable1):
         """Sets the callable to the drawing function for giving the
@@ -336,7 +334,7 @@ class AudioGrab:
         self.start_sound_device()
         self.resume_state()
         return
-   
+
     def stop_grabbing(self):
         """Not used ???"""
         self.stop_sound_device()
@@ -352,7 +350,7 @@ class AudioGrab:
         """
         def best_prefix(label, prefixes):
             matches =\
-                [len(label)-len(p) for p in prefixes if label.startswith(p)]
+                [len(label) - len(p) for p in prefixes if label.startswith(p)]
             if not matches:
                 return None
 
@@ -378,8 +376,8 @@ class AudioGrab:
         """Saves the state of all audio controls"""
         self.master = self.get_master()
         self.bias = self.get_bias()
-        self.dcmode =  self.get_dc_mode()
-        self.capture_gain  = self.get_capture_gain()
+        self.dcmode = self.get_dc_mode()
+        self.capture_gain = self.get_capture_gain()
         self.mic_boost = self.get_mic_boost()
         return
 
@@ -472,7 +470,7 @@ class AudioGrab:
         return
 
     def set_master(self, master_val):
-        """Sets the Master gain slider settings 
+        """Sets the Master gain slider settings
         master_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
         if not self._hardwired:
@@ -489,19 +487,21 @@ class AudioGrab:
         else:
             p = str(subprocess.Popen(["amixer", "get", "Master"],
                                      stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p,"Front Left:"):]
-            p = p[find(p,"[")+1:]
-            p = p[:find(p,"%]")]
+            p = p[find(p, "Front Left:"):]
+            p = p[find(p, "[")+1:]
+            p = p[:find(p, "%]")]
             return int(p)
 
     def set_bias(self, bias_state=False):
         """Enables / disables bias voltage."""
         if not self._hardwired:
+            if self._mic_bias_control is None:
+                return
             # if not isinstance(self._mic_bias_control,
             #              gst.interfaces.MixerOptions):
             if self._mic_bias_control not in self._mixer.list_tracks():
                 log.warning("set_bias: not in mixer")
-                return self._set_mute(self._mic_bias_control, 'Mic Bias', 
+                return self._set_mute(self._mic_bias_control, 'Mic Bias',
                                       not bias_state)
 
             #values = self._mic_bias_control.get_values()
@@ -525,7 +525,7 @@ class AudioGrab:
                     self._mic_bias_control.min_volume,
                     self._mic_bias_control.max_volume,
                     self._mic_bias_control.num_channels))
-                self._set_mute(self._mic_bias_control, 'Mic Bias', 
+                self._set_mute(self._mic_bias_control, 'Mic Bias',
                                not bias_state)
         else:
             if bias_state:
@@ -538,6 +538,8 @@ class AudioGrab:
     def get_bias(self):
         """Check whether bias voltage is enabled."""
         if not self._hardwired:
+            if self._mic_bias_control is None:
+                return False
             if self._mic_bias_control not in self._mixer.list_tracks():
                 #              gst.interfaces.MixerOptions):
                 log.warning("get_bias: not in mixer")
@@ -560,10 +562,10 @@ class AudioGrab:
         else:
             p = str(subprocess.Popen(["amixer", "get", "'V_REFOUT Enable'"],
                                      stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p,"Mono:"):]
-            p = p[find(p,"[")+1:]
-            p = p[:find(p,"]")]
-            if p=="on":
+            p = p[find(p, "Mono:"):]
+            p = p[find(p, "[")+1:]
+            p = p[:find(p, "]")]
+            if p == "on":
                 return True
             return False
 
@@ -571,7 +573,8 @@ class AudioGrab:
         """Sets the DC Mode Enable control
         pass False to mute and True to unmute"""
         if not self._hardwired:
-            self._set_mute(self._dc_control, 'DC mode', not dc_mode)
+            if self._dc_control is not None:
+                self._set_mute(self._dc_control, 'DC mode', not dc_mode)
         else:
             if dc_mode:
                 dcm_str="unmute"
@@ -581,17 +584,20 @@ class AudioGrab:
         return
 
     def get_dc_mode(self):
-        """Returns the setting of DC Mode Enable control 
+        """Returns the setting of DC Mode Enable control
         i .e. True: Unmuted and False: Muted"""
         if not self._hardwired:
-            return not self._get_mute(self._dc_control, 'DC mode', False)
+            if self._dc_control is not None:
+                return not self._get_mute(self._dc_control, 'DC mode', False)
+            else:
+                return False
         else:
             p = str(subprocess.Popen(["amixer", "get", "'DC Mode Enable'"],
                                      stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p,"Mono:"):]
-            p = p[find(p,"[")+1:]
-            p = p[:find(p,"]")]
-            if p=="on":
+            p = p[find(p, "Mono:"):]
+            p = p[find(p, "[")+1:]
+            p = p[:find(p, "]")]
+            if p == "on":
                 return True
             else:
                 return False
@@ -600,6 +606,8 @@ class AudioGrab:
         """Set Mic Boost.
         True = +20dB, False = 0dB"""
         if not self._hardwired:
+            if self._mic_boost_control is None:
+                return
             if self._mic_boost_control not in self._mixer.list_tracks():
                 #              gst.interfaces.MixerOptions):
                 log.warning("set_mic_boost not in mixer %s" %\
@@ -611,7 +619,7 @@ class AudioGrab:
             """
             if '20dB' not in values or '0dB' not in values:
                 logging.error("Mic Boost (%s) is an option list, but doesn't "
-                              "contain 0dB and 20dB settings", 
+                              "contain 0dB and 20dB settings",
                               self._mic_boost_control.props.label)
                 return
             """
@@ -644,6 +652,8 @@ class AudioGrab:
         """Return Mic Boost setting.
         True = +20dB, False = 0dB"""
         if not self._hardwired:
+            if self._mic_boost_control is None:
+                return False
             if self._mic_boost_control not in self._mixer.list_tracks():
                 logging.error("get_mic_boost not found in mixer %s" %\
                                   (str(self._mic_boost_control)))
@@ -654,7 +664,7 @@ class AudioGrab:
             """
             if '20dB' not in values or '0dB' not in values:
                 logging.error("Mic Boost (%s) is an option list, but doesn't "
-                              "contain 0dB and 20dB settings", 
+                              "contain 0dB and 20dB settings",
                               self._mic_boost_control.props.label)
                 return False
             """
@@ -672,20 +682,21 @@ class AudioGrab:
         else:
             p = str(subprocess.Popen(["amixer", "get", "'Mic Boost (+20dB)'"],
                                      stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p,"Mono:"):]
-            p = p[find(p,"[")+1:]
-            p = p[:find(p,"]")]
-            if p=="on":
+            p = p[find(p, "Mono:"):]
+            p = p[find(p, "[")+1:]
+            p = p[:find(p, "]")]
+            if p == "on":
                 return True
             else:
                 return False
 
     def set_capture_gain(self, capture_val):
-        """Sets the Capture gain slider settings 
+        """Sets the Capture gain slider settings
         capture_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
         if not self._hardwired:
-            self._set_volume(self._capture_control, 'Capture', capture_val)
+            if self._capture_control is not None:
+                self._set_volume(self._capture_control, 'Capture', capture_val)
         else:
             os.system("amixer set Capture " + str(capture_val) + "%")
         return
@@ -694,13 +705,16 @@ class AudioGrab:
         """Gets the Capture gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%"""
         if not self._hardwired:
-            return self._get_volume(self._capture_control, 'Capture')
+            if self._capture_control is not None:
+                return self._get_volume(self._capture_control, 'Capture')
+            else:
+                return 0
         else:
             p = str(subprocess.Popen(["amixer", "get", "Capture"],
                                      stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p,"Front Left:"):]
-            p = p[find(p,"[")+1:]
-            p = p[:find(p,"%]")]
+            p = p[find(p, "Front Left:"):]
+            p = p[find(p, "[")+1:]
+            p = p[:find(p, "%]")]
             return int(p)
 
     def set_mic_gain(self, mic_val):
@@ -722,19 +736,19 @@ class AudioGrab:
             p = str(subprocess.Popen(["amixer", "get", "Mic"],
                                      stdout=subprocess.PIPE).communicate()[0])
             try:
-                p = p[find(p,"Mono:"):]
-                p = p[find(p,"[")+1:]
-                p = p[:find(p,"%]")]
+                p = p[find(p, "Mono:"):]
+                p = p[find(p, "[")+1:]
+                p = p[:find(p, "%]")]
                 return int(p)
             except:
                 return(0)
 
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
-        """Set the type of sensor you want to use. Set sensor_type according 
+        """Set the type of sensor you want to use. Set sensor_type according
         to the following
         SENSOR_AC_NO_BIAS - AC coupling with Bias Off --> Very rarely used.
             Use when connecting a dynamic microphone externally
-        SENSOR_AC_BIAS - AC coupling with Bias On --> The default settings. 
+        SENSOR_AC_BIAS - AC coupling with Bias On --> The default settings.
             The internal MIC uses these
         SENSOR_DC_NO_BIAS - DC coupling with Bias Off --> measuring voltage
             output sensor. For example LM35 which gives output proportional
@@ -755,7 +769,7 @@ class AudioGrab:
         return
 
     def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
-        """Helper to modify (some) of the sensor settings."""  
+        """Helper to modify (some) of the sensor settings."""
         if mode is not None:
             self.set_dc_mode(mode)
             if self._dc_control is not None:
@@ -789,14 +803,16 @@ class AudioGrab:
             self.activity.ji.stop_session()
         return
 
+
 class AudioGrab_XO_1(AudioGrab):
     """ Use default parameters for OLPC XO 1.0 laptop """
     pass
 
+
 class AudioGrab_XO_1_5(AudioGrab):
     """ Override parameters for OLPC XO 1.5 laptop """
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
-        """Helper to modify (some) of the sensor settings."""  
+        """Helper to modify (some) of the sensor settings."""
         PARAMETERS = {
             SENSOR_AC_NO_BIAS: (False, False, 80, True),
             SENSOR_AC_BIAS: (False, True, 80, True),
@@ -810,10 +826,11 @@ class AudioGrab_XO_1_5(AudioGrab):
         log.debug("====================================")
         return
 
+
 class AudioGrab_Unknown(AudioGrab):
     """ Override parameters for generic hardware """
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
-        """Helper to modify (some) of the sensor settings."""  
+        """Helper to modify (some) of the sensor settings."""
         PARAMETERS = {
             SENSOR_AC_NO_BIAS: (None, False, 50, True),
             SENSOR_AC_BIAS: (None, True, 40, True),
