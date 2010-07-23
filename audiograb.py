@@ -29,13 +29,14 @@ from numpy import fromstring
 import os
 import subprocess
 from string import find
-from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
-                   SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
-                   QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE
 from threading import Timer
 
-# Initialize logging.
+from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
+                   SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
+                   QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1
+
 import logging
+
 log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
@@ -51,7 +52,7 @@ class AudioGrab:
 
     def __init__(self, callable1, activity):
         """ Initialize the class: callable1 is a data buffer;
-            journal is used for logging """
+            activity is the parent class"""
 
         self.callable1 = callable1
         self.activity = activity
@@ -153,12 +154,10 @@ class AudioGrab:
         # Timer for interval sampling and switch to indicate when to capture
         self.capture_timer = None
         self.capture_interval_sample = False
-        return
 
     def set_handoff_signal(self, handoff_state):
         """Sets whether the handoff signal would generate an interrupt or not"""
         self.fakesink.set_property("signal-handoffs", handoff_state)
-        return
 
     def _new_buffer(self, buf):
         """ Use a new buffer """
@@ -167,7 +166,6 @@ class AudioGrab:
             self.callable1(buf)
         else:
             pass
-        return
 
     def on_buffer(self, element, buffer, pad):
         """The function that is called whenever new data is available
@@ -194,7 +192,7 @@ class AudioGrab:
                 self.activity.ji.stop_session()
                 self.waveform_id = 1
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
-            if self._display_value == 0: # Display value at DISPLAY_DUTY_CYCLE rate
+            if self._display_value == 0: # Display value at DISPLAY_DUTY_CYCLE
                 self.sensor.set_sample_value(str(temp_buffer[0]))
                 self._display_value = DISPLAY_DUTY_CYCLE
             else:
@@ -205,7 +203,6 @@ class AudioGrab:
         """Useful when just the display is needed to be frozen, but logging
         should continue"""
         self.dont_queue_the_buffer = not freeze
-        return
 
     def get_freeze_the_display(self):
         """Returns state of queueing the buffer"""
@@ -214,7 +211,6 @@ class AudioGrab:
     def set_sensor(self, sensor):
         """Keep a reference to the sensot toolbar for logging"""
         self.sensor = sensor
-        return
 
     def _emit_for_logging(self, buf):
         """Sends the data for logging"""
@@ -229,19 +225,16 @@ class AudioGrab:
                 self.activity.ji.write_value(buf[0])
                 # display value on Sensor toolbar
                 self.sensor.set_sample_value(str(buf[0]))
-        return
 
     def start_sound_device(self):
         """Start or Restart grabbing data from the audio capture"""
         gst.event_new_flush_start()
         self.pipeline.set_state(gst.STATE_PLAYING)
-        return
 
     def stop_sound_device(self):
         """Stop grabbing data from capture device"""
         gst.event_new_flush_stop()
         self.pipeline.set_state(gst.STATE_NULL)
-        return
 
     def set_logging_params(self, start_stop=False, interval=0, screenshot=True):
         """Configures for logging of data i.e. starts or stops a session
@@ -258,7 +251,6 @@ class AudioGrab:
         elif interval != 0:
             self.make_timer()
         self.screenshot = screenshot
-        return
 
     def sample_now(self):
         """ Log the current sample now. This method is called from the
@@ -277,25 +269,21 @@ class AudioGrab:
     def take_picture(self):
         """Used to grab and temporarily store the current buffer"""
         self.picture_buffer = self.temp_buffer.copy()
-        return
 
     def set_logging_state(self, start_stop=False):
         """Sets whether buffer is to be emited for logging (True) or not
         (False)"""
         self.logging_state = start_stop
-        return
 
     def set_buffer_interval_logging(self, interval=0):
         """Sets the number of buffers after which a buffer needs to be
         emitted"""
         self.buffer_interval_logging = interval
-        return
 
     def reset_counter_buffer(self):
         """Resets the counter buffer used to keep track of after how many
         buffers to emit a buffer for logging"""
         self.counter_buffer = 0
-        return
 
     def set_sampling_rate(self, sr):
         """Sets the sampling rate of the capture device
@@ -306,7 +294,6 @@ class AudioGrab:
         caps_str = "audio/x-raw-int,rate=%d,channels=1,depth=16" % (sr, )
         self.caps1.set_property("caps", gst.caps_from_string(caps_str))
         self.resume_grabbing()
-        return
 
     def get_sampling_rate(self):
         """Gets the sampling rate of the capture device"""
@@ -316,30 +303,25 @@ class AudioGrab:
         """Sets the callable to the drawing function for giving the
         data at the end of idle-add"""
         self.callable1 = callable1
-        return
 
     def start_grabbing(self):
         """Called right at the start of the Activity"""
         self.start_sound_device()
-        return
 
     def pause_grabbing(self):
         """When Activity goes into background"""
         self.save_state()
         self.stop_sound_device()
-        return
 
     def resume_grabbing(self):
         """When Activity becomes active after going to background"""
         self.start_sound_device()
         self.resume_state()
-        return
 
     def stop_grabbing(self):
         """Not used ???"""
         self.stop_sound_device()
         self.set_handoff_signal(False)
-        return
 
     def _find_control(self, prefixes):
         """Try to find a mixer control matching one of the prefixes.
@@ -374,21 +356,30 @@ class AudioGrab:
 
     def save_state(self):
         """Saves the state of all audio controls"""
+        log.debug("====================================")
+        log.debug("Save state")
         self.master = self.get_master()
         self.bias = self.get_bias()
         self.dcmode = self.get_dc_mode()
         self.capture_gain = self.get_capture_gain()
         self.mic_boost = self.get_mic_boost()
-        return
+        log.debug("====================================")
 
     def resume_state(self):
         """Put back all audio control settings from the saved state"""
+        log.debug("====================================")
+        log.debug("Resume state")
         self.set_master(self.master)
         self.set_bias(self.bias)
         self.set_dc_mode(self.dcmode)
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
-        return
+        log.debug("====================================")
+
+        """
+        self.set_PCM_gain(self.PCM )
+        self.set_mic_gain(self.mic)
+        """
 
     def _get_mute(self, control, name, default):
         """Get mute status of a control"""
@@ -410,7 +401,6 @@ class AudioGrab:
         self._mixer.set_mute(control, value)
         log.debug('Set mute for %s (%s) to %r', name,
                   control.props.untranslated_label, value)
-        return
 
     def _get_volume(self, control, name):
         """Get volume of a control and convert to a scale of 0-100"""
@@ -451,23 +441,27 @@ class AudioGrab:
             log.warning('_set_volume: %s (%d-%d) %d channels' % (
                     control.props.untranslated_label, control.min_volume,
                     control.max_volume, control.num_channels))
-        return
+
+    def amixer_set(self, control, state):
+        """ Direct call to amixer for old systems. """
+        if state:
+            os.system("amixer set '%s' unmute" % (control))
+        else:
+            os.system("amixer set '%s' mute" % (control))
 
     def mute_master(self):
         """Mutes the Master Control"""
-        if not self._hardwired:
+        if not self._hardwired and self.activity.hw != XO1:
             self._set_mute(self._master_control, 'Master', True)
         else:
-            os.system("amixer set Master mute")
-        return
+            self.amixer_set('Master', False)
 
     def unmute_master(self):
         """Unmutes the Master Control"""
-        if not self._hardwired:
-            self._set_mute(self._master_control, 'Master', False)
+        if not self._hardwired and self.activity.hw != XO1:
+            self._set_mute(self._master_control, 'Master', True)
         else:
-            os.system("amixer set Master unmute")
-        return
+            self.amixer_set('Master', True)
 
     def set_master(self, master_val):
         """Sets the Master gain slider settings
@@ -477,7 +471,6 @@ class AudioGrab:
             self._set_volume(self._master_control, 'Master', master_val)
         else:
             os.system("amixer set Master " + str(master_val) + "%")
-        return
 
     def get_master(self):
         """Gets the Master gain slider settings. The value returned is an
@@ -494,7 +487,7 @@ class AudioGrab:
 
     def set_bias(self, bias_state=False):
         """Enables / disables bias voltage."""
-        if not self._hardwired:
+        if not self._hardwired and self.activity.hw != XO1:
             if self._mic_bias_control is None:
                 return
             # if not isinstance(self._mic_bias_control,
@@ -527,13 +520,10 @@ class AudioGrab:
                     self._mic_bias_control.num_channels))
                 self._set_mute(self._mic_bias_control, 'Mic Bias',
                                not bias_state)
+        elif self._hardwired:
+            self.amixer_set('V_REFOUT Enable', bias_state)
         else:
-            if bias_state:
-                bias_str="unmute"
-            else:
-                bias_str="mute"
-            os.system("amixer set 'V_REFOUT Enable' " + bias_str)
-        return
+            self.amixer_set('MIC Bias Enable', bias_state)
 
     def get_bias(self):
         """Check whether bias voltage is enabled."""
@@ -572,16 +562,11 @@ class AudioGrab:
     def set_dc_mode(self, dc_mode=False):
         """Sets the DC Mode Enable control
         pass False to mute and True to unmute"""
-        if not self._hardwired:
+        if not self._hardwired and self.activity.hw != XO1:
             if self._dc_control is not None:
                 self._set_mute(self._dc_control, 'DC mode', not dc_mode)
         else:
-            if dc_mode:
-                dcm_str="unmute"
-            else:
-                dcm_str="mute"
-            os.system("amixer set 'DC Mode Enable' " + dcm_str)
-        return
+            self.amixer_set('DC Mode Enable', dc_mode)
 
     def get_dc_mode(self):
         """Returns the setting of DC Mode Enable control
@@ -641,12 +626,7 @@ class AudioGrab:
                 return self._set_mute(self._mic_boost_control, 'Mic Boost',
                                       not mic_boost)
         else:
-            if mic_boost:
-                mb_str="unmute"
-            else:
-                mb_str="mute"
-            os.system("amixer set 'Mic Boost (+20dB)' " + mb_str)
-        return
+            self.amixer_set('Mic Boost (+20dB)', mic_boost)
 
     def get_mic_boost(self):
         """Return Mic Boost setting.
@@ -694,12 +674,11 @@ class AudioGrab:
         """Sets the Capture gain slider settings
         capture_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        if not self._hardwired:
+        if not self._hardwired and self.activity.hw != XO1:
             if self._capture_control is not None:
                 self._set_volume(self._capture_control, 'Capture', capture_val)
         else:
             os.system("amixer set Capture " + str(capture_val) + "%")
-        return
 
     def get_capture_gain(self):
         """Gets the Capture gain slider settings. The value returned is an
@@ -721,11 +700,10 @@ class AudioGrab:
         """Sets the MIC gain slider settings
         mic_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set"""
-        if not self._hardwired:
+        if not self._hardwired and self.activity.hw != XO1:
             self._set_volume(self._mic_gain_control, 'Mic', mic_val)
         else:
             os.system("amixer set Mic " + str(mic_val) + "%")
-        return
 
     def get_mic_gain(self):
         """Gets the MIC gain slider settings. The value returned is an
@@ -766,7 +744,6 @@ class AudioGrab:
         log.debug("Set Sensor Type to %s" % (str(sensor_type)))
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug("====================================")
-        return
 
     def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
         """Helper to modify (some) of the sensor settings."""
@@ -790,26 +767,28 @@ class AudioGrab:
             if self._mic_boost_control is not None:
                 os.system("amixer get '%s'" %\
                              (self._mic_boost_control.props.untranslated_label))
-        return
 
     def on_activity_quit(self):
         """When Activity quits"""
+        log.debug("====================================")
+        log.debug("Quitting")
         self.set_mic_boost(QUIT_MIC_BOOST)
         self.set_dc_mode(QUIT_DC_MODE_ENABLE)
         self.set_capture_gain(QUIT_CAPTURE_GAIN)
         self.set_bias(QUIT_BIAS)
+        # quit_PCM???
         self.stop_sound_device()
         if self.logging_state:
             self.activity.ji.stop_session()
-        return
+        log.debug("====================================")
 
 
-class AudioGrab_XO_1(AudioGrab):
+class AudioGrab_XO1(AudioGrab):
     """ Use default parameters for OLPC XO 1.0 laptop """
     pass
 
 
-class AudioGrab_XO_1_5(AudioGrab):
+class AudioGrab_XO15(AudioGrab):
     """ Override parameters for OLPC XO 1.5 laptop """
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         """Helper to modify (some) of the sensor settings."""
@@ -824,7 +803,6 @@ class AudioGrab_XO_1_5(AudioGrab):
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug("====================================")
-        return
 
 
 class AudioGrab_Unknown(AudioGrab):
@@ -842,4 +820,3 @@ class AudioGrab_Unknown(AudioGrab):
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug("====================================")
-        return

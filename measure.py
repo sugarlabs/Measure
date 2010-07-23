@@ -23,31 +23,27 @@
 import pygst
 pygst.require("0.10")
 import gtk
+from textbox import TextBox
 import gobject
 import dbus
-from config import TOOLBARS, ICONS_DIR
-from tempfile import mkstemp
 from os import environ, path, chmod
-from textbox import TextBox
+from tempfile import mkstemp
+
 from gettext import gettext as _
 
 from sugar.activity import activity
 try:  # 0.86+ toolbar widgets
+    from sugar.graphics.toolbarbox import ToolbarBox
+    _has_toolbarbox = True
+except ImportError:
+    _has_toolbarbox = False
+
+if _has_toolbarbox:
     from sugar.activity.widgets import ActivityToolbarButton
     from sugar.activity.widgets import StopButton
-    from sugar.graphics.toolbarbox import ToolbarBox
     from sugar.graphics.toolbarbox import ToolbarButton
-    _new_sugar_system = True
-except ImportError:
+else:
     from sugar.activity.activity import ActivityToolbox
-    _new_sugar_system = False
-
-from journal import JournalInteraction
-from audiograb import AudioGrab_XO_1_5, AudioGrab_XO_1, AudioGrab_Unknown
-from drawwaveform import DrawWaveform
-from toolbar_side import SideToolbar
-from sound_toolbar import SoundToolbar
-from sensor_toolbar import SensorToolbar
 
 try:
     from sugar import profile
@@ -59,8 +55,16 @@ try:
 except ImportError:
     _using_gconf = False
 
-# Initialize logging.
+from journal import JournalInteraction
+from audiograb import AudioGrab_XO15, AudioGrab_XO1, AudioGrab_Unknown
+from drawwaveform import DrawWaveform
+from toolbar_side import SideToolbar
+from sound_toolbar import SoundToolbar
+from sensor_toolbar import SensorToolbar
+from config import TOOLBARS, ICONS_DIR, XO1, XO15, UNKNOWN
+
 import logging
+
 log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
@@ -68,8 +72,7 @@ logging.basicConfig()
 
 def _is_xo(hw):
     """ Return True if this is xo hardware """
-    return hw in ['xo1', 'xo1.5']
-
+    return hw in [XO1, XO15]
 
 def _get_hardware():
     """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
@@ -82,18 +85,16 @@ def _get_hardware():
             dev.PropertyExists('system.hardware.version'):
         if dev.GetProperty('system.hardware.vendor') == 'OLPC':
             if dev.GetProperty('system.hardware.version') == '1.5':
-                return 'xo1.5'
+                return XO15
             else:
-                return 'xo1'
+                return XO1
         else:
-            return 'unknown'
+            return UNKNOWN
     elif path.exists('/etc/olpc-release') or \
          path.exists('/sys/power/olpc-pm'):
-        return 'xo1'
-    # elif 'olpc' in dev.GetProperty('system.kernel.version'):
-    #     return 'xo1'
+        return XO1
     else:
-        return 'unknown'
+        return UNKNOWN
 
 
 class MeasureActivity(activity.Activity):
@@ -139,14 +140,14 @@ class MeasureActivity(activity.Activity):
 
         self.hw = _get_hardware()
         log.debug("running on %s hardware" % (self.hw))
-        if self.hw == 'xo1.5':
-            self.audiograb = AudioGrab_XO_1_5(self.wave.new_buffer, self)
-        elif self.hw == 'xo1':
-            self.audiograb = AudioGrab_XO_1(self.wave.new_buffer, self)
+        if self.hw == XO15:
+            self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
+        elif self.hw == XO1:
+            self.audiograb = AudioGrab_XO1(self.wave.new_buffer, self)
         else:
             self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
 
-        self.new_sugar_system = _new_sugar_system
+        self.has_toolbarbox = _has_toolbarbox
 
         self.side_toolbar = SideToolbar(self)
         self.text_box = TextBox()
@@ -161,8 +162,7 @@ class MeasureActivity(activity.Activity):
 
         self.set_canvas(self.box1)
 
-        if self.new_sugar_system:
-            # Use 0.86 toolbar design
+        if self.has_toolbarbox:
             toolbox = ToolbarBox()
 
             activity_button = ActivityToolbarButton(self)
@@ -175,7 +175,7 @@ class MeasureActivity(activity.Activity):
                                  self._toolbar_changed_cb)
 
         self.sound_toolbar = SoundToolbar(self)
-        if self.new_sugar_system:
+        if self.has_toolbarbox:
             self._sound_button = ToolbarButton(
                 label=_('Sound'),
                 page=self.sound_toolbar,
@@ -188,7 +188,7 @@ class MeasureActivity(activity.Activity):
 
         if _is_xo(self.hw):
             self.sensor_toolbar = SensorToolbar(self)
-            if self.new_sugar_system:
+            if self.has_toolbarbox:
                 self._sensor_button = ToolbarButton(
                     label=_('Sensors'),
                     page=self.sensor_toolbar,
@@ -199,7 +199,7 @@ class MeasureActivity(activity.Activity):
                 toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
             self.sensor_toolbar.show()
 
-        if self.new_sugar_system:
+        if self.has_toolbarbox:
             self.mode_image = gtk.Image()
             self.mode_image.set_from_file(ICONS_DIR + '/domain-time2.svg')
             mode_image_tool = gtk.ToolItem()

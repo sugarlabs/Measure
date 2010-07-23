@@ -98,7 +98,7 @@ class SoundToolbar(gtk.Toolbar):
         self.freq.connect('clicked', self._timefreq_control_cb, False)
 
         # Set up Frequency-control Slider and corresponding buttons
-        if not self.activity.new_sugar_system:
+        if not self.activity.has_toolbarbox:
             self.add_frequency_slider(self)
 
         # Set up the Pause Button
@@ -326,7 +326,7 @@ class SoundToolbar(gtk.Toolbar):
             self.time.show()
             self.freq.show()
             self._update_string_for_textbox()
-            if self.activity.new_sugar_system:
+            if self.activity.has_toolbarbox:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/domain-time2.svg')
                 self.activity.label.set_text(" " + _('Time Base'))
@@ -337,11 +337,11 @@ class SoundToolbar(gtk.Toolbar):
             self.time.show()
             self.freq.show()
             self._update_string_for_textbox()
-            if self.activity.new_sugar_system:
+            if self.activity.has_toolbarbox:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/domain-freq2.svg')
                 self.activity.label.set_text(" " + _('Frequency Base'))
-        if self.activity.new_sugar_system and \
+        if self.activity.has_toolbarbox and \
                 hasattr(self.activity, "sensor_toolbar"):
             self.activity.sensor_toolbar.resistance.set_icon('bias-on')
             self.activity.sensor_toolbar.voltage.set_icon('bias-off')

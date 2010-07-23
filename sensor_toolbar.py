@@ -60,7 +60,7 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.audiograb.set_sensor(self)
 
         # Set up Resistance Button
-        if self.activity.new_sugar_system:
+        if self.activity.has_toolbarbox:
             self.resistance = ToolButton('bias-on')
         else:
             self.resistance = ToolButton('bias-on2')
@@ -186,7 +186,7 @@ class SensorToolbar(gtk.Toolbar):
             self.resistance.show()
             self.voltage.show()
             self._update_string_for_textbox()
-            if self.activity.new_sugar_system:
+            if self.activity.has_toolbarbox:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/bias-on2.svg')
                 self.activity.label.set_text(" " + _('Resistance Sensor'))
@@ -196,13 +196,13 @@ class SensorToolbar(gtk.Toolbar):
             self.resistance.show()
             self.voltage.show()
             self._update_string_for_textbox()
-            if self.activity.new_sugar_system:
+            if self.activity.has_toolbarbox:
                 self.activity.mode_image.set_from_file(ICONS_DIR +\
                                                            '/bias-off2.svg')
                 self.activity.label.set_text(" " + _('Voltage Sensor'))
         else:
             logging.error("unknown mode %s" % (mode_to_set))
-        if self.activity.new_sugar_system:
+        if self.activity.has_toolbarbox:
             self.activity.sound_toolbar.time.set_icon('domain-time')
             self.activity.sound_toolbar.freq.set_icon('domain-freq')
         return False
