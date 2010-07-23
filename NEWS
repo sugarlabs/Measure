@@ -10,6 +10,8 @@
 * improved labels for capture intervals (thanks to POSSE team)
 * added support for new toolbars
 * moved frequency slider to main toolbar
+* fixed problem with overcrowded toolbar preventing trigger control to appear
+* new .es translations (thanks to rgs)
 
 29
 * support for XO 1.5 (thanks to Sayamindu Dasgupta)
