@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #! /usr/bin/python
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
@@ -45,11 +46,11 @@ logging.basicConfig()
 class SoundToolbar(gtk.Toolbar):
     """ Set up the toolbar for audio (analog) capture mode """
 
-    SAMPLE_NOW = "Capture now"
-    SAMPLE_30_SEC = "Every 30 sec."
-    SAMPLE_2_MIN = "Every 2 min."
-    SAMPLE_10_MIN = "Every 10 min."
-    SAMPLE_30_MIN = "Every 30 min."
+    SAMPLE_NOW = _("Capture now")
+    SAMPLE_30_SEC = _("Every 30 sec.")
+    SAMPLE_2_MIN = _("Every 2 min.")
+    SAMPLE_10_MIN = _("Every 10 min.")
+    SAMPLE_30_MIN = _("Every 30 min.")
 
     LOWER = 0.0
     UPPER = 1.0
@@ -107,10 +108,11 @@ class SoundToolbar(gtk.Toolbar):
         self._pause.set_tooltip(_('Freeze the display'))
         self._pause.connect('clicked', self._pauseplay_control_cb)
 
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        self.insert(separator, -1)
-        separator.show()
+        if self.activity.has_toolbarbox:
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = True
+            self.insert(separator, -1)
+            separator.show()
 
         self.loginterval_img = gtk.Image()
         self.loginterval_img.set_from_file(ICONS_DIR + 'sample_rate.svg')
@@ -149,9 +151,10 @@ class SoundToolbar(gtk.Toolbar):
         
         self._record.connect('clicked', self.record_control)
 
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        self.insert(separator, -1)
+        if self.activity.has_toolbarbox:
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = True
+            self.insert(separator, -1)
 
         # Set up Trigger Combo box
         self._trigger_combo = ComboBox()
@@ -195,17 +198,10 @@ class SoundToolbar(gtk.Toolbar):
         self._freq_range_tool = gtk.ToolItem()
         self._freq_range_tool.add(self._freq_range)
 
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        toolbar.insert(separator, -1)
-
         toolbar.insert(self._freq_stepper_up, -1)
         toolbar.insert(self._freq_range_tool, -1)
         toolbar.insert(self._freq_stepper_down, -1)
 
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        toolbar.insert(separator, -1)
         return
 
     def record_control(self, data=None):

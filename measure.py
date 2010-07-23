@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/python
 #
 #    Written by Arjun Sarwal <arjun@laptop.org>
@@ -200,6 +201,11 @@ class MeasureActivity(activity.Activity):
             self.sensor_toolbar.show()
 
         if self.has_toolbarbox:
+            _separator = gtk.SeparatorToolItem()
+            _separator.props.draw = False
+            toolbox.toolbar.insert(_separator, -1)
+            _separator.show()
+
             self.mode_image = gtk.Image()
             self.mode_image.set_from_file(ICONS_DIR + '/domain-time2.svg')
             mode_image_tool = gtk.ToolItem()
