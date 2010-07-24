@@ -43,6 +43,7 @@ if _has_toolbarbox:
     from sugar.activity.widgets import ActivityToolbarButton
     from sugar.activity.widgets import StopButton
     from sugar.graphics.toolbarbox import ToolbarButton
+    from sugar.graphics.toolbutton import ToolButton
 else:
     from sugar.activity.activity import ActivityToolbox
 
@@ -70,10 +71,16 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
+# Hardware configurations
+XO1 = 'xo1'
+XO15 = 'xo1.5'
+UNKNOWN = 'unknown'
+
 
 def _is_xo(hw):
     """ Return True if this is xo hardware """
     return hw in [XO1, XO15]
+
 
 def _get_hardware():
     """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
@@ -119,15 +126,16 @@ class MeasureActivity(activity.Activity):
                           ".sugar/default/org.laptop.MeasureActivity/data")
         self.using_gconf = _using_gconf
         self.icon_colors = self.get_icon_colors_from_sugar()
-        self.stroke_color, self.fill_color = self.icon_colors.split(",")
+        self.stroke_color, self.fill_color = self.icon_colors.split(',')
         self.nick = self.get_nick_from_sugar()
         self.active_status = True
         self.ACTIVE = True
         self.LOGGING_IN_SESSION = False
         self.CONTEXT = ''
         self.adjustmentf = None  # Freq. slider control
-        self.connect("notify::active", self._active_cb)
-        self.connect("destroy", self.on_quit)
+        self.connect('notify::active', self._active_cb)
+        self.connect('destroy', self.on_quit)
+        self.hw = _get_hardware()
 
         if self._jobject.file_path:
             self.existing = True
@@ -140,7 +148,7 @@ class MeasureActivity(activity.Activity):
         self.wave = DrawWaveform(self)
 
         self.hw = _get_hardware()
-        log.debug("running on %s hardware" % (self.hw))
+        log.debug('running on %s hardware' % (self.hw))
         if self.hw == XO15:
             self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
         elif self.hw == XO1:
@@ -172,7 +180,7 @@ class MeasureActivity(activity.Activity):
         else:
             toolbox = ActivityToolbox(self)
             self.set_toolbox(toolbox)
-            toolbox.connect("current-toolbar-changed",
+            toolbox.connect('current-toolbar-changed',
                                  self._toolbar_changed_cb)
 
         self.sound_toolbar = SoundToolbar(self)
@@ -206,19 +214,12 @@ class MeasureActivity(activity.Activity):
             toolbox.toolbar.insert(_separator, -1)
             _separator.show()
 
-            self.mode_image = gtk.Image()
-            self.mode_image.set_from_file(ICONS_DIR + '/domain-time2.svg')
-            mode_image_tool = gtk.ToolItem()
-            mode_image_tool.add(self.mode_image)
-            toolbox.toolbar.insert(mode_image_tool, -1)
-
-            self.label = gtk.Label(" " + _('Time Base'))
-            self.label.set_line_wrap(True)
-            self.label.show()
-            _toolitem = gtk.ToolItem()
-            _toolitem.add(self.label)
-            toolbox.toolbar.insert(_toolitem, -1)
-            _toolitem.show()
+            # add a "dummy" button to indicate what capture mode we are in
+            self.label_button = ToolButton('domain-time2')
+            toolbox.toolbar.insert(self.label_button, -1)
+            self.label_button.show()
+            self.label_button.set_tooltip(_('Time Base'))
+            self.label_button.connect('clicked', self._label_cb)
 
             self.sound_toolbar.add_frequency_slider(toolbox.toolbar)
 
@@ -291,6 +292,10 @@ class MeasureActivity(activity.Activity):
         """ Read data from journal on start """
         return
 
+    def _label_cb(self, data=None):
+        """ Ignore the click on the label button """
+        return
+
     def _toolbar_changed_cb(self, toolbox, num):
         """ Callback for changing the primary toolbar (0.84-) """
         if TOOLBARS[num] == 'sound':
@@ -318,7 +323,7 @@ class MeasureActivity(activity.Activity):
         """Returns the icon colors from the Sugar profile"""
         if self.using_gconf:
             client = gconf.client_get_default()
-            return client.get_string("/desktop/sugar/user/color")
+            return client.get_string('/desktop/sugar/user/color')
         else:
             return profile.get_color().to_string()
 
@@ -326,7 +331,7 @@ class MeasureActivity(activity.Activity):
         """ Returns nick from Sugar """
         if self.using_gconf:
             client = gconf.client_get_default()
-            return client.get_string("/desktop/suagr/user/nick")
+            return client.get_string('/desktop/sugar/user/nick')
         else:
             return profile.get_nick_name()
 
