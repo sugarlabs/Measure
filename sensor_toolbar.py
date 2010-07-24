@@ -46,13 +46,10 @@ class SensorToolbar(gtk.Toolbar):
 
         self._STR_BASIC = \
         _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
-        + " "
-        self._STR_R = _("Bias/Offset Enabled") + " " + _("Ohms") + " "
-        self._STR_V = _("Bias/Offset Disabled") + " " + _("Volts") + " "
-        self._STR_I = _(" Invert") + " "
-
-        # self.gain_state = None
-        # self.boost_state = None
+        + ' '
+        self._STR_R = _('Bias/Offset Enabled') + ' ' + _('Ohms') + ' '
+        self._STR_V = _('Bias/Offset Disabled') + ' ' + _('Volts') + ' '
+        self._STR_I = ' ' + _('Invert') + ' '
 
         self.string_for_textbox = ""
 
@@ -160,7 +157,7 @@ class SensorToolbar(gtk.Toolbar):
         try:
             return interval_dictionary[self.logginginterval_status]
         except ValueError:
-            logging.error("logging interval status = %s" %\
+            logging.error('logging interval status = %s' %\
                               (str(self.logginginterval_status)))
             return 0
 
@@ -187,9 +184,8 @@ class SensorToolbar(gtk.Toolbar):
             self.voltage.show()
             self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
-                self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                           '/bias-on2.svg')
-                self.activity.label.set_text(" " + _('Resistance Sensor'))
+                self.activity.label_button.set_icon('bias-on2')
+                self.activity.label_button.set_tooltip(_('Resistance Sensor'))
         elif mode_to_set == 'voltage':
             self.resistance.set_icon('bias-on')
             self.voltage.set_icon('bias-off2')
@@ -197,11 +193,10 @@ class SensorToolbar(gtk.Toolbar):
             self.voltage.show()
             self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
-                self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                           '/bias-off2.svg')
-                self.activity.label.set_text(" " + _('Voltage Sensor'))
+                self.activity.label_button.set_icon('bias-off2')
+                self.activity.label_button.set_tooltip(_('Voltage Sensor'))
         else:
-            logging.error("unknown mode %s" % (mode_to_set))
+            logging.error('unknown mode %s' % (mode_to_set))
         if self.activity.has_toolbarbox:
             self.activity.sound_toolbar.time.set_icon('domain-time')
             self.activity.sound_toolbar.freq.set_icon('domain-freq')
@@ -248,5 +243,5 @@ class SensorToolbar(gtk.Toolbar):
         if self.activity.wave.get_invert_state():
             self.string_for_textbox += self._STR_I
         if value is not None:
-            self.string_for_textbox += "\t(%s)" % (str(value))
+            self.string_for_textbox += '\t(%s)' % (str(value))
         self.activity.text_box.set_data_params(0, self.string_for_textbox)

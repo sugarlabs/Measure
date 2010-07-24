@@ -102,11 +102,11 @@ class DrawWaveform(gtk.DrawingArea):
         self.fft_show = False
         self.side_toolbar_copy = None
 
-        self.scaleX = str(1.04167 / self.draw_interval) + " ms"
+        self.scaleX = str(1.04167 / self.draw_interval) + ' ms'
         self.scaleY = ""
 
         self._back_surf = None
-        self.expose_event_id = self.connect("expose_event", self._expose)
+        self.expose_event_id = self.connect('expose_event', self._expose)
 
         self.pr_time = 0
         self.MAX_GRAPHS = MAX_GRAPHS     # Maximum simultaneous graphs
@@ -128,7 +128,7 @@ class DrawWaveform(gtk.DrawingArea):
             self.Xend.append(1000)
             self.Yend.append(500)
             self.type .append(0)
-            self.color.append("#FF0000")
+            self.color.append('#FF0000')
             self.source.append(0)
             self.graph_id.append(x)
 
@@ -179,7 +179,7 @@ class DrawWaveform(gtk.DrawingArea):
 
         self.ringbuffer = RingBuffer1d(self.max_samples, dtype='int16')
 
-        self.debug_str = "start"
+        self.debug_str = 'start'
 
         self.context = True
 
@@ -325,7 +325,7 @@ class DrawWaveform(gtk.DrawingArea):
         return True
 
     def _expose(self, widget, event):
-        """The "expose" event handler does all the drawing"""
+        """The 'expose' event handler does all the drawing"""
 
         # Real time drawing
         if self.context and self.active:

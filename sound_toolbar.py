@@ -46,11 +46,11 @@ logging.basicConfig()
 class SoundToolbar(gtk.Toolbar):
     """ Set up the toolbar for audio (analog) capture mode """
 
-    SAMPLE_NOW = _("Capture now")
-    SAMPLE_30_SEC = _("Every 30 sec.")
-    SAMPLE_2_MIN = _("Every 2 min.")
-    SAMPLE_10_MIN = _("Every 10 min.")
-    SAMPLE_30_MIN = _("Every 30 min.")
+    SAMPLE_NOW = _('Capture now')
+    SAMPLE_30_SEC = _('Every 30 sec.')
+    SAMPLE_2_MIN = _('Every 2 min.')
+    SAMPLE_10_MIN = _('Every 10 min.')
+    SAMPLE_30_MIN = _('Every 30 min.')
 
     LOWER = 0.0
     UPPER = 1.0
@@ -61,13 +61,13 @@ class SoundToolbar(gtk.Toolbar):
 
         self.activity = activity
 
-        self._STR_BASIC = _("Sound") + " "
-        self._STR1 = _("Time Base") + " "
-        self._STR2 = _("Frequency Base") + " "
-        self._STR3 = _(" Invert") + " "
+        self._STR_BASIC = _('Sound') + ' '
+        self._STR1 = _('Time Base') + ' '
+        self._STR2 = _('Frequency Base') + ' '
+        self._STR3 = ' ' + _('Invert') + ' '
         self._STR_SCALEX = ""
         self._STR_XAXIS_TEXT = \
-            _("X Axis Scale: 1 division = %(division)s %(unit)s")
+            _('X Axis Scale: 1 division = %(division)s %(unit)s')
         # TRANSLATORS: This is milli seconds.
         self._ms = _('ms')
         # TRANSLATORS: This is Hertz, so 1/second.
@@ -128,11 +128,11 @@ class SoundToolbar(gtk.Toolbar):
                          _(self.SAMPLE_10_MIN), 
                          _(self.SAMPLE_30_MIN)]
         try:
-            self._loginterval_combo.set_tooltip_text("Sampling interval")
-        except:
+            self._loginterval_combo.set_tooltip_text(_('Sampling interval'))
+        except KeyError:
             pass
         
-        self._interval_changed_id = self._loginterval_combo.connect("changed",
+        self._interval_changed_id = self._loginterval_combo.connect('changed',
                                          self.loginterval_control)
 
         for i, s in enumerate(self.interval):
@@ -163,13 +163,16 @@ class SoundToolbar(gtk.Toolbar):
                              self.activity.wave.TRIGGER_POS,
             self.activity.wave.TRIGGER_NEG]
 
-        self._trigger_changed_id = self._trigger_combo.connect("changed",
+        self._trigger_changed_id = self._trigger_combo.connect('changed',
                                        self.update_trigger_control)
 
         for i, s in enumerate(self.trigger):
             self._trigger_combo.append_item(i, s, None)
         self._trigger_combo.set_active(0)
-
+        try:
+            self._trigger_combo.set_tooltip_text(_('Create a trigger'))
+        except KeyError:
+            pass
         self._trigger_tool = ToolComboBox(self._trigger_combo)
         self.insert(self._trigger_tool, -1)
         self.show_all()
@@ -184,7 +187,7 @@ class SoundToolbar(gtk.Toolbar):
 
         self.activity.adjustmentf = gtk.Adjustment(0.5, self.LOWER, self.UPPER,
                                                    0.01, 0.1, 0)
-        self.activity.adjustmentf.connect("value_changed", self.cb_page_sizef)
+        self.activity.adjustmentf.connect('value_changed', self.cb_page_sizef)
         self._freq_range = gtk.HScale(self.activity.adjustmentf)
         self._freq_range.set_inverted(True)
         self._freq_range.set_draw_value(False)
@@ -323,9 +326,8 @@ class SoundToolbar(gtk.Toolbar):
             self.freq.show()
             self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
-                self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                           '/domain-time2.svg')
-                self.activity.label.set_text(" " + _('Time Base'))
+                self.activity.label_button.set_icon('domain-time2')
+                self.activity.label_button.set_tooltip(_('Time Base'))
         else:
             self.activity.wave.set_fft_mode(True)
             self.time.set_icon('domain-time')
@@ -334,11 +336,10 @@ class SoundToolbar(gtk.Toolbar):
             self.freq.show()
             self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
-                self.activity.mode_image.set_from_file(ICONS_DIR +\
-                                                           '/domain-freq2.svg')
-                self.activity.label.set_text(" " + _('Frequency Base'))
+                self.activity.label_button.set_icon('domain-freq2')
+                self.activity.label_button.set_tooltip(_('Frequency Base'))
         if self.activity.has_toolbarbox and \
-                hasattr(self.activity, "sensor_toolbar"):
+                hasattr(self.activity, 'sensor_toolbar'):
             self.activity.sensor_toolbar.resistance.set_icon('bias-on')
             self.activity.sensor_toolbar.voltage.set_icon('bias-off')
         return False
@@ -410,7 +411,7 @@ class SoundToolbar(gtk.Toolbar):
     def context_on(self):
         """When the sound context is switched on"""
         self.activity.audiograb.start_sound_device()
-        self.activity.audiograb.set_sensor_type("sound")
+        self.activity.audiograb.set_sensor_type('sound')
         self.activity.wave.set_fft_mode(False)
         print "context on: gain and y_mag are %f and %f" %\
               (self.gain, self.y_mag)
@@ -429,12 +430,12 @@ class SoundToolbar(gtk.Toolbar):
                 {'unit': self._Hz, 'division': self.activity.wave.freq_div} 
 
         self.string_for_textbox = ""
-        self.string_for_textbox += (self._STR_BASIC + "\t")
+        self.string_for_textbox += (self._STR_BASIC + '\t')
         if not self.activity.wave.get_fft_mode():
             self.string_for_textbox += self._STR1
         else:
             self.string_for_textbox += self._STR2
         if self.activity.wave.get_invert_state():
             self.string_for_textbox += self._STR3
-        self.string_for_textbox += ("\n" + self._STR_SCALEX)
+        self.string_for_textbox += ('\n' + self._STR_SCALEX)
         self.activity.text_box.set_data_params(0, self.string_for_textbox)

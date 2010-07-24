@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #! /usr/bin/python
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
@@ -49,7 +50,7 @@ class SideToolbar(gtk.Toolbar):
         self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode],
                                           self.LOWER, self.UPPER,
                                           0.1, 0.1, 0.0)
-        self.adjustmenty.connect("value_changed", self._yscrollbar_cb,
+        self.adjustmenty.connect('value_changed', self._yscrollbar_cb,
                                  self.adjustmenty)
         self.yscrollbar = gtk.VScale(self.adjustmenty)
         self.yscrollbar.set_draw_value(False)
