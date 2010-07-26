@@ -5,5 +5,6 @@ class = measure.MeasureActivity
 icon = activity-measure
 activity_version = 30
 show_launcher = yes
+mime_types = text/csv;text/plain
 license = GPLv2+
 update_url = http://wiki.laptop.org/go/Activities/G1G1
