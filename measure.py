@@ -27,8 +27,9 @@ import gtk
 from textbox import TextBox
 import gobject
 import dbus
-from os import environ, path, chmod
-from tempfile import mkstemp
+from os import environ, path #, chmod
+# from tempfile import mkstemp
+import csv
 
 from gettext import gettext as _
 
@@ -75,6 +76,7 @@ logging.basicConfig()
 XO1 = 'xo1'
 XO15 = 'xo1.5'
 UNKNOWN = 'unknown'
+# UNKNOWN = 'xo1.5'
 
 
 def _is_xo(hw):
@@ -137,12 +139,16 @@ class MeasureActivity(activity.Activity):
         self.connect('destroy', self.on_quit)
         self.hw = _get_hardware()
 
+        self.session_id = 0
+
+        """
         if self._jobject.file_path:
             self.existing = True
         else:
             self._jobject.file_path = str(mkstemp(dir=tmp_dir)[1])
             chmod(self._jobject.file_path, 0777)
             self.existing = False
+        """
 
         self.ji = JournalInteraction(self)
         self.wave = DrawWaveform(self)
@@ -265,7 +271,6 @@ class MeasureActivity(activity.Activity):
     def on_quit(self, data=None):
         """Clean up, close journal on quit"""
         self.audiograb.on_activity_quit()
-        self.ji.on_quit()
         return
 
     def _active_cb(self, widget, pspec):
@@ -286,10 +291,22 @@ class MeasureActivity(activity.Activity):
 
     def write_file(self, file_path):
         """ Write data to journal on quit """
+        if hasattr(self, 'ji'):
+            # Append new data to Journal entry
+            writer = csv.writer(open(file_path, 'ab'))
+            for datum in self.ji.temp_buffer:
+                print datum
+                writer.writerow( [ datum ] )
         return
 
     def read_file(self, file_path):
-        """ Read data from journal on start """
+        """ Read csv data from journal on start """
+        reader = csv.reader(open(file_path, "rb"))
+        # Count the number of sessions
+        for r in reader:
+            print r
+            if r[0] == _('Session'):
+                self.session_id += 1
         return
 
     def _label_cb(self, data=None):
