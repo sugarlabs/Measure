@@ -173,9 +173,9 @@ class AudioGrab:
         temp_buffer = fromstring(buffer, 'int16')
         if not self.dont_queue_the_buffer:
             self._new_buffer(temp_buffer)
-        else:
-            pass
+
         if self.logging_state:
+            # If we've hit the maximum no. of log files, stop.
             if self.waveform_id == SOUND_MAX_WAVE_LOGS:
                 self.waveform_id = 1
                 self.logging_state = False
@@ -185,12 +185,13 @@ class AudioGrab:
                    self.buffer_interval_logging == 0:
                     self._emit_for_logging(temp_buffer)
                     self.capture_interval_sample = False
-            # If an immediate record is to be written, that's all
-            # for the logging session
+
+            # If an immediate record is to be written, end logging session
             if self.buffer_interval_logging == 0:
                 self.logging_state = False
                 self.activity.ji.stop_session()
-                self.waveform_id = 1
+
+        # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
             if self._display_value == 0: # Display value at DISPLAY_DUTY_CYCLE
                 self.sensor.set_sample_value(str(temp_buffer[0]))
@@ -214,16 +215,11 @@ class AudioGrab:
 
     def _emit_for_logging(self, buf):
         """Sends the data for logging"""
-        if self.buffer_interval_logging == 0:
-            self.activity.ji.take_screenshot()
-        else:
-            if self.screenshot:
+        if self.screenshot:
                 self.activity.ji.take_screenshot(self.waveform_id)
                 self.waveform_id += 1
-            else:
-                # save value to Journal
+        else:
                 self.activity.ji.write_value(buf[0])
-                # display value on Sensor toolbar
                 self.sensor.set_sample_value(str(buf[0]))
 
     def start_sound_device(self):
