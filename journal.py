@@ -203,6 +203,7 @@ class JournalInteraction():
             finally:
                 log.debug("$$$ in outermost finally!!")
             self._stopped = True
+        return False
     
     def get_number_of_cols(self):
         """Returns the maximum number of columns amongst all the data"""

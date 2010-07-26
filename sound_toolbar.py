@@ -127,10 +127,9 @@ class SoundToolbar(gtk.Toolbar):
                          _(self.SAMPLE_2_MIN), 
                          _(self.SAMPLE_10_MIN), 
                          _(self.SAMPLE_30_MIN)]
-        try:
+
+        if hasattr(self._loginterval_combo, 'set_tooltip_text'):
             self._loginterval_combo.set_tooltip_text(_('Sampling interval'))
-        except KeyError:
-            pass
         
         self._interval_changed_id = self._loginterval_combo.connect('changed',
                                          self.loginterval_control)
@@ -148,7 +147,7 @@ class SoundToolbar(gtk.Toolbar):
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
         self._record.set_tooltip(_('Capture sample now'))
-        
+
         self._record.connect('clicked', self.record_control)
 
         if self.activity.has_toolbarbox:
@@ -169,10 +168,10 @@ class SoundToolbar(gtk.Toolbar):
         for i, s in enumerate(self.trigger):
             self._trigger_combo.append_item(i, s, None)
         self._trigger_combo.set_active(0)
-        try:
+
+        if hasattr(self._trigger_combo, 'set_tooltip_text'):
             self._trigger_combo.set_tooltip_text(_('Create a trigger'))
-        except KeyError:
-            pass
+
         self._trigger_tool = ToolComboBox(self._trigger_combo)
         self.insert(self._trigger_tool, -1)
         self.show_all()
@@ -207,7 +206,17 @@ class SoundToolbar(gtk.Toolbar):
 
         return
 
-    def record_control(self, data=None):
+    def _set_icon_ready(self):
+        self._record.set_icon('media-record')
+        self._record.show()
+        return False
+
+    def _set_icon_stop(self):
+        self._record.set_icon('record-stop')
+        self._record.show()
+        return False
+
+    def record_control_delayed(self, data=None):
         """Depending upon the selected interval, either starts/stops
         a logging session, or just logs the current buffer"""
         if not self.activity.LOGGING_IN_SESSION:
@@ -219,24 +228,24 @@ class SoundToolbar(gtk.Toolbar):
                                       self.logginginterval_status)
             self.activity.audiograb.set_logging_params(True, interval, True)
             self.activity.LOGGING_IN_SESSION = True
-            self._record.set_icon('record-stop')
-            self._record.show()
+            self._set_icon_stop()
             if interval == 0:
                 # Flash the stop button when grabbing just one image
-                self._record.set_icon('record-stop')
-                self._record.show()
-                gobject.timeout_add(250, self._record.set_icon, 'media-record')
-                self._record.show()
+                gobject.timeout_add(250, self._set_icon_ready)
                 self.record_state = False
                 self.activity.LOGGING_IN_SESSION = False
                 self.logging_status = False
         else:
             self.activity.audiograb.set_logging_params(False)
             self.activity.LOGGING_IN_SESSION = False
-            self._record.set_icon('media-record')
-            self._record.show()
+            self._set_icon_ready()
         self._set_record_button_tooltip()
-        return
+        return False
+
+    def record_control(self, data=None):
+        self._record.palette.popdown()
+        gtk.gdk.flush()
+        gobject.timeout_add(10, self.record_control_delayed, data)
 
     def interval_convert(self):
         """Converts picture/time interval to an integer that denotes the number
@@ -418,6 +427,7 @@ class SoundToolbar(gtk.Toolbar):
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
         self.update_trigger_control()
+        return False
 
     def _update_string_for_textbox(self):
         """ Update the text at the bottom of the canvas """

@@ -231,6 +231,7 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.audiograb.set_sensor_type(self.mode)
         self._update_string_for_textbox()
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
+        return False
 
     def _update_string_for_textbox(self, value=None):
         """ Update the status field at the bottom of the canvas. """
