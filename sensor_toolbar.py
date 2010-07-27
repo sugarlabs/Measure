@@ -96,6 +96,9 @@ class SensorToolbar(gtk.Toolbar):
         self.interval = [_('1/10 second'), _('1 second'), _('30 seconds'),
                          _('5 minutes'), _('30 minutes')]
 
+        if hasattr(self._loginterval_combo, 'set_tooltip_text'): 
+            self._loginterval_combo.set_tooltip_text(_('Sampling interval')) 
+
         self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)
 
@@ -132,8 +135,9 @@ class SensorToolbar(gtk.Toolbar):
             Yscale = 0.0
             interval = self.interval_convert()
             username = self.activity.nick
+            print "calling start new session"
             self.activity.ji.start_new_session(username, Xscale, Yscale,
-                                      self.logginginterval_status)
+                                      _(self.logginginterval_status))
             self.activity.audiograb.set_logging_params(True, interval, False)
             self.activity.LOGGING_IN_SESSION = True
             self._record.set_icon('record-stop')
@@ -141,7 +145,6 @@ class SensorToolbar(gtk.Toolbar):
             self._record.set_tooltip(_('Stop Recording'))
         else:
             self.activity.audiograb.set_logging_params(False)
-            gobject.timeout_add(250, self.activity.ji.stop_session)
             self.activity.LOGGING_IN_SESSION = False
             self._record.set_icon('media-record')
             self._record.show()
