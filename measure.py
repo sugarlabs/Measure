@@ -154,6 +154,9 @@ class MeasureActivity(activity.Activity):
         else:
             self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
 
+        # no sharing
+        self.max_participants = 1
+
         self.has_toolbarbox = _has_toolbarbox
 
         self.side_toolbar = SideToolbar(self)
@@ -177,6 +180,13 @@ class MeasureActivity(activity.Activity):
             activity_button.show()
         else:
             toolbox = ActivityToolbox(self)
+
+            # no sharing
+            if hasattr(toolbox, 'share'):
+               toolbox.share.hide()
+            elif hasattr(toolbox, 'props'):
+               toolbox.props.visible = False
+
             self.set_toolbox(toolbox)
             toolbox.connect('current-toolbar-changed',
                                  self._toolbar_changed_cb)
@@ -290,7 +300,6 @@ class MeasureActivity(activity.Activity):
             writer2 = csv.writer(open(tmp_file_path, 'ab'))
 
             for datum in self.ji.temp_buffer:
-                print datum
                 writer.writerow( [ datum ] )
                 writer2.writerow( [ datum ] )
 
