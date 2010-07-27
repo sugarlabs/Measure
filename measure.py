@@ -75,8 +75,8 @@ logging.basicConfig()
 # Hardware configurations
 XO1 = 'xo1'
 XO15 = 'xo1.5'
-UNKNOWN = 'unknown'
-# UNKNOWN = 'xo1.5'
+# UNKNOWN = 'unknown'
+UNKNOWN = 'xo1.5'
 
 
 def _is_xo(hw):
@@ -297,6 +297,7 @@ class MeasureActivity(activity.Activity):
             for datum in self.ji.temp_buffer:
                 print datum
                 writer.writerow( [ datum ] )
+        self.metadata['mime_type'] = 'text/csv'
         return
 
     def read_file(self, file_path):
