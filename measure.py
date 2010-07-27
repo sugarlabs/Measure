@@ -279,7 +279,7 @@ class MeasureActivity(activity.Activity):
 
     def write_file(self, file_path):
         """ Write data to journal on quit """
-        if hasattr(self, 'ji'):
+        if hasattr(self, 'ji') and len(self.ji.temp_buffer) > 0:
             # Append new data to Journal entry
             writer = csv.writer(open(file_path, 'ab'))
 
@@ -297,22 +297,18 @@ class MeasureActivity(activity.Activity):
             # Set the mimetype so that the file can be read by other Activities
             self.metadata['mime_type'] = 'text/csv'
 
-            try:
-                jobject = datastore.create()
-                try:
-                    jobject.metadata['title'] = _('Measure Log')
-                    jobject.metadata['keep'] = '0'
-                    jobject.metadata['buddies'] = ''
-                    jobject.metadata['preview'] = ''
-                    jobject.metadata['icon-color'] = self.icon_colors
-                    jobject.metadata['mime_type'] = 'text/csv'
-                    jobject.file_path = tmp_file_path
-                    datastore.write(jobject)
-                finally:
-                    jobject.destroy()
-                    del jobject
-            finally:
-                remove(tmp_file_path)
+            jobject = datastore.create()
+            jobject.metadata['title'] = _('Measure Log')
+            jobject.metadata['keep'] = '0'
+            jobject.metadata['buddies'] = ''
+            jobject.metadata['preview'] = ''
+            jobject.metadata['icon-color'] = self.icon_colors
+            jobject.metadata['mime_type'] = 'text/csv'
+            jobject.file_path = tmp_file_path
+            datastore.write(jobject)
+            jobject.destroy()
+            del jobject
+            remove(tmp_file_path)
 
     def read_file(self, file_path):
         """ Read csv data from journal on start """
