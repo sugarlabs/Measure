@@ -27,8 +27,8 @@ import gtk
 from textbox import TextBox
 import gobject
 import dbus
-from os import environ, path #, chmod
-# from tempfile import mkstemp
+from os import environ, path, remove
+from os.path import join
 import csv
 
 from gettext import gettext as _
@@ -47,6 +47,8 @@ if _has_toolbarbox:
     from sugar.graphics.toolbutton import ToolButton
 else:
     from sugar.activity.activity import ActivityToolbox
+
+from sugar.datastore import datastore
 
 try:
     from sugar import profile
@@ -75,8 +77,7 @@ logging.basicConfig()
 # Hardware configurations
 XO1 = 'xo1'
 XO15 = 'xo1.5'
-# UNKNOWN = 'unknown'
-UNKNOWN = 'xo1.5'
+UNKNOWN = 'unknown'
 
 
 def _is_xo(hw):
@@ -140,15 +141,6 @@ class MeasureActivity(activity.Activity):
         self.hw = _get_hardware()
 
         self.session_id = 0
-
-        """
-        if self._jobject.file_path:
-            self.existing = True
-        else:
-            self._jobject.file_path = str(mkstemp(dir=tmp_dir)[1])
-            chmod(self._jobject.file_path, 0777)
-            self.existing = False
-        """
 
         self.ji = JournalInteraction(self)
         self.wave = DrawWaveform(self)
@@ -262,16 +254,13 @@ class MeasureActivity(activity.Activity):
         if mode == 'sound':
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
-            return
         elif mode == 'sensor':
             self.wave.set_context_on()
             self.side_toolbar.set_show_hide(True, mode)
-            return
 
     def on_quit(self, data=None):
         """Clean up, close journal on quit"""
         self.audiograb.on_activity_quit()
-        return
 
     def _active_cb(self, widget, pspec):
         """ Callback to handle starting/pausing capture when active/idle """
@@ -287,28 +276,57 @@ class MeasureActivity(activity.Activity):
 
         self.ACTIVE = self.props.active
         self.wave.set_active(self.ACTIVE)
-        return
 
     def write_file(self, file_path):
         """ Write data to journal on quit """
         if hasattr(self, 'ji'):
             # Append new data to Journal entry
             writer = csv.writer(open(file_path, 'ab'))
+
+            # Also output to a separate file as a workaround to Ticket 2127
+            tmp_file_path = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
+                                 'sensor_data' + '.csv')
+            log.debug('saving sensor data to %s' % (tmp_file_path))
+            writer2 = csv.writer(open(tmp_file_path, 'ab'))
+
             for datum in self.ji.temp_buffer:
                 print datum
                 writer.writerow( [ datum ] )
-        self.metadata['mime_type'] = 'text/csv'
-        return
+                writer2.writerow( [ datum ] )
+
+            # Set the mimetype so that the file can be read by other Activities
+            self.metadata['mime_type'] = 'text/csv'
+
+            try:
+                jobject = datastore.create()
+                try:
+                    jobject.metadata['title'] = _('Measure Log')
+                    jobject.metadata['keep'] = '0'
+                    jobject.metadata['buddies'] = ''
+                    jobject.metadata['preview'] = ''
+                    jobject.metadata['icon-color'] = self.icon_colors
+                    jobject.metadata['mime_type'] = 'text/csv'
+                    jobject.file_path = tmp_file_path
+                    datastore.write(jobject)
+                finally:
+                    jobject.destroy()
+                    del jobject
+            finally:
+                remove(tmp_file_path)
 
     def read_file(self, file_path):
         """ Read csv data from journal on start """
         reader = csv.reader(open(file_path, "rb"))
         # Count the number of sessions
         for r in reader:
-            print r
-            if r[0] == _('Session'):
-                self.session_id += 1
-        return
+            if len(r) > 0:
+                if r[0] == _('Session'):
+                    self.session_id += 1
+                elif r[0].find('abiword') != -1:
+                    # File has been opened by Write cannot be read by Measure
+                    # See Ticket 2127
+                    log.error('File was opened by Write: Measure cannot read')
+                    return
 
     def _label_cb(self, data=None):
         """ Ignore the click on the label button """
