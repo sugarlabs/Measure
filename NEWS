@@ -1,3 +1,8 @@
+32
+
+* added missing tooltip to sensor interval spinner (#2121)
+* updated depreciated activity.info fields (#2178)
+
 31
 * avoid race condition that leads to image capture corruption (#2119) (thanks to quozl)
 * eliminate exception handler for tooltip text (#2121)
