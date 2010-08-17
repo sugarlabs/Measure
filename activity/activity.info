@@ -1,9 +1,9 @@
 [Activity]
 name = Measure
-service_name = org.laptop.MeasureActivity
-class = measure.MeasureActivity
+bundle_id = org.laptop.MeasureActivity
+exec = sugar-activity measure.MeasureActivity
 icon = activity-measure
-activity_version = 31
+activity_version = 32
 show_launcher = yes
 license = GPLv2+
 update_url = http://wiki.laptop.org/go/Activities/G1G1
