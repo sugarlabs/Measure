@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"POT-Creation-Date: 2010-07-24 10:31-0400\n"
 "PO-Revision-Date: 2008-06-22 18:11-0400\n"
 "Last-Translator: Maria del Pilar Saenz Rodriguez <mapisaro@gmail.com>\n"
 "Language-Team: Spanish\n"
@@ -20,104 +20,296 @@ msgstr ""
 msgid "Measure"
 msgstr "Medir"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-msgid "Spectrum value"
-msgstr "Valor del espectro"
+#: /home/walter/Desktop/measure.activity/measure.py:189
+#: /home/walter/Desktop/measure.activity/measure.py:195
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:64
+msgid "Sound"
+msgstr ""
 
-# for now untranslated
-#: drawWaveform.py:330
-msgid "RMS   : "
-msgstr "Prom.Cuad.   : "
+#: /home/walter/Desktop/measure.activity/measure.py:202
+#: /home/walter/Desktop/measure.activity/measure.py:208
+msgid "Sensors"
+msgstr ""
 
-#: drawWaveform.py:330
-msgid "AVG   : "
-msgstr "PROM   : "
+#: /home/walter/Desktop/measure.activity/measure.py:221
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:65
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:91
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:330
+#, fuzzy
+msgid "Time Base"
+msgstr "Línea de base de tiempo"
 
-#: drawWaveform.py:331
-msgid "Scale:"
-msgstr "Escala"
+#: /home/walter/Desktop/measure.activity/measure.py:232
+msgid "<Ctrl>Q"
+msgstr ""
 
-#: drawWaveform.py:332
-msgid "X Axis: "
-msgstr "Eje X: "
+#: /home/walter/Desktop/measure.activity/journal.py:192
+msgid "Measure Log"
+msgstr ""
 
-#: drawWaveform.py:332
-msgid "Y Axis : "
-msgstr "Eje Y: "
+#: /home/walter/Desktop/measure.activity/journal.py:228
+msgid "Session"
+msgstr ""
 
-#: electrical_ui.py:38 electrical_ui.py:151
-msgid "Click for DC"
-msgstr "Haga clic para CC"
+#: /home/walter/Desktop/measure.activity/journal.py:229
+msgid "User"
+msgstr ""
 
-# Bias refers to a bias voltage
-#: electrical_ui.py:50 electrical_ui.py:172
-msgid "Click for Bias Off"
-msgstr "Desactivar el voltaje de sesgo"
+#: /home/walter/Desktop/measure.activity/journal.py:230
+msgid "Interval"
+msgstr ""
 
-#: electrical_ui.py:61 electrical_ui.py:192
-msgid "Click for Frequency base"
-msgstr "Haga clic para frecuencia de base"
+#: /home/walter/Desktop/measure.activity/journal.py:337
+msgid "Waveform"
+msgstr ""
 
-#: electrical_ui.py:116 electrical_ui.py:256
-msgid "Pause"
-msgstr "Pausa"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:48
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
 
-#: electrical_ui.py:126 electrical_ui.py:203
-msgid "Show values"
-msgstr "Mostrar valores"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+msgid "Bias/Offset Enabled"
+msgstr ""
 
-#: electrical_ui.py:141
-msgid "Click for AC"
-msgstr "Haga clic para CA"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+msgid "Ohms"
+msgstr ""
 
-#: electrical_ui.py:163
-msgid "Click for Bias On"
-msgstr "Activar el voltaje de sesgo"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+msgid "Bias/Offset Disabled"
+msgstr ""
 
-#: electrical_ui.py:183
-msgid "Click for Time base"
-msgstr "Haga clic para la base del tiempo"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+msgid "Volts"
+msgstr ""
 
-#: electrical_ui.py:212
-msgid "Hide values"
-msgstr "Ocultar valores"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:52
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:80
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:67
+msgid "Invert"
+msgstr ""
 
-# Continuar?
-#: electrical_ui.py:249
-msgid "Resume"
-msgstr "Retomar"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:66
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:188
+msgid "Resistance Sensor"
+msgstr "Sensor de resistencia"
 
-#: logging_ui.py:44 logging_ui.py:50
-msgid "Snapshot"
-msgstr "Instantánea"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:73
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:197
+msgid "Voltage Sensor"
+msgstr "Sensor de voltaje"
 
-#: logging_ui.py:44
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+msgid "1/10 second"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
 msgid "1 second"
 msgstr "1 segundo"
 
-#: logging_ui.py:44
-msgid "1 minute"
-msgstr "1 minuto"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#, fuzzy
+msgid "30 seconds"
+msgstr "5 segundos"
 
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "1 hora"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+msgid "5 minutes"
+msgstr "5 minutos"
 
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "Comenzar a registrar"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+#, fuzzy
+msgid "30 minutes"
+msgstr "5 minutos"
 
-#: logging_ui.py:82 logging_ui.py:167
-msgid "Show Log"
-msgstr "Mostrar registro"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:114
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:148
+msgid "Start Recording"
+msgstr ""
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "Terminar de registrar"
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:141
+msgid "Stop Recording"
+msgstr ""
 
-#: logging_ui.py:159
-msgid "Remove Log"
-msgstr "Eliminar registro"
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:46
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:61
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:125
+msgid "Increase bias"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:127
+msgid "Decrease bias"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:49
+msgid "Capture now"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:50
+msgid "Every 30 sec."
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
+msgid "Every 2 min."
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
+msgid "Every 10 min."
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:53
+msgid "Every 30 min."
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:66
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:98
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:340
+#, fuzzy
+msgid "Frequency Base"
+msgstr "Línea de base de frecuencia"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:70
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:72
+msgid "ms"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:74
+msgid "Hz"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:108
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:310
+msgid "Freeze the display"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:131
+msgid "Sampling interval"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:150
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:286
+msgid "Capture sample now"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+msgid "None"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+msgid "Rising Edge"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+msgid "Falling Edge"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:173
+msgid "Create a trigger"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:185
+msgid "Zoom out"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:198
+msgid "Zoom in"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:283
+msgid "Stop sampling"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:288
+msgid "Start sampling"
+msgstr ""
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:305
+msgid "Unfreeze the display"
+msgstr ""
+
+#~ msgid "Spectrum value"
+#~ msgstr "Valor del espectro"
+
+# for now untranslated
+#~ msgid "RMS   : "
+#~ msgstr "Prom.Cuad.   : "
+
+#~ msgid "AVG   : "
+#~ msgstr "PROM   : "
+
+#~ msgid "Scale:"
+#~ msgstr "Escala"
+
+#~ msgid "X Axis: "
+#~ msgstr "Eje X: "
+
+#~ msgid "Y Axis : "
+#~ msgstr "Eje Y: "
+
+#~ msgid "Click for DC"
+#~ msgstr "Haga clic para CC"
+
+# Bias refers to a bias voltage
+#~ msgid "Click for Bias Off"
+#~ msgstr "Desactivar el voltaje de sesgo"
+
+#~ msgid "Click for Frequency base"
+#~ msgstr "Haga clic para frecuencia de base"
+
+#~ msgid "Pause"
+#~ msgstr "Pausa"
+
+#~ msgid "Show values"
+#~ msgstr "Mostrar valores"
+
+#~ msgid "Click for AC"
+#~ msgstr "Haga clic para CA"
+
+#~ msgid "Click for Bias On"
+#~ msgstr "Activar el voltaje de sesgo"
+
+#~ msgid "Click for Time base"
+#~ msgstr "Haga clic para la base del tiempo"
+
+#~ msgid "Hide values"
+#~ msgstr "Ocultar valores"
+
+# Continuar?
+#~ msgid "Resume"
+#~ msgstr "Retomar"
+
+#~ msgid "Snapshot"
+#~ msgstr "Instantánea"
+
+#~ msgid "1 minute"
+#~ msgstr "1 minuto"
+
+#~ msgid "1 hour"
+#~ msgstr "1 hora"
+
+#~ msgid "Start Logging"
+#~ msgstr "Comenzar a registrar"
+
+#~ msgid "Show Log"
+#~ msgstr "Mostrar registro"
+
+#~ msgid "Stop Logging"
+#~ msgstr "Terminar de registrar"
+
+#~ msgid "Remove Log"
+#~ msgstr "Eliminar registro"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "Mostrar hoja y gráficas"
@@ -125,26 +317,8 @@ msgstr "Eliminar registro"
 #~ msgid "Show waveform"
 #~ msgstr "Mostrar forma de onda"
 
-#~ msgid "Time base"
-#~ msgstr "Línea de base de tiempo"
-
-#~ msgid "Frequency base"
-#~ msgstr "Línea de base de frecuencia"
-
-#~ msgid "Resistance Sensor"
-#~ msgstr "Sensor de resistencia"
-
-#~ msgid "Voltage Sensor"
-#~ msgstr "Sensor de voltaje"
-
 #~ msgid "Picture"
 #~ msgstr "Imagen"
-
-#~ msgid "5 seconds"
-#~ msgstr "5 segundos"
-
-#~ msgid "5 minutes"
-#~ msgstr "5 minutos"
 
 #~ msgid "Spectral power"
 #~ msgstr "Espectro de potencia"
