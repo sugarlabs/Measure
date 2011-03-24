@@ -22,6 +22,7 @@
 
 import gtk
 import gobject
+import os
 from gettext import gettext as _
 
 from config import ICONS_DIR
@@ -87,7 +88,8 @@ class SensorToolbar(gtk.Toolbar):
 
         # Set up Logging Interval combo box
         self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(ICONS_DIR + '/sample_rate.svg')
+        self.loginterval_img.set_from_file(os.path.join(ICONS_DIR,
+                                                        'sample_rate.svg'))
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool, -1)
