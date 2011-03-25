@@ -1,3 +1,7 @@
+33
+
+* fix path problem for interval graphic on sound toolbar (#2730)
+
 32
 
 * added missing tooltip to sensor interval spinner (#2121)
