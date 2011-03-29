@@ -312,7 +312,7 @@ class SoundToolbar(gtk.Toolbar):
         """ Callback for Pause Button """
         if self.activity.audiograb.get_freeze_the_display():
             self.activity.audiograb.set_freeze_the_display(False)
-            self._pause.set_icon('media-playback-pause-insensitive')
+            self._pause.set_icon('media-playback-start')
             self._pause.set_tooltip(_('Unfreeze the display'))
             self._pause.show()
         else:
