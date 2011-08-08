@@ -1,6 +1,7 @@
 33
 
 * fix path problem for interval graphic on sound toolbar (#2730)
+* removed dependency on HAL for determining hardware
 
 32
 
