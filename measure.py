@@ -28,7 +28,7 @@ from textbox import TextBox
 import gobject
 import dbus
 from os import environ, path, remove
-from os.path import join
+from os.path import join, exists
 import csv
 
 from gettext import gettext as _
@@ -87,25 +87,31 @@ def _is_xo(hw):
 
 def _get_hardware():
     """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
-    bus = dbus.SystemBus()
-
-    comp_obj = bus.get_object('org.freedesktop.Hal',
-                              '/org/freedesktop/Hal/devices/computer')
-    dev = dbus.Interface(comp_obj, 'org.freedesktop.Hal.Device')
-    if dev.PropertyExists('system.hardware.vendor') and \
-            dev.PropertyExists('system.hardware.version'):
-        if dev.GetProperty('system.hardware.vendor') == 'OLPC':
-            if dev.GetProperty('system.hardware.version') == '1.5':
-                return XO15
-            else:
-                return XO1
+    product = _get_dmi('product_name')
+    if product is None:
+        if exists('/etc/olpc-release') or exists('/sys/power/olpc-pm'):
+            return XO1
         else:
             return UNKNOWN
-    elif path.exists('/etc/olpc-release') or \
-         path.exists('/sys/power/olpc-pm'):
+    if product != 'XO':
+        return UNKNOWN
+    version = _get_dmi('product_version')
+    if version == '1':
         return XO1
+    elif version == '1.5':
+        return XO15
     else:
         return UNKNOWN
+
+
+def _get_dmi(node):
+    ''' The desktop management interface should be a reliable source
+    for product and version information. '''
+    path = join('/sys/class/dmi/id', node)
+    try:
+        return open(path).readline().strip()
+    except:
+        return None
 
 
 class MeasureActivity(activity.Activity):
