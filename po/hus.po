@@ -1,0 +1,245 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-07-24 10:31-0400\n"
+"PO-Revision-Date: 2011-08-16 05:57+0200\n"
+"Last-Translator:  <saulleoart@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hus\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.1\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "t'ípoy"
+
+#: /home/walter/Desktop/measure.activity/measure.py:189
+#: /home/walter/Desktop/measure.activity/measure.py:195
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:64
+msgid "Sound"
+msgstr "janídh"
+
+#: /home/walter/Desktop/measure.activity/measure.py:202
+#: /home/walter/Desktop/measure.activity/measure.py:208
+msgid "Sensors"
+msgstr "ots'bixtaláb"
+
+#: /home/walter/Desktop/measure.activity/measure.py:221
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:65
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:91
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:330
+msgid "Time Base"
+msgstr "aknixtaláb aytal ki´j"
+
+#: /home/walter/Desktop/measure.activity/measure.py:232
+msgid "<Ctrl>Q"
+msgstr "‹Ctrl> Q"
+
+#: /home/walter/Desktop/measure.activity/journal.py:192
+msgid "Measure Log"
+msgstr "Measure log"
+
+#: /home/walter/Desktop/measure.activity/journal.py:228
+msgid "Session"
+msgstr "Tamkudh t´ojláb"
+
+#: /home/walter/Desktop/measure.activity/journal.py:229
+msgid "User"
+msgstr "eyendhom"
+
+#: /home/walter/Desktop/measure.activity/journal.py:230
+msgid "Interval"
+msgstr "jalk´uxtaláb"
+
+#: /home/walter/Desktop/measure.activity/journal.py:337
+msgid "Waveform"
+msgstr "In aytal an yunk´idh"
+
+# microfono = kawidhmédhomtaláb
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:48
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Ots'bil DC (ka xapchij an ots'bil tin jólil an kawidhmédhomtaláb axi majudh "
+"iko' tin k'watab waltelil an XO)"
+
+# pelk´ontaláb = desviación
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+msgid "Bias/Offset Enabled"
+msgstr "sesgo/Walkadh pelk´ontaláb"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+msgid "Ohms"
+msgstr "Ohms"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+msgid "Bias/Offset Disabled"
+msgstr "yab walkadh"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+msgid "Volts"
+msgstr "Voltios"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:52
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:80
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:67
+msgid "Invert"
+msgstr "wenk´ow"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:66
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:188
+msgid "Resistance Sensor"
+msgstr "ots´bixtal an tsápláp"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:73
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:197
+msgid "Voltage Sensor"
+msgstr "Ots'bixtal kal an k'amal ts' áj"
+
+# adhik k'ij = segundos
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+msgid "1/10 second"
+msgstr "Láju adhik k'ij"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
+msgid "1 second"
+msgstr "Jun adhik k'ij"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+msgid "30 seconds"
+msgstr "Jun inik láju adhik k'ij"
+
+# minutos = tsakam k'ij
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+msgid "5 minutes"
+msgstr "bó' tsakam kij"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+msgid "30 minutes"
+msgstr "jun inik láju tsakam k'ij"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:114
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:148
+msgid "Start Recording"
+msgstr "tujchij an ts'át'altaláb"
+
+#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:141
+msgid "Stop Recording"
+msgstr "kubla' an ts'át'altaláb"
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:46
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr "ka puwedha in owel"
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:61
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr "ka tsiptimedha in owel"
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:125
+msgid "Increase bias"
+msgstr "yanedha' sesgo/an pelk'ontaláb"
+
+#: /home/walter/Desktop/measure.activity/toolbar_side.py:127
+msgid "Decrease bias"
+msgstr "we'médha' sesgo/an pelk'ontaláb"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:49
+msgid "Capture now"
+msgstr "xowé ka yak'wa"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:50
+msgid "Every 30 sec."
+msgstr "ti jun inik láju adhik k'ij"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
+msgid "Every 2 min."
+msgstr "ti tsabchik tsakam k'ij"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
+msgid "Every 10 min."
+msgstr "ti láju tsakam k'ij"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:53
+msgid "Every 30 min."
+msgstr "ti jun inik láju tsakam k'ij"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:66
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:98
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:340
+msgid "Frequency Base"
+msgstr "kits'lab aknixtalab wilk'idhaytaláb"
+
+# eje = ts'ejel kits'láb
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:70
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+"ts'ejel kitsláb X tsalpantal t'ipláb: 1 mu'uxtaláb = %(division)s %(unit)s"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:72
+msgid "ms"
+msgstr "ms"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:74
+msgid "Hz"
+msgstr "Hercio(hz)"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:108
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:310
+msgid "Freeze the display"
+msgstr "ka kubla' an walek"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:131
+msgid "Sampling interval"
+msgstr "k’elbadh jolat ti ts'ejel tejwamedhomtaláb"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:150
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:286
+msgid "Capture sample now"
+msgstr "ka yak'wa xo' an tejwamelomtaláb"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+msgid "None"
+msgstr "má ni jun"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+msgid "Rising Edge"
+msgstr "ka puwedha´ in pulik an xam"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+msgid "Falling Edge"
+msgstr "ka tsiptimedha in puwel an xam"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:173
+msgid "Create a trigger"
+msgstr "Ts'ejka' jun i kwi'íl"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:185
+msgid "Zoom out"
+msgstr "tsipti'méjdha'(ówmedha') ok'tsalap"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:198
+msgid "Zoom in"
+msgstr "Puwedha'(ututuy) ok'tsalap"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:283
+msgid "Stop sampling"
+msgstr "kabal ti t'ipláb"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:288
+msgid "Start sampling"
+msgstr "ts'ikinal an t'ipláb"
+
+#: /home/walter/Desktop/measure.activity/sound_toolbar.py:305
+msgid "Unfreeze the display"
+msgstr "ka tsáb lek'wdha' an walek"
