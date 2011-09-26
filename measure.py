@@ -202,7 +202,7 @@ class MeasureActivity(activity.Activity):
             self._sound_button = ToolbarButton(
                 label=_('Sound'),
                 page=self.sound_toolbar,
-                icon_name='sound-tools')
+                icon_name='media-audio')
             toolbox.toolbar.insert(self._sound_button, -1)
             self._sound_button.show()
         else:
