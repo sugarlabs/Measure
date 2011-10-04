@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
 "PO-Revision-Date: 2008-07-28 20:54-0400\n"
 "Last-Translator: Spiky <y@sailweb.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,122 +20,298 @@ msgstr ""
 msgid "Measure"
 msgstr "計測"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-#, fuzzy
-msgid "Spectrum value"
-msgstr "スペクトル値"
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
 
-#: drawWaveform.py:330
-#, fuzzy
-msgid "RMS   : "
-msgstr "実効値   ： "
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
+msgstr ""
 
-#: drawWaveform.py:330
-#, fuzzy
-msgid "AVG   : "
-msgstr "平均   ： "
+#: sensor_toolbar.py:51
+msgid "Ohms"
+msgstr ""
 
-#: drawWaveform.py:331
-#, fuzzy
-msgid "Scale:"
-msgstr "目盛り   ： "
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
+msgstr ""
 
-#: drawWaveform.py:332
-#, fuzzy
-msgid "X Axis: "
-msgstr "X軸： "
+#: sensor_toolbar.py:52
+msgid "Volts"
+msgstr ""
 
-#: drawWaveform.py:332
-#, fuzzy
-msgid "Y Axis : "
-msgstr "Y軸： "
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
+msgstr ""
 
-#: electrical_ui.py:38 electrical_ui.py:151
-#, fuzzy
-msgid "Click for DC"
-msgstr "クリックしてDCに切替"
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr "抵抗値センサー"
 
-#: electrical_ui.py:50 electrical_ui.py:172
-#, fuzzy
-msgid "Click for Bias Off"
-msgstr "クリックしてバイアス解放"
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr "電圧センサー"
 
-#: electrical_ui.py:61 electrical_ui.py:192
-#, fuzzy
-msgid "Click for Frequency base"
-msgstr "クリックして周波数単位を変更"
+#: sensor_toolbar.py:98
+msgid "1/10 second"
+msgstr ""
 
-#: electrical_ui.py:116 electrical_ui.py:256
-#, fuzzy
-msgid "Pause"
-msgstr "一時停止"
-
-#: electrical_ui.py:126 electrical_ui.py:203
-#, fuzzy
-msgid "Show values"
-msgstr "値を表示"
-
-#: electrical_ui.py:141
-#, fuzzy
-msgid "Click for AC"
-msgstr "クリックしてACに切替"
-
-#: electrical_ui.py:163
-#, fuzzy
-msgid "Click for Bias On"
-msgstr "クリックしてバイアスをかける"
-
-#: electrical_ui.py:183
-#, fuzzy
-msgid "Click for Time base"
-msgstr "クリックして時間単位を変更"
-
-#: electrical_ui.py:212
-#, fuzzy
-msgid "Hide values"
-msgstr "値を非表示"
-
-#: electrical_ui.py:249
-#, fuzzy
-msgid "Resume"
-msgstr "再開"
-
-#: logging_ui.py:44 logging_ui.py:50
-#, fuzzy
-msgid "Snapshot"
-msgstr "スナップショット"
-
-#: logging_ui.py:44
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "1秒間"
 
+#: sensor_toolbar.py:98
+#, fuzzy
+msgid "30 seconds"
+msgstr "5秒間"
+
 # the length of one minute. unsure of the context.
-#: logging_ui.py:44
-msgid "1 minute"
-msgstr "1分間"
+#: sensor_toolbar.py:99
+msgid "5 minutes"
+msgstr "5分間"
+
+# the length of one minute. unsure of the context.
+#: sensor_toolbar.py:99
+#, fuzzy
+msgid "30 minutes"
+msgstr "5分間"
+
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr ""
+
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr ""
+
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr ""
+
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr ""
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr ""
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr ""
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr ""
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr ""
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr ""
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+#, fuzzy
+msgid "Time Base"
+msgstr "時間に沿って..."
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+#, fuzzy
+msgid "Frequency Base"
+msgstr "周波数に沿って..."
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr ""
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr ""
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr ""
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr ""
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr ""
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr ""
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr ""
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr ""
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr ""
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr ""
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr ""
+
+#: journal.py:55
+msgid "User"
+msgstr ""
+
+#: journal.py:56
+msgid "Interval"
+msgstr ""
+
+#: journal.py:91
+msgid "Waveform"
+msgstr ""
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr ""
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr ""
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr ""
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr ""
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr ""
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr ""
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Spectrum value"
+#~ msgstr "スペクトル値"
+
+#, fuzzy
+#~ msgid "RMS   : "
+#~ msgstr "実効値   ： "
+
+#, fuzzy
+#~ msgid "AVG   : "
+#~ msgstr "平均   ： "
+
+#, fuzzy
+#~ msgid "Scale:"
+#~ msgstr "目盛り   ： "
+
+#, fuzzy
+#~ msgid "X Axis: "
+#~ msgstr "X軸： "
+
+#, fuzzy
+#~ msgid "Y Axis : "
+#~ msgstr "Y軸： "
+
+#, fuzzy
+#~ msgid "Click for DC"
+#~ msgstr "クリックしてDCに切替"
+
+#, fuzzy
+#~ msgid "Click for Bias Off"
+#~ msgstr "クリックしてバイアス解放"
+
+#, fuzzy
+#~ msgid "Click for Frequency base"
+#~ msgstr "クリックして周波数単位を変更"
+
+#, fuzzy
+#~ msgid "Pause"
+#~ msgstr "一時停止"
+
+#, fuzzy
+#~ msgid "Show values"
+#~ msgstr "値を表示"
+
+#, fuzzy
+#~ msgid "Click for AC"
+#~ msgstr "クリックしてACに切替"
+
+#, fuzzy
+#~ msgid "Click for Bias On"
+#~ msgstr "クリックしてバイアスをかける"
+
+#, fuzzy
+#~ msgid "Click for Time base"
+#~ msgstr "クリックして時間単位を変更"
+
+#, fuzzy
+#~ msgid "Hide values"
+#~ msgstr "値を非表示"
+
+#, fuzzy
+#~ msgid "Resume"
+#~ msgstr "再開"
+
+#, fuzzy
+#~ msgid "Snapshot"
+#~ msgstr "スナップショット"
+
+# the length of one minute. unsure of the context.
+#~ msgid "1 minute"
+#~ msgstr "1分間"
 
 # the length of one hour, unsure of context
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "1時間"
+#~ msgid "1 hour"
+#~ msgstr "1時間"
 
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "記録開始"
+#~ msgid "Start Logging"
+#~ msgstr "記録開始"
 
-#: logging_ui.py:82 logging_ui.py:167
 #, fuzzy
-msgid "Show Log"
-msgstr "ログ表示"
+#~ msgid "Show Log"
+#~ msgstr "ログ表示"
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "記録終了"
+#~ msgid "Stop Logging"
+#~ msgstr "記録終了"
 
-#: logging_ui.py:159
 #, fuzzy
-msgid "Remove Log"
-msgstr "ログ削除"
+#~ msgid "Remove Log"
+#~ msgstr "ログ削除"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "数値表とグラフを表示"
@@ -142,24 +319,5 @@ msgstr "ログ削除"
 #~ msgid "Show waveform"
 #~ msgstr "波形を表示"
 
-#~ msgid "Time base"
-#~ msgstr "時間に沿って..."
-
-#~ msgid "Frequency base"
-#~ msgstr "周波数に沿って..."
-
-#~ msgid "Resistance Sensor"
-#~ msgstr "抵抗値センサー"
-
-#~ msgid "Voltage Sensor"
-#~ msgstr "電圧センサー"
-
 #~ msgid "Picture"
 #~ msgstr "ピクチャ"
-
-#~ msgid "5 seconds"
-#~ msgstr "5秒間"
-
-# the length of one minute. unsure of the context.
-#~ msgid "5 minutes"
-#~ msgstr "5分間"
