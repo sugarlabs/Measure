@@ -1,3 +1,11 @@
+35
+
+ENHANCEMENTS:
+* new translations
+
+BUGFIX:
+* fixed problem with pootle that was preventing new strings to be committed
+
 34 
 
 * new translations
