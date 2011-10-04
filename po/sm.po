@@ -1,0 +1,218 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"PO-Revision-Date: 2011-03-29 03:11+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 2.0.1\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr ""
+
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
+msgstr ""
+
+#: sensor_toolbar.py:51
+msgid "Ohms"
+msgstr ""
+
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
+msgstr ""
+
+#: sensor_toolbar.py:52
+msgid "Volts"
+msgstr ""
+
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
+msgstr ""
+
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr ""
+
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr ""
+
+#: sensor_toolbar.py:98
+msgid "1/10 second"
+msgstr ""
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
+msgid "1 second"
+msgstr ""
+
+#: sensor_toolbar.py:98
+msgid "30 seconds"
+msgstr ""
+
+#: sensor_toolbar.py:99
+msgid "5 minutes"
+msgstr ""
+
+#: sensor_toolbar.py:99
+msgid "30 minutes"
+msgstr ""
+
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr ""
+
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr ""
+
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr ""
+
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr ""
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr ""
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr ""
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr ""
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr ""
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr ""
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+msgid "Time Base"
+msgstr ""
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+msgid "Frequency Base"
+msgstr ""
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr ""
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr ""
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr ""
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr "e leai"
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr ""
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr ""
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr ""
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr ""
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr ""
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr ""
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr ""
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr ""
+
+#: journal.py:55
+msgid "User"
+msgstr ""
+
+#: journal.py:56
+msgid "Interval"
+msgstr ""
+
+#: journal.py:91
+msgid "Waveform"
+msgstr ""
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr ""
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr ""
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr ""
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr ""
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr ""
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr ""
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr ""
