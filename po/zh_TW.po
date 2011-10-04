@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"PO-Revision-Date: 2011-07-30 13:08+0200\n"
+"Last-Translator: Yuan Chao <yuanchao@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.1\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "量測活動"
+
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr "感應器 直流 (請將感應器插入 XO 左方的粉紅色麥克風插孔)"
+
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
+msgstr "偏壓 / 位移 啟用"
+
+#: sensor_toolbar.py:51
+msgid "Ohms"
+msgstr "歐姆值"
+
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
+msgstr "偏壓 / 位移 停用"
+
+#: sensor_toolbar.py:52
+msgid "Volts"
+msgstr "電位"
+
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
+msgstr "反相"
+
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr "電阻式感應器"
+
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr "電位式感應器"
+
+#: sensor_toolbar.py:98
+msgid "1/10 second"
+msgstr "1/10 秒"
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
+msgid "1 second"
+msgstr "1 秒"
+
+#: sensor_toolbar.py:98
+msgid "30 seconds"
+msgstr "30 秒"
+
+#: sensor_toolbar.py:99
+msgid "5 minutes"
+msgstr "5 分"
+
+#: sensor_toolbar.py:99
+msgid "30 minutes"
+msgstr "30 分"
+
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr "取樣週期"
+
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr "開始紀錄"
+
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr "停止紀錄"
+
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr "開始擷取"
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr "每 30 秒"
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr "每 2 分鐘"
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr "每 10 分鐘"
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr "每 30 分鐘"
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr "聲音"
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+msgid "Time Base"
+msgstr "時基座標"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+msgid "Frequency Base"
+msgstr "頻率座標"
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "X 軸尺度: 一格相當於 %(division)s %(unit)s"
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr "毫秒"
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr "赫茲"
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr "凍結顯示"
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr "現在開始擷取"
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr "無"
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr "上升邊緣"
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr "下降邊緣"
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr "新增觸發"
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr "縮小"
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr "放大"
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr "停止取樣"
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr "開始取樣"
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr "復原顯示"
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr "作業階段"
+
+#: journal.py:55
+msgid "User"
+msgstr "使用者"
+
+#: journal.py:56
+msgid "Interval"
+msgstr "時間間隔"
+
+#: journal.py:91
+msgid "Waveform"
+msgstr "波形"
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr "增加振幅"
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr "減少振幅"
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr "增加位移"
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr "減少位移"
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr "感應器"
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr "量測紀錄"
