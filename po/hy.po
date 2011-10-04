@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-24 10:31-0400\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
 "PO-Revision-Date: 2011-07-29 19:56+0200\n"
-"Last-Translator:  <anush.mkrtchyan@ca1492.com>\n"
+"Last-Translator: <anush.mkrtchyan@ca1492.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: hy\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,222 +21,204 @@ msgstr ""
 msgid "Measure"
 msgstr "Միջոցառում"
 
-#: /home/walter/Desktop/measure.activity/measure.py:189
-#: /home/walter/Desktop/measure.activity/measure.py:195
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:64
-msgid "Sound"
-msgstr "Ձայնը"
-
-#: /home/walter/Desktop/measure.activity/measure.py:202
-#: /home/walter/Desktop/measure.activity/measure.py:208
-msgid "Sensors"
-msgstr "Սենսորները"
-
-#: /home/walter/Desktop/measure.activity/measure.py:221
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:65
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:91
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:330
-msgid "Time Base"
-msgstr "Ելման ժամանակը"
-
-#: /home/walter/Desktop/measure.activity/measure.py:232
-msgid "<Ctrl>Q"
-msgstr "<Ctrl>Q"
-
-#: /home/walter/Desktop/measure.activity/journal.py:192
-msgid "Measure Log"
-msgstr "Չափման լոգ"
-
-#: /home/walter/Desktop/measure.activity/journal.py:228
-msgid "Session"
-msgstr "Սեսիա"
-
-#: /home/walter/Desktop/measure.activity/journal.py:229
-msgid "User"
-msgstr "Օգտագործող"
-
-#: /home/walter/Desktop/measure.activity/journal.py:230
-msgid "Interval"
-msgstr "Ընդմիջում"
-
-#: /home/walter/Desktop/measure.activity/journal.py:337
-msgid "Waveform"
-msgstr "Ազդանշանի տեսքը"
-
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:48
+#: sensor_toolbar.py:49
 msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 "Սենսորները, DC (սենսորը միացնել XO-ի ձախ մասում գտնվող վարդագույն 'Mic "
 "In'-ին )"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+#: sensor_toolbar.py:51
 msgid "Bias/Offset Enabled"
 msgstr "Շեղում/վերականգնումը միացված է"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+#: sensor_toolbar.py:51
 msgid "Ohms"
 msgstr "Ohms"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+#: sensor_toolbar.py:52
 msgid "Bias/Offset Disabled"
 msgstr "Շեղում/վերականգնումն անջատված է"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+#: sensor_toolbar.py:52
 msgid "Volts"
 msgstr "Վոլտ"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:52
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:80
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:67
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
 msgid "Invert"
 msgstr "Շրջել"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:66
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:188
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
 msgid "Resistance Sensor"
 msgstr "Դիմադրության սենսոր"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:73
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:197
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
 msgid "Voltage Sensor"
 msgstr "Լարման սենսոր"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#: sensor_toolbar.py:98
 msgid "1/10 second"
 msgstr "1/10 վայրկյան"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "1 վայրկյան"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#: sensor_toolbar.py:98
 msgid "30 seconds"
 msgstr "30 վայրկյան"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+#: sensor_toolbar.py:99
 msgid "5 minutes"
 msgstr "5 րոպե"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+#: sensor_toolbar.py:99
 msgid "30 minutes"
 msgstr "30 րոպե"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:114
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:148
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr "Կադրի լուսանկարման ինտերվալ"
+
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
 msgid "Start Recording"
 msgstr "Սկսել գրանցումը"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:141
+#: sensor_toolbar.py:147
 msgid "Stop Recording"
 msgstr "Կանգնեցնել գրանցումը"
 
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:46
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:120
-msgid "Increase amplitude"
-msgstr "Մեծացնել լայնույթը"
-
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:61
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:122
-msgid "Decrease amplitude"
-msgstr "Փոքրացնել լայնույթը"
-
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:125
-msgid "Increase bias"
-msgstr "Մեծացնել անկյունագիծը"
-
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:127
-msgid "Decrease bias"
-msgstr "Փոքրացնել անկյունագիծը"
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:49
+#: sound_toolbar.py:50
 msgid "Capture now"
 msgstr "Գրավել այժմ"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:50
+#: sound_toolbar.py:51
 msgid "Every 30 sec."
 msgstr "Յուրաքանչյուր 30 վայրկ."
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
+#: sound_toolbar.py:52
 msgid "Every 2 min."
 msgstr "Յուրաքանչյուր 2 րոպե"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
+#: sound_toolbar.py:53
 msgid "Every 10 min."
 msgstr "Յուրաքանչյուր 10 րոպե"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:53
+#: sound_toolbar.py:54
 msgid "Every 30 min."
 msgstr "Յուրաքանչյուր 30 րոպե"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:66
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:98
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:340
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr "Ձայնը"
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+msgid "Time Base"
+msgstr "Ելման ժամանակը"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
 msgid "Frequency Base"
 msgstr "Ելման հաճախականությունը"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:70
+#: sound_toolbar.py:71
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr "X առանցքի մասշտաբը. 1 բաժանումը = %(division)s %(unit)s"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:72
+#: sound_toolbar.py:73
 msgid "ms"
 msgstr "մետր"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:74
+#: sound_toolbar.py:75
 msgid "Hz"
 msgstr "Հերց"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:108
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:310
+#: sound_toolbar.py:109 sound_toolbar.py:321
 msgid "Freeze the display"
 msgstr "Սառեցնել էկրանը"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:131
-msgid "Sampling interval"
-msgstr "Կադրի լուսանկարման ինտերվալ"
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:150
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:286
+#: sound_toolbar.py:151 sound_toolbar.py:297
 msgid "Capture sample now"
 msgstr "Պահպանել կադրը այժմ"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+#: sound_toolbar.py:162
 msgid "None"
 msgstr "Ոչինչ"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+#: sound_toolbar.py:162
 msgid "Rising Edge"
 msgstr "Բարձրացող եզր"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+#: sound_toolbar.py:162
 msgid "Falling Edge"
 msgstr "Իջնող եզր"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:173
+#: sound_toolbar.py:175
 msgid "Create a trigger"
 msgstr "Ստեղծել ձգան"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:185
+#: sound_toolbar.py:186
 msgid "Zoom out"
 msgstr "Հեռվացնել"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:198
+#: sound_toolbar.py:199
 msgid "Zoom in"
 msgstr "Մոտեցնել"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:283
+#: sound_toolbar.py:294
 msgid "Stop sampling"
 msgstr "Դադարեցնել կադրի լուսանկարումը"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:288
+#: sound_toolbar.py:299
 msgid "Start sampling"
 msgstr "Սկսել կադրի լուսանկարումը"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:305
+#: sound_toolbar.py:316
 msgid "Unfreeze the display"
 msgstr "Ապասառեցնել էկրանը"
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr "Սեսիա"
+
+#: journal.py:55
+msgid "User"
+msgstr "Օգտագործող"
+
+#: journal.py:56
+msgid "Interval"
+msgstr "Ընդմիջում"
+
+#: journal.py:91
+msgid "Waveform"
+msgstr "Ազդանշանի տեսքը"
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr "Մեծացնել լայնույթը"
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr "Փոքրացնել լայնույթը"
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr "Մեծացնել անկյունագիծը"
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr "Փոքրացնել անկյունագիծը"
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr "Սենսորները"
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr "Չափման լոգ"
 
 #~ msgid "Start Logging"
 #~ msgstr "Սկսել մուտք գործել ցանց "

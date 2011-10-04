@@ -6,116 +6,289 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
-"PO-Revision-Date: 2008-04-29 04:26-0400\n"
-"Last-Translator: Simos Xenitellis <simos.lists@googlemail.com>\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"PO-Revision-Date: 2011-10-04 20:34+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Measure"
 msgstr "Μέτρηση"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-msgid "Spectrum value"
-msgstr "Τιμή κλίμακας"
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Αισθητήρες, DC (συνδέστε τον αισθητήρα στο ροζ \"Mic In\" στην αριστερή πλευρά "
+"του ΧΟ)"
 
-#: drawWaveform.py:330
-msgid "RMS   : "
-msgstr "RMS   : "
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
+msgstr "Διαγώνιος/Αποτύπωμα ενεργοποιημένο"
 
-#: drawWaveform.py:330
-msgid "AVG   : "
-msgstr "Μ.Ο.   : "
+#: sensor_toolbar.py:51
+msgid "Ohms"
+msgstr "Ωμ"
 
-#: drawWaveform.py:331
-msgid "Scale:"
-msgstr "Κλίμακα:"
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
+msgstr "Διαγώνιος/Αποτύπωμα Απενεργοποιημένο"
 
-#: drawWaveform.py:332
-msgid "X Axis: "
-msgstr "Χ Άξονας: _"
+#: sensor_toolbar.py:52
+msgid "Volts"
+msgstr "Βολτ"
 
-#: drawWaveform.py:332
-msgid "Y Axis : "
-msgstr "Y Άξονας: _"
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
+msgstr "Αντιστροφή"
 
-#: electrical_ui.py:38 electrical_ui.py:151
-msgid "Click for DC"
-msgstr "Πατήστε για DC"
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr "Αισθητήρας Αντίστασης"
 
-#: electrical_ui.py:50 electrical_ui.py:172
-msgid "Click for Bias Off"
-msgstr "Πατήστε για να απενεργοποιήσετε το Bias"
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr "Αισθητήρας Τάσης"
 
-# Αυτό σίγουρα χρειάζεται διόρθωση
-#: electrical_ui.py:61 electrical_ui.py:192
-msgid "Click for Frequency base"
-msgstr "Πατήστε για βάση Συχνότητας"
+#: sensor_toolbar.py:98
+msgid "1/10 second"
+msgstr "1/10 δευτερολέπτου"
 
-#: electrical_ui.py:116 electrical_ui.py:256
-msgid "Pause"
-msgstr "Παύση"
-
-#: electrical_ui.py:126 electrical_ui.py:203
-msgid "Show values"
-msgstr "Εμφάνισε τις τιμές"
-
-#: electrical_ui.py:141
-msgid "Click for AC"
-msgstr "Πατήστε για AC"
-
-#: electrical_ui.py:163
-msgid "Click for Bias On"
-msgstr "Πατήστε για ενεργοποίηση του Bias"
-
-#: electrical_ui.py:183
-msgid "Click for Time base"
-msgstr "Πατήστε για βάση με το χρόνο"
-
-#: electrical_ui.py:212
-msgid "Hide values"
-msgstr "Κρύψε τις τιμές"
-
-#: electrical_ui.py:249
-msgid "Resume"
-msgstr "Επαναφορά"
-
-#: logging_ui.py:44 logging_ui.py:50
-msgid "Snapshot"
-msgstr "Στιγμιότυπο"
-
-#: logging_ui.py:44
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "1 δευτερόλεπτο"
 
-#: logging_ui.py:44
-msgid "1 minute"
-msgstr "1 λεπτό"
+#: sensor_toolbar.py:98
+msgid "30 seconds"
+msgstr "5 δευτερόλεπτα"
 
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "1 ώρα"
+#: sensor_toolbar.py:99
+msgid "5 minutes"
+msgstr "5 λεπτά"
 
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "Έναρξη Αναφοράς"
+#: sensor_toolbar.py:99
+msgid "30 minutes"
+msgstr "30 λεπτά"
 
-#: logging_ui.py:82 logging_ui.py:167
-msgid "Show Log"
-msgstr "Εμφάνιση Καταχώρησης"
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr "Διάστημα δειγματοληψίας"
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "Παύση Αναφοράς"
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr "Έναρξη Ηχογράφησης"
 
-#: logging_ui.py:159
-msgid "Remove Log"
-msgstr "Αφαίρεση Καταχώρησης"
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr "Διακοπή ηχογράφησης"
+
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr "Αιχμαλώτιση εικόνας τώρα"
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr "Κάθε 30 δευτερόλεπτα"
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr "Κάθε 2 λεπτά"
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr "Κάθε 10 λεπτά"
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr "Κάθε 30 λεπτά"
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr "Ήχος"
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+msgid "Time Base"
+msgstr "Βάση του χρόνου"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+msgid "Frequency Base"
+msgstr "Βάση Συχνότητας"
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "Κλίμακα Άξονα Χ: 1 τμήμα = %(division)s %(unit)s"
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr "χιλιοστό δευτερολέπτου"
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr "Χερτζ"
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr "Παγώστε την οθόνη"
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr "Αιχμαλωτίστε το δείγμα τώρα"
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr "Κανένα"
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr "Αναδυόμενη άκρη"
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr "Άκρη σε πτώση"
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr "Δημιουργείστε ένα έναυσμα"
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr "Σμίκρυνση"
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr "Μεγέθυνση"
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr "Διακοπή δειγματοληψίας"
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr "Έναρξη δειγματοληψίας"
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr "Διακόψετε το πάγωμα της οθόνης"
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr "Συνεδρία"
+
+#: journal.py:55
+msgid "User"
+msgstr "Χρήστης"
+
+#: journal.py:56
+msgid "Interval"
+msgstr "Διάστημα"
+
+#: journal.py:91
+msgid "Waveform"
+msgstr "Κυματιστή μορφή"
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr "Αυξήστε το εύρος"
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr "Μειώστε το εύρος"
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr "Αυξήστε δυναμικό πόλωσης"
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr "Μειώστε δυναμικό πόλωσης"
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr "Αισθητήρες"
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr "Μετρήστε Καταγραφή"
+
+#~ msgid "Spectrum value"
+#~ msgstr "Τιμή κλίμακας"
+
+#~ msgid "RMS   : "
+#~ msgstr "RMS   : "
+
+#~ msgid "AVG   : "
+#~ msgstr "Μ.Ο.   : "
+
+#~ msgid "Scale:"
+#~ msgstr "Κλίμακα:"
+
+#~ msgid "X Axis: "
+#~ msgstr "Χ Άξονας: _"
+
+#~ msgid "Y Axis : "
+#~ msgstr "Y Άξονας: _"
+
+#~ msgid "Click for DC"
+#~ msgstr "Πατήστε για DC"
+
+#~ msgid "Click for Bias Off"
+#~ msgstr "Πατήστε για να απενεργοποιήσετε το Bias"
+
+# Αυτό σίγουρα χρειάζεται διόρθωση
+#~ msgid "Click for Frequency base"
+#~ msgstr "Πατήστε για βάση Συχνότητας"
+
+#~ msgid "Pause"
+#~ msgstr "Παύση"
+
+#~ msgid "Show values"
+#~ msgstr "Εμφάνισε τις τιμές"
+
+#~ msgid "Click for AC"
+#~ msgstr "Πατήστε για AC"
+
+#~ msgid "Click for Bias On"
+#~ msgstr "Πατήστε για ενεργοποίηση του Bias"
+
+#~ msgid "Click for Time base"
+#~ msgstr "Πατήστε για βάση με το χρόνο"
+
+#~ msgid "Hide values"
+#~ msgstr "Κρύψε τις τιμές"
+
+#~ msgid "Resume"
+#~ msgstr "Επαναφορά"
+
+#~ msgid "Snapshot"
+#~ msgstr "Στιγμιότυπο"
+
+#~ msgid "1 minute"
+#~ msgstr "1 λεπτό"
+
+#~ msgid "1 hour"
+#~ msgstr "1 ώρα"
+
+#~ msgid "Start Logging"
+#~ msgstr "Έναρξη Αναφοράς"
+
+#~ msgid "Show Log"
+#~ msgstr "Εμφάνιση Καταχώρησης"
+
+#~ msgid "Stop Logging"
+#~ msgstr "Παύση Αναφοράς"
+
+#~ msgid "Remove Log"
+#~ msgstr "Αφαίρεση Καταχώρησης"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "Εμφάνιση φύλλου εργασίας και γραφικών"
@@ -123,26 +296,8 @@ msgstr "Αφαίρεση Καταχώρησης"
 #~ msgid "Show waveform"
 #~ msgstr "Εμφάνιση κυματομορφής"
 
-#~ msgid "Time base"
-#~ msgstr "Βάση του χρόνου"
-
-#~ msgid "Frequency base"
-#~ msgstr "Βάση Συχνότητας"
-
-#~ msgid "Resistance Sensor"
-#~ msgstr "Αισθητήρας Αντίστασης"
-
-#~ msgid "Voltage Sensor"
-#~ msgstr "Αισθητήρας Τάσης"
-
 #~ msgid "Picture"
 #~ msgstr "Εικόνα"
-
-#~ msgid "5 seconds"
-#~ msgstr "5 δευτερόλεπτα"
-
-#~ msgid "5 minutes"
-#~ msgstr "5 λεπτά"
 
 #~ msgid "Spectral power"
 #~ msgstr "Φασματική ισχύς"

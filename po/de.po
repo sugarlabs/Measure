@@ -6,116 +6,291 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
-"PO-Revision-Date: 2008-04-15 05:17-0400\n"
-"Last-Translator: Gerhard Steiner <gerhard.steiner@duichwir.at>\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"PO-Revision-Date: 2011-05-09 17:29+0200\n"
+"Last-Translator: Martin <yousuckgetalife@googlemail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"X-Generator: Pootle 2.0.1\n"
 
 #: activity/activity.info:2
 msgid "Measure"
 msgstr "Messen"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-msgid "Spectrum value"
-msgstr "Bereichswert"
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Sensoren nicht Verbunden (Bitte Sensor in der Pinken Büchse bei 'Mic In' auf "
+"der linken seite des XO einstecken)"
 
-# http://de.wikipedia.org/wiki/Quadratisches_Mittel
-#: drawWaveform.py:330
-msgid "RMS   : "
-msgstr "MW   : "
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
+msgstr ""
 
-#: drawWaveform.py:330
-msgid "AVG   : "
-msgstr "AVG   : "
+#: sensor_toolbar.py:51
+msgid "Ohms"
+msgstr ""
 
-#: drawWaveform.py:331
-msgid "Scale:"
-msgstr "Skala:"
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
+msgstr ""
 
-#: drawWaveform.py:332
-msgid "X Axis: "
-msgstr "X-Achse: "
+#: sensor_toolbar.py:52
+msgid "Volts"
+msgstr ""
 
-#: drawWaveform.py:332
-msgid "Y Axis : "
-msgstr "Y-Achse: "
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
+msgstr "Vertauschen"
 
-#: electrical_ui.py:38 electrical_ui.py:151
-msgid "Click for DC"
-msgstr "Klicken für Gleichspannung"
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr "Widerstandssensor"
 
-#: electrical_ui.py:50 electrical_ui.py:172
-msgid "Click for Bias Off"
-msgstr "Klicken um Vorspannung auszuschalten"
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr "Spannungssensor"
 
-#: electrical_ui.py:61 electrical_ui.py:192
-msgid "Click for Frequency base"
-msgstr "Klicken um Frequenzbasis einzustellen"
+#: sensor_toolbar.py:98
+msgid "1/10 second"
+msgstr ""
 
-#: electrical_ui.py:116 electrical_ui.py:256
-msgid "Pause"
-msgstr "Pause"
-
-#: electrical_ui.py:126 electrical_ui.py:203
-msgid "Show values"
-msgstr "Zeige Werte"
-
-#: electrical_ui.py:141
-msgid "Click for AC"
-msgstr "Klicken für Wechselspannung"
-
-#: electrical_ui.py:163
-msgid "Click for Bias On"
-msgstr "Klicken um Vorspannung anzuschalten"
-
-#: electrical_ui.py:183
-msgid "Click for Time base"
-msgstr "Klicken um Zeitbasis einzustellen"
-
-#: electrical_ui.py:212
-msgid "Hide values"
-msgstr "Werte verstecken"
-
-#: electrical_ui.py:249
-msgid "Resume"
-msgstr "fortsetzen"
-
-#: logging_ui.py:44 logging_ui.py:50
-msgid "Snapshot"
-msgstr "Momentaufnahme"
-
-#: logging_ui.py:44
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "1 Sekunde"
 
-#: logging_ui.py:44
-msgid "1 minute"
-msgstr "1 Minute"
+#: sensor_toolbar.py:98
+msgid "30 seconds"
+msgstr "30 Sekunden"
 
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "1 Stunde"
+#: sensor_toolbar.py:99
+msgid "5 minutes"
+msgstr "5 Minuten"
 
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "Aufzeichnung starten"
+#: sensor_toolbar.py:99
+msgid "30 minutes"
+msgstr "30 Minuten"
 
-#: logging_ui.py:82 logging_ui.py:167
-msgid "Show Log"
-msgstr "Protokoll anzeigen"
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr ""
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "Protokollierung stoppen"
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr "Starte Aufnahme"
 
-#: logging_ui.py:159
-msgid "Remove Log"
-msgstr "Protokoll entfernen"
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr "Aufnahme Stoppen"
+
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr "Jetzt einfangen"
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr ""
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr ""
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr ""
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr ""
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr "Ton"
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+#, fuzzy
+msgid "Time Base"
+msgstr "Zeiteinheit"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+#, fuzzy
+msgid "Frequency Base"
+msgstr "Frequenzeinheit"
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr ""
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr ""
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr ""
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr ""
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr ""
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr ""
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr ""
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr ""
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr ""
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr ""
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr "Versammlung"
+
+#: journal.py:55
+msgid "User"
+msgstr "Benutzer"
+
+#: journal.py:56
+msgid "Interval"
+msgstr "Intervall"
+
+#: journal.py:91
+msgid "Waveform"
+msgstr "Schwingungsverlauf"
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr ""
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr ""
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr ""
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr ""
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr "Sensoren"
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr "<Strg>Q"
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr "Messbuch"
+
+#~ msgid "Spectrum value"
+#~ msgstr "Bereichswert"
+
+# http://de.wikipedia.org/wiki/Quadratisches_Mittel
+#~ msgid "RMS   : "
+#~ msgstr "MW   : "
+
+#~ msgid "AVG   : "
+#~ msgstr "AVG   : "
+
+#~ msgid "Scale:"
+#~ msgstr "Skala:"
+
+#~ msgid "X Axis: "
+#~ msgstr "X-Achse: "
+
+#~ msgid "Y Axis : "
+#~ msgstr "Y-Achse: "
+
+#~ msgid "Click for DC"
+#~ msgstr "Klicken für Gleichspannung"
+
+#~ msgid "Click for Bias Off"
+#~ msgstr "Klicken um Vorspannung auszuschalten"
+
+#~ msgid "Click for Frequency base"
+#~ msgstr "Klicken um Frequenzbasis einzustellen"
+
+#~ msgid "Pause"
+#~ msgstr "Pause"
+
+#~ msgid "Show values"
+#~ msgstr "Zeige Werte"
+
+#~ msgid "Click for AC"
+#~ msgstr "Klicken für Wechselspannung"
+
+#~ msgid "Click for Bias On"
+#~ msgstr "Klicken um Vorspannung anzuschalten"
+
+#~ msgid "Click for Time base"
+#~ msgstr "Klicken um Zeitbasis einzustellen"
+
+#~ msgid "Hide values"
+#~ msgstr "Werte verstecken"
+
+#~ msgid "Resume"
+#~ msgstr "fortsetzen"
+
+#~ msgid "Snapshot"
+#~ msgstr "Momentaufnahme"
+
+#~ msgid "1 minute"
+#~ msgstr "1 Minute"
+
+#~ msgid "1 hour"
+#~ msgstr "1 Stunde"
+
+#~ msgid "Start Logging"
+#~ msgstr "Aufzeichnung starten"
+
+#~ msgid "Show Log"
+#~ msgstr "Protokoll anzeigen"
+
+#~ msgid "Stop Logging"
+#~ msgstr "Protokollierung stoppen"
+
+#~ msgid "Remove Log"
+#~ msgstr "Protokoll entfernen"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "Tabelle und Grafiken anzeigen"
@@ -123,26 +298,8 @@ msgstr "Protokoll entfernen"
 #~ msgid "Show waveform"
 #~ msgstr "Wellenform anzeigen"
 
-#~ msgid "Time base"
-#~ msgstr "Zeiteinheit"
-
-#~ msgid "Frequency base"
-#~ msgstr "Frequenzeinheit"
-
-#~ msgid "Resistance Sensor"
-#~ msgstr "Widerstandssensor"
-
-#~ msgid "Voltage Sensor"
-#~ msgstr "Spannungssensor"
-
 #~ msgid "Picture"
 #~ msgstr "Bild"
-
-#~ msgid "5 seconds"
-#~ msgstr "5 Sekunden"
-
-#~ msgid "5 minutes"
-#~ msgstr "5 Minuten"
 
 #~ msgid "Spectral power"
 #~ msgstr "Spektrale Leistung"

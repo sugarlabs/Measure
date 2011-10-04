@@ -6,241 +6,223 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-24 10:31-0400\n"
-"PO-Revision-Date: 2011-08-19 17:45+0200\n"
-"Last-Translator: Gonzalo <godiard@sugarlabs.org>\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"PO-Revision-Date: 2011-10-04 20:36+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Measure"
 msgstr "Medir"
 
-#: /home/walter/Desktop/measure.activity/measure.py:189
-#: /home/walter/Desktop/measure.activity/measure.py:195
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:64
-msgid "Sound"
-msgstr "Sonido"
-
-#: /home/walter/Desktop/measure.activity/measure.py:202
-#: /home/walter/Desktop/measure.activity/measure.py:208
-msgid "Sensors"
-msgstr "Sensores"
-
-#: /home/walter/Desktop/measure.activity/measure.py:221
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:65
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:91
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:330
-msgid "Time Base"
-msgstr "Línea base de tiempo"
-
-# Es una combinación de teclas..
-#: /home/walter/Desktop/measure.activity/measure.py:232
-msgid "<Ctrl>Q"
-msgstr "<Ctrl>Q"
-
-# Es el registro de la actividad, pero no de cualquiera, sino el de medir... cómo suena: "Registro de Medir"?
-#: /home/walter/Desktop/measure.activity/journal.py:192
-msgid "Measure Log"
-msgstr "Registro de las medidas"
-
-#: /home/walter/Desktop/measure.activity/journal.py:228
-msgid "Session"
-msgstr "Sesión"
-
-#: /home/walter/Desktop/measure.activity/journal.py:229
-msgid "User"
-msgstr "Usuario"
-
-#: /home/walter/Desktop/measure.activity/journal.py:230
-msgid "Interval"
-msgstr "Intervalo"
-
-#: /home/walter/Desktop/measure.activity/journal.py:337
-msgid "Waveform"
-msgstr "Forma de la onda"
-
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:48
+#: sensor_toolbar.py:49
 msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 "Sensor DC(introducir el sensor en la entrada de microfno de color rosa en el "
 "costado izquierdo de la XO)"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+#: sensor_toolbar.py:51
 msgid "Bias/Offset Enabled"
 msgstr "Sesgo/Desviacion activada"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:50
+#: sensor_toolbar.py:51
 msgid "Ohms"
 msgstr "Ohms"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+#: sensor_toolbar.py:52
 msgid "Bias/Offset Disabled"
-msgstr " Sesgo/Desviacion desactivada"
+msgstr "Sesgo/Desviacion desactivada"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:51
+#: sensor_toolbar.py:52
 msgid "Volts"
 msgstr "Voltios"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:52
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:80
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:67
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
 msgid "Invert"
 msgstr "Invertir"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:66
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:188
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
 msgid "Resistance Sensor"
 msgstr "Sensor de resistencia"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:73
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:197
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
 msgid "Voltage Sensor"
 msgstr "Sensor de voltaje"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#: sensor_toolbar.py:98
 msgid "1/10 second"
 msgstr "1/10 segundos"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:104
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "1 segundo"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:96
+#: sensor_toolbar.py:98
 msgid "30 seconds"
 msgstr "30 segundos"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+#: sensor_toolbar.py:99
 msgid "5 minutes"
 msgstr "5 minutos"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:97
+#: sensor_toolbar.py:99
 msgid "30 minutes"
 msgstr "30 minutos"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:114
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:148
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr "Intervalos entre muestras"
+
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
 msgid "Start Recording"
 msgstr "Iniciar Grabación"
 
-#: /home/walter/Desktop/measure.activity/sensor_toolbar.py:141
+#: sensor_toolbar.py:147
 msgid "Stop Recording"
 msgstr "Detener Grabación"
 
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:46
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:120
-msgid "Increase amplitude"
-msgstr "Aumentar amplitud"
-
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:61
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:122
-msgid "Decrease amplitude"
-msgstr "Reducir amplitud"
-
-# Sesgo?
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:125
-msgid "Increase bias"
-msgstr "Incrementar sesgo/desviacion"
-
-# Sesgo?
-#: /home/walter/Desktop/measure.activity/toolbar_side.py:127
-msgid "Decrease bias"
-msgstr "Disminuir sesgo/desviacion"
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:49
+#: sound_toolbar.py:50
 msgid "Capture now"
 msgstr "Capturar ahora"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:50
+#: sound_toolbar.py:51
 msgid "Every 30 sec."
 msgstr "Cada 30 segundos"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:51
+#: sound_toolbar.py:52
 msgid "Every 2 min."
 msgstr "Cada 2 minutos"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:52
+#: sound_toolbar.py:53
 msgid "Every 10 min."
 msgstr "Cada 10 minutos"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:53
+#: sound_toolbar.py:54
 msgid "Every 30 min."
 msgstr "Cada 30 minutos"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:66
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:98
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:340
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr "Sonido"
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+msgid "Time Base"
+msgstr "Línea base de tiempo"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
 msgid "Frequency Base"
 msgstr "Línea base de frecuencia"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:70
+#: sound_toolbar.py:71
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr "Eje X Escala: 1 división = %(division)s %(unit)s"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:72
+#: sound_toolbar.py:73
 msgid "ms"
 msgstr "ms"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:74
+#: sound_toolbar.py:75
 msgid "Hz"
 msgstr "Hercio(Hz)"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:108
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:310
+#: sound_toolbar.py:109 sound_toolbar.py:321
 msgid "Freeze the display"
 msgstr "Congelar la pantalla"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:131
-msgid "Sampling interval"
-msgstr "Intervalos entre muestras"
-
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:150
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:286
+#: sound_toolbar.py:151 sound_toolbar.py:297
 msgid "Capture sample now"
 msgstr "Captura muestra ahora"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+#: sound_toolbar.py:162
 msgid "None"
 msgstr "Ningun"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+#: sound_toolbar.py:162
 msgid "Rising Edge"
 msgstr "Ampliar el tamaño de los limtes"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:161
+#: sound_toolbar.py:162
 msgid "Falling Edge"
 msgstr "Bajar el tamaño de los limites"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:173
+#: sound_toolbar.py:175
 msgid "Create a trigger"
 msgstr "Generar un disparador"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:185
+#: sound_toolbar.py:186
 msgid "Zoom out"
 msgstr "Reducir(alejar) enfoque"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:198
+#: sound_toolbar.py:199
 msgid "Zoom in"
 msgstr "Aumentar(acercar) enfoque"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:283
+#: sound_toolbar.py:294
 msgid "Stop sampling"
 msgstr "Parar muestras"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:288
+#: sound_toolbar.py:299
 msgid "Start sampling"
 msgstr "Comenzar muestras"
 
-#: /home/walter/Desktop/measure.activity/sound_toolbar.py:305
+#: sound_toolbar.py:316
 msgid "Unfreeze the display"
 msgstr "Reactivar la pantalla"
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr "Sesión"
+
+#: journal.py:55
+msgid "User"
+msgstr "Usuario"
+
+#: journal.py:56
+msgid "Interval"
+msgstr "Intervalo"
+
+#: journal.py:91
+msgid "Waveform"
+msgstr "Forma de la onda"
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr "Aumentar amplitud"
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr "Reducir amplitud"
+
+# Sesgo?
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr "Incrementar sesgo/desviacion"
+
+# Sesgo?
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr "Disminuir sesgo/desviacion"
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr "Sensores"
+
+# Es una combinación de teclas..
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+# Es el registro de la actividad, pero no de cualquiera, sino el de medir... cómo suena: "Registro de Medir"?
+#: measure.py:310
+msgid "Measure Log"
+msgstr "Registro de las medidas"
 
 #~ msgid "Spectrum value"
 #~ msgstr "Valor del espectro"
