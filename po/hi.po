@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: measure_stable\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
 "PO-Revision-Date: 2008-04-23 05:36-0400\n"
 "Last-Translator: Prashant Thakkar <prashantbthakkar@gmail.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,101 +21,255 @@ msgstr ""
 msgid "Measure"
 msgstr "नाप"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-msgid "Spectrum value"
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 
-#: drawWaveform.py:330
-msgid "RMS   : "
-msgstr "आर.एम.एस."
-
-#: drawWaveform.py:330
-msgid "AVG   : "
-msgstr "ए.वी.जी."
-
-#: drawWaveform.py:331
-msgid "Scale:"
-msgstr "स्केलः"
-
-#: drawWaveform.py:332
-msgid "X Axis: "
-msgstr "x अक्ष :"
-
-#: drawWaveform.py:332
-msgid "Y Axis : "
-msgstr "y अक्ष :"
-
-#: electrical_ui.py:38 electrical_ui.py:151
-msgid "Click for DC"
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
 msgstr ""
 
-#: electrical_ui.py:50 electrical_ui.py:172
-msgid "Click for Bias Off"
+#: sensor_toolbar.py:51
+msgid "Ohms"
 msgstr ""
 
-#: electrical_ui.py:61 electrical_ui.py:192
-msgid "Click for Frequency base"
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
 msgstr ""
 
-#: electrical_ui.py:116 electrical_ui.py:256
-msgid "Pause"
-msgstr "ठहरें"
-
-#: electrical_ui.py:126 electrical_ui.py:203
-msgid "Show values"
-msgstr "मान दिखाओ"
-
-#: electrical_ui.py:141
-msgid "Click for AC"
+#: sensor_toolbar.py:52
+msgid "Volts"
 msgstr ""
 
-#: electrical_ui.py:163
-msgid "Click for Bias On"
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
 msgstr ""
 
-#: electrical_ui.py:183
-msgid "Click for Time base"
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr "प्रतिरोधक संवेदक"
+
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr "वोल्टेज संवेदक"
+
+#: sensor_toolbar.py:98
+msgid "1/10 second"
 msgstr ""
 
-#: electrical_ui.py:212
-msgid "Hide values"
-msgstr "मान छिपाओ"
-
-#: electrical_ui.py:249
-msgid "Resume"
-msgstr "पुनरारंभ"
-
-#: logging_ui.py:44 logging_ui.py:50
-msgid "Snapshot"
-msgstr "तस्वीर"
-
-#: logging_ui.py:44
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "1 सेकण्ड"
 
-#: logging_ui.py:44
-msgid "1 minute"
+#: sensor_toolbar.py:98
+#, fuzzy
+msgid "30 seconds"
+msgstr "1 सेकण्ड"
+
+#: sensor_toolbar.py:99
+#, fuzzy
+msgid "5 minutes"
 msgstr "1 मिनट"
 
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "1 घंटा"
+#: sensor_toolbar.py:99
+#, fuzzy
+msgid "30 minutes"
+msgstr "1 मिनट"
 
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "लागिंग करना प्रारंभ करें"
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr ""
 
-#: logging_ui.py:82 logging_ui.py:167
-msgid "Show Log"
-msgstr "लॉग दिखाओ"
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr ""
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "लॉग करना रोकें"
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr ""
 
-#: logging_ui.py:159
-msgid "Remove Log"
-msgstr "लॉग हटाओ"
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr ""
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr ""
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr ""
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr ""
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr ""
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr ""
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+#, fuzzy
+msgid "Time Base"
+msgstr "समयानुसार"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+#, fuzzy
+msgid "Frequency Base"
+msgstr "तरंगानुसार"
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr ""
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr ""
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr ""
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr ""
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr ""
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr ""
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr ""
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr ""
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr ""
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr ""
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr ""
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr ""
+
+#: journal.py:55
+msgid "User"
+msgstr ""
+
+#: journal.py:56
+msgid "Interval"
+msgstr ""
+
+#: journal.py:91
+msgid "Waveform"
+msgstr ""
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr ""
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr ""
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr ""
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr ""
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr ""
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr ""
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr ""
+
+#~ msgid "RMS   : "
+#~ msgstr "आर.एम.एस."
+
+#~ msgid "AVG   : "
+#~ msgstr "ए.वी.जी."
+
+#~ msgid "Scale:"
+#~ msgstr "स्केलः"
+
+#~ msgid "X Axis: "
+#~ msgstr "x अक्ष :"
+
+#~ msgid "Y Axis : "
+#~ msgstr "y अक्ष :"
+
+#~ msgid "Pause"
+#~ msgstr "ठहरें"
+
+#~ msgid "Show values"
+#~ msgstr "मान दिखाओ"
+
+#~ msgid "Hide values"
+#~ msgstr "मान छिपाओ"
+
+#~ msgid "Resume"
+#~ msgstr "पुनरारंभ"
+
+#~ msgid "Snapshot"
+#~ msgstr "तस्वीर"
+
+#~ msgid "1 minute"
+#~ msgstr "1 मिनट"
+
+#~ msgid "1 hour"
+#~ msgstr "1 घंटा"
+
+#~ msgid "Start Logging"
+#~ msgstr "लागिंग करना प्रारंभ करें"
+
+#~ msgid "Show Log"
+#~ msgstr "लॉग दिखाओ"
+
+#~ msgid "Stop Logging"
+#~ msgstr "लॉग करना रोकें"
+
+#~ msgid "Remove Log"
+#~ msgstr "लॉग हटाओ"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "कागज और ग्राफ़ दिखाए"
@@ -122,28 +277,8 @@ msgstr "लॉग हटाओ"
 #~ msgid "Show waveform"
 #~ msgstr "तरंगरूप दिखाए"
 
-#~ msgid "Time base"
-#~ msgstr "समयानुसार"
-
-#~ msgid "Frequency base"
-#~ msgstr "तरंगानुसार"
-
-#~ msgid "Resistance Sensor"
-#~ msgstr "प्रतिरोधक संवेदक"
-
-#~ msgid "Voltage Sensor"
-#~ msgstr "वोल्टेज संवेदक"
-
 #~ msgid "Picture"
 #~ msgstr "छवि"
-
-#, fuzzy
-#~ msgid "5 seconds"
-#~ msgstr "1 सेकण्ड"
-
-#, fuzzy
-#~ msgid "5 minutes"
-#~ msgstr "1 मिनट"
 
 #~ msgid "Spectral power"
 #~ msgstr "वर्णक्रम संबंधी की क्षमता"
