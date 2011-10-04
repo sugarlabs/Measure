@@ -6,114 +6,287 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
-"PO-Revision-Date: 2008-03-21 15:37-0400\n"
-"Last-Translator: Shankar Pokharel <memshankar@gmail.com>\n"
+"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"PO-Revision-Date: 2011-10-04 20:32+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ne\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Measure"
 msgstr "नाप"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-msgid "Spectrum value"
-msgstr "वर्णपट माप"
+#: sensor_toolbar.py:49
+msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr "सेन्सरहरु, DC( XO को बायाँपट्टि पिंक 'Mic In\"मा सेन्सर जोड )"
 
-#: drawWaveform.py:330
-msgid "RMS   : "
-msgstr "आर एम एस   : "
+#: sensor_toolbar.py:51
+msgid "Bias/Offset Enabled"
+msgstr "Bias/ अफसेट सक्षम गरियो"
 
-#: drawWaveform.py:330
-msgid "AVG   : "
-msgstr "औसत   : "
+#: sensor_toolbar.py:51
+#, fuzzy
+msgid "Ohms"
+msgstr "Ohms"
 
-#: drawWaveform.py:331
-msgid "Scale:"
-msgstr "मापन:"
+#: sensor_toolbar.py:52
+msgid "Bias/Offset Disabled"
+msgstr "Bias/ अफसेट अक्षम गरियो"
 
-#: drawWaveform.py:332
-msgid "X Axis: "
-msgstr "X अक्ष:"
+#: sensor_toolbar.py:52
+msgid "Volts"
+msgstr "भोल्ट"
 
-#: drawWaveform.py:332
-msgid "Y Axis : "
-msgstr "Y अक्ष:"
+#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
+msgid "Invert"
+msgstr "उल्टाउ"
 
-#: electrical_ui.py:38 electrical_ui.py:151
-msgid "Click for DC"
-msgstr "DC को लागि थिच"
+#: sensor_toolbar.py:67 sensor_toolbar.py:193
+msgid "Resistance Sensor"
+msgstr "अवरोध सचेतक"
 
-#: electrical_ui.py:50 electrical_ui.py:172
-msgid "Click for Bias Off"
-msgstr "Bias बन्द गर्न थिच"
+#: sensor_toolbar.py:74 sensor_toolbar.py:202
+msgid "Voltage Sensor"
+msgstr "भोल्टेज सचेतक"
 
-#: electrical_ui.py:61 electrical_ui.py:192
-msgid "Click for Frequency base"
-msgstr "आवृती आधारको लागि थिच"
+#: sensor_toolbar.py:98
+msgid "1/10 second"
+msgstr "१/१० सेकेन्ड"
 
-#: electrical_ui.py:116 electrical_ui.py:256
-msgid "Pause"
-msgstr "विश्राम"
-
-#: electrical_ui.py:126 electrical_ui.py:203
-msgid "Show values"
-msgstr "माप देखाउ"
-
-#: electrical_ui.py:141
-msgid "Click for AC"
-msgstr "AC को लागि थिच"
-
-#: electrical_ui.py:163
-msgid "Click for Bias On"
-msgstr "Bias गर्न थिच"
-
-#: electrical_ui.py:183
-msgid "Click for Time base"
-msgstr "समय आधारको लागि थिच"
-
-#: electrical_ui.py:212
-msgid "Hide values"
-msgstr "माप लुकाऊ"
-
-#: electrical_ui.py:249
-msgid "Resume"
-msgstr "फेरि चालु गर"
-
-#: logging_ui.py:44 logging_ui.py:50
-msgid "Snapshot"
-msgstr "झलक"
-
-#: logging_ui.py:44
+#: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
 msgstr "१ सेकेन्ड"
 
-#: logging_ui.py:44
-msgid "1 minute"
-msgstr "१ मिनेट"
+#: sensor_toolbar.py:98
+msgid "30 seconds"
+msgstr "३० सेकेन्ड"
 
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "१ घन्टा"
+#: sensor_toolbar.py:99
+msgid "5 minutes"
+msgstr "५ मिनेट"
 
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "बचत सुरु गर"
+#: sensor_toolbar.py:99
+msgid "30 minutes"
+msgstr "३० मिनेट"
 
-#: logging_ui.py:82 logging_ui.py:167
-msgid "Show Log"
-msgstr "वहीखाता देखाऊ"
+#: sensor_toolbar.py:102 sound_toolbar.py:134
+msgid "Sampling interval"
+msgstr "नमूना लिने अन्तराल"
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "बचत बन्द गर"
+#: sensor_toolbar.py:119 sensor_toolbar.py:153
+msgid "Start Recording"
+msgstr "रेकर्डिंग सुरु गर"
 
-#: logging_ui.py:159
-msgid "Remove Log"
-msgstr "वहीखाताबाट हटाऊ"
+#: sensor_toolbar.py:147
+msgid "Stop Recording"
+msgstr "रेकर्डिंग बन्द गर"
+
+#: sound_toolbar.py:50
+msgid "Capture now"
+msgstr "अहिल्यै क्यापचर गर"
+
+#: sound_toolbar.py:51
+msgid "Every 30 sec."
+msgstr "हरेक ३० सेकेन्ड"
+
+#: sound_toolbar.py:52
+msgid "Every 2 min."
+msgstr "हरेक २ मिनेट"
+
+#: sound_toolbar.py:53
+msgid "Every 10 min."
+msgstr "हरेक १० मिनेट"
+
+#: sound_toolbar.py:54
+msgid "Every 30 min."
+msgstr "हरेक ३० मिनेट"
+
+#: sound_toolbar.py:65 measure.py:197 measure.py:203
+msgid "Sound"
+msgstr "ध्वनि"
+
+#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+msgid "Time Base"
+msgstr "समय आधार"
+
+#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+msgid "Frequency Base"
+msgstr "आवृतीको आधार"
+
+#: sound_toolbar.py:71
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "X कक्ष मापन: १ भाग =%(division)s %(unit)s"
+
+#: sound_toolbar.py:73
+msgid "ms"
+msgstr "ms"
+
+#: sound_toolbar.py:75
+msgid "Hz"
+msgstr "Hz"
+
+#: sound_toolbar.py:109 sound_toolbar.py:321
+msgid "Freeze the display"
+msgstr "प्रदर्शन अचल गर"
+
+#: sound_toolbar.py:151 sound_toolbar.py:297
+msgid "Capture sample now"
+msgstr "नमूना अहिल्यै क्यापचर गर"
+
+#: sound_toolbar.py:162
+msgid "None"
+msgstr "शुन्य"
+
+#: sound_toolbar.py:162
+msgid "Rising Edge"
+msgstr "उदय हुदैँ गरेको किनारा"
+
+#: sound_toolbar.py:162
+msgid "Falling Edge"
+msgstr "खस्दै गरेको किनारा"
+
+#: sound_toolbar.py:175
+msgid "Create a trigger"
+msgstr "त्रिगर बनाऊ"
+
+#: sound_toolbar.py:186
+msgid "Zoom out"
+msgstr "सानो बनाऊ"
+
+#: sound_toolbar.py:199
+msgid "Zoom in"
+msgstr "ठूलो बनाऊ"
+
+#: sound_toolbar.py:294
+msgid "Stop sampling"
+msgstr "नमूना लिन बन्द गर"
+
+#: sound_toolbar.py:299
+msgid "Start sampling"
+msgstr "नमूना लिन सुरु गर"
+
+#: sound_toolbar.py:316
+msgid "Unfreeze the display"
+msgstr "प्रदर्शनलाई स्थिर नगर"
+
+#: journal.py:53 measure.py:328
+msgid "Session"
+msgstr "सत्र"
+
+#: journal.py:55
+msgid "User"
+msgstr "प्रयोगकर्ता"
+
+#: journal.py:56
+msgid "Interval"
+msgstr "अन्तराल"
+
+#: journal.py:91
+msgid "Waveform"
+msgstr "लहर / तरङ्ग"
+
+#: toolbar_side.py:46 toolbar_side.py:120
+msgid "Increase amplitude"
+msgstr "एम्प्लित्यूड बढाउनुहोस्"
+
+#: toolbar_side.py:61 toolbar_side.py:122
+msgid "Decrease amplitude"
+msgstr "एम्प्लित्यूड घटाउनुहोस्"
+
+#: toolbar_side.py:125
+msgid "Increase bias"
+msgstr "bias बढाउनुहोस्"
+
+#: toolbar_side.py:127
+msgid "Decrease bias"
+msgstr "bias घटाउनुहोस्"
+
+#: measure.py:210 measure.py:216
+msgid "Sensors"
+msgstr "सेन्सर"
+
+#: measure.py:240
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:310
+msgid "Measure Log"
+msgstr "लग मेजर गर"
+
+#~ msgid "Spectrum value"
+#~ msgstr "वर्णपट माप"
+
+#~ msgid "RMS   : "
+#~ msgstr "आर एम एस   : "
+
+#~ msgid "AVG   : "
+#~ msgstr "औसत   : "
+
+#~ msgid "Scale:"
+#~ msgstr "मापन:"
+
+#~ msgid "X Axis: "
+#~ msgstr "X अक्ष:"
+
+#~ msgid "Y Axis : "
+#~ msgstr "Y अक्ष:"
+
+#~ msgid "Click for DC"
+#~ msgstr "DC को लागि थिच"
+
+#~ msgid "Click for Bias Off"
+#~ msgstr "Bias बन्द गर्न थिच"
+
+#~ msgid "Click for Frequency base"
+#~ msgstr "आवृती आधारको लागि थिच"
+
+#~ msgid "Pause"
+#~ msgstr "विश्राम"
+
+#~ msgid "Show values"
+#~ msgstr "माप देखाउ"
+
+#~ msgid "Click for AC"
+#~ msgstr "AC को लागि थिच"
+
+#~ msgid "Click for Bias On"
+#~ msgstr "Bias गर्न थिच"
+
+#~ msgid "Click for Time base"
+#~ msgstr "समय आधारको लागि थिच"
+
+#~ msgid "Hide values"
+#~ msgstr "माप लुकाऊ"
+
+#~ msgid "Resume"
+#~ msgstr "फेरि चालु गर"
+
+#~ msgid "Snapshot"
+#~ msgstr "झलक"
+
+#~ msgid "1 minute"
+#~ msgstr "१ मिनेट"
+
+#~ msgid "1 hour"
+#~ msgstr "१ घन्टा"
+
+#~ msgid "Start Logging"
+#~ msgstr "बचत सुरु गर"
+
+#~ msgid "Show Log"
+#~ msgstr "वहीखाता देखाऊ"
+
+#~ msgid "Stop Logging"
+#~ msgstr "बचत बन्द गर"
+
+#~ msgid "Remove Log"
+#~ msgstr "वहीखाताबाट हटाऊ"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "सुचि र रेखाचित्र देखाऊ"
@@ -121,26 +294,8 @@ msgstr "वहीखाताबाट हटाऊ"
 #~ msgid "Show waveform"
 #~ msgstr "तरङरेखा देखाऊ"
 
-#~ msgid "Time base"
-#~ msgstr "समय आधार"
-
-#~ msgid "Frequency base"
-#~ msgstr "आवृती आधार"
-
-#~ msgid "Resistance Sensor"
-#~ msgstr "अवरोध सचेतक"
-
-#~ msgid "Voltage Sensor"
-#~ msgstr "भोल्टेज सचेतक"
-
 #~ msgid "Picture"
 #~ msgstr "चित्र"
-
-#~ msgid "5 seconds"
-#~ msgstr "५ सेकेन्ड"
-
-#~ msgid "5 minutes"
-#~ msgstr "५ मिनेट"
 
 #~ msgid "Spectral power"
 #~ msgstr "वर्णपटीय शक्ति"
