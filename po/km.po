@@ -59,19 +59,20 @@ msgstr ""
 
 #: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
-msgstr ""
+msgstr "១ វិនាទី"
 
 #: sensor_toolbar.py:98
+#, fuzzy
 msgid "30 seconds"
-msgstr ""
+msgstr "10 วินาที"
 
 #: sensor_toolbar.py:99
 msgid "5 minutes"
-msgstr ""
+msgstr "៥ នាទី"
 
 #: sensor_toolbar.py:99
 msgid "30 minutes"
-msgstr ""
+msgstr "៣០ នាទី"
 
 #: sensor_toolbar.py:102 sound_toolbar.py:134
 msgid "Sampling interval"
@@ -79,11 +80,11 @@ msgstr ""
 
 #: sensor_toolbar.py:119 sensor_toolbar.py:153
 msgid "Start Recording"
-msgstr ""
+msgstr "ចាប់ផ្ដើម​ថត"
 
 #: sensor_toolbar.py:147
 msgid "Stop Recording"
-msgstr ""
+msgstr "ឈប់​ថត"
 
 #: sound_toolbar.py:50
 msgid "Capture now"
@@ -124,11 +125,11 @@ msgstr ""
 
 #: sound_toolbar.py:73
 msgid "ms"
-msgstr ""
+msgstr "មិល្លីវិនាទី"
 
 #: sound_toolbar.py:75
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
 #: sound_toolbar.py:109 sound_toolbar.py:321
 msgid "Freeze the display"
@@ -184,7 +185,7 @@ msgstr "អ្នក​ប្រើ"
 
 #: journal.py:56
 msgid "Interval"
-msgstr ""
+msgstr "ចន្លោះ​ពេល"
 
 #: journal.py:91
 msgid "Waveform"
@@ -208,7 +209,7 @@ msgstr ""
 
 #: measure.py:210 measure.py:216
 msgid "Sensors"
-msgstr ""
+msgstr "ឧបករណ៍​ចាប់​សញ្ញា"
 
 #: measure.py:240
 msgid "<Ctrl>Q"
