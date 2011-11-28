@@ -67,4 +67,5 @@ DISPLAY_DUTY_CYCLE = 100
 # Hardware configurations
 XO1 = 'xo1'
 XO15 = 'xo1.5'
+XO175 = 'xo1.75'
 UNKNOWN = 'unknown'

@@ -1,31 +1,27 @@
 #! /usr/bin/python
 #
-#    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009,10 Walter Bender
-#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Author:  Arjun Sarwal   arjun@laptop.org
+# Copyright (C) 2007, Arjun Sarwal
+# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
+
 
 import gtk
 from math import floor, ceil
 from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
-from gtk import gdk
+import cairo
 
-from config import MAX_GRAPHS
+from config import MAX_GRAPHS, RATE
 
 # Initialize logging.
 import logging
@@ -43,7 +39,7 @@ class DrawWaveform(gtk.DrawingArea):
     TRIGGER_POS = 1
     TRIGGER_NEG = 2
 
-    def __init__(self, activity, input_frequency=48000):
+    def __init__(self, activity, input_frequency=RATE, channels=1):
         """ Initialize drawing area and scope parameter """
         gtk.DrawingArea.__init__(self)
 
@@ -52,6 +48,7 @@ class DrawWaveform(gtk.DrawingArea):
 
         self.activity = activity
         self._input_freq = input_frequency
+        self.channels = channels
         self.triggering = self.TRIGGER_NONE
         self.trigger_xpos = 0.0
         self.trigger_ypos = 0.5
@@ -141,16 +138,17 @@ class DrawWaveform(gtk.DrawingArea):
         self.color[0] = self.activity.stroke_color
         self.source[0] = 0
 
-        """
-        self.graph_show_state[1]=True
-        self.Xstart[0] = 0
-        self.Ystart[1] = 0
-        self.Xend[0] = 800
-        self.Yend[1] = 600
-        self.type[1]  = 0
-        self.color[1]  = [0,65535,65535]
-        self.source[1] = 0
+        if channels > 1:
+            self.graph_show_state[1]=True
+            self.Xstart[0] = 0
+            self.Ystart[1] = 0
+            self.Xend[0] = 800
+            self.Yend[1] = 600
+            self.type[1]  = 0
+            self.color[1]  = '#FFFF00'
+            self.source[1] = 0
 
+        '''
         self.graph_show_state[2]=True
         self.Xstart[2] = 30
         self.Ystart[2] = 0
@@ -168,7 +166,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.type[3]  = 0
         self.color[3]  = [65535,65535,0]
         self.source[3] = 0
-        """
+        '''
 
         self.max_samples = 115
         self.max_samples_fact = 3
@@ -177,8 +175,10 @@ class DrawWaveform(gtk.DrawingArea):
         self.freq_div = 1.0
         self.input_step = 1
 
-        self.ringbuffer = RingBuffer1d(self.max_samples, dtype='int16')
-
+        self.ringbuffer = [None, None]
+        self.ringbuffer[0] = RingBuffer1d(self.max_samples, dtype='int16')
+        if self.channels == 2:  # Add a second channel for stereo
+            self.ringbuffer[1] = RingBuffer1d(self.max_samples, dtype='int16')
         self.debug_str = 'start'
 
         self.context = True
@@ -188,15 +188,18 @@ class DrawWaveform(gtk.DrawingArea):
         if self.max_samples == num:
             return
         new_buffer = RingBuffer1d(num, dtype='int16')
-
-        new_buffer.append(self.ringbuffer.read())
-        self.ringbuffer = new_buffer
+        new_buffer.append(self.ringbuffer[0].read())
+        self.ringbuffer[0] = new_buffer
+        if self.channels == 2:
+            new_buffer = RingBuffer1d(num, dtype='int16')
+            new_buffer.append(self.ringbuffer[1].read())
+            self.ringbuffer[1] = new_buffer
         self.max_samples = num
         return
 
-    def new_buffer(self, buf):
+    def new_buffer(self, buf, channel=0):
         """ Append a new buffer to the ringbuffer """
-        self.ringbuffer.append(buf)
+        self.ringbuffer[channel].append(buf)
         return True
 
     def set_context_on(self):
@@ -249,6 +252,35 @@ class DrawWaveform(gtk.DrawingArea):
             self.queue_draw()
         return
 
+    def create_cairo_context(self):
+        # create a cairo context from the drawing area
+        if self.window is None:
+            log.debug('window is None')
+            return
+        cr = self.window.cairo_create()
+        surface = cr.get_target()
+        self.drawing_surface = surface.create_similar(
+            cairo.CONTENT_COLOR, gtk.gdk.screen_width(),
+            gtk.gdk.screen_height())
+        self.cairo_canvas = cairo.Context(self.drawing_surface)
+        cr = gtk.gdk.CairoContext(self.cairo_canvas)
+        cr.set_line_cap(1)
+
+    # Handle the expose-event by drawing
+    def do_expose_event(self, event=None):
+
+        # Create the cairo context
+        cr = self.window.cairo_create()
+
+        # Restrict Cairo to the exposed area; avoid extra work
+        cr.rectangle(event.area.x, event.area.y,
+                     event.area.width, event.area.height)
+        cr.clip()
+
+        if self.drawing_surface is not None:
+            cr.set_source_surface(self.drawing_surface)
+            cr.paint()
+
     def do_realize(self):
         """ Called when we are creating all of our window resources """
 
@@ -266,8 +298,8 @@ class DrawWaveform(gtk.DrawingArea):
 
                 self._line_gc.append(self.window.new_gc(foreground=clr))
                 self._line_gc[graph_id].set_line_attributes(
-                    self._FOREGROUND_LINE_THICKNESS, gdk.LINE_SOLID,
-                    gdk.CAP_ROUND, gdk.JOIN_BEVEL)
+                    self._FOREGROUND_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+                    gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
 
                 self._line_gc[graph_id].set_foreground(clr)
 
@@ -276,8 +308,8 @@ class DrawWaveform(gtk.DrawingArea):
 
         self._trigger_line_gc = self.window.new_gc(foreground=clr)
         self._trigger_line_gc.set_line_attributes(
-            self._TRIGGER_LINE_THICKNESS, gdk.LINE_SOLID,
-            gdk.CAP_ROUND, gdk.JOIN_BEVEL)
+            self._TRIGGER_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+            gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
 
         self._trigger_line_gc.set_foreground(clr)
 
@@ -287,7 +319,8 @@ class DrawWaveform(gtk.DrawingArea):
     def _create_background_pixmap(self):
         """ Draw the gridlines for the plot """
 
-        back_surf = gdk.Pixmap(self.window, self._tick_size, self._tick_size)
+        back_surf = gtk.gdk.Pixmap(self.window, self._tick_size,
+                                   self._tick_size)
         cr = back_surf.cairo_create()
         cr.set_source_rgb(0, 0, 0)
         cr.paint()
@@ -333,7 +366,7 @@ class DrawWaveform(gtk.DrawingArea):
             #Iterate for each graph
             for graph_id in self.graph_id:
                 if self.graph_show_state[graph_id]:
-                    buf = self.ringbuffer.read(None, self.input_step)
+                    buf = self.ringbuffer[graph_id].read(None, self.input_step)
                     samples = ceil(self.allocation.width / self.draw_interval)
                     if len(buf) == 0:
                         # We don't have enough data to plot.
@@ -413,10 +446,11 @@ class DrawWaveform(gtk.DrawingArea):
                     if self.activity.CONTEXT == 'sensor':
                         self.y_mag = 1.0
 
-                    if self.invert:
+                    if self.invert or graph_id == 1:
                         data *= (self.allocation.height / 32767.0 * self.y_mag)
                     else:
                         data *= (-self.allocation.height / 32767.0 * self.y_mag)
+
                     data -= self.bias
 
                     if self.fft_show:

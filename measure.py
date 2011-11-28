@@ -1,24 +1,19 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 #
-#    Written by Arjun Sarwal <arjun@laptop.org>
-#    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009, Walter Bender
-#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Written by Arjun Sarwal <arjun@laptop.org>
+# Copyright (C) 2007, Arjun Sarwal
+# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
 import pygst
@@ -61,18 +56,20 @@ except ImportError:
     _using_gconf = False
 
 from journal import JournalInteraction
-from audiograb import AudioGrab_XO15, AudioGrab_XO1, AudioGrab_Unknown
+from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
+    AudioGrab_Unknown
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sound_toolbar import SoundToolbar
 from sensor_toolbar import SensorToolbar
-from config import TOOLBARS, ICONS_DIR, XO1, XO15, UNKNOWN
+from config import TOOLBARS, ICONS_DIR, XO1, XO15, XO175, UNKNOWN
 
 import logging
 
 log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
+
 
 # Hardware configurations
 XO1 = 'xo1'
@@ -82,14 +79,16 @@ UNKNOWN = 'unknown'
 
 def _is_xo(hw):
     """ Return True if this is xo hardware """
-    return hw in [XO1, XO15]
+    return hw in [XO1, XO15, XO175]
 
 
 def _get_hardware():
     """ Determine whether we are using XO 1.0, 1.5, or "unknown" hardware """
     product = _get_dmi('product_name')
     if product is None:
-        if exists('/etc/olpc-release') or exists('/sys/power/olpc-pm'):
+        if '/sys/devices/platform/lis3lv02d/position':
+            return XO175
+        elif exists('/etc/olpc-release') or exists('/sys/power/olpc-pm'):
             return XO1
         else:
             return UNKNOWN
@@ -100,6 +99,8 @@ def _get_hardware():
         return XO1
     elif version == '1.5':
         return XO15
+    elif version == '1.75':
+        return XO175
     else:
         return UNKNOWN
 
@@ -149,15 +150,20 @@ class MeasureActivity(activity.Activity):
         self.session_id = 0
 
         self.ji = JournalInteraction(self)
-        self.wave = DrawWaveform(self)
 
         self.hw = _get_hardware()
         log.debug('running on %s hardware' % (self.hw))
         if self.hw == XO15:
+            self.wave = DrawWaveform(self, channels=2)
             self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
+        elif self.hw == XO175:
+            self.wave = DrawWaveform(self, channels=2)
+            self.audiograb = AudioGrab_XO175(self.wave.new_buffer, self)
         elif self.hw == XO1:
+            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO1(self.wave.new_buffer, self)
         else:
+            self.wave = DrawWaveform(self, channels=2)
             self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
 
         # no sharing
@@ -257,6 +263,8 @@ class MeasureActivity(activity.Activity):
         self.sound_toolbar.update_page_size()
 
         self.show_all()
+
+        self.wave.create_cairo_context()
 
         self.first = True
 
