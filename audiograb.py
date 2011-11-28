@@ -29,7 +29,8 @@ from threading import Timer
 
 from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
                    SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
-                   QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1
+                   QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1, \
+                   MAX_GRAPHS
 
 import logging
 
@@ -99,13 +100,13 @@ class AudioGrab:
             self.fakesink[0].connect('handoff', self.on_buffer)
             self.fakesink[0].set_property('signal-handoffs', True)
             gst.element_link_many(self.alsasrc, self.caps1, self.fakesink[0])
-        else:
+        else:  # We only process 2 channels
             self.splitter = gst.element_factory_make('deinterleave',
                                                      'splitter')
             self.pipeline.add(self.splitter)
             self.splitter.set_properties('keep-positions=true', 'name=d')
             self.splitter.connect('pad-added', self._splitter_pad_added)
-            for i in range(2):
+            for i in range(self._channels):
                 self.queue[i] = gst.element_factory_make('queue',
                                                          'queue%d' % (i))
                 self.pipeline.add(self.queue[i])
@@ -179,13 +180,13 @@ class AudioGrab:
         ''' Seems to be the case that ring is right channel 0,
                                        tip is  left channel 1'''
         log.debug('splitter pad %d added' % (self._pad_count))
-        if (self._pad_count < 2):
+        if (self._pad_count < MAX_GRAPHS):
             pad.link(self.queue[self._pad_count].get_pad('sink'))
             self.queue[self._pad_count].get_pad('src').link(
                 self.fakesink[self._pad_count].get_pad('sink'))
             self._pad_count += 1
         else:
-            log.debug('ignoring channels > 2')
+            log.debug('ignoring channels > %d' % (MAX_GRAPHS))
 
     def set_handoff_signal(self, handoff_state):
         '''Sets whether the handoff signal would generate an interrupt or not'''

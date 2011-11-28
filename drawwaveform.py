@@ -129,44 +129,20 @@ class DrawWaveform(gtk.DrawingArea):
             self.source.append(0)
             self.graph_id.append(x)
 
-        self.graph_show_state[0] = True
-        self.Xstart[0] = 0
-        self.Ystart[0] = 0
-        self.Xend[0] = 1150
-        self.Yend[0] = 750
-        self.type[0] = 0
-        self.color[0] = self.activity.stroke_color
-        self.source[0] = 0
-
-        if channels > 1:
-            self.graph_show_state[1]=True
-            self.Xstart[0] = 0
-            self.Ystart[1] = 0
-            self.Xend[0] = 800
-            self.Yend[1] = 600
-            self.type[1]  = 0
-            self.color[1]  = '#FFFF00'
-            self.source[1] = 0
-
-        '''
-        self.graph_show_state[2]=True
-        self.Xstart[2] = 30
-        self.Ystart[2] = 0
-        self.Xend[2] = 300
-        self.Yend[2] = 300
-        self.type[2]  = 0
-        self.color[2]  = [0,65535,0]
-        self.source[2] = 0
-
-        self.graph_show_state[3]=True
-        self.Xstart[3] = 0
-        self.Ystart[3] = 300
-        self.Xend[3] = 1000
-        self.Yend[3] = 700
-        self.type[3]  = 0
-        self.color[3]  = [65535,65535,0]
-        self.source[3] = 0
-        '''
+        for i in range(min(self.channels, self.MAX_GRAPHS)):
+            self.graph_show_state[i] = True
+            self.Xstart[i] = 0
+            self.Ystart[i] = 0
+            self.Xend[i] = 1150
+            self.Yend[i] = 750
+            self.type[i] = 0
+            if i == 0:
+                self.color[i] = self.activity.stroke_color
+            elif i == 1:
+                self.color[i] = self.activity.fill_color
+            else:
+                self.color[i] = '#FFFFFF'
+            self.source[i] = 0
 
         self.max_samples = 115
         self.max_samples_fact = 3
@@ -176,9 +152,8 @@ class DrawWaveform(gtk.DrawingArea):
         self.input_step = 1
 
         self.ringbuffer = [None, None]
-        self.ringbuffer[0] = RingBuffer1d(self.max_samples, dtype='int16')
-        if self.channels == 2:  # Add a second channel for stereo
-            self.ringbuffer[1] = RingBuffer1d(self.max_samples, dtype='int16')
+        for i in range(self.channels):
+            self.ringbuffer[i] = RingBuffer1d(self.max_samples, dtype='int16')
         self.debug_str = 'start'
 
         self.context = True
@@ -187,13 +162,10 @@ class DrawWaveform(gtk.DrawingArea):
         """ Maximum no. of samples in ringbuffer """
         if self.max_samples == num:
             return
-        new_buffer = RingBuffer1d(num, dtype='int16')
-        new_buffer.append(self.ringbuffer[0].read())
-        self.ringbuffer[0] = new_buffer
-        if self.channels == 2:
+        for i in range(self.channels):
             new_buffer = RingBuffer1d(num, dtype='int16')
-            new_buffer.append(self.ringbuffer[1].read())
-            self.ringbuffer[1] = new_buffer
+            new_buffer.append(self.ringbuffer[i].read())
+            self.ringbuffer[i] = new_buffer
         self.max_samples = num
         return
 
@@ -446,7 +418,7 @@ class DrawWaveform(gtk.DrawingArea):
                     if self.activity.CONTEXT == 'sensor':
                         self.y_mag = 1.0
 
-                    if self.invert or graph_id == 1:
+                    if self.invert or graph_id == 1:  # FIX ME
                         data *= (self.allocation.height / 32767.0 * self.y_mag)
                     else:
                         data *= (-self.allocation.height / 32767.0 * self.y_mag)
