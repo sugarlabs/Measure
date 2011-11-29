@@ -264,8 +264,6 @@ class MeasureActivity(activity.Activity):
 
         self.show_all()
 
-        self.wave.create_cairo_context()
-
         self.first = True
 
         self.set_sound_context()

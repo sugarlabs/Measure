@@ -19,7 +19,6 @@ import gtk
 from math import floor, ceil
 from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
-import cairo
 
 from config import MAX_GRAPHS, RATE
 
@@ -223,35 +222,6 @@ class DrawWaveform(gtk.DrawingArea):
         if event.atom == self._redraw_atom:
             self.queue_draw()
         return
-
-    def create_cairo_context(self):
-        # create a cairo context from the drawing area
-        if self.window is None:
-            log.debug('window is None')
-            return
-        cr = self.window.cairo_create()
-        surface = cr.get_target()
-        self.drawing_surface = surface.create_similar(
-            cairo.CONTENT_COLOR, gtk.gdk.screen_width(),
-            gtk.gdk.screen_height())
-        self.cairo_canvas = cairo.Context(self.drawing_surface)
-        cr = gtk.gdk.CairoContext(self.cairo_canvas)
-        cr.set_line_cap(1)
-
-    # Handle the expose-event by drawing
-    def do_expose_event(self, event=None):
-
-        # Create the cairo context
-        cr = self.window.cairo_create()
-
-        # Restrict Cairo to the exposed area; avoid extra work
-        cr.rectangle(event.area.x, event.area.y,
-                     event.area.width, event.area.height)
-        cr.clip()
-
-        if self.drawing_surface is not None:
-            cr.set_source_surface(self.drawing_surface)
-            cr.paint()
 
     def do_realize(self):
         """ Called when we are creating all of our window resources """
