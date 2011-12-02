@@ -407,15 +407,15 @@ class SoundToolbar(gtk.Toolbar):
     def context_off(self):
         """When some other context is switched to and the sound context 
         is switched off"""
-        print "context off: gain and y_mag were %f and %f" %\
-            (self.gain, self.y_mag)
+        # print "context off: gain and y_mag were %f and %f" %\
+        #     (self.gain, self.y_mag)
         self.gain, self.y_mag = self.activity.wave.get_mag_params()
-        print "context off: gain and y_mag are %f and %f" %\
-            (self.gain, self.y_mag)
+        # print "context off: gain and y_mag are %f and %f" %\
+        #     (self.gain, self.y_mag)
         self.capture_gain = self.activity.audiograb.get_capture_gain()
         self.mic_boost = self.activity.audiograb.get_mic_boost()
-        print "context off: capture gain %s and mic boost %s" %\
-              (str(self.capture_gain), str(self.mic_boost))
+        # print "context off: capture gain %s and mic boost %s" %\
+        #       (str(self.capture_gain), str(self.mic_boost))
         self.activity.audiograb.stop_sound_device()
         self.activity.wave.set_fft_mode(False)
 
@@ -424,8 +424,8 @@ class SoundToolbar(gtk.Toolbar):
         self.activity.audiograb.start_sound_device()
         self.activity.audiograb.set_sensor_type('sound')
         self.activity.wave.set_fft_mode(False)
-        print "context on: gain and y_mag are %f and %f" %\
-              (self.gain, self.y_mag)
+        # print "context on: gain and y_mag are %f and %f" %\
+        #       (self.gain, self.y_mag)
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
         self.update_trigger_control()

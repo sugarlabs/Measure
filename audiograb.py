@@ -501,8 +501,8 @@ class AudioGrab():
         if min_vol != max_vol:
             hw_volume = value*(max_vol - min_vol)//100 + min_vol
             self._mixer.set_volume(control, (hw_volume,)*control.num_channels)
-            log.debug('Set volume of %s (%s) to %d (%d)', name,
-                      control.props.untranslated_label, value, hw_volume)
+            # log.debug('Set volume of %s (%s) to %d (%d)', name,
+            #           control.props.untranslated_label, value, hw_volume)
         else:
             log.warning('_set_volume: %s (%d-%d) %d channels' % (
                     control.props.untranslated_label, control.min_volume,

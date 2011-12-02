@@ -72,16 +72,16 @@ class SideToolbar(gtk.Toolbar):
     def _yscrollbar_cb(self, adjy, data=None):
         """ Callback for scrollbar """
         if self.mode == 'sound':
-            print "toolbar side: setting mag to 1.0, %f" % (adjy.value)
+            # print "toolbar side: setting mag to 1.0, %f" % (adjy.value)
             self.activity.wave.set_mag_params(1.0, adjy.value)
-            print "toolbar side: setting capture gain to %f" %\
-                (adjy.value * 100 / (self.UPPER - self.LOWER))
+            # print "toolbar side: setting capture gain to %f" %\
+            #     (adjy.value * 100 / (self.UPPER - self.LOWER))
             self.activity.audiograb.set_capture_gain(
                 adjy.value * 100 / (self.UPPER - self.LOWER))
             self.activity.wave.set_bias_param(0)
         elif self.mode == 'sensor':
-            print "toolbar side: setting bias param to %f" %\
-                (300 * (adjy.value - (self.UPPER - self.LOWER) / 2))
+            # print "toolbar side: setting bias param to %f" %\
+            #     (300 * (adjy.value - (self.UPPER - self.LOWER) / 2))
             self.activity.wave.set_bias_param(int(
                     300 * (adjy.value - (self.UPPER - self.LOWER) / 2)))
         self.mode_values[self.mode] = adjy.value
