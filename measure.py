@@ -154,16 +154,16 @@ class MeasureActivity(activity.Activity):
         self.hw = _get_hardware()
         log.debug('running on %s hardware' % (self.hw))
         if self.hw == XO15:
-            self.wave = DrawWaveform(self, channels=2)
+            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
         elif self.hw == XO175:
-            self.wave = DrawWaveform(self, channels=2)
+            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO175(self.wave.new_buffer, self)
         elif self.hw == XO1:
             self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO1(self.wave.new_buffer, self)
         else:
-            self.wave = DrawWaveform(self, channels=2)
+            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
 
         # no sharing

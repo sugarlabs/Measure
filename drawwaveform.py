@@ -117,6 +117,17 @@ class DrawWaveform(gtk.DrawingArea):
         self.source = []
         self.graph_id = []
 
+        self.max_samples = 115
+        self.max_samples_fact = 3
+
+        self.time_div = 1.0
+        self.freq_div = 1.0
+        self.input_step = 1
+
+        self.debug_str = 'start'
+
+        self.context = True
+
         for x in range(0, self.MAX_GRAPHS):
             self.graph_show_state.append(False)
             self.Xstart.append(0)
@@ -128,6 +139,11 @@ class DrawWaveform(gtk.DrawingArea):
             self.source.append(0)
             self.graph_id.append(x)
 
+        self.ringbuffer = []
+
+    def set_channels(self, channels):
+        ''' Add buffer per channel '''
+        self.channels = channels
         for i in range(min(self.channels, self.MAX_GRAPHS)):
             self.graph_show_state[i] = True
             self.Xstart[i] = 0
@@ -143,19 +159,9 @@ class DrawWaveform(gtk.DrawingArea):
                 self.color[i] = '#FFFFFF'
             self.source[i] = 0
 
-        self.max_samples = 115
-        self.max_samples_fact = 3
-
-        self.time_div = 1.0
-        self.freq_div = 1.0
-        self.input_step = 1
-
-        self.ringbuffer = [None, None]
         for i in range(self.channels):
-            self.ringbuffer[i] = RingBuffer1d(self.max_samples, dtype='int16')
-        self.debug_str = 'start'
-
-        self.context = True
+            self.ringbuffer.append(RingBuffer1d(self.max_samples,
+                                                dtype='int16'))
 
     def set_max_samples(self, num):
         """ Maximum no. of samples in ringbuffer """

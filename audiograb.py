@@ -24,6 +24,7 @@ import gst.interfaces
 from numpy import fromstring
 import os
 import subprocess
+import traceback
 from string import find
 from threading import Timer
 
@@ -45,7 +46,7 @@ SENSOR_DC_NO_BIAS = 'voltage'
 SENSOR_DC_BIAS = 'resistance'
 
 
-class AudioGrab:
+class AudioGrab():
     """ The interface between measure and the audio device """
 
     def __init__(self, callable1, activity):
@@ -63,7 +64,7 @@ class AudioGrab:
         self.screenshot = True
 
         self.rate = RATE
-        self._channels = self.activity.wave.channels
+        self._channels = None
         self.final_count = 0
         self.count_temp = 0
         self.entry_count = 0
@@ -81,9 +82,16 @@ class AudioGrab:
         self._hardwired = False  # Query controls or use hardwired names
         self._display_value = DISPLAY_DUTY_CYCLE
 
-        # Set up gstreamer pipeline
+        self._query_mixer()
+        if self._channels is None:  # didn't find channels in any controllers
+            self._channels = 2
+        self.activity.wave.set_channels(self._channels)
 
+        # Set up gstreamer pipeline
         self._pad_count = 0
+        self.pads = []
+        self.queue = []
+        self.fakesink = []
         self.pipeline = gst.Pipeline('pipeline')
         self.alsasrc = gst.element_factory_make('alsasrc', 'alsa-source')
         self.pipeline.add(self.alsasrc)
@@ -92,77 +100,28 @@ class AudioGrab:
         caps_str = 'audio/x-raw-int,rate=%d,channels=%d,depth=16' % (
             RATE, self._channels)
         self.caps1.set_property('caps', gst.caps_from_string(caps_str))
-        self.queue = [None, None]
-        self.fakesink = [None, None]
         if self._channels == 1:
-            self.fakesink[0] = gst.element_factory_make('fakesink', 'fsink')
+            self.fakesink.append(gst.element_factory_make('fakesink', 'fsink'))
             self.pipeline.add(self.fakesink[0])
             self.fakesink[0].connect('handoff', self.on_buffer)
             self.fakesink[0].set_property('signal-handoffs', True)
             gst.element_link_many(self.alsasrc, self.caps1, self.fakesink[0])
-        else:  # We only process 2 channels
-            self.splitter = gst.element_factory_make('deinterleave',
-                                                     'splitter')
-            self.pipeline.add(self.splitter)
-            self.splitter.set_properties('keep-positions=true', 'name=d')
-            self.splitter.connect('pad-added', self._splitter_pad_added)
+        else:
+            if not hasattr(self, 'splitter'):
+                self.splitter = gst.element_factory_make('deinterleave')
+                self.pipeline.add(self.splitter)
+                self.splitter.set_properties('keep-positions=true', 'name=d')
+                self.splitter.connect('pad-added', self._splitter_pad_added)
+                gst.element_link_many(self.alsasrc, self.caps1, self.splitter)
             for i in range(self._channels):
-                self.queue[i] = gst.element_factory_make('queue',
-                                                         'queue%d' % (i))
+                self.queue.append(gst.element_factory_make('queue'))
                 self.pipeline.add(self.queue[i])
-                self.fakesink[i] = gst.element_factory_make('fakesink',
-                                                            'fsink%d' % (i))
+                self.fakesink.append(gst.element_factory_make('fakesink'))
                 self.pipeline.add(self.fakesink[i])
                 self.fakesink[i].connect('handoff', self.on_buffer, i)
                 self.fakesink[i].set_property('signal-handoffs', True)
 
-            gst.element_link_many(self.alsasrc, self.caps1, self.splitter)
-
         self.dont_queue_the_buffer = False
-
-        self._mixer = gst.element_factory_make('alsamixer')
-        rc = self._mixer.set_state(gst.STATE_PAUSED)
-        assert rc == gst.STATE_CHANGE_SUCCESS
-
-        # Query the available controls
-        try:  # F11+
-            log.debug('controls: %r', [t.props.untranslated_label \
-                                       for t in self._mixer.list_tracks()])
-            self._dc_control = self._find_control(['dc mode'])
-            self._mic_bias_control = self._find_control(['mic bias',
-                                                         'dc input bias',
-                                                         'v_refout'])
-            if self._mic_bias_control is not None:
-                log.debug('Mic Bias is %s' % (
-                        self._mic_bias_control.props.untranslated_label))
-                log.debug('Min %s' % (str(self._mic_bias_control.min_volume)))
-                log.debug('Max %s' % (str(self._mic_bias_control.max_volume)))
-                log.debug('Channels %s' % (
-                        str(self._mic_bias_control.num_channels)))
-            self._mic_boost_control = self._find_control(['mic boost',
-                                                          'mic boost (+20db)',
-                                                          'internal mic boost',
-                                                          'analog mic boost'])
-            if self._mic_boost_control is not None:
-                log.debug('Mic Boost is %s' % (
-                        self._mic_boost_control.props.untranslated_label))
-                log.debug('Min %s' % (str(self._mic_boost_control.min_volume)))
-                log.debug('Max %s' % (str(self._mic_boost_control.max_volume)))
-                log.debug('Channels %s' % (
-                        str(self._mic_boost_control.num_channels)))
-
-            self._mic_gain_control = self._find_control(['mic'])
-            self._capture_control = self._find_control(['capture'])
-            if self._capture_control is not None:
-                log.debug('Capture is %s' % (
-                        self._capture_control.props.untranslated_label))
-                log.debug('Min %s' % (str(self._capture_control.min_volume)))
-                log.debug('Max %s' % (str(self._capture_control.max_volume)))
-                log.debug('Channels %s' % (
-                        str(self._capture_control.num_channels)))
-            self._master_control = self._find_control(['master'])
-        except AttributeError: # F9- (no untranslated_label attribute)
-            self._hardwired = True
 
         # Variables for saving and resuming state of sound device
         self.master = self.get_master()
@@ -176,23 +135,92 @@ class AudioGrab:
         self.capture_timer = None
         self.capture_interval_sample = False
 
+    def _query_mixer(self):
+        self._mixer = gst.element_factory_make('alsamixer')
+        rc = self._mixer.set_state(gst.STATE_PAUSED)
+        assert rc == gst.STATE_CHANGE_SUCCESS
+
+        # Query the available controls
+        try:  # F11+
+            log.debug('controls: %r', [t.props.untranslated_label \
+                                       for t in self._mixer.list_tracks()])
+            self._capture_control = self._find_control(['capture'])
+            if self._capture_control is not None:
+                log.debug('Capture is %s' % (
+                        self._capture_control.props.untranslated_label))
+                log.debug('Min %s' % (str(self._capture_control.min_volume)))
+                log.debug('Max %s' % (str(self._capture_control.max_volume)))
+                log.debug('Channels %s' % (
+                        str(self._capture_control.num_channels)))
+                if self._channels is None:
+                    self._channels = self._capture_control.num_channels
+            self._dc_control = self._find_control(['dc mode'])
+            self._mic_bias_control = self._find_control(['mic bias',
+                                                         'dc input bias',
+                                                         'v_refout'])
+            if self._mic_bias_control is not None:
+                log.debug('Mic Bias is %s' % (
+                        self._mic_bias_control.props.untranslated_label))
+                log.debug('Min %s' % (str(self._mic_bias_control.min_volume)))
+                log.debug('Max %s' % (str(self._mic_bias_control.max_volume)))
+                log.debug('Channels %s' % (
+                        str(self._mic_bias_control.num_channels)))
+                if self._channels is None:
+                    self._channels = self._mic_bias_control.num_channels
+            self._mic_boost_control = self._find_control(['mic boost',
+                                                          'mic boost (+20db)',
+                                                          'internal mic boost',
+                                                          'analog mic boost'])
+            if self._mic_boost_control is not None:
+                log.debug('Mic Boost is %s' % (
+                        self._mic_boost_control.props.untranslated_label))
+                log.debug('Min %s' % (str(self._mic_boost_control.min_volume)))
+                log.debug('Max %s' % (str(self._mic_boost_control.max_volume)))
+                log.debug('Channels %s' % (
+                        str(self._mic_boost_control.num_channels)))
+                if self._channels is None:
+                    self._channels = self._mic_boost_control.num_channels
+
+            self._mic_gain_control = self._find_control(['mic'])
+            self._master_control = self._find_control(['master'])
+        except AttributeError: # F9- (no untranslated_label attribute)
+            self._hardwired = True
+
+    def _unlink_sink_queues(self):
+        ''' Build the sink pipelines '''
+
+        # If there were existing pipelines, unlink them
+        for i in range(self._pad_count):
+            log.debug('unlinking old elements')
+            try:
+                self.splitter.unlink(self.queue[i])
+                self.queue[i].unlink(self.fakesink[i])
+            except:
+                traceback.print_exc()
+
+        # Build the new pipelines
+        self._pad_count = 0
+        self.pads = []
+        log.debug('building new pipelines')
+
     def _splitter_pad_added(self, element, pad):
         ''' Seems to be the case that ring is right channel 0,
                                        tip is  left channel 1'''
         log.debug('splitter pad %d added' % (self._pad_count))
-        if (self._pad_count < MAX_GRAPHS):
+        self.pads.append(pad)
+        if (self._pad_count < min(self._channels, MAX_GRAPHS)):
             pad.link(self.queue[self._pad_count].get_pad('sink'))
             self.queue[self._pad_count].get_pad('src').link(
                 self.fakesink[self._pad_count].get_pad('sink'))
             self._pad_count += 1
         else:
-            log.debug('ignoring channels > %d' % (MAX_GRAPHS))
+            log.debug('ignoring channels > %d' % (min(self._channels,
+                                                      MAX_GRAPHS)))
 
     def set_handoff_signal(self, handoff_state):
         '''Sets whether the handoff signal would generate an interrupt or not'''
-        self.fakesink[0].set_property('signal-handoffs', handoff_state)
-        if self._channels == 2:
-            self.fakesink[1].set_property('signal-handoffs', handoff_state)
+        for i in range(len(self.fakesink)):
+            self.fakesink[i].set_property('signal-handoffs', handoff_state)
 
     def _new_buffer(self, buf, channel):
         ''' Use a new buffer '''
@@ -205,13 +233,11 @@ class AudioGrab:
     def on_buffer(self, element, buffer, pad, channel):
         '''The function that is called whenever new data is available
         This is the signal handler for the handoff signal'''
+        # log.debug('on_buffer: channel %d' % (channel))
         temp_buffer = fromstring(buffer, 'int16')
         if not self.dont_queue_the_buffer:
+            # log.debug('on_buffer: calling _new_buffer')
             self._new_buffer(temp_buffer, channel=channel)
-
-        # FIXME: manage multiple channels
-        if channel > 0:
-            return False
 
         if self.logging_state:
             # If we've hit the maximum no. of log files, stop.
@@ -232,11 +258,13 @@ class AudioGrab:
 
         # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
+            # log.debug('on_buffer: setting display value')
             if self._display_value == 0: # Display value at DISPLAY_DUTY_CYCLE
                 self.sensor.set_sample_value(str(temp_buffer[0]))
                 self._display_value = DISPLAY_DUTY_CYCLE
             else:
                 self._display_value -= 1
+        # log.debug('on_buffer: return False')
         return False
 
     def set_freeze_the_display(self, freeze=False):
@@ -343,6 +371,7 @@ class AudioGrab:
     def start_grabbing(self):
         '''Called right at the start of the Activity'''
         self.start_sound_device()
+        self.set_handoff_signal(True)
 
     def pause_grabbing(self):
         '''When Activity goes into background'''
@@ -353,6 +382,7 @@ class AudioGrab:
         '''When Activity becomes active after going to background'''
         self.start_sound_device()
         self.resume_state()
+        self.set_handoff_signal(True)
 
     def stop_grabbing(self):
         '''Not used ???'''
@@ -777,17 +807,31 @@ class AudioGrab:
         }
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         log.debug('====================================')
-        log.debug('Set Sensor Type to %s' % (str(sensor_type)))
+        log.debug('Set sensor type to %s' % (str(sensor_type)))
         self._set_sensor_type(mode, bias, gain, boost)
         log.debug('====================================')
 
     def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
         '''Helper to modify (some) of the sensor settings.'''
-        if mode is not None:
-            self.set_dc_mode(mode)
-            if self._dc_control is not None:
-                os.system('amixer get "%s"' %\
-                              (self._dc_control.props.untranslated_label))
+
+        log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        log.debug('parameters: %s %s %s %s' % (str(mode), str(bias),
+                                               str(gain), str(boost)))
+        log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        log.debug('%s %s' % (str(mode), str(self.dcmode)))
+        if mode is not None and mode != self.dcmode:
+            # If we change to/from dcmode, we need to rebuild the pipelines
+            self.stop_grabbing()
+            self._unlink_sink_queues()
+
+            if mode is not None:
+                self.set_dc_mode(mode)
+                if self._dc_control is not None:
+                    os.system('amixer get "%s"' %\
+                                  (self._dc_control.props.untranslated_label))
+            self.dcmode = mode
+            self.start_grabbing()
+
         if bias is not None:
             self.set_bias(bias)
             if self._mic_bias_control is not None:
@@ -822,7 +866,6 @@ class AudioGrab:
 class AudioGrab_XO1(AudioGrab):
     ''' Use default parameters for OLPC XO 1.0 laptop '''
     pass
-
 
 class AudioGrab_XO15(AudioGrab):
     ''' Override parameters for OLPC XO 1.5 laptop '''
