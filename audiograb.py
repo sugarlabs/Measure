@@ -83,9 +83,19 @@ class AudioGrab():
         self._display_value = DISPLAY_DUTY_CYCLE
 
         self._query_mixer()
-        if self._channels is None:  # didn't find channels in any controllers
+        # If Channels was not found in the Capture controller, guess.
+        if self._channels is None:
+            log.warning('Guessing there are 2 channels')
             self._channels = 2
         self.activity.wave.set_channels(self._channels)
+
+        # Variables for saving and resuming state of sound device
+        self.master = self.get_master()
+        self.bias = BIAS
+        self.dc_mode = DC_MODE_ENABLE
+        self.capture_gain = CAPTURE_GAIN
+        self.mic_boost = MIC_BOOST
+        self.mic = self.get_mic_gain()
 
         # Set up gstreamer pipeline
         self._pad_count = 0
@@ -123,14 +133,6 @@ class AudioGrab():
 
         self.dont_queue_the_buffer = False
 
-        # Variables for saving and resuming state of sound device
-        self.master = self.get_master()
-        self.bias = BIAS
-        self.dcmode = DC_MODE_ENABLE
-        self.capture_gain = CAPTURE_GAIN
-        self.mic_boost = MIC_BOOST
-        self.mic = self.get_mic_gain()
-
         # Timer for interval sampling and switch to indicate when to capture
         self.capture_timer = None
         self.capture_interval_sample = False
@@ -141,49 +143,23 @@ class AudioGrab():
         assert rc == gst.STATE_CHANGE_SUCCESS
 
         # Query the available controls
-        try:  # F11+
-            log.debug('controls: %r', [t.props.untranslated_label \
-                                       for t in self._mixer.list_tracks()])
-            self._capture_control = self._find_control(['capture'])
-            if self._capture_control is not None:
-                log.debug('Capture is %s' % (
-                        self._capture_control.props.untranslated_label))
-                log.debug('Min %s' % (str(self._capture_control.min_volume)))
-                log.debug('Max %s' % (str(self._capture_control.max_volume)))
-                log.debug('Channels %s' % (
-                        str(self._capture_control.num_channels)))
-                if self._channels is None:
-                    self._channels = self._capture_control.num_channels
+        tracks_list = self._mixer.list_tracks()
+        if hasattr(tracks_list[0].props, 'untranslated_label'):
+            log.debug('Found controls for: %r', [t.props.untranslated_label \
+                                       for t in tracks_list])
+            self._capture_control = self._find_control(['capture', 'axi'])
             self._dc_control = self._find_control(['dc mode'])
             self._mic_bias_control = self._find_control(['mic bias',
                                                          'dc input bias',
                                                          'v_refout'])
-            if self._mic_bias_control is not None:
-                log.debug('Mic Bias is %s' % (
-                        self._mic_bias_control.props.untranslated_label))
-                log.debug('Min %s' % (str(self._mic_bias_control.min_volume)))
-                log.debug('Max %s' % (str(self._mic_bias_control.max_volume)))
-                log.debug('Channels %s' % (
-                        str(self._mic_bias_control.num_channels)))
-                if self._channels is None:
-                    self._channels = self._mic_bias_control.num_channels
             self._mic_boost_control = self._find_control(['mic boost',
                                                           'mic boost (+20db)',
                                                           'internal mic boost',
                                                           'analog mic boost'])
-            if self._mic_boost_control is not None:
-                log.debug('Mic Boost is %s' % (
-                        self._mic_boost_control.props.untranslated_label))
-                log.debug('Min %s' % (str(self._mic_boost_control.min_volume)))
-                log.debug('Max %s' % (str(self._mic_boost_control.max_volume)))
-                log.debug('Channels %s' % (
-                        str(self._mic_boost_control.num_channels)))
-                if self._channels is None:
-                    self._channels = self._mic_boost_control.num_channels
-
             self._mic_gain_control = self._find_control(['mic'])
             self._master_control = self._find_control(['master'])
-        except AttributeError: # F9- (no untranslated_label attribute)
+        else:  # Use hardwired values
+            log.warning('Cannot use mixer controls directly')
             self._hardwired = True
 
     def _unlink_sink_queues(self):
@@ -414,8 +390,16 @@ class AudioGrab():
 
         controls.sort(key=lambda e: e[1])
         if controls:
-            log.debug('found control: %s' %\
+            log.debug('Found control: %s' %\
                           (str(controls[0][0].props.untranslated_label)))
+
+            if self._channels is None:
+                if hasattr(controls[0][0], 'num_channels'):
+                    channels = controls[0][0].num_channels
+                    if channels > 0:
+                        self._channels = channels
+                        log.debug('setting channels to %d' % (self._channels))
+
             return controls[0][0]
 
         return None
@@ -426,7 +410,7 @@ class AudioGrab():
         log.debug('Save state')
         self.master = self.get_master()
         self.bias = self.get_bias()
-        self.dcmode = self.get_dc_mode()
+        self.dc_mode = self.get_dc_mode()
         self.capture_gain = self.get_capture_gain()
         self.mic_boost = self.get_mic_boost()
         log.debug('====================================')
@@ -437,7 +421,7 @@ class AudioGrab():
         log.debug('Resume state')
         self.set_master(self.master)
         self.set_bias(self.bias)
-        self.set_dc_mode(self.dcmode)
+        self.set_dc_mode(self.dc_mode)
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
         log.debug('====================================')
@@ -474,17 +458,18 @@ class AudioGrab():
             log.warning('No %s control, returning constant volume', name)
             return 100
 
-        try: # sometimes get_volume does not return a tuple
-            hw_volume = self._mixer.get_volume(control)[0]
-        except IndexError:
-            log.warning('_get_volume: %s (%d-%d) %d channels' % (
-                    control.props.untranslated_label, control.min_volume,
-                    control.max_volume, control.num_channels))
-            return 100
+        volume = self._mixer.get_volume(control)
+        if type(volume) == tuple:
+            hw_volume = volume[0]
+        else:
+            hw_volume = volume
 
         min_vol = control.min_volume
         max_vol = control.max_volume
-        percent = (hw_volume - min_vol)*100//(max_vol - min_vol)
+        if max_vol == min_vol:
+            percent = 100
+        else:
+            percent = (hw_volume - min_vol) * 100 // (max_vol - min_vol)
         log.debug('Getting %s (%s) volume: %d (%d)', name,
             control.props.untranslated_label, percent, hw_volume)
         return percent
@@ -499,10 +484,9 @@ class AudioGrab():
         min_vol = control.min_volume
         max_vol = control.max_volume
         if min_vol != max_vol:
-            hw_volume = value*(max_vol - min_vol)//100 + min_vol
-            self._mixer.set_volume(control, (hw_volume,)*control.num_channels)
-            # log.debug('Set volume of %s (%s) to %d (%d)', name,
-            #           control.props.untranslated_label, value, hw_volume)
+            hw_volume = value * (max_vol - min_vol) // 100 + min_vol
+            self._mixer.set_volume(control,
+                                   (hw_volume,) * control.num_channels)
         else:
             log.warning('_set_volume: %s (%d-%d) %d channels' % (
                     control.props.untranslated_label, control.min_volume,
@@ -539,7 +523,7 @@ class AudioGrab():
             os.system('amixer set Master ' + str(master_val) + '%')
 
     def get_master(self):
-        '''Gets the Master gain slider settings. The value returned is an
+        '''Gets the MIC gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%'''
         if not self._hardwired:
             return self._get_volume(self._master_control, 'master')
@@ -818,49 +802,43 @@ class AudioGrab():
         log.debug('parameters: %s %s %s %s' % (str(mode), str(bias),
                                                str(gain), str(boost)))
         log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-        log.debug('%s %s' % (str(mode), str(self.dcmode)))
-        if mode is not None and mode != self.dcmode:
-            # If we change to/from dcmode, we need to rebuild the pipelines
+        if mode is not None and mode != self.get_dc_mode():
+            # If we change to/from dc mode, we need to rebuild the pipelines
+            log.debug('dc mode has changed: %s %s' % (str(mode),
+                                                      str(self.get_dc_mode())))
             self.stop_grabbing()
             self._unlink_sink_queues()
-
-            if mode is not None:
-                self.set_dc_mode(mode)
-                if self._dc_control is not None:
-                    os.system('amixer get "%s"' %\
-                                  (self._dc_control.props.untranslated_label))
-            self.dcmode = mode
+            self.set_dc_mode(mode)
+            log.debug('dc_mode is: %s' % (str(self.get_dc_mode())))
             self.start_grabbing()
 
         if bias is not None:
             self.set_bias(bias)
             if self._mic_bias_control is not None:
-                os.system('amixer get "%s"' %\
-                              (self._mic_bias_control.props.untranslated_label))
+                log.debug('bias is: %s' % (str(self.get_bias())))
+
         if gain is not None:
             self.set_capture_gain(gain)
             if self._capture_control is not None:
-                os.system('amixer get "%s"' %\
-                              (self._capture_control.props.untranslated_label))
+                log.debug('gain is %s' % (str(self.get_capture_gain())))
+
         if boost is not None:
             self.set_mic_boost(boost)
             if self._mic_boost_control is not None:
-                os.system('amixer get "%s"' %\
-                             (self._mic_boost_control.props.untranslated_label))
+                log.debug('boost is %s' % (str(self.get_mic_boost())))
 
     def on_activity_quit(self):
         '''When Activity quits'''
-        log.debug('====================================')
+        log.debug('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         log.debug('Quitting')
         self.set_mic_boost(QUIT_MIC_BOOST)
         self.set_dc_mode(QUIT_DC_MODE_ENABLE)
         self.set_capture_gain(QUIT_CAPTURE_GAIN)
         self.set_bias(QUIT_BIAS)
-        # quit_PCM???
         self.stop_sound_device()
         if self.logging_state:
             self.activity.ji.stop_session()
-        log.debug('====================================')
+        log.debug('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
 
 class AudioGrab_XO1(AudioGrab):
