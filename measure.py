@@ -166,6 +166,9 @@ class MeasureActivity(activity.Activity):
             self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
 
+        # Start with audio recording enabled
+        self.audiograb.set_sensor_type('sound')
+
         # no sharing
         self.max_participants = 1
 
