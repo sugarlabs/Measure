@@ -23,7 +23,7 @@ import gst
 import gst.interfaces
 from numpy import fromstring
 import os
-import subprocess
+import commands
 import traceback
 from string import find
 from threading import Timer
@@ -528,12 +528,15 @@ class AudioGrab():
         if not self._hardwired:
             return self._get_volume(self._master_control, 'master')
         else:
-            p = str(subprocess.Popen(['amixer', 'get', 'Master'],
-                                     stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p, 'Front Left:'):]
-            p = p[find(p, '[')+1:]
-            p = p[:find(p, '%]')]
-            return int(p)
+            (status, output) = commands.getstatusoutput('amixer get Master')
+            if status == 0:
+                output = output[find(output, 'Front Left:'):]
+                output = output[find(output, '[') + 1:]
+                output = output[:find(output, '%]')]
+                return int(output)
+            else:
+                log.warning('amixer: Could not get Master volume')
+                return 100
 
     def set_bias(self, bias_state=False):
         '''Enables / disables bias voltage.'''
@@ -600,14 +603,18 @@ class AudioGrab():
                 return False
             return True
         else:
-            p = str(subprocess.Popen(['amixer', 'get', '"V_REFOUT Enable"'],
-                                     stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p, 'Mono:'):]
-            p = p[find(p, '[')+1:]
-            p = p[:find(p, ']')]
-            if p == 'on':
-                return True
-            return False
+            (status, output) = commands.getstatusoutput(
+                'amixer get "V_REFOUT Enable"')
+            if status == 0:
+                output = output[find(output, 'Mono:'):]
+                output = output[find(output, '[') + 1:]
+                output = output[:find(output, ']')]
+                if output == 'on':
+                    return True
+                return False
+            else:
+                log.warning('amixer: Could not get mic bias voltage')
+                return False
 
     def set_dc_mode(self, dc_mode=False):
         '''Sets the DC Mode Enable control
@@ -627,14 +634,17 @@ class AudioGrab():
             else:
                 return False
         else:
-            p = str(subprocess.Popen(['amixer', 'get', '"DC Mode Enable"'],
-                                     stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p, 'Mono:'):]
-            p = p[find(p, '[')+1:]
-            p = p[:find(p, ']')]
-            if p == 'on':
-                return True
+            (status, output) = commands.getstatusoutput(
+                'amixer get "DC Mode Enable"')
+            if status == 0:
+                output = output[find(output, 'Mono:'):]
+                output = output[find(output, '[') + 1:]
+                output = output[:find(output, ']')]
+                if output == 'on':
+                    return True
+                return False
             else:
+                log.warning('amixer: Could not get DC Mode')
                 return False
 
     def set_mic_boost(self, mic_boost=False):
@@ -710,14 +720,17 @@ class AudioGrab():
                 return True
             return False
         else:
-            p = str(subprocess.Popen(['amixer', 'get', '"Mic Boost (+20dB)"'],
-                                     stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p, 'Mono:'):]
-            p = p[find(p, '[')+1:]
-            p = p[:find(p, ']')]
-            if p == 'on':
-                return True
+            (status, output) = commands.getstatusoutput(
+                'amixer get "Mic Boost (+20dB)"')
+            if status == 0:
+                output = output[find(output, 'Mono:'):]
+                output = output[find(output, '[') + 1:]
+                output = output[:find(output, ']')]
+                if output == 'on':
+                    return True
+                return False
             else:
+                log.warning('amixer: Could not get mic boost')
                 return False
 
     def set_capture_gain(self, capture_val):
@@ -739,12 +752,15 @@ class AudioGrab():
             else:
                 return 0
         else:
-            p = str(subprocess.Popen(['amixer', 'get', 'Capture'],
-                                     stdout=subprocess.PIPE).communicate()[0])
-            p = p[find(p, 'Front Left:'):]
-            p = p[find(p, '[')+1:]
-            p = p[:find(p, '%]')]
-            return int(p)
+            (status, output) = commands.getstatusoutput('amixer get Capture')
+            if status == 0:
+                output = output[find(output, 'Front Left:'):]
+                output = output[find(output, '[') + 1:]
+                output = output[:find(output, '%]')]
+                return int(output)
+            else:
+                log.warning('amixer: Could not get Capture level')
+                return 100
 
     def set_mic_gain(self, mic_val):
         '''Sets the MIC gain slider settings
@@ -761,15 +777,15 @@ class AudioGrab():
         if not self._hardwired:
             return self._get_volume(self._mic_gain_control, 'Mic')
         else:
-            p = str(subprocess.Popen(['amixer', 'get', 'Mic'],
-                                     stdout=subprocess.PIPE).communicate()[0])
-            try:
-                p = p[find(p, 'Mono:'):]
-                p = p[find(p, '[')+1:]
-                p = p[:find(p, '%]')]
-                return int(p)
-            except:
-                return(0)
+            (status, output) = commands.getstatusoutput('amixer get Mic')
+            if status == 0:
+                output = output[find(output, 'Mono:'):]
+                output = output[find(output, '[') + 1:]
+                output = output[:find(output, '%]')]
+                return int(output)
+            else:
+                log.warning('amixer: Could not get mic gain level')
+                return 100
 
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Set the type of sensor you want to use. Set sensor_type according
