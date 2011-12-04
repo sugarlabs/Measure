@@ -79,7 +79,7 @@ class AudioGrab():
         self._mic_bias_control = None
         self._capture_control = None
         self._mic_boost_control = None
-        self._hardwired = False  # Query controls or use hardwired names
+        self._labels_available = True  # Query controls for device names
         self._display_value = DISPLAY_DUTY_CYCLE
 
         self._query_mixer()
@@ -160,7 +160,7 @@ class AudioGrab():
             self._master_control = self._find_control(['master'])
         else:  # Use hardwired values
             log.warning('Cannot use mixer controls directly')
-            self._hardwired = True
+            self._labels_available = False
 
     def _unlink_sink_queues(self):
         ''' Build the sink pipelines '''
@@ -501,14 +501,14 @@ class AudioGrab():
 
     def mute_master(self):
         '''Mutes the Master Control'''
-        if not self._hardwired and self.activity.hw != XO1:
+        if self._labels_available and self.activity.hw != XO1:
             self._set_mute(self._master_control, 'Master', True)
         else:
             self.amixer_set('Master', False)
 
     def unmute_master(self):
         '''Unmutes the Master Control'''
-        if not self._hardwired and self.activity.hw != XO1:
+        if self._labels_available and self.activity.hw != XO1:
             self._set_mute(self._master_control, 'Master', True)
         else:
             self.amixer_set('Master', True)
@@ -517,7 +517,7 @@ class AudioGrab():
         '''Sets the Master gain slider settings
         master_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set'''
-        if not self._hardwired:
+        if self._labels_available:
             self._set_volume(self._master_control, 'Master', master_val)
         else:
             os.system('amixer set Master ' + str(master_val) + '%')
@@ -525,7 +525,7 @@ class AudioGrab():
     def get_master(self):
         '''Gets the MIC gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%'''
-        if not self._hardwired:
+        if self._labels_available:
             return self._get_volume(self._master_control, 'master')
         else:
             (status, output) = commands.getstatusoutput('amixer get Master')
@@ -540,7 +540,7 @@ class AudioGrab():
 
     def set_bias(self, bias_state=False):
         '''Enables / disables bias voltage.'''
-        if not self._hardwired and self.activity.hw != XO1:
+        if self._labels_available and self.activity.hw != XO1:
             if self._mic_bias_control is None:
                 return
             # if not isinstance(self._mic_bias_control,
@@ -573,14 +573,14 @@ class AudioGrab():
                     self._mic_bias_control.num_channels))
                 self._set_mute(self._mic_bias_control, 'Mic Bias',
                                not bias_state)
-        elif self._hardwired:
+        elif not self._labels_available:
             self.amixer_set('V_REFOUT Enable', bias_state)
         else:
             self.amixer_set('MIC Bias Enable', bias_state)
 
     def get_bias(self):
         '''Check whether bias voltage is enabled.'''
-        if not self._hardwired:
+        if self._labels_available:
             if self._mic_bias_control is None:
                 return False
             if self._mic_bias_control not in self._mixer.list_tracks():
@@ -619,7 +619,7 @@ class AudioGrab():
     def set_dc_mode(self, dc_mode=False):
         '''Sets the DC Mode Enable control
         pass False to mute and True to unmute'''
-        if not self._hardwired and self.activity.hw != XO1:
+        if self._labels_available and self.activity.hw != XO1:
             if self._dc_control is not None:
                 self._set_mute(self._dc_control, 'DC mode', not dc_mode)
         else:
@@ -627,8 +627,8 @@ class AudioGrab():
 
     def get_dc_mode(self):
         '''Returns the setting of DC Mode Enable control
-        i .e. True: Unmuted and False: Muted'''
-        if not self._hardwired:
+        i.e. True: Unmuted and False: Muted'''
+        if self._labels_available:
             if self._dc_control is not None:
                 return not self._get_mute(self._dc_control, 'DC mode', False)
             else:
@@ -650,7 +650,7 @@ class AudioGrab():
     def set_mic_boost(self, mic_boost=False):
         '''Set Mic Boost.
         True = +20dB, False = 0dB'''
-        if not self._hardwired:
+        if self._labels_available:
             if self._mic_boost_control is None:
                 return
             if self._mic_boost_control not in self._mixer.list_tracks():
@@ -691,7 +691,7 @@ class AudioGrab():
     def get_mic_boost(self):
         '''Return Mic Boost setting.
         True = +20dB, False = 0dB'''
-        if not self._hardwired:
+        if self._labels_available:
             if self._mic_boost_control is None:
                 return False
             if self._mic_boost_control not in self._mixer.list_tracks():
@@ -737,7 +737,7 @@ class AudioGrab():
         '''Sets the Capture gain slider settings
         capture_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set'''
-        if not self._hardwired and self.activity.hw != XO1:
+        if self._labels_available and self.activity.hw != XO1:
             if self._capture_control is not None:
                 self._set_volume(self._capture_control, 'Capture', capture_val)
         else:
@@ -746,7 +746,7 @@ class AudioGrab():
     def get_capture_gain(self):
         '''Gets the Capture gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%'''
-        if not self._hardwired:
+        if self._labels_available:
             if self._capture_control is not None:
                 return self._get_volume(self._capture_control, 'Capture')
             else:
@@ -766,7 +766,7 @@ class AudioGrab():
         '''Sets the MIC gain slider settings
         mic_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set'''
-        if not self._hardwired and self.activity.hw != XO1:
+        if self._labels_available and self.activity.hw != XO1:
             self._set_volume(self._mic_gain_control, 'Mic', mic_val)
         else:
             os.system('amixer set Mic ' + str(mic_val) + '%')
@@ -774,7 +774,7 @@ class AudioGrab():
     def get_mic_gain(self):
         '''Gets the MIC gain slider settings. The value returned is an
         integer between 0-100 and is an indicative of the percentage 0 - 100%'''
-        if not self._hardwired:
+        if self._labels_available:
             return self._get_volume(self._mic_gain_control, 'Mic')
         else:
             (status, output) = commands.getstatusoutput('amixer get Mic')
