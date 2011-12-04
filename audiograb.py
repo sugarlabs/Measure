@@ -22,7 +22,6 @@ pygst.require("0.10")
 import gst
 import gst.interfaces
 from numpy import fromstring
-import os
 import commands
 import traceback
 from string import find
@@ -64,7 +63,10 @@ class AudioGrab():
         self.screenshot = True
 
         self.rate = RATE
-        self._channels = None
+        if self.activity.hw == XO1:
+            self._channels = 1
+        else:
+            self._channels = None
         self.final_count = 0
         self.count_temp = 0
         self.entry_count = 0
@@ -113,7 +115,7 @@ class AudioGrab():
         if self._channels == 1:
             self.fakesink.append(gst.element_factory_make('fakesink', 'fsink'))
             self.pipeline.add(self.fakesink[0])
-            self.fakesink[0].connect('handoff', self.on_buffer)
+            self.fakesink[0].connect('handoff', self.on_buffer, 0)
             self.fakesink[0].set_property('signal-handoffs', True)
             gst.element_link_many(self.alsasrc, self.caps1, self.fakesink[0])
         else:
@@ -426,10 +428,6 @@ class AudioGrab():
         self.set_mic_boost(self.mic_boost)
         log.debug('====================================')
 
-        '''
-        self.set_PCM_gain(self.PCM )
-        self.set_mic_gain(self.mic)
-        '''
 
     def _get_mute(self, control, name, default):
         '''Get mute status of a control'''
@@ -495,9 +493,15 @@ class AudioGrab():
     def amixer_set(self, control, state):
         ''' Direct call to amixer for old systems. '''
         if state:
-            os.system('amixer set %s unmute' % (control))
+            (status, output) = commands.getstatusoutput(
+                'amixer set "%s" unmute' % (control))
+            if status != 0:
+                log.warning('Problem with amixer set "%s" unmute' % (control))
         else:
-            os.system('amixer set %s mute' % (control))
+            (status, output) = commands.getstatusoutput(
+                'amixer set "%s" mute' % (control))
+            if status != 0:
+                log.warning('Problem with amixer set "%s" mute' % (control))
 
     def mute_master(self):
         '''Mutes the Master Control'''
@@ -520,7 +524,10 @@ class AudioGrab():
         if self._labels_available:
             self._set_volume(self._master_control, 'Master', master_val)
         else:
-            os.system('amixer set Master ' + str(master_val) + '%')
+            (status, output) = commands.getstatusoutput(
+                'amixer set Master %d%s' % (master_val, '%'))
+            if status != 0:
+                log.warning('Problem with amixer set Master')
 
     def get_master(self):
         '''Gets the MIC gain slider settings. The value returned is an
@@ -542,37 +549,26 @@ class AudioGrab():
         '''Enables / disables bias voltage.'''
         if self._labels_available and self.activity.hw != XO1:
             if self._mic_bias_control is None:
+                log.warning('set_bias: no bias control in mixer')
                 return
-            # if not isinstance(self._mic_bias_control,
-            #              gst.interfaces.MixerOptions):
-            if self._mic_bias_control not in self._mixer.list_tracks():
-                log.warning('set_bias: not in mixer')
-                return self._set_mute(self._mic_bias_control, 'Mic Bias',
-                                      not bias_state)
-
-            #values = self._mic_bias_control.get_values()
+            # If there is a flag property, use set_mute
+            if self._mic_bias_control not in self._mixer.list_tracks() or \
+               hasattr(self._mic_bias_control.props, 'flags'):
+                self._set_mute(
+                    self._mic_bias_control, 'Mic Bias', not bias_state)
             # We assume that values are sorted from lowest (=off) to highest.
             # Since they are mixed strings ('Off', '50%', etc.), we cannot
             # easily ensure this by sorting with the default sort order.
-            log.debug('set bias max is %s' % (str(
-                        self._mic_bias_control.max_volume)))
-            try:
-                if bias_state:
-                    # self._mixer.set_option(self._mic_bias_control, values[-1])
-                    self._mixer.set_volume(self._mic_bias_control,
-                                           self._mic_bias_control.max_volume)
-                else:
-                    self._mixer.set_volume(self._mic_bias_control,
-                                           self._mic_bias_control.min_volume)
-                    # self._mixer.set_option(self._mic_bias_control, values[0])
-            except TypeError:
-                log.warning('set_bias: %s (%d-%d) %d channels' % (
-                    self._mic_bias_control.props.untranslated_label,
-                    self._mic_bias_control.min_volume,
-                    self._mic_bias_control.max_volume,
-                    self._mic_bias_control.num_channels))
-                self._set_mute(self._mic_bias_control, 'Mic Bias',
-                               not bias_state)
+            elif bias_state:  # Otherwise, set with volume
+                log.debug('setting bias to %s' % (
+                        str(self._mic_bias_control.max_volume)))
+                self._mixer.set_volume(self._mic_bias_control,
+                                       self._mic_bias_control.max_volume)
+            else:
+                log.debug('setting bias to %s' % (
+                        str(self._mic_bias_control.min_volume)))
+                self._mixer.set_volume(self._mic_bias_control,
+                                       self._mic_bias_control.min_volume)
         elif not self._labels_available:
             self.amixer_set('V_REFOUT Enable', bias_state)
         else:
@@ -582,24 +578,15 @@ class AudioGrab():
         '''Check whether bias voltage is enabled.'''
         if self._labels_available:
             if self._mic_bias_control is None:
+                log.warning('get_bias: no bias control in mixer')
                 return False
-            if self._mic_bias_control not in self._mixer.list_tracks():
-                #              gst.interfaces.MixerOptions):
-                log.warning('get_bias: not in mixer')
-                return not self._get_mute(self._mic_bias_control, 'Mic Bias',
-                                          False)
-            #values = self._mic_bias_control.get_option()
-            #values = self._mic_bias_control.get_values()
-            log.warning('get_bias: %s (%d-%d) %d channels' % (
-                    self._mic_bias_control.props.untranslated_label,
-                    self._mic_bias_control.min_volume,
-                    self._mic_bias_control.max_volume,
-                    self._mic_bias_control.num_channels))
-            current = self._mixer.get_volume(self._mic_bias_control)
-            # same ordering assertion as in set_bias() applies
-            # if current == values[0]:
-            log.debug('current: %s' % (str(current)))
-            if current == self._mic_bias_control.min_volume:
+            if self._mic_bias_control not in self._mixer.list_tracks() or \
+               hasattr(self._mic_bias_control.props, 'flags'):
+                return not self._get_mute(
+                    self._mic_bias_control, 'Mic Bias', False)
+            value = self._mixer.get_volume(self._mic_bias_control)
+            log.debug('get_bias volume is %s' % (str(value)))
+            if value == self._mic_bias_control.min_volume:
                 return False
             return True
         else:
@@ -652,39 +639,24 @@ class AudioGrab():
         True = +20dB, False = 0dB'''
         if self._labels_available:
             if self._mic_boost_control is None:
+                log.warning('set_mic_boost: no boost control in mixer')
                 return
-            if self._mic_boost_control not in self._mixer.list_tracks():
-                #              gst.interfaces.MixerOptions):
-                log.warning('set_mic_boost not in mixer %s' %\
-                                  (str(self._mic_boost_control)))
-                return self._set_mute(self._mic_boost_control, 'Mic Boost',
-                                      mic_boost)
-            #values = self._mic_boost_control.get_values()
-            value = self._mixer.get_volume(self._mic_boost_control)
-            '''
-            if '20dB' not in values or '0dB' not in values:
-                logging.error('Mic Boost (%s) is an option list, but doesn't '
-                              'contain 0dB and 20dB settings',
-                              self._mic_boost_control.props.label)
-                return
-            '''
-            try:
-                if mic_boost:
-                    # self._mixer.set_option(self._mic_boost_control, '20dB')
-                    self._mixer.set_volume(self._mic_boost_control,
-                                           self._mic_boost_control.max_volume)
-                else:
-                    # self._mixer.set_option(self._mic_boost_control, '0dB')
-                    self._mixer.set_volume(self._mic_boost_control,
-                                           self._mic_boost_control.min_volume)
-            except TypeError:
-                log.warning('set_mic_boost: %s (%d-%d) %d channels' % (
-                    self._mic_boost_control.props.untranslated_label,
-                    self._mic_boost_control.min_volume,
-                    self._mic_boost_control.max_volume,
-                    self._mic_boost_control.num_channels))
-                return self._set_mute(self._mic_boost_control, 'Mic Boost',
-                                      not mic_boost)
+            # If there is a flag property, use set_mute
+            if self._mic_boost_control not in self._mixer.list_tracks() or \
+               hasattr(self._mic_boost_control.props, 'flags'):
+                self._set_mute(
+                    self._mic_boost_control, 'Mic Boost', not mic_boost)
+            # Otherwise, set volume to max or min value
+            elif mic_boost:
+                log.debug('setting boost to %s' % (
+                        str(self._mic_boost_control.max_volume)))
+                self._mixer.set_volume(self._mic_boost_control,
+                                       self._mic_boost_control.max_volume)
+            else:
+                log.debug('setting boost to %s' % (
+                        str(self._mic_boost_control.min_volume)))
+                self._mixer.set_volume(self._mic_boost_control,
+                                       self._mic_boost_control.min_volume)
         else:
             self.amixer_set('Mic Boost (+20dB)', mic_boost)
 
@@ -693,32 +665,18 @@ class AudioGrab():
         True = +20dB, False = 0dB'''
         if self._labels_available:
             if self._mic_boost_control is None:
+                log.warning('get_mic_boost: no boost control in mixer')
                 return False
-            if self._mic_boost_control not in self._mixer.list_tracks():
-                logging.error('get_mic_boost not found in mixer %s' %\
-                                  (str(self._mic_boost_control)))
-                return self._get_mute(self._mic_boost_control, 'Mic Boost',
-                                      False)
-            #values = self._mic_boost_control.get_values()
-            # values = self._mixer.get_option(self._mic_boost_control)
-            '''
-            if '20dB' not in values or '0dB' not in values:
-                logging.error('Mic Boost (%s) is an option list, but doesn't '
-                              'contain 0dB and 20dB settings',
-                              self._mic_boost_control.props.label)
+            if self._mic_boost_control not in self._mixer.list_tracks() or \
+               hasattr(self._mic_boost_control.props, 'flags'):
+                return not self._get_mute(
+                    self._mic_boost_control, 'Mic Boost', False)
+            else:  # Compare to min value
+                value = self._mixer.get_volume(self._mic_boost_control)
+                log.debug('get_mic_boost volume is %s' % (str(value)))
+                if value != self._mic_boost_control.min_volume:
+                    return True
                 return False
-            '''
-            log.warning('get_mic_boost: %s (%d-%d) %d channels' % (
-                    self._mic_boost_control.props.untranslated_label,
-                    self._mic_boost_control.min_volume,
-                    self._mic_boost_control.max_volume,
-                    self._mic_boost_control.num_channels))
-            current = self._mixer.get_volume(self._mic_boost_control)
-            log.debug('current: %s' % (str(current)))
-            # if current == '20dB':
-            if current != self._mic_boost_control.min_volume:
-                return True
-            return False
         else:
             (status, output) = commands.getstatusoutput(
                 'amixer get "Mic Boost (+20dB)"')
@@ -741,7 +699,10 @@ class AudioGrab():
             if self._capture_control is not None:
                 self._set_volume(self._capture_control, 'Capture', capture_val)
         else:
-            os.system('amixer set Capture ' + str(capture_val) + '%')
+            (status, output) = commands.getstatusoutput(
+                'amixer set Capture %d%s' % (capture_val, '%'))
+            if status != 0:
+                log.warning('Problem with amixer set Capture')
 
     def get_capture_gain(self):
         '''Gets the Capture gain slider settings. The value returned is an
@@ -769,7 +730,10 @@ class AudioGrab():
         if self._labels_available and self.activity.hw != XO1:
             self._set_volume(self._mic_gain_control, 'Mic', mic_val)
         else:
-            os.system('amixer set Mic ' + str(mic_val) + '%')
+            (status, output) = commands.getstatusoutput(
+                'amixer set Mic %d%s' % (mic_val, '%'))
+            if status != 0:
+                log.warning('Problem with amixer set Mic')
 
     def get_mic_gain(self):
         '''Gets the MIC gain slider settings. The value returned is an
@@ -797,7 +761,7 @@ class AudioGrab():
         SENSOR_DC_NO_BIAS - DC coupling with Bias Off --> measuring voltage
             output sensor. For example LM35 which gives output proportional
             to temperature
-        SENSOR_DC_BIAS - DC coupling with Bias On --> measuing resistance.
+        SENSOR_DC_BIAS - DC coupling with Bias On --> measuring resistance.
         '''
         PARAMETERS = {
             SENSOR_AC_NO_BIAS: (False, False, 50, True),
@@ -815,17 +779,16 @@ class AudioGrab():
         '''Helper to modify (some) of the sensor settings.'''
 
         log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-        log.debug('parameters: %s %s %s %s' % (str(mode), str(bias),
-                                               str(gain), str(boost)))
+        log.debug('parameters: dc mode: %s, bias: %s, gain: %s, boost: %s' % (
+                str(mode), str(bias), str(gain), str(boost)))
         log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         if mode is not None and mode != self.get_dc_mode():
             # If we change to/from dc mode, we need to rebuild the pipelines
-            log.debug('dc mode has changed: %s %s' % (str(mode),
-                                                      str(self.get_dc_mode())))
+            log.debug('dc mode has changed')
             self.stop_grabbing()
             self._unlink_sink_queues()
             self.set_dc_mode(mode)
-            log.debug('dc_mode is: %s' % (str(self.get_dc_mode())))
+            log.debug('dcmode is: %s' % (str(self.get_dc_mode())))
             self.start_grabbing()
 
         if bias is not None:
