@@ -68,6 +68,14 @@ class SideToolbar(gtk.Toolbar):
         self.button_down.show()
 
         self.box1 = gtk.VBox(False, 0)
+        if self._channel == 0:
+            self.box1.pack_start(self._color_wave(self.activity.stroke_color),
+                                 False, True, 0)
+        elif self._channel == 1:
+            self.box1.pack_start(self._color_wave(self.activity.fill_color),
+                                 False, True, 0)
+        else:
+            self.box1.pack_start(self._color_wave('#FFFFFF'), False, True, 0)
         self.box1.pack_start(self._invert, False, True, 0)
         self.box1.pack_start(self.button_up, False, True, 0)
         self.box1.pack_start(self.yscrollbar, True, True, 0)
@@ -146,3 +154,30 @@ class SideToolbar(gtk.Toolbar):
         # self._update_string_for_textbox()  # from sound_toolbar
         return False
 
+    def _color_wave(self, color):
+        svg = '<?xml version="1.0" ?>\n\
+<!DOCTYPE svg  PUBLIC "-//W3C//DTD SVG 1.1//EN"  \n\
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n\
+<svg enable-background="new 0 0 55.125 55" height="55px" version="1.1" \n\
+viewBox="0 0 55.125 55" width="55.125px" x="0px" xml:space="preserve" \n\
+xmlns="http://www.w3.org/2000/svg" \n\
+xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">\n\
+		<path d="M9.066,27.5 c2.32-6.917,4.666-13.834,9.255-13.834\n\
+c9.179,0,9.179,27.668,18.358,27.668c4.59,0,6.986-6.917,9.332-13.834" \n\
+fill="none" stroke="%s" stroke-linecap="round" stroke-width="3.5"/>\n\
+</svg>' % (color)
+        pixbuf = svg_str_to_pixbuf(svg)
+        img = gtk.Image()
+        img.set_from_pixbuf(pixbuf)
+        img_tool = gtk.ToolItem()
+        img_tool.add(img)
+        return img_tool
+
+
+def svg_str_to_pixbuf(svg_string):
+    ''' Load pixbuf from SVG string '''
+    pl = gtk.gdk.PixbufLoader('svg')
+    pl.write(svg_string)
+    pl.close()
+    pixbuf = pl.get_pixbuf()
+    return pixbuf
