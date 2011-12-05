@@ -41,6 +41,12 @@ class SideToolbar(gtk.Toolbar):
         self.mode = 'sound'
         self.mode_values = {'sound': 3, 'sensor': 2}
 
+        self._invert = ToolButton('invert')
+        self._invert.set_tooltip(_('Invert'))
+        self._invert.connect('clicked', self._invert_control_cb)
+        self._invert.show()
+        self.activity.wave.set_invert_state(False, channel=self._channel)
+
         self.button_up = ToolButton('amp-high')
         self.button_up.set_tooltip(_('Increase amplitude'))
         self.button_up.connect('clicked', self._button_up_cb)
@@ -62,6 +68,7 @@ class SideToolbar(gtk.Toolbar):
         self.button_down.show()
 
         self.box1 = gtk.VBox(False, 0)
+        self.box1.pack_start(self._invert, False, True, 0)
         self.box1.pack_start(self.button_up, False, True, 0)
         self.box1.pack_start(self.yscrollbar, True, True, 0)
         self.box1.pack_start(self.button_down, False, True, 0)
@@ -122,5 +129,20 @@ class SideToolbar(gtk.Toolbar):
             self.button_up.set_tooltip(_('Increase bias'))
             self.button_down.set_icon('bias-low')
             self.button_down.set_tooltip(_('Decrease bias'))
+            self._invert.show()
         self.yscrollbar.set_value(self.mode_values[self.mode])
         return
+
+    def _invert_control_cb(self, data=None):
+        """ Callback for Invert Button """
+        if self.activity.wave.get_invert_state(channel=self._channel):
+            self.activity.wave.set_invert_state(False, self._channel)
+            self._invert.set_icon('invert')
+            self._invert.show()
+        else:
+            self.activity.wave.set_invert_state(True, self._channel)
+            self._invert.set_icon('invert2')
+            self._invert.show()
+        # self._update_string_for_textbox()  # from sound_toolbar
+        return False
+

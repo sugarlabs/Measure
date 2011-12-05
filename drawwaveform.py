@@ -71,7 +71,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.avg = ''
         self.pp = ''
         self.count = 0
-        self.invert = False
+        self.invert = []
 
         self._freq_range = 4
         self.draw_interval = 10
@@ -166,6 +166,7 @@ class DrawWaveform(gtk.DrawingArea):
             self.y_mag.append(3.0)
             self.gain.append(1.0)
             self.bias.append(0)
+            self.invert.append(False)
 
     def set_max_samples(self, num):
         """ Maximum no. of samples in ringbuffer """
@@ -199,14 +200,14 @@ class DrawWaveform(gtk.DrawingArea):
         self._indirect_queue_draw()
         return
 
-    def set_invert_state(self, invert_state):
+    def set_invert_state(self, invert_state, channel=0):
         """ In sensor mode, we can invert the plot """
-        self.invert = invert_state
+        self.invert[channel] = invert_state
         return
 
-    def get_invert_state(self):
+    def get_invert_state(self, channel=0):
         """ Return the current state of the invert flag """
-        return self.invert
+        return self.invert[channel]
 
     def get_drawing_interval(self):
         """Returns the pixel interval horizontally between plots of two
@@ -398,7 +399,7 @@ class DrawWaveform(gtk.DrawingArea):
                     if self.activity.CONTEXT == 'sensor':
                         self.y_mag[graph_id] = 1.0
 
-                    if self.invert:
+                    if self.invert[graph_id]:
                         data *= self.allocation.height / 3276.70 * \
                             self.y_mag[graph_id]
                     else:

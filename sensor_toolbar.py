@@ -75,12 +75,6 @@ class SensorToolbar(gtk.Toolbar):
         self.voltage.connect('clicked', self.set_resistance_voltage_mode,
                               'voltage')
 
-        # Set up Invert Button
-        self._invert = ToolButton('invert')
-        self.insert(self._invert, -1)
-        self._invert.set_tooltip(_('Invert'))
-        self._invert.connect('clicked', self._invert_control_cb)
-        self.activity.wave.set_invert_state(False)
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
@@ -205,19 +199,6 @@ class SensorToolbar(gtk.Toolbar):
         if self.activity.has_toolbarbox:
             self.activity.sound_toolbar.time.set_icon('domain-time')
             self.activity.sound_toolbar.freq.set_icon('domain-freq')
-        return False
-
-    def _invert_control_cb(self, data=None):
-        """ Callback for Invert Button """
-        if self.activity.wave.get_invert_state():
-            self.activity.wave.set_invert_state(False)
-            self._invert.set_icon('invert')
-            self._invert.show()
-        else:
-            self.activity.wave.set_invert_state(True)
-            self._invert.set_icon('invert2')
-            self._invert.show()
-        self._update_string_for_textbox()
         return False
 
     def set_mode(self, mode='resistance'):
