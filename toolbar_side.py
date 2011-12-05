@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
 #! /usr/bin/python
 #
-#    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009,10 Walter Bender
+# Author:  Arjun Sarwal   arjun@laptop.org
+# Copyright (C) 2007, Arjun Sarwal
+# Copyright (C) 2009-11 Walter Bender
 #
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
+
 
 import gtk
 from gettext import gettext as _
@@ -32,13 +28,16 @@ class SideToolbar(gtk.Toolbar):
     LOWER = 0.0
     UPPER = 4.0
 
-    def __init__(self, activity):
+    def __init__(self, activity, channel=0):
         """ Set up initial toolbars """
         gtk.Toolbar.__init__(self)
 
         self.activity = activity
-        self.show_toolbar = True
-
+        self._channel = channel
+        if self._channel == 0:
+            self.show_toolbar = True
+        else:  # Don't show second channel until we need it
+            self.show_toolbar = False
         self.mode = 'sound'
         self.mode_values = {'sound': 3, 'sensor': 2}
 
@@ -72,25 +71,23 @@ class SideToolbar(gtk.Toolbar):
     def _yscrollbar_cb(self, adjy, data=None):
         """ Callback for scrollbar """
         if self.mode == 'sound':
-            # print "toolbar side: setting mag to 1.0, %f" % (adjy.value)
-            self.activity.wave.set_mag_params(1.0, adjy.value)
-            # print "toolbar side: setting capture gain to %f" %\
-            #     (adjy.value * 100 / (self.UPPER - self.LOWER))
-            self.activity.audiograb.set_capture_gain(
-                adjy.value * 100 / (self.UPPER - self.LOWER))
-            self.activity.wave.set_bias_param(0)
+            self.activity.wave.set_mag_params(1.0, adjy.value,
+                                              channel=self._channel)
+            # self.activity.audiograb.set_capture_gain(
+            #     adjy.value * 100 / (self.UPPER - self.LOWER))
+            self.activity.wave.set_bias_param(0,
+                                              channel=self._channel)
         elif self.mode == 'sensor':
-            # print "toolbar side: setting bias param to %f" %\
-            #     (300 * (adjy.value - (self.UPPER - self.LOWER) / 2))
             self.activity.wave.set_bias_param(int(
-                    300 * (adjy.value - (self.UPPER - self.LOWER) / 2)))
+                    300 * (adjy.value - (self.UPPER - self.LOWER) / 2.)),
+                                              channel=self._channel)
         self.mode_values[self.mode] = adjy.value
         return True
 
     def _button_up_cb(self, data=None):
         """Moves slider up"""
-        new_value = self.yscrollbar.get_value() + (self.UPPER - self.LOWER)\
-            / 100.0
+        new_value = self.yscrollbar.get_value() + (self.UPPER - self.LOWER) \
+            / 100.
         if new_value <= self.UPPER:
             self.yscrollbar.set_value(new_value)
         else:
@@ -99,8 +96,8 @@ class SideToolbar(gtk.Toolbar):
 
     def _button_down_cb(self, data=None):
         """Moves slider down"""
-        new_value = self.yscrollbar.get_value() - (self.UPPER - self.LOWER)\
-            / 100.0
+        new_value = self.yscrollbar.get_value() - (self.UPPER - self.LOWER) \
+            / 100.
         if new_value >= self.LOWER:
             self.yscrollbar.set_value(new_value)
         else:

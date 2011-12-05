@@ -52,6 +52,10 @@ class DrawWaveform(gtk.DrawingArea):
         self.trigger_xpos = 0.0
         self.trigger_ypos = 0.5
 
+        self.y_mag = []  # additional scale factor for display
+        self.gain = []
+        self.bias = []  # vertical position fine-tuning from slider
+
         self.active = False
         self._redraw_atom = gtk.gdk.atom_intern('MeasureRedraw')
 
@@ -69,9 +73,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.count = 0
         self.invert = False
 
-        self.y_mag = 3.0  # additional scale factor for display
-        self.gain = 1.0
-        self.bias = 0  # vertical position fine-tuning from slider
         self._freq_range = 4
         self.draw_interval = 10
         self.num_of_points = 115
@@ -162,6 +163,9 @@ class DrawWaveform(gtk.DrawingArea):
         for i in range(self.channels):
             self.ringbuffer.append(RingBuffer1d(self.max_samples,
                                                 dtype='int16'))
+            self.y_mag.append(3.0)
+            self.gain.append(1.0)
+            self.bias.append(0)
 
     def set_max_samples(self, num):
         """ Maximum no. of samples in ringbuffer """
@@ -330,7 +334,7 @@ class DrawWaveform(gtk.DrawingArea):
                             samples_to_end = int(samples * (1 - xpos))
 
                             ypos -= 0.5
-                            ypos *= -32767.0 / self.y_mag
+                            ypos *= -32767.0 / self.y_mag[graph_id]
 
                             x_offset = self.allocation.width\
                                 * xpos - (samples - samples_to_end)\
@@ -392,14 +396,16 @@ class DrawWaveform(gtk.DrawingArea):
 
                     # Scaling the values
                     if self.activity.CONTEXT == 'sensor':
-                        self.y_mag = 1.0
+                        self.y_mag[graph_id] = 1.0
 
-                    if self.invert or graph_id == 1:  # FIX ME
-                        data *= (self.allocation.height / 32767.0 * self.y_mag)
+                    if self.invert:
+                        data *= self.allocation.height / 3276.70 * \
+                            self.y_mag[graph_id]
                     else:
-                        data *= (-self.allocation.height / 32767.0 * self.y_mag)
+                        data *= -self.allocation.height / 3276.70 * \
+                            self.y_mag[graph_id]
 
-                    data -= self.bias
+                    data -= self.bias[graph_id]
 
                     if self.fft_show:
                         data += self.allocation.height - 3
@@ -509,15 +515,15 @@ class DrawWaveform(gtk.DrawingArea):
     def get_active(self):
         return self.active
 
-    def get_mag_params(self):
-        return self.gain, self.y_mag
+    def get_mag_params(self, channel=0):
+        return self.gain[channel], self.y_mag[channel]
 
-    def set_mag_params(self, gain=1.0, y_mag=3.0):
-        self.gain = gain
-        self.y_mag = y_mag
+    def set_mag_params(self, gain=1.0, y_mag=3.0, channel=0):
+        self.gain[channel] = gain
+        self.y_mag[channel] = y_mag
 
-    def get_bias_param(self):
-        return self.bias
+    def get_bias_param(self, channel=0):
+        return self.bias[channel]
 
-    def set_bias_param(self, bias=0):
-        self.bias = bias
+    def set_bias_param(self, bias=0, channel=0):
+        self.bias[channel] = bias

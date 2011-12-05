@@ -174,12 +174,15 @@ class MeasureActivity(activity.Activity):
 
         self.has_toolbarbox = _has_toolbarbox
 
-        self.side_toolbar = SideToolbar(self)
-        self.text_box = TextBox()
-
         self.box3 = gtk.HBox(False, 0)
         self.box3.pack_start(self.wave, True, True, 0)
-        self.box3.pack_start(self.side_toolbar.box1, False, True, 0)
+
+        self.side_toolbars = []
+        for i in range(self.audiograb.channels):
+            self.side_toolbars.append(SideToolbar(self, channel=i))
+            self.box3.pack_start(self.side_toolbars[i].box1, False, True, 0)
+
+        self.text_box = TextBox()
 
         self.box1 = gtk.VBox(False, 0)
         self.box1.pack_start(self.box3, True, True, 0)
@@ -276,12 +279,9 @@ class MeasureActivity(activity.Activity):
 
     def set_show_hide_windows(self, mode='sound'):
         """Shows the appropriate window identified by the mode """
-        if mode == 'sound':
-            self.wave.set_context_on()
-            self.side_toolbar.set_show_hide(True, mode)
-        elif mode == 'sensor':
-            self.wave.set_context_on()
-            self.side_toolbar.set_show_hide(True, mode)
+        self.wave.set_context_on()
+        for i in range(self.audiograb.channels):
+            self.side_toolbars[i].set_show_hide(True, mode)
 
     def on_quit(self, data=None):
         """Clean up, close journal on quit"""

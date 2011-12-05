@@ -64,9 +64,9 @@ class AudioGrab():
 
         self.rate = RATE
         if self.activity.hw == XO1:
-            self._channels = 1
+            self.channels = 1
         else:
-            self._channels = None
+            self.channels = None
         self.final_count = 0
         self.count_temp = 0
         self.entry_count = 0
@@ -86,10 +86,10 @@ class AudioGrab():
 
         self._query_mixer()
         # If Channels was not found in the Capture controller, guess.
-        if self._channels is None:
+        if self.channels is None:
             log.warning('Guessing there are 2 channels')
-            self._channels = 2
-        self.activity.wave.set_channels(self._channels)
+            self.channels = 2
+        self.activity.wave.set_channels(self.channels)
 
         # Variables for saving and resuming state of sound device
         self.master = self.get_master()
@@ -110,9 +110,9 @@ class AudioGrab():
         self.caps1 = gst.element_factory_make('capsfilter', 'caps1')
         self.pipeline.add(self.caps1)
         caps_str = 'audio/x-raw-int,rate=%d,channels=%d,depth=16' % (
-            RATE, self._channels)
+            RATE, self.channels)
         self.caps1.set_property('caps', gst.caps_from_string(caps_str))
-        if self._channels == 1:
+        if self.channels == 1:
             self.fakesink.append(gst.element_factory_make('fakesink', 'fsink'))
             self.pipeline.add(self.fakesink[0])
             self.fakesink[0].connect('handoff', self.on_buffer, 0)
@@ -125,7 +125,7 @@ class AudioGrab():
                 self.splitter.set_properties('keep-positions=true', 'name=d')
                 self.splitter.connect('pad-added', self._splitter_pad_added)
                 gst.element_link_many(self.alsasrc, self.caps1, self.splitter)
-            for i in range(self._channels):
+            for i in range(self.channels):
                 self.queue.append(gst.element_factory_make('queue'))
                 self.pipeline.add(self.queue[i])
                 self.fakesink.append(gst.element_factory_make('fakesink'))
@@ -186,13 +186,13 @@ class AudioGrab():
                                        tip is  left channel 1'''
         log.debug('splitter pad %d added' % (self._pad_count))
         self.pads.append(pad)
-        if (self._pad_count < min(self._channels, MAX_GRAPHS)):
+        if (self._pad_count < min(self.channels, MAX_GRAPHS)):
             pad.link(self.queue[self._pad_count].get_pad('sink'))
             self.queue[self._pad_count].get_pad('src').link(
                 self.fakesink[self._pad_count].get_pad('sink'))
             self._pad_count += 1
         else:
-            log.debug('ignoring channels > %d' % (min(self._channels,
+            log.debug('ignoring channels > %d' % (min(self.channels,
                                                       MAX_GRAPHS)))
 
     def set_handoff_signal(self, handoff_state):
@@ -333,7 +333,7 @@ class AudioGrab():
         The sampling rate would be set in the device to the nearest available'''
         self.pause_grabbing()
         caps_str = 'audio/x-raw-int,rate=%d,channels=%d,depth=16' % (
-            sr, self._channels)
+            sr, self.channels)
         self.caps1.set_property('caps', gst.caps_from_string(caps_str))
         self.resume_grabbing()
 
@@ -395,12 +395,12 @@ class AudioGrab():
             log.debug('Found control: %s' %\
                           (str(controls[0][0].props.untranslated_label)))
 
-            if self._channels is None:
+            if self.channels is None:
                 if hasattr(controls[0][0], 'num_channels'):
                     channels = controls[0][0].num_channels
                     if channels > 0:
-                        self._channels = channels
-                        log.debug('setting channels to %d' % (self._channels))
+                        self.channels = channels
+                        log.debug('setting channels to %d' % (self.channels))
 
             return controls[0][0]
 
