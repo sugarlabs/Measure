@@ -42,7 +42,7 @@ if _has_toolbarbox:
     from sugar.graphics.toolbutton import ToolButton
 else:
     from sugar.activity.activity import ActivityToolbox
-
+from sugar.graphics import style
 from sugar.datastore import datastore
 
 try:
@@ -177,10 +177,16 @@ class MeasureActivity(activity.Activity):
         self.box3 = gtk.HBox(False, 0)
         self.box3.pack_start(self.wave, True, True, 0)
 
+        # We need an event box in order to set the background color
+        self.side_eventboxes = []
         self.side_toolbars = []
         for i in range(self.audiograb.channels):
+            self.side_eventboxes.append(gtk.EventBox())
+            self.side_eventboxes[i].modify_bg(
+                gtk.STATE_NORMAL, style.COLOR_TOOLBAR_GREY.get_gdk_color())
             self.side_toolbars.append(SideToolbar(self, channel=i))
-            self.box3.pack_start(self.side_toolbars[i].box1, False, True, 0)
+            self.side_eventboxes[i].add(self.side_toolbars[i].box1)
+            self.box3.pack_start(self.side_eventboxes[i], False, True, 0)
 
         self.text_box = TextBox()
 
