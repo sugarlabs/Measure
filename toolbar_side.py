@@ -21,12 +21,12 @@ from gettext import gettext as _
 
 from sugar.graphics.toolbutton import ToolButton
 
+from config import LOWER, UPPER
+
 
 class SideToolbar(gtk.Toolbar):
     """ A toolbar on the side of the canvas for adjusting gain/bias """
 
-    LOWER = 0.0
-    UPPER = 4.0
 
     def __init__(self, activity, channel=0):
         """ Set up initial toolbars """
@@ -53,7 +53,7 @@ class SideToolbar(gtk.Toolbar):
         self.button_up.show()
 
         self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode],
-                                          self.LOWER, self.UPPER,
+                                          LOWER, UPPER,
                                           0.1, 0.1, 0.0)
         self.adjustmenty.connect('value_changed', self._yscrollbar_cb,
                                  self.adjustmenty)
@@ -67,7 +67,9 @@ class SideToolbar(gtk.Toolbar):
         self.button_down.connect('clicked', self._button_down_cb)
         self.button_down.show()
 
+
         self.box1 = gtk.VBox(False, 0)
+
         if self._channel == 0:
             self.box1.pack_start(self._color_wave(self.activity.stroke_color),
                                  False, True, 0)
@@ -88,35 +90,33 @@ class SideToolbar(gtk.Toolbar):
         if self.mode == 'sound':
             self.activity.wave.set_mag_params(1.0, adjy.value,
                                               channel=self._channel)
-            # self.activity.audiograb.set_capture_gain(
-            #     adjy.value * 100 / (self.UPPER - self.LOWER))
             self.activity.wave.set_bias_param(0,
                                               channel=self._channel)
         elif self.mode == 'sensor':
             self.activity.wave.set_bias_param(int(
-                    300 * (adjy.value - (self.UPPER - self.LOWER) / 2.)),
+                    300 * (adjy.value - (UPPER - LOWER) / 2.)),
                                               channel=self._channel)
         self.mode_values[self.mode] = adjy.value
         return True
 
     def _button_up_cb(self, data=None):
         """Moves slider up"""
-        new_value = self.yscrollbar.get_value() + (self.UPPER - self.LOWER) \
+        new_value = self.yscrollbar.get_value() + (UPPER - LOWER) \
             / 100.
-        if new_value <= self.UPPER:
+        if new_value <= UPPER:
             self.yscrollbar.set_value(new_value)
         else:
-            self.yscrollbar.set_value(self.UPPER)
+            self.yscrollbar.set_value(UPPER)
         return True
 
     def _button_down_cb(self, data=None):
         """Moves slider down"""
-        new_value = self.yscrollbar.get_value() - (self.UPPER - self.LOWER) \
+        new_value = self.yscrollbar.get_value() - (UPPER - LOWER) \
             / 100.
-        if new_value >= self.LOWER:
+        if new_value >= LOWER:
             self.yscrollbar.set_value(new_value)
         else:
-            self.yscrollbar.set_value(self.LOWER)
+            self.yscrollbar.set_value(LOWER)
         return True
 
     def set_show_hide(self, show=True, mode='sound'):

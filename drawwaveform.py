@@ -20,7 +20,7 @@ from math import floor, ceil
 from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 
-from config import MAX_GRAPHS, RATE
+from config import MAX_GRAPHS, RATE, LOWER, UPPER
 
 # Initialize logging.
 import logging
@@ -397,9 +397,11 @@ class DrawWaveform(gtk.DrawingArea):
 
                     # Scaling the values
                     if self.activity.CONTEXT == 'sensor':
-                        factor =  32767.0
+                        factor = 32767.0
                     else:
-                        factor =  3276.70 * self.y_mag[graph_id]
+                        factor = 3276.70 * (UPPER - self.y_mag[graph_id])
+                        if factor == 0:
+                            factor = 0.01
                     if self.invert[graph_id]:
                         data *= self.allocation.height / factor
                     else:

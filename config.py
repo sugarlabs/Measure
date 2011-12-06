@@ -69,3 +69,7 @@ XO1 = 'xo1'
 XO15 = 'xo1.5'
 XO175 = 'xo1.75'
 UNKNOWN = 'unknown'
+
+# Bounds of side slider
+LOWER = 0.0
+UPPER = 4.0
