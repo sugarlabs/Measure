@@ -397,15 +397,13 @@ class DrawWaveform(gtk.DrawingArea):
 
                     # Scaling the values
                     if self.activity.CONTEXT == 'sensor':
-                        self.y_mag[graph_id] = 1.0
-
-                    if self.invert[graph_id]:
-                        data *= self.allocation.height / 3276.70 * \
-                            self.y_mag[graph_id]
+                        factor =  32767.0
                     else:
-                        data *= -self.allocation.height / 3276.70 * \
-                            self.y_mag[graph_id]
-
+                        factor =  3276.70 * self.y_mag[graph_id]
+                    if self.invert[graph_id]:
+                        data *= self.allocation.height / factor
+                    else:
+                        data *= -self.allocation.height / factor
                     data -= self.bias[graph_id]
 
                     if self.fft_show:
