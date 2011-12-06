@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
 #! /usr/bin/python
 #
-#    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009,10 Walter Bender
-#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Author:  Arjun Sarwal   arjun@laptop.org
+# Copyright (C) 2007, Arjun Sarwal
+# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
+
 
 import gtk
 import gobject
@@ -75,7 +71,6 @@ class SensorToolbar(gtk.Toolbar):
         self.voltage.connect('clicked', self.set_resistance_voltage_mode,
                               'voltage')
 
-
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
@@ -92,8 +87,8 @@ class SensorToolbar(gtk.Toolbar):
         self.interval = [_('1/10 second'), _('1 second'), _('30 seconds'),
                          _('5 minutes'), _('30 minutes')]
 
-        if hasattr(self._loginterval_combo, 'set_tooltip_text'): 
-            self._loginterval_combo.set_tooltip_text(_('Sampling interval')) 
+        if hasattr(self._loginterval_combo, 'set_tooltip_text'):
+            self._loginterval_combo.set_tooltip_text(_('Sampling interval'))
 
         self._interval_changed_id = self._loginterval_combo.connect("changed",
                                          self.loginterval_control)

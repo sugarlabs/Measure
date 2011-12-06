@@ -162,7 +162,7 @@ class SideToolbar(gtk.Toolbar):
 viewBox="0 0 55.125 55" width="55.125px" x="0px" xml:space="preserve" \n\
 xmlns="http://www.w3.org/2000/svg" \n\
 xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">\n\
-		<path d="M9.066,27.5 c2.32-6.917,4.666-13.834,9.255-13.834\n\
+<path d="M9.066,27.5 c2.32-6.917,4.666-13.834,9.255-13.834\n\
 c9.179,0,9.179,27.668,18.358,27.668c4.59,0,6.986-6.917,9.332-13.834" \n\
 fill="none" stroke="%s" stroke-linecap="round" stroke-width="3.5"/>\n\
 </svg>' % (color)

@@ -57,7 +57,7 @@ class AudioGrab():
         self.sensor = None
 
         self.temp_buffer = [0]
-        self.picture_buffer = [] # place to hold screen grabs
+        self.picture_buffer = []  # place to hold screen grabs
 
         self.draw_graph_status = False
         self.screenshot = True
@@ -196,7 +196,8 @@ class AudioGrab():
                                                       MAX_GRAPHS)))
 
     def set_handoff_signal(self, handoff_state):
-        '''Sets whether the handoff signal would generate an interrupt or not'''
+        '''Sets whether the handoff signal would generate an interrupt
+        or not'''
         for i in range(len(self.fakesink)):
             self.fakesink[i].set_property('signal-handoffs', handoff_state)
 
@@ -236,13 +237,12 @@ class AudioGrab():
 
         # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
-            # log.debug('on_buffer: setting display value')
-            if self._display_value == 0: # Display value at DISPLAY_DUTY_CYCLE
+            # Display value at DISPLAY_DUTY_CYCLE
+            if self._display_value == 0:
                 self.sensor.set_sample_value(str(temp_buffer[0]))
                 self._display_value = DISPLAY_DUTY_CYCLE
             else:
                 self._display_value -= 1
-        # log.debug('on_buffer: return False')
         return False
 
     def set_freeze_the_display(self, freeze=False):
@@ -277,7 +277,8 @@ class AudioGrab():
         gst.event_new_flush_stop()
         self.pipeline.set_state(gst.STATE_NULL)
 
-    def set_logging_params(self, start_stop=False, interval=0, screenshot=True):
+    def set_logging_params(self, start_stop=False, interval=0,
+                           screenshot=True):
         '''Configures for logging of data i.e. starts or stops a session
         Sets an interval if logging interval is to be started
         Sets if screenshot of waveform is to be taken or values need to be
@@ -327,10 +328,10 @@ class AudioGrab():
         self.counter_buffer = 0
 
     def set_sampling_rate(self, sr):
-        '''Sets the sampling rate of the capture device
-        Sampling rate must be given as an integer for example 16000 for
-        setting 16Khz sampling rate
-        The sampling rate would be set in the device to the nearest available'''
+        '''Sets the sampling rate of the capture device Sampling rate
+        must be given as an integer for example 16000 for setting
+        16Khz sampling rate The sampling rate would be set in the
+        device to the nearest available'''
         self.pause_grabbing()
         caps_str = 'audio/x-raw-int,rate=%d,channels=%d,depth=16' % (
             sr, self.channels)
@@ -427,7 +428,6 @@ class AudioGrab():
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
         log.debug('====================================')
-
 
     def _get_mute(self, control, name, default):
         '''Get mute status of a control'''
@@ -531,7 +531,8 @@ class AudioGrab():
 
     def get_master(self):
         '''Gets the MIC gain slider settings. The value returned is an
-        integer between 0-100 and is an indicative of the percentage 0 - 100%'''
+        integer between 0 and 100 and is an indicative of the
+        percentage 0 to 100%'''
         if self._labels_available:
             return self._get_volume(self._master_control, 'master')
         else:
@@ -692,8 +693,8 @@ class AudioGrab():
                 return False
 
     def set_capture_gain(self, capture_val):
-        '''Sets the Capture gain slider settings
-        capture_val must be given as an integer between 0 and 100 indicating the
+        '''Sets the Capture gain slider settings capture_val must be
+        given as an integer between 0 and 100 indicating the
         percentage of the slider to be set'''
         if self._labels_available and self.activity.hw != XO1:
             if self._capture_control is not None:
@@ -705,8 +706,9 @@ class AudioGrab():
                 log.warning('Problem with amixer set Capture')
 
     def get_capture_gain(self):
-        '''Gets the Capture gain slider settings. The value returned is an
-        integer between 0-100 and is an indicative of the percentage 0 - 100%'''
+        '''Gets the Capture gain slider settings. The value returned
+        is an integer between 0 and 100 and is an indicative of the
+        percentage 0 to 100%'''
         if self._labels_available:
             if self._capture_control is not None:
                 return self._get_volume(self._capture_control, 'Capture')
@@ -724,9 +726,9 @@ class AudioGrab():
                 return 100
 
     def set_mic_gain(self, mic_val):
-        '''Sets the MIC gain slider settings
-        mic_val must be given as an integer between 0 and 100 indicating the
-        percentage of the slider to be set'''
+        '''Sets the MIC gain slider settings mic_val must be given as
+        an integer between 0 and 100 indicating the percentage of the
+        slider to be set'''
         if self._labels_available and self.activity.hw != XO1:
             self._set_volume(self._mic_gain_control, 'Mic', mic_val)
         else:
@@ -737,7 +739,8 @@ class AudioGrab():
 
     def get_mic_gain(self):
         '''Gets the MIC gain slider settings. The value returned is an
-        integer between 0-100 and is an indicative of the percentage 0 - 100%'''
+        integer between 0 and 100 and is an indicative of the
+        percentage 0 to 100%'''
         if self._labels_available:
             return self._get_volume(self._mic_gain_control, 'Mic')
         else:
@@ -823,6 +826,7 @@ class AudioGrab():
 class AudioGrab_XO1(AudioGrab):
     ''' Use default parameters for OLPC XO 1.0 laptop '''
     pass
+
 
 class AudioGrab_XO15(AudioGrab):
     ''' Override parameters for OLPC XO 1.5 laptop '''

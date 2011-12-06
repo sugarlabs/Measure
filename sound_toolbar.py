@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
 #! /usr/bin/python
 #
-#    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009,10 Walter Bender
-#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Author:  Arjun Sarwal   arjun@laptop.org
+# Copyright (C) 2007, Arjun Sarwal
+# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
+
 
 import gtk
 import gobject
@@ -121,18 +117,18 @@ class SoundToolbar(gtk.Toolbar):
         self.loginterval_img_tool = gtk.ToolItem()
         self.loginterval_img_tool.add(self.loginterval_img)
         self.insert(self.loginterval_img_tool, -1)
-        
+
         # Set up the Logging-interval Combo box
         self._loginterval_combo = ComboBox()
         self.interval = [_(self.SAMPLE_NOW),
-                         _(self.SAMPLE_30_SEC), 
-                         _(self.SAMPLE_2_MIN), 
-                         _(self.SAMPLE_10_MIN), 
+                         _(self.SAMPLE_30_SEC),
+                         _(self.SAMPLE_2_MIN),
+                         _(self.SAMPLE_10_MIN),
                          _(self.SAMPLE_30_MIN)]
 
         if hasattr(self._loginterval_combo, 'set_tooltip_text'):
             self._loginterval_combo.set_tooltip_text(_('Sampling interval'))
-        
+
         self._interval_changed_id = self._loginterval_combo.connect('changed',
                                          self.loginterval_control)
 
@@ -257,13 +253,13 @@ class SoundToolbar(gtk.Toolbar):
         if self.logginginterval_status == 'picture':
             return 0
         elif self.logginginterval_status == '30second':
-            return 30  #2667
+            return 30  # 2667
         elif self.logginginterval_status == '2minute':
-            return 120  #10668
+            return 120  # 10668
         elif self.logginginterval_status == '10minute':
-            return 600  #53340
+            return 600  # 53340
         elif self.logginginterval_status == '30minute':
-            return 1800  #160000
+            return 1800  # 160000
 
     def loginterval_control(self, combobox):
         """ The combo box has changed. Set the logging interval
@@ -395,8 +391,8 @@ class SoundToolbar(gtk.Toolbar):
             self.activity.adjustmentf.value = new_value
             return False
 
-        time_div = 0.001*max(self.activity.adjustmentf.value, 0.05)
-        freq_div = 1000*max(self.activity.adjustmentf.value, 0.01)
+        time_div = 0.001 * max(self.activity.adjustmentf.value, 0.05)
+        freq_div = 1000 * max(self.activity.adjustmentf.value, 0.01)
 
         self.activity.wave.set_div(time_div, freq_div)
 
@@ -405,17 +401,11 @@ class SoundToolbar(gtk.Toolbar):
         return False
 
     def context_off(self):
-        """When some other context is switched to and the sound context 
-        is switched off"""
-        # print "context off: gain and y_mag were %f and %f" %\
-        #     (self.gain, self.y_mag)
+        """When some other context is switched to and the sound
+        context is switched off"""
         self.gain, self.y_mag = self.activity.wave.get_mag_params()
-        # print "context off: gain and y_mag are %f and %f" %\
-        #     (self.gain, self.y_mag)
         self.capture_gain = self.activity.audiograb.get_capture_gain()
         self.mic_boost = self.activity.audiograb.get_mic_boost()
-        # print "context off: capture gain %s and mic boost %s" %\
-        #       (str(self.capture_gain), str(self.mic_boost))
         self.activity.audiograb.stop_sound_device()
         self.activity.wave.set_fft_mode(False)
 
@@ -424,8 +414,6 @@ class SoundToolbar(gtk.Toolbar):
         self.activity.audiograb.start_sound_device()
         self.activity.audiograb.set_sensor_type('sound')
         self.activity.wave.set_fft_mode(False)
-        # print "context on: gain and y_mag are %f and %f" %\
-        #       (self.gain, self.y_mag)
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
         self.update_trigger_control()
@@ -434,12 +422,12 @@ class SoundToolbar(gtk.Toolbar):
     def _update_string_for_textbox(self):
         """ Update the text at the bottom of the canvas """
         if not self.activity.wave.get_fft_mode():
-            self._STR_SCALEX = self._STR_XAXIS_TEXT % \
-                {'unit': self._ms,
-                 'division': self.activity.wave.time_div*1000} 
+            self._STR_SCALEX = self._STR_XAXIS_TEXT % {
+                'unit': self._ms,
+                'division': self.activity.wave.time_div * 1000}
         else:
-            self._STR_SCALEX = self._STR_XAXIS_TEXT % \
-                {'unit': self._Hz, 'division': self.activity.wave.freq_div} 
+            self._STR_SCALEX = self._STR_XAXIS_TEXT % {
+                'unit': self._Hz, 'division': self.activity.wave.freq_div}
 
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + '\t')

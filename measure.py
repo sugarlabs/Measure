@@ -201,9 +201,9 @@ class MeasureActivity(activity.Activity):
 
             # no sharing
             if hasattr(toolbox, 'share'):
-               toolbox.share.hide()
+                toolbox.share.hide()
             elif hasattr(toolbox, 'props'):
-               toolbox.props.visible = False
+                toolbox.props.visible = False
 
             self.set_toolbox(toolbox)
             toolbox.connect('current-toolbar-changed',
@@ -315,8 +315,8 @@ class MeasureActivity(activity.Activity):
             writer2 = csv.writer(open(tmp_file_path, 'ab'))
 
             for datum in self.ji.temp_buffer:
-                writer.writerow( [ datum ] )
-                writer2.writerow( [ datum ] )
+                writer.writerow([datum])
+                writer2.writerow([datum])
 
             # Set the mimetype so that the file can be read by other Activities
             self.metadata['mime_type'] = 'text/csv'
