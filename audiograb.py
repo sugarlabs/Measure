@@ -95,7 +95,7 @@ class AudioGrab():
         self.count_temp = 0
         self.entry_count = 0
 
-        self.waveform_id = 1
+        self.capture_counter = 1
         self.logging_state = False
         self.buffer_interval_logging = 0
 
@@ -106,7 +106,7 @@ class AudioGrab():
         self._capture_control = None
         self._mic_boost_control = None
         self._labels_available = True  # Query controls for device names
-        self._display_value = DISPLAY_DUTY_CYCLE
+        self._display_counter = DISPLAY_DUTY_CYCLE
 
         self._query_mixer()
         # If Channels was not found in the Capture controller, guess.
@@ -248,14 +248,14 @@ class AudioGrab():
 
         if self.logging_state:
             # If we've hit the maximum no. of log files, stop.
-            if self.waveform_id == SOUND_MAX_WAVE_LOGS:
-                self.waveform_id = 1
+            if self.capture_counter == SOUND_MAX_WAVE_LOGS:
+                self.capture_counter = 1
                 self.logging_state = False
                 self.activity.ji.stop_session()
             else:
                 if self.capture_interval_sample or\
                    self.buffer_interval_logging == 0:
-                    self._emit_for_logging(temp_buffer)
+                    self._emit_for_logging(temp_buffer, channel=channel)
                     self.capture_interval_sample = False
 
             # If an immediate record is to be written, end logging session
@@ -266,7 +266,7 @@ class AudioGrab():
         # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
             # Only update display every nth time, where n=DISPLAY_DUTY_CYCLE
-            if self._display_value == 0:
+            if self._display_counter == 0:
                 if self.sensor_toolbar.mode == 'resistance':
                     self.sensor.set_sample_value(
                         str(_calibrate_resistance(self, buffer)),
@@ -275,9 +275,9 @@ class AudioGrab():
                     self.sensor.set_sample_value(
                         str(_calibrate_voltage(self, buffer)),
                         channel=channel)
-                self._display_value = DISPLAY_DUTY_CYCLE
+                self._display_counter = DISPLAY_DUTY_CYCLE
             else:
-                self._display_value -= 1
+                self._display_counter -= 1
         return False
 
     def _calibrate_resistance(self, buffer):
@@ -311,14 +311,18 @@ class AudioGrab():
         '''Keep a reference to the sensot toolbar for logging'''
         self.sensor = sensor
 
-    def _emit_for_logging(self, buf):
+    def _emit_for_logging(self, buf, channel=0):
         '''Sends the data for logging'''
         if self.screenshot:
-                self.activity.ji.take_screenshot(self.waveform_id)
-                self.waveform_id += 1
+            self.activity.ji.take_screenshot(self.capture_counter)
+            self.capture_counter += 1
         else:
-                self.activity.ji.write_value(buf[0])
-                self.sensor.set_sample_value(str(buf[0]))
+            if self.sensor_toolbar.mode == 'resistance':
+                value = _calibrate_resistance(self, buffer)
+            else:
+                value = _calibrate_voltage(self, buffer)
+            self.activity.ji.write_value(str(value))
+            self.sensor.set_sample_value(str(value), channel=channel)
 
     def start_sound_device(self):
         '''Start or Restart grabbing data from the audio capture'''
