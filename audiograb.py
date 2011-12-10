@@ -327,9 +327,12 @@ class AudioGrab():
                 value = self._calibrate_resistance(data_buffer)
             else:
                 value = self._calibrate_voltage(data_buffer)
-            log.debug('logging value %f from channel %d' % (value, channel))
-            self.activity.data_logger.write_value(
-                '%d, %0.3f' % (channel, value))
+            if self.channels > 1:
+                self.activity.data_logger.write_value(
+                    '%d, %0.3f' % (channel, value))
+            else:
+                self.activity.data_logger.write_value(
+                    '%0.3f' % (value))
             self.sensor.set_sample_value(value, channel=channel)
 
     def start_sound_device(self):

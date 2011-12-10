@@ -131,7 +131,7 @@ class SensorToolbar(gtk.Toolbar):
             Yscale = 0.0
             interval = self.interval_convert()
             username = self.activity.nick
-            self.activity.ji.start_new_session(
+            self.activity.data_logger.start_new_session(
                 username, Xscale, Yscale, _(self.logginginterval_status),
                 channels=self._channels)
             self.activity.audiograb.set_logging_params(True, interval, False)

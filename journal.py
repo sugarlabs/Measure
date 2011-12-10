@@ -56,9 +56,9 @@ class DataLogger():
         self.temp_buffer.append("%s: %s" % (_('User'), user))
         self.temp_buffer.append("%s: %s" % (_('Interval'),
                                             str(logging_interval)))
-        self.temp_buffer.append("%s: %d" % (_('Channels'),
-                                            channels))
-
+        if channels > 1:
+            self.temp_buffer.append("%s: %d" % (_('Channels'),
+                                                channels))
         self.new_session = True
         return self.activity.session_id
 

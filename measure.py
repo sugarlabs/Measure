@@ -321,17 +321,22 @@ class MeasureActivity(activity.Activity):
             tmp_data_file = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
                                  'sensor_data' + '.csv')
             log.debug('saving sensor data to %s' % (tmp_data_file))
-            writer2 = csv.writer(open(tmp_data_file, 'ab'))
+            if self.dsobject is None:  # first time, so create
+                writer2 = csv.writer(open(tmp_data_file, 'wb'))
+            else:  # we've been here before, so append
+                writer2 = csv.writer(open(tmp_data_file, 'ab'))
 
-            for datum in self.data_logger.temp_buffer:
+            # Pop data off start of buffer until it is empty
+            for i in range(len(self.data_logger.temp_buffer)):
+                datum = self.data_logger.temp_buffer.pop(0)
                 writer.writerow([datum])
                 writer2.writerow([datum])
 
             # Set the mimetype so that the file can be read by other Activities
             self.metadata['mime_type'] = 'text/csv'
 
-            if os.path.exists(tmp_data_file):
-                if self.dsobject == None:
+            if exists(tmp_data_file):
+                if self.dsobject is None:
                     self.dsobject = datastore.create()
                     self.dsobject.metadata['title'] = _('Measure Log')
                     self.dsobject.metadata['keep'] = '0'
@@ -339,23 +344,26 @@ class MeasureActivity(activity.Activity):
                     self.dsobject.metadata['preview'] = ''
                     self.dsobject.metadata['icon-color'] = self.icon_colors
                     self.dsobject.metadata['mime_type'] = 'text/csv'
-                self.dsobject.file_path = tmp_data_file
+                self.dsobject.set_file_path(tmp_data_file)
                 datastore.write(self.dsobject)
-                remove(tmp_data_file)
+                # remove(tmp_data_file)
 
     def read_file(self, file_path):
         """ Read csv data from journal on start """
         reader = csv.reader(open(file_path, "rb"))
         # Count the number of sessions
-        for r in reader:
-            if len(r) > 0:
-                if r[0] == _('Session'):
+        for row in reader:
+            if len(row) > 0:
+                if row[0].find(_('Session')) != -1:
+                    log.debug('found a previously recorded session')
                     self.session_id += 1
-                elif r[0].find('abiword') != -1:
+                elif row[0].find('abiword') != -1:
                     # File has been opened by Write cannot be read by Measure
                     # See Ticket 2127
                     log.error('File was opened by Write: Measure cannot read')
+                    self.data_logger.temp_buffer = []
                     return
+                self.data_logger.temp_buffer.append(row[0])
 
     def _label_cb(self, data=None):
         """ Ignore the click on the label button """

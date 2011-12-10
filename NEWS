@@ -2,6 +2,11 @@
 
 ENHANCEMENTS:
 * stereo capture
+* calibrated data logging
+
+BUGFIX:
+* screen capture works again
+* journal spam eliminated
 
 35
 
