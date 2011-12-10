@@ -85,6 +85,7 @@ class AudioGrab():
 
         self.draw_graph_status = False
         self.screenshot = True
+        self._debounce = True
 
         self.rate = RATE
         if self.activity.hw == XO1:
@@ -240,10 +241,8 @@ class AudioGrab():
     def on_buffer(self, element, buffer, pad, channel):
         '''The function that is called whenever new data is available
         This is the signal handler for the handoff signal'''
-        # log.debug('on_buffer: channel %d' % (channel))
         temp_buffer = fromstring(buffer, 'int16')
         if not self.dont_queue_the_buffer:
-            # log.debug('on_buffer: calling _new_buffer')
             self._new_buffer(temp_buffer, channel=channel)
 
         if self.logging_state:
@@ -253,7 +252,7 @@ class AudioGrab():
                 self.logging_state = False
                 self.activity.ji.stop_session()
             else:
-                if self.capture_interval_sample or\
+                if self.capture_interval_sample or \
                    self.buffer_interval_logging == 0:
                     self._emit_for_logging(temp_buffer, channel=channel)
                     self.capture_interval_sample = False
@@ -314,13 +313,20 @@ class AudioGrab():
     def _emit_for_logging(self, buf, channel=0):
         '''Sends the data for logging'''
         if self.screenshot:
-            self.activity.ji.take_screenshot(self.capture_counter)
-            self.capture_counter += 1
+            if self._debounce:
+                self._debounce = False
+                if self.activity.ji.take_screenshot(self.capture_counter):
+                    self.capture_counter += 1
+                else:
+                    log.debug('failed to take screenshot %d' % (
+                            self.capture_counter))
+                self._debounce = True
         else:
             if self.sensor_toolbar.mode == 'resistance':
                 value = _calibrate_resistance(self, buffer)
             else:
                 value = _calibrate_voltage(self, buffer)
+            log.debug('logging value %f from channel %d' % (value, channel))
             self.activity.ji.write_value(str(value))
             self.sensor.set_sample_value(str(value), channel=channel)
 

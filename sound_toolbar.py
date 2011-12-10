@@ -222,8 +222,6 @@ class SoundToolbar(gtk.Toolbar):
             Yscale = 0.0
             interval = self.interval_convert()
             username = self.activity.nick
-            self.activity.ji.start_new_session(username, Xscale, Yscale,
-                                      self.logginginterval_status)
             self.activity.audiograb.set_logging_params(True, interval, True)
             self.activity.LOGGING_IN_SESSION = True
             self._set_icon_stop()

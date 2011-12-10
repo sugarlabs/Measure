@@ -20,9 +20,10 @@
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import gtk
+import cairo
 
 from os import environ, remove
-from os.path import join
+from os.path import join, exists
 from numpy import array
 from gettext import gettext as _
 
@@ -67,40 +68,41 @@ class JournalInteraction():
         """Write the temp_buffer onto a file"""
         return
     
-    def take_screenshot(self, waveform_id=1):
+    def take_screenshot(self, capture_count=1):
         """ Take a screenshot and save to the Journal """
         tmp_file_path = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
-                         'screen_capture_' + str(waveform_id) + '.png')
+                         'screen_capture_' + str(capture_count) + '.png')
 
         log.debug('saving screen capture to temp file %s' % (tmp_file_path))
 
         gtk.threads_enter()
-        window = gtk.gdk.get_default_root_window()
-        width, height = window.get_size()
-        x_orig, y_orig = window.get_origin()
-        screenshot = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, has_alpha=False,
-                                    bits_per_sample=8, width=width,
-                                    height=height)
-        screenshot.get_from_drawable(window, window.get_colormap(), x_orig,
-                                     y_orig, 0, 0, width, height)
-        screenshot.save(tmp_file_path, "png")
-        gtk.threads_leave()
-        try:
-            jobject = datastore.create()
-            try:
-                jobject.metadata['title'] = "%s %d" % (_('Waveform'),
-                                                       waveform_id)
-                jobject.metadata['keep'] = '0'
-                jobject.metadata['buddies'] = ''
-                jobject.metadata['preview'] = ''
-                jobject.metadata['icon-color'] = self.activity.icon_colors
-                jobject.metadata['mime_type'] = 'image/png'
-                jobject.file_path = tmp_file_path
-                datastore.write(jobject)
-            finally:
-                jobject.destroy()
-                del jobject
-        finally:
-            remove(tmp_file_path)
 
-        log.debug('cleaning up from screen capture save')
+        win = self.activity.wave.get_window()
+        cr = win.cairo_create()
+        surface = cr.get_target()
+        width, height =  gtk.gdk.screen_width(), gtk.gdk.screen_height()
+        img_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, width, height)
+        cr = cairo.Context(img_surface)
+        cr.set_source_surface(surface)
+        cr.paint()
+        img_surface.write_to_png(tmp_file_path)
+
+        gtk.threads_leave()
+        if exists(tmp_file_path):
+            dsobject = datastore.create()
+            try:
+                dsobject.metadata['title'] = "%s %d" % (_('Waveform'),
+                                                       capture_count)
+                dsobject.metadata['keep'] = '0'
+                dsobject.metadata['buddies'] = ''
+                dsobject.metadata['preview'] = ''
+                dsobject.metadata['icon-color'] = self.activity.icon_colors
+                dsobject.metadata['mime_type'] = 'image/png'
+                dsobject.file_path = tmp_file_path
+                datastore.write(dsobject)
+            finally:
+                dsobject.destroy()
+                del dsobject
+            remove(tmp_file_path)
+            return True
+        return False
