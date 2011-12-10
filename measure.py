@@ -55,7 +55,7 @@ try:
 except ImportError:
     _using_gconf = False
 
-from journal import JournalInteraction
+from journal import DataLogger
 from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
     AudioGrab_Unknown
 from drawwaveform import DrawWaveform
@@ -146,10 +146,11 @@ class MeasureActivity(activity.Activity):
         self.connect('notify::active', self._active_cb)
         self.connect('destroy', self.on_quit)
         self.hw = _get_hardware()
+        self.dsobject = None
 
         self.session_id = 0
 
-        self.ji = JournalInteraction(self)
+        self.data_logger = DataLogger(self)
 
         self.hw = _get_hardware()
         log.debug('running on %s hardware' % (self.hw))
@@ -309,36 +310,38 @@ class MeasureActivity(activity.Activity):
         self.wave.set_active(self.ACTIVE)
 
     def write_file(self, file_path):
-        """ Write data to journal on quit """
-        if hasattr(self, 'ji') and len(self.ji.temp_buffer) > 0:
+        """ Write data to journal """
+        if hasattr(self, 'data_logger') and \
+                len(self.data_logger.temp_buffer) > 0:
             # Append new data to Journal entry
             writer = csv.writer(open(file_path, 'ab'))
 
             # Also output to a separate file as a workaround to Ticket 2127
-            tmp_file_path = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
+            # (the assumption being that this file will be opened by the user)
+            tmp_data_file = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
                                  'sensor_data' + '.csv')
-            log.debug('saving sensor data to %s' % (tmp_file_path))
-            writer2 = csv.writer(open(tmp_file_path, 'ab'))
+            log.debug('saving sensor data to %s' % (tmp_data_file))
+            writer2 = csv.writer(open(tmp_data_file, 'ab'))
 
-            for datum in self.ji.temp_buffer:
+            for datum in self.data_logger.temp_buffer:
                 writer.writerow([datum])
                 writer2.writerow([datum])
 
             # Set the mimetype so that the file can be read by other Activities
             self.metadata['mime_type'] = 'text/csv'
 
-            jobject = datastore.create()
-            jobject.metadata['title'] = _('Measure Log')
-            jobject.metadata['keep'] = '0'
-            jobject.metadata['buddies'] = ''
-            jobject.metadata['preview'] = ''
-            jobject.metadata['icon-color'] = self.icon_colors
-            jobject.metadata['mime_type'] = 'text/csv'
-            jobject.file_path = tmp_file_path
-            datastore.write(jobject)
-            jobject.destroy()
-            del jobject
-            remove(tmp_file_path)
+            if os.path.exists(tmp_data_file):
+                if self.dsobject == None:
+                    self.dsobject = datastore.create()
+                    self.dsobject.metadata['title'] = _('Measure Log')
+                    self.dsobject.metadata['keep'] = '0'
+                    self.dsobject.metadata['buddies'] = ''
+                    self.dsobject.metadata['preview'] = ''
+                    self.dsobject.metadata['icon-color'] = self.icon_colors
+                    self.dsobject.metadata['mime_type'] = 'text/csv'
+                self.dsobject.file_path = tmp_data_file
+                datastore.write(self.dsobject)
+                remove(tmp_data_file)
 
     def read_file(self, file_path):
         """ Read csv data from journal on start """

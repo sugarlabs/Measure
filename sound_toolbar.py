@@ -111,34 +111,34 @@ class SoundToolbar(gtk.Toolbar):
             self.insert(separator, -1)
             separator.show()
 
-        self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(os.path.join(ICONS_DIR,
+        self.log_interval_img = gtk.Image()
+        self.log_interval_img.set_from_file(os.path.join(ICONS_DIR,
                                                         'sample_rate.svg'))
-        self.loginterval_img_tool = gtk.ToolItem()
-        self.loginterval_img_tool.add(self.loginterval_img)
-        self.insert(self.loginterval_img_tool, -1)
+        self.log_interval_img_tool = gtk.ToolItem()
+        self.log_interval_img_tool.add(self.log_interval_img)
+        self.insert(self.log_interval_img_tool, -1)
 
         # Set up the Logging-interval Combo box
-        self._loginterval_combo = ComboBox()
+        self._log_interval_combo = ComboBox()
         self.interval = [_(self.SAMPLE_NOW),
                          _(self.SAMPLE_30_SEC),
                          _(self.SAMPLE_2_MIN),
                          _(self.SAMPLE_10_MIN),
                          _(self.SAMPLE_30_MIN)]
 
-        if hasattr(self._loginterval_combo, 'set_tooltip_text'):
-            self._loginterval_combo.set_tooltip_text(_('Sampling interval'))
+        if hasattr(self._log_interval_combo, 'set_tooltip_text'):
+            self._log_interval_combo.set_tooltip_text(_('Sampling interval'))
 
-        self._interval_changed_id = self._loginterval_combo.connect('changed',
-                                         self.loginterval_control)
+        self._interval_changed_id = self._log_interval_combo.connect('changed',
+                                         self.log_interval_cb)
 
         for i, s in enumerate(self.interval):
-            self._loginterval_combo.append_item(i, s, None)
+            self._log_interval_combo.append_item(i, s, None)
             if s == self.SAMPLE_NOW:
-                self._loginterval_combo.set_active(i)
+                self._log_interval_combo.set_active(i)
 
-        self._loginterval_tool = ToolComboBox(self._loginterval_combo)
-        self.insert(self._loginterval_tool, -1)
+        self._log_interval_tool = ToolComboBox(self._log_interval_combo)
+        self.insert(self._log_interval_tool, -1)
         self.logginginterval_status = 'picture'
 
         # Set up Start/Stop Logging Button
@@ -214,7 +214,7 @@ class SoundToolbar(gtk.Toolbar):
         self._record.show()
         return False
 
-    def record_control_delayed(self, data=None):
+    def record_control_delayed(self, button=None):
         """Depending upon the selected interval, either starts/stops
         a logging session, or just logs the current buffer"""
         if not self.activity.LOGGING_IN_SESSION:
@@ -238,10 +238,10 @@ class SoundToolbar(gtk.Toolbar):
         self._set_record_button_tooltip()
         return False
 
-    def record_control(self, data=None):
+    def record_control(self, button=None):
         self._record.palette.popdown()
         gtk.gdk.flush()
-        gobject.timeout_add(10, self.record_control_delayed, data)
+        gobject.timeout_add(10, self.record_control_delayed)
 
     def interval_convert(self):
         """Converts picture/time interval to an integer that denotes the number
@@ -259,21 +259,21 @@ class SoundToolbar(gtk.Toolbar):
         elif self.logginginterval_status == '30minute':
             return 1800  # 160000
 
-    def loginterval_control(self, combobox):
+    def log_interval_cb(self, combobox):
         """ The combo box has changed. Set the logging interval
         status correctly and then set the tooltip on the record
         button properly depending upon whether logging is currently
         in progress or not. """
-        if (self._loginterval_combo.get_active() != -1):
-            if (self._loginterval_combo.get_active() == 0):
+        if (self._log_interval_combo.get_active() != -1):
+            if (self._log_interval_combo.get_active() == 0):
                 self.logginginterval_status = 'picture'
-            elif (self._loginterval_combo.get_active() == 1):
+            elif (self._log_interval_combo.get_active() == 1):
                 self.logginginterval_status = '30second'
-            elif (self._loginterval_combo.get_active() == 2):
+            elif (self._log_interval_combo.get_active() == 2):
                 self.logginginterval_status = '2minute'
-            elif (self._loginterval_combo.get_active() == 3):
+            elif (self._log_interval_combo.get_active() == 3):
                 self.logginginterval_status = '10minute'
-            elif (self._loginterval_combo.get_active() == 4):
+            elif (self._log_interval_combo.get_active() == 4):
                 self.logginginterval_status = '30minute'
             self._set_record_button_tooltip()
         return
@@ -287,7 +287,7 @@ class SoundToolbar(gtk.Toolbar):
         if self.activity.LOGGING_IN_SESSION:
             self._record.set_tooltip(_('Stop sampling'))
         else:  # No sampling in progress
-            if (self._loginterval_combo.get_active() == 0):
+            if (self._log_interval_combo.get_active() == 0):
                 self._record.set_tooltip(_('Capture sample now'))
             else:
                 self._record.set_tooltip(_('Start sampling'))
@@ -302,7 +302,7 @@ class SoundToolbar(gtk.Toolbar):
         self.activity.wave.set_trigger(self.trigger_conf[active])
         return
 
-    def _pauseplay_control_cb(self, data=None):
+    def _pauseplay_control_cb(self, button=None):
         """ Callback for Pause Button """
         if self.activity.audiograb.get_freeze_the_display():
             self.activity.audiograb.set_freeze_the_display(False)
@@ -316,7 +316,7 @@ class SoundToolbar(gtk.Toolbar):
             self._pause.show()
         return False
 
-    def _timefreq_control_cb(self, data=None, time_state=True):
+    def _timefreq_control_cb(self, button=None, time_state=True):
         """ Callback for Time and Freq. Buttons """
 
         # Make sure the current context is for sound capture.
@@ -349,7 +349,7 @@ class SoundToolbar(gtk.Toolbar):
             self.activity.sensor_toolbar.voltage.set_icon('bias-off')
         return False
 
-    def _freq_stepper_up_cb(self, data=None):
+    def _freq_stepper_up_cb(self, button=None):
         """Moves the horizontal zoom slider to the left one notch, where
         one notch is 1/100 of the total range. This correspond to zooming
         out as a larger number of Hertz or milliseconds will be
@@ -361,7 +361,7 @@ class SoundToolbar(gtk.Toolbar):
         else:
             self._freq_range.set_value(self.UPPER)
 
-    def _freq_stepper_down_cb(self, data=None):
+    def _freq_stepper_down_cb(self, button=None):
         """Moves the horizontal zoom slider to the right one notch, where
         one notch is 1/100 of the total range. This corresponds to zooming
         in."""
@@ -372,7 +372,7 @@ class SoundToolbar(gtk.Toolbar):
         else:
             self._freq_range.set_value(self.LOWER)
 
-    def cb_page_sizef(self, data=None):
+    def cb_page_sizef(self, button=None):
         """ Callback to scale the frequency range (zoom in and out) """
         if self._update_page_size_id:
             gobject.source_remove(self._update_page_size_id)

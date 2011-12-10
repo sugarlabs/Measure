@@ -43,7 +43,7 @@ class SensorToolbar(gtk.Toolbar):
         self._channels = channels
         self.values = []
         for i in range(self._channels):
-            self.values.append('')
+            self.values.append(0.0)
 
         self._STR_BASIC = \
         _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
@@ -65,14 +65,14 @@ class SensorToolbar(gtk.Toolbar):
         self.insert(self.resistance, -1)
         self.resistance.show()
         self.resistance.set_tooltip(_('Resistance Sensor'))
-        self.resistance.connect('clicked', self.set_resistance_voltage_mode,
+        self.resistance.connect('clicked', self.resistance_voltage_mode_cb,
                                  'resistance')
 
         # Set up Voltage Button
         self.voltage = ToolButton('bias-off')
         self.insert(self.voltage, -1)
         self.voltage.set_tooltip(_('Voltage Sensor'))
-        self.voltage.connect('clicked', self.set_resistance_voltage_mode,
+        self.voltage.connect('clicked', self.resistance_voltage_mode_cb,
                               'voltage')
 
         separator = gtk.SeparatorToolItem()
@@ -80,49 +80,49 @@ class SensorToolbar(gtk.Toolbar):
         self.insert(separator, -1)
 
         # Set up Logging Interval combo box
-        self.loginterval_img = gtk.Image()
-        self.loginterval_img.set_from_file(os.path.join(ICONS_DIR,
+        self.log_interval_img = gtk.Image()
+        self.log_interval_img.set_from_file(os.path.join(ICONS_DIR,
                                                         'sample_rate.svg'))
-        self.loginterval_img_tool = gtk.ToolItem()
-        self.loginterval_img_tool.add(self.loginterval_img)
-        self.insert(self.loginterval_img_tool, -1)
+        self.log_interval_img_tool = gtk.ToolItem()
+        self.log_interval_img_tool.add(self.log_interval_img)
+        self.insert(self.log_interval_img_tool, -1)
 
-        self._loginterval_combo = ComboBox()
+        self._log_interval_combo = ComboBox()
         self.interval = [_('1/10 second'), _('1 second'), _('30 seconds'),
                          _('5 minutes'), _('30 minutes')]
 
-        if hasattr(self._loginterval_combo, 'set_tooltip_text'):
-            self._loginterval_combo.set_tooltip_text(_('Sampling interval'))
+        if hasattr(self._log_interval_combo, 'set_tooltip_text'):
+            self._log_interval_combo.set_tooltip_text(_('Sampling interval'))
 
-        self._interval_changed_id = self._loginterval_combo.connect("changed",
-                                         self.loginterval_control)
+        self._interval_changed_id = self._log_interval_combo.connect("changed",
+                                         self.log_interval_cb)
 
         for i, s in enumerate(self.interval):
-            self._loginterval_combo.append_item(i, s, None)
+            self._log_interval_combo.append_item(i, s, None)
             if s == _('1 second'):
-                self._loginterval_combo.set_active(i)
+                self._log_interval_combo.set_active(i)
 
-        self._loginterval_tool = ToolComboBox(self._loginterval_combo)
-        self.insert(self._loginterval_tool, -1)
+        self._log_interval_tool = ToolComboBox(self._log_interval_combo)
+        self.insert(self._log_interval_tool, -1)
         self.logginginterval_status = '1 second'
 
         # Set up Logging/Stop Logging Button
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
         self._record.set_tooltip(_('Start Recording'))
-        self._record.connect('clicked', self.record_control)
+        self._record.connect('clicked', self.record_control_cb)
 
         self.show_all()
 
-    def set_sample_value(self, label=None, channel=0):
+    def set_sample_value(self, value=0.0, channel=0):
         """ Write a sample value to the textbox """
         gtk.threads_enter()
-        self.values[channel] = label
+        self.values[channel] = value
         self._update_string_for_textbox()
         gtk.threads_leave()
         return
 
-    def record_control(self):
+    def record_control_cb(self, button=None):
         """Depending upon the selected interval, does either a logging
         session, or just logs the current buffer"""
 
@@ -131,8 +131,9 @@ class SensorToolbar(gtk.Toolbar):
             Yscale = 0.0
             interval = self.interval_convert()
             username = self.activity.nick
-            self.activity.ji.start_new_session(username, Xscale, Yscale,
-                                      _(self.logginginterval_status))
+            self.activity.ji.start_new_session(
+                username, Xscale, Yscale, _(self.logginginterval_status),
+                channels=self._channels)
             self.activity.audiograb.set_logging_params(True, interval, False)
             self.activity.LOGGING_IN_SESSION = True
             self._record.set_icon('record-stop')
@@ -159,15 +160,16 @@ class SensorToolbar(gtk.Toolbar):
                               (str(self.logginginterval_status)))
             return 0
 
-    def loginterval_control(self, combobox):
+    def log_interval_cb(self, combobox):
         """ Callback from the Logging Interval Combo box: sets status """
-        if self._loginterval_combo.get_active() != -1:
+        if self._log_interval_combo.get_active() != -1:
             intervals = ['1/10 second', '1 second', '30 seconds',
                          '5 minutes', '30 minutes']
             self.logginginterval_status = \
-                              intervals[self._loginterval_combo.get_active()]
+                              intervals[self._log_interval_combo.get_active()]
 
-    def set_resistance_voltage_mode(self, mode_to_set='resistance'):
+    def resistance_voltage_mode_cb(self, button=None,
+                                   mode_to_set='resistance'):
         """ Callback for Resistance/Voltage Buttons """
 
         # Make sure the current context is for sensor capture.
@@ -205,7 +207,7 @@ class SensorToolbar(gtk.Toolbar):
         self.mode = mode
         self.activity.audiograb.set_sensor_type(self.mode)
         for i in range(self._channels):
-            self.values[i] = ''
+            self.values[i] = 0.0
         return
 
     def context_off(self):
@@ -231,5 +233,5 @@ class SensorToolbar(gtk.Toolbar):
         if self.activity.wave.get_invert_state():
             self.string_for_textbox += self._STR_I
         for i in range(self._channels):
-            self.string_for_textbox += '\t(%s)' % (str(self.values[i]))
+            self.string_for_textbox += '\t(%0.3f)' % (self.values[i])
         self.activity.text_box.set_data_params(0, self.string_for_textbox)

@@ -36,7 +36,7 @@ log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
 
-class JournalInteraction():
+class DataLogger():
     """ Handles all of the data I/O with the Journal """
 
     def __init__(self, activity):
@@ -47,7 +47,7 @@ class JournalInteraction():
         self.temp_buffer = []
             
     def start_new_session(self, user='', xscale=0, yscale=0,
-                          logging_interval=''):
+                          logging_interval='', channels=1):
         """ Start a new logging session by updating session parameters """
         self.activity.session_id += 1
 
@@ -56,6 +56,8 @@ class JournalInteraction():
         self.temp_buffer.append("%s: %s" % (_('User'), user))
         self.temp_buffer.append("%s: %s" % (_('Interval'),
                                             str(logging_interval)))
+        self.temp_buffer.append("%s: %d" % (_('Channels'),
+                                            channels))
 
         self.new_session = True
         return self.activity.session_id

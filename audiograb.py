@@ -238,10 +238,10 @@ class AudioGrab():
         else:
             pass
 
-    def on_buffer(self, element, buffer, pad, channel):
+    def on_buffer(self, element, data_buffer, pad, channel):
         '''The function that is called whenever new data is available
         This is the signal handler for the handoff signal'''
-        temp_buffer = fromstring(buffer, 'int16')
+        temp_buffer = fromstring(data_buffer, 'int16')
         if not self.dont_queue_the_buffer:
             self._new_buffer(temp_buffer, channel=channel)
 
@@ -250,7 +250,7 @@ class AudioGrab():
             if self.capture_counter == SOUND_MAX_WAVE_LOGS:
                 self.capture_counter = 1
                 self.logging_state = False
-                self.activity.ji.stop_session()
+                self.activity.data_logger.stop_session()
             else:
                 if self.capture_interval_sample or \
                    self.buffer_interval_logging == 0:
@@ -260,30 +260,30 @@ class AudioGrab():
             # If an immediate record is to be written, end logging session
             if self.buffer_interval_logging == 0:
                 self.logging_state = False
-                self.activity.ji.stop_session()
+                self.activity.data_logger.stop_session()
 
         # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
             # Only update display every nth time, where n=DISPLAY_DUTY_CYCLE
             if self._display_counter == 0:
-                if self.sensor_toolbar.mode == 'resistance':
+                if self.activity.sensor_toolbar.mode == 'resistance':
                     self.sensor.set_sample_value(
-                        str(_calibrate_resistance(self, buffer)),
+                        self._calibrate_resistance(temp_buffer),
                         channel=channel)
                 else:
                     self.sensor.set_sample_value(
-                        str(_calibrate_voltage(self, buffer)),
+                        self._calibrate_voltage(temp_buffer),
                         channel=channel)
                 self._display_counter = DISPLAY_DUTY_CYCLE
             else:
                 self._display_counter -= 1
         return False
 
-    def _calibrate_resistance(self, buffer):
+    def _calibrate_resistance(self, data_buffer):
         ''' Return calibrated value for resistance '''
         # See <http://bugs.sugarlabs.org/ticket/552#comment:7>
         # TODO: test this calibration on XO 1.5, XO 1.75
-        avg_buffer = float(_avg(buffer))
+        avg_buffer = _avg(data_buffer)
         if self.activity.hw == XO1:
             resistance = 2.718 ** ((avg_buffer * 0.000045788) + 8.0531)
         else:
@@ -292,10 +292,10 @@ class AudioGrab():
             else:
                 return 420000000
 
-    def _calibrate_voltage(self, buffer):
+    def _calibrate_voltage(self, data_buffer):
         ''' Return calibrated value for voltage '''
         # See <http://bugs.sugarlabs.org/ticket/552#comment:7>
-        return float(_avg(buffer)) * self.voltage_gain + self.voltage_bias
+        return _avg(data_buffer) * self.voltage_gain + self.voltage_bias
 
     def set_freeze_the_display(self, freeze=False):
         '''Useful when just the display is needed to be frozen, but logging
@@ -310,25 +310,27 @@ class AudioGrab():
         '''Keep a reference to the sensot toolbar for logging'''
         self.sensor = sensor
 
-    def _emit_for_logging(self, buf, channel=0):
+    def _emit_for_logging(self, data_buffer, channel=0):
         '''Sends the data for logging'''
         if self.screenshot:
             if self._debounce:
                 self._debounce = False
-                if self.activity.ji.take_screenshot(self.capture_counter):
+                if self.activity.data_logger.take_screenshot(
+                    self.capture_counter):
                     self.capture_counter += 1
                 else:
                     log.debug('failed to take screenshot %d' % (
                             self.capture_counter))
                 self._debounce = True
         else:
-            if self.sensor_toolbar.mode == 'resistance':
-                value = _calibrate_resistance(self, buffer)
+            if self.activity.sensor_toolbar.mode == 'resistance':
+                value = self._calibrate_resistance(data_buffer)
             else:
-                value = _calibrate_voltage(self, buffer)
+                value = self._calibrate_voltage(data_buffer)
             log.debug('logging value %f from channel %d' % (value, channel))
-            self.activity.ji.write_value(str(value))
-            self.sensor.set_sample_value(str(value), channel=channel)
+            self.activity.data_logger.write_value(
+                '%d, %0.3f' % (channel, value))
+            self.sensor.set_sample_value(value, channel=channel)
 
     def start_sound_device(self):
         '''Start or Restart grabbing data from the audio capture'''
@@ -875,7 +877,7 @@ class AudioGrab():
         self.set_bias(QUIT_BIAS)
         self.stop_sound_device()
         if self.logging_state:
-            self.activity.ji.stop_session()
+            self.activity.data_logger.stop_session()
 
 
 class AudioGrab_XO1(AudioGrab):
