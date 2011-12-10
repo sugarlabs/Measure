@@ -228,7 +228,7 @@ class MeasureActivity(activity.Activity):
         self.sound_toolbar.show()
 
         if _is_xo(self.hw):
-            self.sensor_toolbar = SensorToolbar(self)
+            self.sensor_toolbar = SensorToolbar(self, self.audiograb.channels)
             if self.has_toolbarbox:
                 self._sensor_button = ToolbarButton(
                     label=_('Sensors'),

@@ -30,7 +30,7 @@ from threading import Timer
 from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
                    SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
                    QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1, \
-                   MAX_GRAPHS
+                   XO15, XO175, MAX_GRAPHS
 
 import logging
 
@@ -45,6 +45,20 @@ SENSOR_DC_NO_BIAS = 'voltage'
 SENSOR_DC_BIAS = 'resistance'
 
 
+def _avg(array, abs_value=False):
+    ''' Calc. the average value of an array '''
+    if len(array) == 0:
+        return 0
+    array_sum = 0
+    if abs_value:
+        for a in array:
+            array_sum += abs(a)
+    else:
+        for a in array:
+            array_sum += a
+    return float(array_sum) / len(array)
+
+
 class AudioGrab():
     """ The interface between measure and the audio device """
 
@@ -55,6 +69,16 @@ class AudioGrab():
         self.callable1 = callable1
         self.activity = activity
         self.sensor = None
+
+        if self.activity.hw == XO1:
+            self.voltage_gain = 0.00002225
+            self.voltage_bias = 1.140
+        elif self.activity.hw == XO15:
+            self.voltage_gain = -0.0001471
+            self.voltage_bias = 1.695
+        else:  # FIXME: Calibrate 1.75
+            self.voltage_gain = -0.0001471
+            self.voltage_bias = 1.695
 
         self.temp_buffer = [0]
         self.picture_buffer = []  # place to hold screen grabs
@@ -91,13 +115,17 @@ class AudioGrab():
             self.channels = 2
         self.activity.wave.set_channels(self.channels)
 
-        # Variables for saving and resuming state of sound device
+        # Set mixer to known state
+        self.set_dc_mode(DC_MODE_ENABLE)
+        self.set_bias(BIAS)
+        self.set_capture_gain(CAPTURE_GAIN)
+        self.set_mic_boost(MIC_BOOST)
+
         self.master = self.get_master()
-        self.bias = BIAS
-        self.dc_mode = DC_MODE_ENABLE
-        self.capture_gain = CAPTURE_GAIN
-        self.mic_boost = MIC_BOOST
-        self.mic = self.get_mic_gain()
+        self.dc_mode = self.get_dc_mode()
+        self.bias = self.get_bias()
+        self.capture_gain = self.get_capture_gain()
+        self.mic_boost = self.get_mic_boost()
 
         # Set up gstreamer pipeline
         self._pad_count = 0
@@ -237,13 +265,38 @@ class AudioGrab():
 
         # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.logging_state:
-            # Display value at DISPLAY_DUTY_CYCLE
+            # Only update display every nth time, where n=DISPLAY_DUTY_CYCLE
             if self._display_value == 0:
-                self.sensor.set_sample_value(str(temp_buffer[0]))
+                if self.sensor_toolbar.mode == 'resistance':
+                    self.sensor.set_sample_value(
+                        str(_calibrate_resistance(self, buffer)),
+                        channel=channel)
+                else:
+                    self.sensor.set_sample_value(
+                        str(_calibrate_voltage(self, buffer)),
+                        channel=channel)
                 self._display_value = DISPLAY_DUTY_CYCLE
             else:
                 self._display_value -= 1
         return False
+
+    def _calibrate_resistance(self, buffer):
+        ''' Return calibrated value for resistance '''
+        # See <http://bugs.sugarlabs.org/ticket/552#comment:7>
+        # TODO: test this calibration on XO 1.5, XO 1.75
+        avg_buffer = float(_avg(buffer))
+        if self.activity.hw == XO1:
+            resistance = 2.718 ** ((avg_buffer * 0.000045788) + 8.0531)
+        else:
+            if avg_buffer > 0:
+                return (420000000 / avg_buffer) - 13500
+            else:
+                return 420000000
+
+    def _calibrate_voltage(self, buffer):
+        ''' Return calibrated value for voltage '''
+        # See <http://bugs.sugarlabs.org/ticket/552#comment:7>
+        return float(_avg(buffer)) * self.voltage_gain + self.voltage_bias
 
     def set_freeze_the_display(self, freeze=False):
         '''Useful when just the display is needed to be frozen, but logging
@@ -409,25 +462,21 @@ class AudioGrab():
 
     def save_state(self):
         '''Saves the state of all audio controls'''
-        log.debug('====================================')
         log.debug('Save state')
         self.master = self.get_master()
         self.bias = self.get_bias()
         self.dc_mode = self.get_dc_mode()
         self.capture_gain = self.get_capture_gain()
         self.mic_boost = self.get_mic_boost()
-        log.debug('====================================')
 
     def resume_state(self):
         '''Put back all audio control settings from the saved state'''
-        log.debug('====================================')
         log.debug('Resume state')
         self.set_master(self.master)
         self.set_bias(self.bias)
         self.set_dc_mode(self.dc_mode)
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
-        log.debug('====================================')
 
     def _get_mute(self, control, name, default):
         '''Get mute status of a control'''
@@ -773,18 +822,14 @@ class AudioGrab():
             SENSOR_DC_BIAS: (True, True, 0, False)
         }
         mode, bias, gain, boost = PARAMETERS[sensor_type]
-        log.debug('====================================')
         log.debug('Set sensor type to %s' % (str(sensor_type)))
         self._set_sensor_type(mode, bias, gain, boost)
-        log.debug('====================================')
 
     def _set_sensor_type(self, mode=None, bias=None, gain=None, boost=None):
         '''Helper to modify (some) of the sensor settings.'''
 
-        log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         log.debug('parameters: dc mode: %s, bias: %s, gain: %s, boost: %s' % (
                 str(mode), str(bias), str(gain), str(boost)))
-        log.debug('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         if mode is not None and mode != self.get_dc_mode():
             # If we change to/from dc mode, we need to rebuild the pipelines
             log.debug('dc mode has changed')
@@ -809,9 +854,10 @@ class AudioGrab():
             if self._mic_boost_control is not None:
                 log.debug('boost is %s' % (str(self.get_mic_boost())))
 
+        self.save_state()
+
     def on_activity_quit(self):
         '''When Activity quits'''
-        log.debug('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         log.debug('Quitting')
         self.set_mic_boost(QUIT_MIC_BOOST)
         self.set_dc_mode(QUIT_DC_MODE_ENABLE)
@@ -820,7 +866,6 @@ class AudioGrab():
         self.stop_sound_device()
         if self.logging_state:
             self.activity.ji.stop_session()
-        log.debug('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
 
 class AudioGrab_XO1(AudioGrab):
@@ -838,11 +883,9 @@ class AudioGrab_XO15(AudioGrab):
             SENSOR_DC_NO_BIAS: (True, False, 80, False),
             SENSOR_DC_BIAS: (True, True, 90, False)
         }
-        log.debug('====================================')
         log.debug('Set Sensor Type to %s' % (str(sensor_type)))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
-        log.debug('====================================')
 
 
 class AudioGrab_XO175(AudioGrab):
@@ -855,11 +898,9 @@ class AudioGrab_XO175(AudioGrab):
             SENSOR_DC_NO_BIAS: (True, False, 80, False),
             SENSOR_DC_BIAS: (True, True, 90, False)
         }
-        log.debug('====================================')
         log.debug('Set Sensor Type to %s' % (str(sensor_type)))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
-        log.debug('====================================')
 
 
 class AudioGrab_Unknown(AudioGrab):
@@ -872,8 +913,6 @@ class AudioGrab_Unknown(AudioGrab):
             SENSOR_DC_NO_BIAS: (True, False, 80, False),
             SENSOR_DC_BIAS: (True, True, 90, False)
         }
-        log.debug('====================================')
         log.debug('Set Sensor Type to %s' % (str(sensor_type)))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
-        log.debug('====================================')

@@ -34,12 +34,16 @@ log.setLevel(logging.DEBUG)
 class SensorToolbar(gtk.Toolbar):
     """ The toolbar for resitance and voltage sensors """
 
-    def __init__(self, activity):
+    def __init__(self, activity, channels):
         """ By default, start with resistance mode """
 
         gtk.Toolbar.__init__(self)
 
         self.mode = 'resistance'
+        self._channels = channels
+        self.values = []
+        for i in range(self._channels):
+            self.values.append('')
 
         self._STR_BASIC = \
         _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
@@ -110,16 +114,17 @@ class SensorToolbar(gtk.Toolbar):
 
         self.show_all()
 
-    def set_sample_value(self, label=None):
+    def set_sample_value(self, label=None, channel=0):
         """ Write a sample value to the textbox """
         gtk.threads_enter()
-        self._update_string_for_textbox(label)
+        self.values[channel] = label
+        self._update_string_for_textbox()
         gtk.threads_leave()
         return
 
-    def record_control(self, data=None):
-        """Depending upon the selected interval, does either
-        a logging session, or just logs the current buffer"""
+    def record_control(self):
+        """Depending upon the selected interval, does either a logging
+        session, or just logs the current buffer"""
 
         if not self.activity.LOGGING_IN_SESSION:
             Xscale = (1.00 / self.activity.audiograb.get_sampling_rate())
@@ -162,7 +167,7 @@ class SensorToolbar(gtk.Toolbar):
             self.logginginterval_status = \
                               intervals[self._loginterval_combo.get_active()]
 
-    def set_resistance_voltage_mode(self, data=None, mode_to_set='resistance'):
+    def set_resistance_voltage_mode(self, mode_to_set='resistance'):
         """ Callback for Resistance/Voltage Buttons """
 
         # Make sure the current context is for sensor capture.
@@ -199,6 +204,8 @@ class SensorToolbar(gtk.Toolbar):
         """ Set the mixer settings to match the current mode. """
         self.mode = mode
         self.activity.audiograb.set_sensor_type(self.mode)
+        for i in range(self._channels):
+            self.values[i] = ''
         return
 
     def context_off(self):
@@ -213,7 +220,7 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
         return False
 
-    def _update_string_for_textbox(self, value=None):
+    def _update_string_for_textbox(self, channel=0):
         """ Update the status field at the bottom of the canvas. """
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\n")
@@ -223,6 +230,6 @@ class SensorToolbar(gtk.Toolbar):
             self.string_for_textbox += self._STR_V
         if self.activity.wave.get_invert_state():
             self.string_for_textbox += self._STR_I
-        if value is not None:
-            self.string_for_textbox += '\t(%s)' % (str(value))
+        for i in range(self._channels):
+            self.string_for_textbox += '\t(%s)' % (str(self.values[i]))
         self.activity.text_box.set_data_params(0, self.string_for_textbox)
