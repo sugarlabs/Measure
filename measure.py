@@ -312,7 +312,7 @@ class MeasureActivity(activity.Activity):
     def write_file(self, file_path):
         """ Write data to journal """
         if hasattr(self, 'data_logger') and \
-                len(self.data_logger.temp_buffer) > 0:
+                len(self.data_logger.data_buffer) > 0:
             # Append new data to Journal entry
             writer = csv.writer(open(file_path, 'ab'))
 
@@ -327,8 +327,8 @@ class MeasureActivity(activity.Activity):
                 writer2 = csv.writer(open(tmp_data_file, 'ab'))
 
             # Pop data off start of buffer until it is empty
-            for i in range(len(self.data_logger.temp_buffer)):
-                datum = self.data_logger.temp_buffer.pop(0)
+            for i in range(len(self.data_logger.data_buffer)):
+                datum = self.data_logger.data_buffer.pop(0)
                 writer.writerow([datum])
                 writer2.writerow([datum])
 
@@ -339,9 +339,6 @@ class MeasureActivity(activity.Activity):
                 if self.dsobject is None:
                     self.dsobject = datastore.create()
                     self.dsobject.metadata['title'] = _('Measure Log')
-                    self.dsobject.metadata['keep'] = '0'
-                    self.dsobject.metadata['buddies'] = ''
-                    self.dsobject.metadata['preview'] = ''
                     self.dsobject.metadata['icon-color'] = self.icon_colors
                     self.dsobject.metadata['mime_type'] = 'text/csv'
                 self.dsobject.set_file_path(tmp_data_file)
@@ -361,9 +358,12 @@ class MeasureActivity(activity.Activity):
                     # File has been opened by Write cannot be read by Measure
                     # See Ticket 2127
                     log.error('File was opened by Write: Measure cannot read')
-                    self.data_logger.temp_buffer = []
+                    self.data_logger.data_buffer = []
                     return
-                self.data_logger.temp_buffer.append(row[0])
+                self.data_logger.data_buffer.append(row[0])
+        if self.session_id == 0:
+            log.debug('setting data_logger buffer to []')
+            self.data_logger.data_buffer = []
 
     def _label_cb(self, data=None):
         """ Ignore the click on the label button """

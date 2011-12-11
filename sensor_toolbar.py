@@ -104,7 +104,7 @@ class SensorToolbar(gtk.Toolbar):
 
         self._log_interval_tool = ToolComboBox(self._log_interval_combo)
         self.insert(self._log_interval_tool, -1)
-        self.logginginterval_status = '1 second'
+        self.logging_interval_status = '1 second'
 
         # Set up Logging/Stop Logging Button
         self._record = ToolButton('media-record')
@@ -132,7 +132,7 @@ class SensorToolbar(gtk.Toolbar):
             interval = self.interval_convert()
             username = self.activity.nick
             self.activity.data_logger.start_new_session(
-                username, Xscale, Yscale, _(self.logginginterval_status),
+                username, Xscale, Yscale, _(self.logging_interval_status),
                 channels=self._channels)
             self.activity.audiograb.set_logging_params(True, interval, False)
             self.activity.LOGGING_IN_SESSION = True
@@ -154,10 +154,10 @@ class SensorToolbar(gtk.Toolbar):
                                '30 seconds': 30,
                                '5 minutes': 300, '30 minutes': 1800}
         try:
-            return interval_dictionary[self.logginginterval_status]
+            return interval_dictionary[self.logging_interval_status]
         except ValueError:
             logging.error('logging interval status = %s' %\
-                              (str(self.logginginterval_status)))
+                              (str(self.logging_interval_status)))
             return 0
 
     def log_interval_cb(self, combobox):
@@ -165,7 +165,7 @@ class SensorToolbar(gtk.Toolbar):
         if self._log_interval_combo.get_active() != -1:
             intervals = ['1/10 second', '1 second', '30 seconds',
                          '5 minutes', '30 minutes']
-            self.logginginterval_status = \
+            self.logging_interval_status = \
                               intervals[self._log_interval_combo.get_active()]
 
     def resistance_voltage_mode_cb(self, button=None,
@@ -222,7 +222,7 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
         return False
 
-    def _update_string_for_textbox(self, channel=0):
+    def _update_string_for_textbox(self):
         """ Update the status field at the bottom of the canvas. """
         self.string_for_textbox = ""
         self.string_for_textbox += (self._STR_BASIC + "\n")

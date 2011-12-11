@@ -285,7 +285,7 @@ class AudioGrab():
         # TODO: test this calibration on XO 1.5, XO 1.75
         avg_buffer = _avg(data_buffer)
         if self.activity.hw == XO1:
-            resistance = 2.718 ** ((avg_buffer * 0.000045788) + 8.0531)
+            return 2.718 ** ((avg_buffer * 0.000045788) + 8.0531)
         else:
             if avg_buffer > 0:
                 return (420000000 / avg_buffer) - 13500

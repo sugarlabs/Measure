@@ -43,31 +43,29 @@ class DataLogger():
         """ We store csv data in the Journal entry for Measure; screen captures
             are stored in separate Journal entries """
         self.activity = activity
-        self.new_session = True
-        self.temp_buffer = []
+        self.data_buffer = []
             
     def start_new_session(self, user='', xscale=0, yscale=0,
                           logging_interval='', channels=1):
         """ Start a new logging session by updating session parameters """
         self.activity.session_id += 1
 
-        self.temp_buffer.append("%s: %s" % (_('Session'),
+        self.data_buffer.append("%s: %s" % (_('Session'),
                                             str(self.activity.session_id)))
-        self.temp_buffer.append("%s: %s" % (_('User'), user))
-        self.temp_buffer.append("%s: %s" % (_('Interval'),
+        self.data_buffer.append("%s: %s" % (_('User'), user))
+        self.data_buffer.append("%s: %s" % (_('Interval'),
                                             str(logging_interval)))
         if channels > 1:
-            self.temp_buffer.append("%s: %d" % (_('Channels'),
+            self.data_buffer.append("%s: %d" % (_('Channels'),
                                                 channels))
-        self.new_session = True
         return self.activity.session_id
 
     def write_value(self, value=0):
-        """Append the value passed to temp_buffer """
-        self.temp_buffer.append(value)
+        """Append the value passed to data_buffer """
+        self.data_buffer.append(value)
 
     def stop_session(self):
-        """Write the temp_buffer onto a file"""
+        """Write the data_buffer onto a file"""
         return
     
     def take_screenshot(self, capture_count=1):
@@ -100,7 +98,7 @@ class DataLogger():
                 dsobject.metadata['preview'] = ''
                 dsobject.metadata['icon-color'] = self.activity.icon_colors
                 dsobject.metadata['mime_type'] = 'image/png'
-                dsobject.file_path = tmp_file_path
+                dsobject.set_file_path(tmp_file_path)
                 datastore.write(dsobject)
             finally:
                 dsobject.destroy()
