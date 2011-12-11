@@ -322,15 +322,16 @@ class MeasureActivity(activity.Activity):
                                  'sensor_data' + '.csv')
             log.debug('saving sensor data to %s' % (tmp_data_file))
             if self.dsobject is None:  # first time, so create
-                writer2 = csv.writer(open(tmp_data_file, 'wb'))
+                fd = open(tmp_data_file, 'wb')
             else:  # we've been here before, so append
-                writer2 = csv.writer(open(tmp_data_file, 'ab'))
-
+                fd = open(tmp_data_file, 'ab')
+            writer2 = csv.writer(fd)
             # Pop data off start of buffer until it is empty
             for i in range(len(self.data_logger.data_buffer)):
                 datum = self.data_logger.data_buffer.pop(0)
                 writer.writerow([datum])
                 writer2.writerow([datum])
+            fd.close()
 
             # Set the mimetype so that the file can be read by other Activities
             self.metadata['mime_type'] = 'text/csv'
