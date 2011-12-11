@@ -310,30 +310,31 @@ class MeasureActivity(activity.Activity):
         self.wave.set_active(self.ACTIVE)
 
     def write_file(self, file_path):
-        """ Write data to journal """
+        """ Write data to journal, if there is any data to write """
         if hasattr(self, 'data_logger') and \
                 len(self.data_logger.data_buffer) > 0:
             # Append new data to Journal entry
-            writer = csv.writer(open(file_path, 'ab'))
-
+            fd = open(file_path, 'ab')
+            writer = csv.writer(fd)
             # Also output to a separate file as a workaround to Ticket 2127
             # (the assumption being that this file will be opened by the user)
             tmp_data_file = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
                                  'sensor_data' + '.csv')
             log.debug('saving sensor data to %s' % (tmp_data_file))
             if self.dsobject is None:  # first time, so create
-                fd = open(tmp_data_file, 'wb')
+                fd2 = open(tmp_data_file, 'wb')
             else:  # we've been here before, so append
-                fd = open(tmp_data_file, 'ab')
-            writer2 = csv.writer(fd)
+                fd2 = open(tmp_data_file, 'ab')
+            writer2 = csv.writer(fd2)
             # Pop data off start of buffer until it is empty
             for i in range(len(self.data_logger.data_buffer)):
                 datum = self.data_logger.data_buffer.pop(0)
                 writer.writerow([datum])
                 writer2.writerow([datum])
             fd.close()
+            fd2.close()
 
-            # Set the mimetype so that the file can be read by other Activities
+            # Set the proper mimetype
             self.metadata['mime_type'] = 'text/csv'
 
             if exists(tmp_data_file):
