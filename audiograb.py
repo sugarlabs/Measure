@@ -26,6 +26,8 @@ import commands
 import traceback
 from string import find
 from threading import Timer
+from numpy import append
+from numpy.fft import rfft
 
 from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
                    SOUND_MAX_WAVE_LOGS, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
@@ -83,8 +85,7 @@ class AudioGrab():
         self.temp_buffer = [0]
         self.picture_buffer = []  # place to hold screen grabs
 
-        self.draw_graph_status = False
-        self.screenshot = True
+        self._take_screenshot = True
         self._debounce = True
 
         self.rate = RATE
@@ -96,8 +97,8 @@ class AudioGrab():
         self.count_temp = 0
         self.entry_count = 0
 
-        self.capture_counter = 1
-        self.logging_state = False
+        self._capture_counter = 0
+        self._we_are_logging = False
         self.buffer_interval_logging = 0
 
         self.counter_buffer = 0
@@ -245,11 +246,11 @@ class AudioGrab():
         if not self.dont_queue_the_buffer:
             self._new_buffer(temp_buffer, channel=channel)
 
-        if self.logging_state:
+        if self._we_are_logging:
             # If we've hit the maximum no. of log files, stop.
-            if self.capture_counter == SOUND_MAX_WAVE_LOGS:
-                self.capture_counter = 1
-                self.logging_state = False
+            if self._capture_counter == SOUND_MAX_WAVE_LOGS:
+                self._capture_counter = 0
+                self._we_are_logging = False
                 self.activity.data_logger.stop_session()
             else:
                 if self.capture_interval_sample or \
@@ -259,11 +260,11 @@ class AudioGrab():
 
             # If an immediate record is to be written, end logging session
             if self.buffer_interval_logging == 0:
-                self.logging_state = False
+                self._we_are_logging = False
                 self.activity.data_logger.stop_session()
 
         # In sensor mode, periodly update the textbox with a sample value
-        if self.activity.CONTEXT == 'sensor' and not self.logging_state:
+        if self.activity.CONTEXT == 'sensor' and not self._we_are_logging:
             # Only update display every nth time, where n=DISPLAY_DUTY_CYCLE
             if self._display_counter == 0:
                 if self.activity.sensor_toolbar.mode == 'resistance':
@@ -278,6 +279,16 @@ class AudioGrab():
             else:
                 self._display_counter -= 1
         return False
+
+    def _sample_sound(self, data_buffer):
+        return _avg(data_buffer, abs_value=True)
+
+    def _sample_frequency(self, data_buffer):
+            r = []
+            for j in rfft(data_buffer):
+                r.append(abs(j))
+            # Convert output to Hertz
+            return r.index(max(r)) * 48000. / len(data_buffer)
 
     def _calibrate_resistance(self, data_buffer):
         ''' Return calibrated value for resistance '''
@@ -312,28 +323,32 @@ class AudioGrab():
 
     def _emit_for_logging(self, data_buffer, channel=0):
         '''Sends the data for logging'''
-        if self.screenshot:
-            if self._debounce:
-                self._debounce = False
+        if self._debounce:
+            self._debounce = False
+            if self._take_screenshot:
                 if self.activity.data_logger.take_screenshot(
-                    self.capture_counter):
-                    self.capture_counter += 1
+                    self._capture_counter):
+                    self._capture_counter += 1
                 else:
                     log.debug('failed to take screenshot %d' % (
-                            self.capture_counter))
-                self._debounce = True
-        else:
-            if self.activity.sensor_toolbar.mode == 'resistance':
-                value = self._calibrate_resistance(data_buffer)
+                            self._capture_counter))
+            elif self.activity.CONTEXT == 'sensor':
+                if self.activity.sensor_toolbar.mode == 'resistance':
+                    value = self._calibrate_resistance(data_buffer)
+                else:
+                    value = self._calibrate_voltage(data_buffer)
+                self.sensor.set_sample_value(value, channel=channel)
             else:
-                value = self._calibrate_voltage(data_buffer)
+                if not self.activity.wave.get_fft_mode():
+                    value = self._sample_sound(data_buffer)
+                else:
+                    value = self._sample_frequency(data_buffer)
             if self.channels > 1:
                 self.activity.data_logger.write_value(
                     '%d, %0.3f' % (channel, value))
             else:
-                self.activity.data_logger.write_value(
-                    '%0.3f' % (value))
-            self.sensor.set_sample_value(value, channel=channel)
+                self.activity.data_logger.write_value('%0.3f' % (value))
+            self._debounce = True
 
     def start_sound_device(self):
         '''Start or Restart grabbing data from the audio capture'''
@@ -351,7 +366,7 @@ class AudioGrab():
         Sets an interval if logging interval is to be started
         Sets if screenshot of waveform is to be taken or values need to be
         written'''
-        self.logging_state = start_stop
+        self._we_are_logging = start_stop
         self.set_buffer_interval_logging(interval)
         if not start_stop:
             if self.capture_timer:
@@ -360,7 +375,7 @@ class AudioGrab():
                 self.capture_interval_sample = False
         elif interval != 0:
             self.make_timer()
-        self.screenshot = screenshot
+        self._take_screenshot = screenshot
 
     def sample_now(self):
         ''' Log the current sample now. This method is called from the
@@ -371,7 +386,7 @@ class AudioGrab():
     def make_timer(self):
         ''' Create the next timer that will go off at the proper interval.
         This is used when the user has selected a sampling interval > 0
-        and the logging_state is True. '''
+        and the _we_are_logging is True. '''
         self.capture_timer = Timer(self.buffer_interval_logging,
                                    self.sample_now)
         self.capture_timer.start()
@@ -380,10 +395,10 @@ class AudioGrab():
         '''Used to grab and temporarily store the current buffer'''
         self.picture_buffer = self.temp_buffer.copy()
 
-    def set_logging_state(self, start_stop=False):
+    def set__we_are_logging(self, start_stop=False):
         '''Sets whether buffer is to be emited for logging (True) or not
         (False)'''
-        self.logging_state = start_stop
+        self._we_are_logging = start_stop
 
     def set_buffer_interval_logging(self, interval=0):
         '''Sets the number of buffers after which a buffer needs to be
@@ -879,7 +894,7 @@ class AudioGrab():
         self.set_capture_gain(QUIT_CAPTURE_GAIN)
         self.set_bias(QUIT_BIAS)
         self.stop_sound_device()
-        if self.logging_state:
+        if self._we_are_logging:
             self.activity.data_logger.stop_session()
 
 

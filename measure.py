@@ -79,7 +79,7 @@ UNKNOWN = 'unknown'
 
 def _is_xo(hw):
     """ Return True if this is xo hardware """
-    return hw in [XO1, XO15, XO175]
+    return True  # hw in [XO1, XO15, XO175]
 
 
 def _get_hardware():

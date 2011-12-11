@@ -79,7 +79,6 @@ class SoundToolbar(gtk.Toolbar):
         self.capture_gain = CAPTURE_GAIN
         self.mic_boost = MIC_BOOST
 
-        # self.logging_status = False
         self._record = None
 
         # Set up Time-domain Button
@@ -173,7 +172,6 @@ class SoundToolbar(gtk.Toolbar):
         self._trigger_tool = ToolComboBox(self._trigger_combo)
         self.insert(self._trigger_tool, -1)
         self.show_all()
-
         return
 
     def add_frequency_slider(self, toolbar):
