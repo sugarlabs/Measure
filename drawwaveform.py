@@ -369,8 +369,7 @@ class DrawWaveform(gtk.DrawingArea):
                                 try:
                                     x_offset -=\
                                         int((float(-buf[position] + ypos)\
-
-                                        * self.draw_interval + 0.5)
+                                                 * self.draw_interval + 0.5))
                                 except:
                                     pass
 
