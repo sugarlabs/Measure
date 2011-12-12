@@ -256,6 +256,12 @@ class MeasureActivity(activity.Activity):
 
             self.sound_toolbar.add_frequency_slider(toolbox.toolbar)
 
+            # Set up the Pause Button
+            self._pause = ToolButton('media-playback-pause')
+            toolbox.toolbar.insert(self._pause, -1)
+            self._pause.set_tooltip(_('Freeze the display'))
+            self._pause.connect('clicked', self._pauseplay_control_cb)
+
             _separator = gtk.SeparatorToolItem()
             _separator.props.draw = False
             _separator.set_expand(True)
@@ -378,6 +384,20 @@ class MeasureActivity(activity.Activity):
         elif TOOLBARS[num] == 'sensor':
             self.set_sensor_context()
         return True
+
+    def _pauseplay_control_cb(self, button=None):
+        """ Callback for Pause Button """
+        if self.audiograb.get_freeze_the_display():
+            self.audiograb.set_freeze_the_display(False)
+            self._pause.set_icon('media-playback-start')
+            self._pause.set_tooltip(_('Unfreeze the display'))
+            self._pause.show()
+        else:
+            self.audiograb.set_freeze_the_display(True)
+            self._pause.set_icon('media-playback-pause')
+            self._pause.set_tooltip(_('Freeze the display'))
+            self._pause.show()
+        return False
 
     def set_sound_context(self):
         """ Called when sound toolbar is selected or button pushed """

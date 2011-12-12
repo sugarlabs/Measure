@@ -98,12 +98,6 @@ class SoundToolbar(gtk.Toolbar):
         if not self.activity.has_toolbarbox:
             self.add_frequency_slider(self)
 
-        # Set up the Pause Button
-        self._pause = ToolButton('media-playback-pause')
-        self.insert(self._pause, -1)
-        self._pause.set_tooltip(_('Freeze the display'))
-        self._pause.connect('clicked', self._pauseplay_control_cb)
-
         if self.activity.has_toolbarbox:
             separator = gtk.SeparatorToolItem()
             separator.props.draw = True
@@ -299,20 +293,6 @@ class SoundToolbar(gtk.Toolbar):
 
         self.activity.wave.set_trigger(self.trigger_conf[active])
         return
-
-    def _pauseplay_control_cb(self, button=None):
-        """ Callback for Pause Button """
-        if self.activity.audiograb.get_freeze_the_display():
-            self.activity.audiograb.set_freeze_the_display(False)
-            self._pause.set_icon('media-playback-start')
-            self._pause.set_tooltip(_('Unfreeze the display'))
-            self._pause.show()
-        else:
-            self.activity.audiograb.set_freeze_the_display(True)
-            self._pause.set_icon('media-playback-pause')
-            self._pause.set_tooltip(_('Freeze the display'))
-            self._pause.show()
-        return False
 
     def _timefreq_control_cb(self, button=None, time_state=True):
         """ Callback for Time and Freq. Buttons """
