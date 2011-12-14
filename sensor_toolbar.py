@@ -65,6 +65,7 @@ class SensorToolbar(gtk.Toolbar):
 
         self.activity = activity
         self._channels = channels
+        self._freq_mode = False
         self.values = []
         for i in range(self._channels):
             self.values.append('')
@@ -197,7 +198,7 @@ class SensorToolbar(gtk.Toolbar):
 
     def update_trigger_control(self, *args):
         ''' Callback for trigger control '''
-        if self.freq_mode:
+        if self._freq_mode:
             self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
         active = self._trigger_combo.get_active()
         if active == -1:
@@ -212,12 +213,12 @@ class SensorToolbar(gtk.Toolbar):
         if self.activity.audiograb.we_are_logging:
             self.record_control_cb()
         if self.activity.wave.get_fft_mode():
-            self.freq_mode = False
+            self._freq_mode = False
             self.activity.wave.set_fft_mode(False)
             self.freq.set_icon('domain-time')
             self.freq.set_tooltip(_('Time Base'))
         else:
-            self.freq_mode = True
+            self._freq_mode = True
             self.activity.wave.set_fft_mode(True)
             self.freq.set_icon('domain-freq')
             self.freq.set_tooltip(_('Frequency Base'))
