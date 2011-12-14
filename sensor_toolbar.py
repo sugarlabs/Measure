@@ -65,7 +65,6 @@ class SensorToolbar(gtk.Toolbar):
 
         self.activity = activity
         self._channels = channels
-        self._freq_mode = False
         self.values = []
         for i in range(self._channels):
             self.values.append('')
@@ -198,7 +197,7 @@ class SensorToolbar(gtk.Toolbar):
 
     def update_trigger_control(self, *args):
         ''' Callback for trigger control '''
-        if self._freq_mode:
+        if self.activity.wave.get_fft_mode():
             self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
         active = self._trigger_combo.get_active()
         if active == -1:
@@ -213,19 +212,21 @@ class SensorToolbar(gtk.Toolbar):
         if self.activity.audiograb.we_are_logging:
             self.record_control_cb()
         if self.activity.wave.get_fft_mode():
-            self._freq_mode = False
             self.activity.wave.set_fft_mode(False)
             self.freq.set_icon('domain-time')
             self.freq.set_tooltip(_('Time Base'))
         else:
-            self._freq_mode = True
             self.activity.wave.set_fft_mode(True)
             self.freq.set_icon('domain-freq')
             self.freq.set_tooltip(_('Frequency Base'))
             # Turn off triggering in Frequencey Base
             self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
             self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
-        self._update_string_for_textbox()
+            # Turn off invert in Frequencey Base
+            for i in range(self._channels):
+                if self.activity.wave.get_invert_state(channel=i):
+                    self.activity.side_toolbars[i].invert_control_cb()
+        self.update_string_for_textbox()
         return False
 
     def analog_resistance_voltage_mode_cb(self, button=None,
@@ -249,14 +250,12 @@ class SensorToolbar(gtk.Toolbar):
 
         if mode_to_set == 'sound':
             self.set_sound_context()
-            self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
                 self.activity.label_mode_img.set_from_pixbuf(
                     self.activity.mode_images['sound'])
-                self.activity.label_mode_img.set_tooltip_text(_('Time Base'))
+                self.activity.label_mode_img.set_tooltip_text(_('Sound'))
         elif mode_to_set == 'resistance':
             self.set_sensor_context()
-            self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
                 self.activity.label_mode_img.set_from_pixbuf(
                     self.activity.mode_images['resistance'])
@@ -264,8 +263,6 @@ class SensorToolbar(gtk.Toolbar):
                     _('Resistance Sensor'))
         elif mode_to_set == 'voltage':
             self.set_sensor_context()
-
-            self._update_string_for_textbox()
             if self.activity.has_toolbarbox:
                 self.activity.label_mode_img.set_from_pixbuf(
                     self.activity.mode_images['voltage'])
@@ -273,13 +270,13 @@ class SensorToolbar(gtk.Toolbar):
                     _('Voltage Sensor'))
         else:
             logging.error('unknown mode %s' % (mode_to_set))
+        self.update_string_for_textbox()
         return False
 
     def set_mode(self, mode='sound'):
         ''' Set the mixer settings to match the current mode. '''
         self.mode = mode
         self.activity.audiograb.set_sensor_type(self.mode)
-        # FIXME: turn off logging
         for i in range(self._channels):
             self.values[i] = 0.0
         return
@@ -329,7 +326,7 @@ class SensorToolbar(gtk.Toolbar):
         time_div = 0.001 * max(self.activity.adjustmentf.value, 0.05)
         freq_div = 1000 * max(self.activity.adjustmentf.value, 0.01)
         self.activity.wave.set_div(time_div, freq_div)
-        self._update_string_for_textbox()
+        self.update_string_for_textbox()
         return False
 
     def set_sound_context(self):
@@ -362,7 +359,7 @@ class SensorToolbar(gtk.Toolbar):
     def sensor_context_on(self):
         ''' Called when a DC sensor is selected '''
         # self.activity.audiograb.set_sensor_type(self.mode)
-        self._update_string_for_textbox()
+        self.update_string_for_textbox()
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
         # self.activity.audiograb.resume_grabbing()
         self.activity.audiograb.start_grabbing()
@@ -380,7 +377,7 @@ class SensorToolbar(gtk.Toolbar):
         ''' Called when an analog sensor is selected '''
         # self.activity.audiograb.set_sensor_type('sound')
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
-        self._update_string_for_textbox()
+        self.update_string_for_textbox()
         self.update_trigger_control()
         # self.activity.audiograb.start_sound_device()
         self.activity.audiograb.start_grabbing()
@@ -390,7 +387,7 @@ class SensorToolbar(gtk.Toolbar):
         ''' Write a sample value to the textbox. '''
         gtk.threads_enter()
         self.values[channel] = value
-        self._update_string_for_textbox()
+        self.update_string_for_textbox()
         gtk.threads_leave()
         return
 
@@ -445,31 +442,35 @@ class SensorToolbar(gtk.Toolbar):
             self.logging_interval_status = \
                               intervals[self._log_interval_combo.get_active()]
 
-    def _update_string_for_textbox(self):
+    def update_string_for_textbox(self):
         ''' Update the status field at the bottom of the canvas. '''
-        if self.mode == 'sound':
-            self.string_for_textbox = (self.STR_AC + '\t')
-        elif self.mode == 'resistance':
-            self.string_for_textbox = (self.STR_DC + '\n')
-            self.string_for_textbox += self.STR_RESISTANCE
+        if self.mode == 'resistance':
+            string_for_textbox = (self.STR_DC + '\n')
+            string_for_textbox += self.STR_RESISTANCE
+        elif self.mode == 'voltage':
+            string_for_textbox = (self.STR_DC + '\n')
+            string_for_textbox += self.STR_VOLTAGE
         else:
-            self.string_for_textbox = (self.STR_DC + '\n')
-            self.string_for_textbox += self.STR_VOLTAGE
+            string_for_textbox = (self.STR_AC + '\t')
         if self.activity.wave.get_fft_mode():
             scalex = self.STR_XAXIS_TEXT % {
                 'unit': self.HZ, 'division': self.activity.wave.freq_div}
-            self.string_for_textbox += self.STR_FREQUENCY
-            self.string_for_textbox += ('\n' + scalex)
+            string_for_textbox += self.STR_FREQUENCY
+            string_for_textbox += ('\n' + scalex)
         elif self.mode == 'sound':
             scalex = self.STR_XAXIS_TEXT % {
                     'unit': self.MS,
                     'division': self.activity.wave.time_div * 1000}
-            self.string_for_textbox += self.STR_TIME
-            self.string_for_textbox += ('\n' + scalex)
+            string_for_textbox += self.STR_TIME
+            string_for_textbox += ('\n' + scalex)
         else:
             for i in range(self._channels):
-                self.string_for_textbox += '\t(%s)' % (self.values[i])
-        # FIX ME
-        if self.activity.wave.get_invert_state():
-            self.string_for_textbox += self.STR_INVERT
-        self.activity.text_box.set_label(self.string_for_textbox)
+                string_for_textbox += '\t(%s)' % (self.values[i])
+        invert = False
+        for i in range(self._channels):
+            if self.activity.wave.get_invert_state(channel=i):
+                invert = True
+        if invert:
+            string_for_textbox += self.STR_INVERT
+        self.activity.text_box.set_label(string_for_textbox)
+

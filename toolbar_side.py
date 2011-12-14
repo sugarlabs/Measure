@@ -42,7 +42,7 @@ class SideToolbar(gtk.Toolbar):
 
         self._invert = ToolButton('invert')
         self._invert.set_tooltip(_('Invert'))
-        self._invert.connect('clicked', self._invert_control_cb)
+        self._invert.connect('clicked', self.invert_control_cb)
         self._invert.show()
         self.activity.wave.set_invert_state(False, channel=self._channel)
 
@@ -140,16 +140,17 @@ class SideToolbar(gtk.Toolbar):
         self.yscrollbar.set_value(self.mode_values[self.mode])
         return
 
-    def _invert_control_cb(self, data=None):
+    def invert_control_cb(self, data=None):
         ''' Callback for Invert Button '''
         if self.activity.wave.get_invert_state(channel=self._channel):
             self.activity.wave.set_invert_state(False, self._channel)
             self._invert.set_icon('invert')
             self._invert.show()
-        else:
+        elif not self.activity.wave.get_fft_mode():
             self.activity.wave.set_invert_state(True, self._channel)
             self._invert.set_icon('invert2')
             self._invert.show()
+        self.activity.sensor_toolbar.update_string_for_textbox()
         return False
 
     def _color_wave(self, color):

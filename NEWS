@@ -3,6 +3,7 @@
 ENHANCEMENTS:
 * stereo capture
 * calibrated data logging
+* reconfigured toolbars to better reflect usage
 
 BUGFIX:
 * screen capture works again

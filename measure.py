@@ -224,7 +224,8 @@ class MeasureActivity(activity.Activity):
             self.label_mode_img.set_from_pixbuf(self.mode_images['sound'])
             self.label_mode_tool = gtk.ToolItem()
             self.label_mode_tool.add(self.label_mode_img)
-            self.label_mode_img.set_tooltip_text(_('Time Base'))
+            # TRANSLATORS: This is the current mode: audio, voltage, etc.
+            self.label_mode_img.set_tooltip_text(_('Capture mode'))
             toolbox.toolbar.insert(self.label_mode_tool, -1)
 
             separator = gtk.SeparatorToolItem()
