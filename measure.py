@@ -20,8 +20,7 @@ import pygst
 pygst.require("0.10")
 import gtk
 from textbox import TextBox
-from os import environ, path
-from os.path import join, exists
+import os
 import csv
 
 from gettext import gettext as _
@@ -29,7 +28,7 @@ from gettext import gettext as _
 from sugar.activity import activity
 try:  # 0.86+ toolbar widgets
     from sugar.graphics.toolbarbox import ToolbarBox
-    _has_toolbarbox = True
+    _has_toolbarbox = False
 except ImportError:
     _has_toolbarbox = False
 
@@ -37,11 +36,11 @@ if _has_toolbarbox:
     from sugar.activity.widgets import ActivityToolbarButton
     from sugar.activity.widgets import StopButton
     from sugar.graphics.toolbarbox import ToolbarButton
-    from sugar.graphics.toolbutton import ToolButton
 else:
     from sugar.activity.activity import ActivityToolbox
 from sugar.graphics import style
 from sugar.datastore import datastore
+from sugar.graphics.toolbutton import ToolButton
 
 try:
     from sugar import profile
@@ -59,11 +58,11 @@ from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
-from config import TOOLBARS, ICONS_DIR, XO1, XO15, XO175, UNKNOWN
+from config import ICONS_DIR, XO1, XO15, XO175, UNKNOWN
 
 import logging
 
-log = logging.getLogger('Measure')
+log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
@@ -74,7 +73,8 @@ def _get_hardware():
     if product is None:
         if '/sys/devices/platform/lis3lv02d/position':
             return XO175
-        elif exists('/etc/olpc-release') or exists('/sys/power/olpc-pm'):
+        elif os.path.exists('/etc/olpc-release') or \
+             os.path.exists('/sys/power/olpc-pm'):
             return XO1
         else:
             return UNKNOWN
@@ -94,7 +94,7 @@ def _get_hardware():
 def _get_dmi(node):
     ''' The desktop management interface should be a reliable source
     for product and version information. '''
-    path = join('/sys/class/dmi/id', node)
+    path = os.path.join('/sys/class/dmi/id', node)
     try:
         return open(path).readline().strip()
     except:
@@ -115,11 +115,11 @@ class MeasureActivity(activity.Activity):
 
         self.mode_images = {}
         self.mode_images['sound'] = gtk.gdk.pixbuf_new_from_file_at_size(
-            join(ICONS_DIR, 'media-audio.svg'), 45, 45)
+            os.path.join(ICONS_DIR, 'media-audio.svg'), 45, 45)
         self.mode_images['resistance'] = gtk.gdk.pixbuf_new_from_file_at_size(
-            join(ICONS_DIR, 'resistance.svg'), 45, 45)
+            os.path.join(ICONS_DIR, 'resistance.svg'), 45, 45)
         self.mode_images['voltage'] = gtk.gdk.pixbuf_new_from_file_at_size(
-            join(ICONS_DIR, 'voltage.svg'), 45, 45)
+            os.path.join(ICONS_DIR, 'voltage.svg'), 45, 45)
 
         self._using_gconf = _using_gconf
         self.icon_colors = self.get_icon_colors_from_sugar()
@@ -200,6 +200,7 @@ class MeasureActivity(activity.Activity):
             self.set_toolbox(toolbox)
 
         self.sensor_toolbar = SensorToolbar(self, self.audiograb.channels)
+        self.control_toolbar = gtk.Toolbar()
         if self.has_toolbarbox:
             sensor_button = ToolbarButton(
                 label=_('Sensors'),
@@ -209,15 +210,10 @@ class MeasureActivity(activity.Activity):
             sensor_button.show()
         else:
             toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
+            toolbox.add_toolbar(_("Controls"), self.control_toolbar)
         self.sensor_toolbar.show()
 
         if self.has_toolbarbox:
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = False
-            toolbox.toolbar.insert(separator, -1)
-            separator.show()
-
-            # Set up Logging Interval combo box
             self.label_mode_img = gtk.Image()
             self.label_mode_img.set_from_pixbuf(self.mode_images['sound'])
             self.label_mode_tool = gtk.ToolItem()
@@ -237,7 +233,6 @@ class MeasureActivity(activity.Activity):
             toolbox.toolbar.insert(separator, -1)
             separator.show()
 
-            # Set up the Screenshot/Pause Button
             self._pause = ToolButton('media-playback-pause')
             toolbox.toolbar.insert(self._pause, -1)
             self._pause.set_tooltip(_('Capture sample now'))
@@ -257,7 +252,19 @@ class MeasureActivity(activity.Activity):
             self.set_toolbox(toolbox)
             sensor_button.set_expanded(True)
         else:
-            toolbox.set_current_toolbar(TOOLBARS.index('sensor'))
+            self.sensor_toolbar.add_frequency_slider(self.control_toolbar)
+
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = True
+            self.control_toolbar.insert(separator, -1)
+            separator.show()
+
+            self._pause = ToolButton('media-playback-pause')
+            self.control_toolbar.insert(self._pause, -1)
+            self._pause.set_tooltip(_('Capture sample now'))
+            self._pause.connect('clicked', self._pause_play_cb)
+
+            toolbox.set_current_toolbar(1)
 
         toolbox.show()
         self.sensor_toolbar.update_page_size()
@@ -266,7 +273,7 @@ class MeasureActivity(activity.Activity):
 
         self._first = True
 
-        # Start in 'sound' mode.
+        # Always start in 'sound' mode.
         self.sensor_toolbar.set_mode('sound')
         self.sensor_toolbar.set_sound_context()
         self.sensor_toolbar.set_show_hide_windows()
@@ -300,8 +307,8 @@ class MeasureActivity(activity.Activity):
             writer = csv.writer(fd)
             # Also output to a separate file as a workaround to Ticket 2127
             # (the assumption being that this file will be opened by the user)
-            tmp_data_file = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
-                                 'sensor_data' + '.csv')
+            tmp_data_file = os.path.join(os.environ['SUGAR_ACTIVITY_ROOT'],
+                                 'instance', 'sensor_data' + '.csv')
             log.debug('saving sensor data to %s' % (tmp_data_file))
             if self._dsobject is None:  # first time, so create
                 fd2 = open(tmp_data_file, 'wb')
@@ -319,7 +326,7 @@ class MeasureActivity(activity.Activity):
             # Set the proper mimetype
             self.metadata['mime_type'] = 'text/csv'
 
-            if exists(tmp_data_file):
+            if os.path.exists(tmp_data_file):
                 if self._dsobject is None:
                     self._dsobject = datastore.create()
                     self._dsobject.metadata['title'] = _('Measure Log')
