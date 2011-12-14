@@ -7,153 +7,154 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2011-06-13 17:05+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2011-12-09 22:34+0200\n"
+"Last-Translator: FRKS <frks@frks.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Measure"
-msgstr ""
+msgstr "Pomiar"
 
 #: sensor_toolbar.py:49
 msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
+"Czujnik DC (podłącz sensor do różowego wejścia mikrofonu na lewym boku XO)"
 
 #: sensor_toolbar.py:51
 msgid "Bias/Offset Enabled"
-msgstr ""
+msgstr "Odchylenie/Przesunięcie aktywne"
 
 #: sensor_toolbar.py:51
 msgid "Ohms"
-msgstr ""
+msgstr "Omy"
 
 #: sensor_toolbar.py:52
 msgid "Bias/Offset Disabled"
-msgstr ""
+msgstr "Odchylenie/Przesunięcie nieaktywne"
 
 #: sensor_toolbar.py:52
 msgid "Volts"
-msgstr ""
+msgstr "Wolty"
 
 #: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
 msgid "Invert"
-msgstr ""
+msgstr "Odwróć"
 
 #: sensor_toolbar.py:67 sensor_toolbar.py:193
 msgid "Resistance Sensor"
-msgstr ""
+msgstr "Czujnik oporu"
 
 #: sensor_toolbar.py:74 sensor_toolbar.py:202
 msgid "Voltage Sensor"
-msgstr ""
+msgstr "Czujnik woltów"
 
 #: sensor_toolbar.py:98
 msgid "1/10 second"
-msgstr ""
+msgstr "1/10 sekundy"
 
 #: sensor_toolbar.py:98 sensor_toolbar.py:109
 msgid "1 second"
-msgstr ""
+msgstr "1 sekunda"
 
 #: sensor_toolbar.py:98
 msgid "30 seconds"
-msgstr ""
+msgstr "30 sekund"
 
 #: sensor_toolbar.py:99
 msgid "5 minutes"
-msgstr ""
+msgstr "5 minut"
 
 #: sensor_toolbar.py:99
 msgid "30 minutes"
-msgstr ""
+msgstr "30 minut"
 
 #: sensor_toolbar.py:102 sound_toolbar.py:134
 msgid "Sampling interval"
-msgstr ""
+msgstr "Odstępy pomiędzy próbkami"
 
 #: sensor_toolbar.py:119 sensor_toolbar.py:153
 msgid "Start Recording"
-msgstr ""
+msgstr "Rozpocznij Nagrywanie"
 
 #: sensor_toolbar.py:147
 msgid "Stop Recording"
-msgstr ""
+msgstr "Zakończ Nagrywanie"
 
 #: sound_toolbar.py:50
 msgid "Capture now"
-msgstr ""
+msgstr "Nagraj teraz"
 
 #: sound_toolbar.py:51
 msgid "Every 30 sec."
-msgstr ""
+msgstr "Co 30 sekund"
 
 #: sound_toolbar.py:52
 msgid "Every 2 min."
-msgstr ""
+msgstr "Co 2 minuty"
 
 #: sound_toolbar.py:53
 msgid "Every 10 min."
-msgstr ""
+msgstr "Co 10 minut"
 
 #: sound_toolbar.py:54
 msgid "Every 30 min."
-msgstr ""
+msgstr "Co 30 minut"
 
 #: sound_toolbar.py:65 measure.py:197 measure.py:203
 msgid "Sound"
-msgstr ""
+msgstr "Dźwięk"
 
 #: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
 msgid "Time Base"
-msgstr ""
+msgstr "Bazowa linia czasu"
 
 #: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
 msgid "Frequency Base"
-msgstr ""
+msgstr "Bazowa linia częstotliwości"
 
 #: sound_toolbar.py:71
-#, python-format
+#, python-format, 
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
-msgstr ""
+msgstr "Skala osi X: 1 odcinek = %(division)s %(unit)s"
 
 #: sound_toolbar.py:73
 msgid "ms"
-msgstr ""
+msgstr "ms"
 
 #: sound_toolbar.py:75
 msgid "Hz"
-msgstr ""
+msgstr "Herc (Hz)"
 
 #: sound_toolbar.py:109 sound_toolbar.py:321
 msgid "Freeze the display"
-msgstr ""
+msgstr "Zamroź obraz"
 
 #: sound_toolbar.py:151 sound_toolbar.py:297
 msgid "Capture sample now"
-msgstr ""
+msgstr "Nagraj próbkę teraz"
 
 #: sound_toolbar.py:162
 msgid "None"
-msgstr ""
+msgstr "Brak"
 
 #: sound_toolbar.py:162
 msgid "Rising Edge"
-msgstr ""
+msgstr "Powiększ krawędzie"
 
 #: sound_toolbar.py:162
 msgid "Falling Edge"
-msgstr ""
+msgstr "Zmniejsz krawędzie"
 
 #: sound_toolbar.py:175
 msgid "Create a trigger"
-msgstr ""
+msgstr "Utwórz spust (wyzwalacz)"
 
 #: sound_toolbar.py:186
 msgid "Zoom out"
@@ -165,56 +166,58 @@ msgstr "Powiększ"
 
 #: sound_toolbar.py:294
 msgid "Stop sampling"
-msgstr ""
+msgstr "Zatrzymaj próbkę"
 
 #: sound_toolbar.py:299
 msgid "Start sampling"
-msgstr ""
+msgstr "Rozpocznij próbkę"
 
 #: sound_toolbar.py:316
 msgid "Unfreeze the display"
-msgstr ""
+msgstr "Odblokuj ekran"
 
 #: journal.py:53 measure.py:328
 msgid "Session"
-msgstr ""
+msgstr "Sesja"
 
 #: journal.py:55
 msgid "User"
-msgstr ""
+msgstr "Użytkownik"
 
 #: journal.py:56
 msgid "Interval"
-msgstr ""
+msgstr "Okres"
 
 #: journal.py:91
 msgid "Waveform"
-msgstr ""
+msgstr "Kształt fali"
 
 #: toolbar_side.py:46 toolbar_side.py:120
 msgid "Increase amplitude"
-msgstr ""
+msgstr "Zwiększ amplitudę"
 
 #: toolbar_side.py:61 toolbar_side.py:122
 msgid "Decrease amplitude"
-msgstr ""
+msgstr "Zmniejsz amplitudę"
 
 #: toolbar_side.py:125
+#, fuzzy
 msgid "Increase bias"
-msgstr ""
+msgstr "Zwiększ nachylenie/odchylenie"
 
 #: toolbar_side.py:127
+#, fuzzy
 msgid "Decrease bias"
-msgstr ""
+msgstr "Zmniejsz nachylenie/odchylenie"
 
 #: measure.py:210 measure.py:216
 msgid "Sensors"
-msgstr ""
+msgstr "Czujniki"
 
 #: measure.py:240
 msgid "<Ctrl>Q"
-msgstr ""
+msgstr "<Ctrl>Q"
 
 #: measure.py:310
 msgid "Measure Log"
-msgstr ""
+msgstr "Rejestr pomiarów"
