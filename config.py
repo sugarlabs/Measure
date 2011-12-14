@@ -1,21 +1,17 @@
-#    Author:  Arjun Sarwal   arjun@laptop.org
-#    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009,10 Walter Bender
-#    Copyright (C) 2009, Benjamin Berg, Sebastian Berg
-#    	
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
+# Written by Arjun Sarwal <arjun@laptop.org>
+# Copyright (C) 2007, Arjun Sarwal
+# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
+
 
 """
 Global configuration for Measure.
@@ -54,9 +50,6 @@ QUIT_MIC_BOOST = False
 QUIT_DC_MODE_ENABLE = False
 QUIT_CAPTURE_GAIN = 100
 QUIT_BIAS = True
-
-# Toolbars for 0.84- Sugar
-TOOLBARS = ['project','sound','sensor']
 
 # Maximum no. of screenshots Measure will save while recording in Sound context
 SOUND_MAX_WAVE_LOGS = 10
