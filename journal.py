@@ -31,45 +31,52 @@ from sugar.datastore import datastore
 
 # Initialize logging.
 import logging
-log = logging.getLogger('Measure')
+log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
 
 class DataLogger():
-    """ Handles all of the data I/O with the Journal """
+    ''' Handles all of the data I/O with the Journal '''
 
+    MODE_LABELS = {
+        'sound': _('Sound'),
+        'resistance': _('Ohms'),
+        'voltage': _('Volts'),
+        'frequency': _('Hz')
+        }
     def __init__(self, activity):
-        """ We store csv data in the Journal entry for Measure; screen captures
-            are stored in separate Journal entries """
+        ''' We store csv data in the Journal entry for Measure; screen captures
+            are stored in separate Journal entries '''
         self.activity = activity
         self.data_buffer = []
             
     def start_new_session(self, user='', xscale=0, yscale=0,
-                          logging_interval='', channels=1):
-        """ Start a new logging session by updating session parameters """
+                          logging_interval='', channels=1, mode='sound'):
+        ''' Start a new logging session by updating session parameters '''
         self.activity.session_id += 1
 
-        self.data_buffer.append("%s: %s" % (_('Session'),
+        self.data_buffer.append('%s: %s' % (_('Session'),
                                             str(self.activity.session_id)))
-        self.data_buffer.append("%s: %s" % (_('User'), user))
-        self.data_buffer.append("%s: %s" % (_('Interval'),
+        self.data_buffer.append('%s: %s' % (_('User'), user))
+        self.data_buffer.append('%s: %s' % (_('Mode'), self.MODE_LABELS[mode]))
+        self.data_buffer.append('%s: %s' % (_('Interval'),
                                             str(logging_interval)))
         if channels > 1:
-            self.data_buffer.append("%s: %d" % (_('Channels'),
+            self.data_buffer.append('%s: %d' % (_('Channels'),
                                                 channels))
         return self.activity.session_id
 
-    def write_value(self, value=0):
-        """Append the value passed to data_buffer """
+    def write_value(self, value=''):
+        '''Append the value passed to data_buffer '''
         self.data_buffer.append(value)
 
     def stop_session(self):
-        """Write the data_buffer onto a file"""
+        '''Write the data_buffer onto a file'''
         return
     
     def take_screenshot(self, capture_count=1):
-        """ Take a screenshot and save to the Journal """
+        ''' Take a screenshot and save to the Journal '''
         tmp_file_path = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
                          'screen_capture_' + str(capture_count) + '.png')
 
@@ -91,7 +98,7 @@ class DataLogger():
         if exists(tmp_file_path):
             dsobject = datastore.create()
             try:
-                dsobject.metadata['title'] = "%s %d" % (_('Waveform'),
+                dsobject.metadata['title'] = '%s %d' % (_('Waveform'),
                                                        capture_count)
                 dsobject.metadata['keep'] = '0'
                 dsobject.metadata['buddies'] = ''

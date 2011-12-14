@@ -84,12 +84,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.rms = 0
         self.avg = 0
         self.Rv = 0
-        # constant to multiply with self.param2 while scaling values
-        self.log_param1 = ""
-        self.log_param2 = ""
-        self.log_param3 = ""
-        self.log_param4 = ""
-        self.log_param5 = ""
 
         self._BACKGROUND_LINE_THICKNESS = 0.8
         self._TRIGGER_LINE_THICKNESS = 3
@@ -518,7 +512,7 @@ class DrawWaveform(gtk.DrawingArea):
     def get_mag_params(self, channel=0):
         return self.gain[channel], self.y_mag[channel]
 
-    def set_mag_params(self, gain=1.0, y_mag=3.0, channel=0):
+    def set_mag_params(self, gain=1.0, y_mag=1.0, channel=0):
         self.gain[channel] = gain
         self.y_mag[channel] = y_mag
 

@@ -25,11 +25,10 @@ from config import LOWER, UPPER
 
 
 class SideToolbar(gtk.Toolbar):
-    """ A toolbar on the side of the canvas for adjusting gain/bias """
-
+    ''' A toolbar on the side of the canvas for adjusting gain/bias '''
 
     def __init__(self, activity, channel=0):
-        """ Set up initial toolbars """
+        ''' Set up initial toolbars '''
         gtk.Toolbar.__init__(self)
 
         self.activity = activity
@@ -86,7 +85,7 @@ class SideToolbar(gtk.Toolbar):
         self.set_show_hide(False)
 
     def _yscrollbar_cb(self, adjy, data=None):
-        """ Callback for scrollbar """
+        ''' Callback for scrollbar '''
         if self.mode == 'sound':
             self.activity.wave.set_mag_params(1.0, adjy.value,
                                               channel=self._channel)
@@ -100,7 +99,7 @@ class SideToolbar(gtk.Toolbar):
         return True
 
     def _button_up_cb(self, data=None):
-        """Moves slider up"""
+        '''Moves slider up'''
         new_value = self.yscrollbar.get_value() + (UPPER - LOWER) \
             / 100.
         if new_value <= UPPER:
@@ -110,7 +109,7 @@ class SideToolbar(gtk.Toolbar):
         return True
 
     def _button_down_cb(self, data=None):
-        """Moves slider down"""
+        '''Moves slider down'''
         new_value = self.yscrollbar.get_value() - (UPPER - LOWER) \
             / 100.
         if new_value >= LOWER:
@@ -120,12 +119,12 @@ class SideToolbar(gtk.Toolbar):
         return True
 
     def set_show_hide(self, show=True, mode='sound'):
-        """ Show or hide the toolbar """
+        ''' Show or hide the toolbar '''
         self.show_toolbar = show
-        self.set_mode(mode)
+        self.set_side_mode(mode)
 
-    def set_mode(self, mode='sound'):
-        """ Set the toolbar to either 'sound' or 'sensor' """
+    def set_side_mode(self, mode='sound'):
+        ''' Set the toolbar to either 'sound' or 'sensor' '''
         self.mode = mode
         if self.mode == 'sound':
             self.button_up.set_icon('amp-high')
@@ -142,7 +141,7 @@ class SideToolbar(gtk.Toolbar):
         return
 
     def _invert_control_cb(self, data=None):
-        """ Callback for Invert Button """
+        ''' Callback for Invert Button '''
         if self.activity.wave.get_invert_state(channel=self._channel):
             self.activity.wave.set_invert_state(False, self._channel)
             self._invert.set_icon('invert')
@@ -151,19 +150,19 @@ class SideToolbar(gtk.Toolbar):
             self.activity.wave.set_invert_state(True, self._channel)
             self._invert.set_icon('invert2')
             self._invert.show()
-        # self._update_string_for_textbox()  # from sound_toolbar
         return False
 
     def _color_wave(self, color):
+        ''' Generate a wave graphic in color to label each side toolbar '''
         svg = '<?xml version="1.0" ?>\n\
-<!DOCTYPE svg  PUBLIC "-//W3C//DTD SVG 1.1//EN"  \n\
+<!DOCTYPE svg  PUBLIC "-//W3C//DTD SVG 1.1//EN"\n\
 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n\
-<svg enable-background="new 0 0 55.125 55" height="55px" version="1.1" \n\
-viewBox="0 0 55.125 55" width="55.125px" x="0px" xml:space="preserve" \n\
-xmlns="http://www.w3.org/2000/svg" \n\
+<svg enable-background="new 0 0 55.125 55" height="55px" version="1.1"\n\
+viewBox="0 0 55.125 55" width="55.125px" x="0px" xml:space="preserve"\n\
+xmlns="http://www.w3.org/2000/svg"\n\
 xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">\n\
 <path d="M9.066,27.5 c2.32-6.917,4.666-13.834,9.255-13.834\n\
-c9.179,0,9.179,27.668,18.358,27.668c4.59,0,6.986-6.917,9.332-13.834" \n\
+c9.179,0,9.179,27.668,18.358,27.668c4.59,0,6.986-6.917,9.332-13.834"\n\
 fill="none" stroke="%s" stroke-linecap="round" stroke-width="3.5"/>\n\
 </svg>' % (color)
         pixbuf = svg_str_to_pixbuf(svg)

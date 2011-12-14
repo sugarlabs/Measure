@@ -19,7 +19,7 @@
 import pygst
 pygst.require("0.10")
 import gtk
-from textbox import TextBox
+import pango
 import os
 import csv
 
@@ -28,7 +28,7 @@ from gettext import gettext as _
 from sugar.activity import activity
 try:  # 0.86+ toolbar widgets
     from sugar.graphics.toolbarbox import ToolbarBox
-    _has_toolbarbox = False
+    _has_toolbarbox = True
 except ImportError:
     _has_toolbarbox = False
 
@@ -162,7 +162,7 @@ class MeasureActivity(activity.Activity):
         box3 = gtk.HBox(False, 0)
         box3.pack_start(self.wave, True, True, 0)
 
-        # We need an event box in order to set the background color.
+        # We need event boxes in order to set the background color.
         side_eventboxes = []
         self.side_toolbars = []
         for i in range(self.audiograb.channels):
@@ -173,13 +173,19 @@ class MeasureActivity(activity.Activity):
             side_eventboxes[i].add(self.side_toolbars[i].box1)
             box3.pack_start(side_eventboxes[i], False, True, 0)
 
-        # FIX ME: put text box in an event box to set the background
-        # color and change font color to white
-        self.text_box = TextBox()
+        event_box = gtk.EventBox()
+        self.text_box = gtk.Label()
+        self.text_box.set_justify(gtk.JUSTIFY_LEFT)
+        alist = pango.AttrList()
+        alist.insert(pango.AttrForeground(65535, 65535, 65535, 0, -1))
+        self.text_box.set_attributes(alist)
+        event_box.add(self.text_box)
+        event_box.modify_bg(
+            gtk.STATE_NORMAL, style.COLOR_TOOLBAR_GREY.get_gdk_color())
 
         box1 = gtk.VBox(False, 0)
         box1.pack_start(box3, True, True, 0)
-        box1.pack_start(self.text_box.box_main, False, True, 0)
+        box1.pack_start(event_box, False, True, 0)
 
         self.set_canvas(box1)
 
@@ -210,7 +216,7 @@ class MeasureActivity(activity.Activity):
             sensor_button.show()
         else:
             toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
-            toolbox.add_toolbar(_("Controls"), self.control_toolbar)
+            toolbox.add_toolbar(_('Controls'), self.control_toolbar)
         self.sensor_toolbar.show()
 
         if self.has_toolbarbox:
@@ -299,6 +305,7 @@ class MeasureActivity(activity.Activity):
 
     def write_file(self, file_path):
         ''' Write data to journal, if there is any data to write '''
+        # FIXME: Don't use ""s around data
         if hasattr(self, 'data_logger') and \
                 self.new_recording and \
                 len(self.data_logger.data_buffer) > 0:
@@ -339,11 +346,11 @@ class MeasureActivity(activity.Activity):
     def read_file(self, file_path):
         ''' Read csv data from journal on start '''
         reader = csv.reader(open(file_path, "rb"))
-        # Count the number of sessions
+        # Count the number of sessions.
         for row in reader:
             if len(row) > 0:
                 if row[0].find(_('Session')) != -1:
-                    log.debug('found a previously recorded session')
+                    # log.debug('found a previously recorded session')
                     self.session_id += 1
                 elif row[0].find('abiword') != -1:
                     # File has been opened by Write cannot be read by Measure
@@ -353,7 +360,7 @@ class MeasureActivity(activity.Activity):
                     return
                 self.data_logger.data_buffer.append(row[0])
         if self.session_id == 0:
-            log.debug('setting data_logger buffer to []')
+            # log.debug('setting data_logger buffer to []')
             self.data_logger.data_buffer = []
 
     def _pause_play_cb(self, button=None):

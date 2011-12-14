@@ -33,13 +33,13 @@ log.setLevel(logging.DEBUG)
 
 
 def _is_xo(hw):
-    """ Return True if this is xo hardware """
+    ''' Return True if this is xo hardware '''
     return hw in [XO1, XO15, XO175]
 
 
 class SensorToolbar(gtk.Toolbar):
-    """ The toolbar for specifiying the sensor: sound, resitance, or
-    voltage """
+    ''' The toolbar for specifiying the sensor: sound, resitance, or
+    voltage '''
 
     LOWER = 0.0
     UPPER = 1.0
@@ -59,7 +59,7 @@ class SensorToolbar(gtk.Toolbar):
     HZ = _('Hz')
 
     def __init__(self, activity, channels):
-        """ By default, start with resistance mode """
+        ''' By default, start with resistance mode '''
 
         gtk.Toolbar.__init__(self)
 
@@ -118,10 +118,6 @@ class SensorToolbar(gtk.Toolbar):
         self.freq.set_tooltip(_('Time Base'))
         self.freq.connect('clicked', self._timefreq_control_cb)
 
-        # Set up Frequency-control Slider and corresponding buttons
-        if not self.activity.has_toolbarbox:
-            self.add_frequency_slider(self)
-
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
@@ -133,7 +129,7 @@ class SensorToolbar(gtk.Toolbar):
         if hasattr(self._log_interval_combo, 'set_tooltip_text'):
             self._log_interval_combo.set_tooltip_text(_('Sampling interval'))
 
-        self._interval_changed_id = self._log_interval_combo.connect("changed",
+        self._interval_changed_id = self._log_interval_combo.connect('changed',
                                          self.log_interval_cb)
 
         for i, s in enumerate(self.interval):
@@ -174,7 +170,7 @@ class SensorToolbar(gtk.Toolbar):
         self.show_all()
 
     def add_frequency_slider(self, toolbar):
-        """ Either on the Sound toolbar or the Main toolbar """
+        ''' Either on the Sound toolbar or the Main toolbar '''
         self._freq_stepper_up = ToolButton('freq-high')
         self._freq_stepper_up.set_tooltip(_('Zoom out'))
         self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
@@ -200,7 +196,9 @@ class SensorToolbar(gtk.Toolbar):
         return
 
     def update_trigger_control(self, *args):
-        """ Callback for trigger control """
+        ''' Callback for trigger control '''
+        if self.freq_mode:
+            self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
         active = self._trigger_combo.get_active()
         if active == -1:
             return
@@ -209,7 +207,10 @@ class SensorToolbar(gtk.Toolbar):
         return
 
     def _timefreq_control_cb(self, button=None):
-        """ Callback for Freq. Button """
+        ''' Callback for Freq. Button '''
+        # Turn off logging when switching modes
+        if self.activity.audiograb.we_are_logging:
+            self.record_control_cb()
         if self.activity.wave.get_fft_mode():
             self.freq_mode = False
             self.activity.wave.set_fft_mode(False)
@@ -220,22 +221,31 @@ class SensorToolbar(gtk.Toolbar):
             self.activity.wave.set_fft_mode(True)
             self.freq.set_icon('domain-freq')
             self.freq.set_tooltip(_('Frequency Base'))
+            # Turn off triggering in Frequencey Base
+            self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
+            self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
         self._update_string_for_textbox()
         return False
 
     def analog_resistance_voltage_mode_cb(self, button=None,
                                    mode_to_set='sound'):
-        """ Callback for Analog/Resistance/Voltage Buttons """
+        ''' Callback for Analog/Resistance/Voltage Buttons '''
         if self.mode == mode_to_set:
             return
         if self.activity.CONTEXT == 'sound':
             self.sound_context_off()
         else:
             self.sensor_context_off()
-        self.set_mode(mode_to_set)
+
         # Force time domain when switching modes
         if self.activity.wave.get_fft_mode():
             self._timefreq_control_cb()
+        # Turn off logging when switching modes
+        if self.activity.audiograb.we_are_logging:
+            self.record_control_cb()
+
+        self.set_mode(mode_to_set)
+
         if mode_to_set == 'sound':
             self.set_sound_context()
             self._update_string_for_textbox()
@@ -265,9 +275,8 @@ class SensorToolbar(gtk.Toolbar):
         return False
 
     def set_mode(self, mode='sound'):
-        """ Set the mixer settings to match the current mode. """
+        ''' Set the mixer settings to match the current mode. '''
         self.mode = mode
-        log.debug('>>>>>>>>>>>>>>> setting sensor type to %s' % (mode))
         self.activity.audiograb.set_sensor_type(self.mode)
         # FIXME: turn off logging
         for i in range(self._channels):
@@ -275,14 +284,14 @@ class SensorToolbar(gtk.Toolbar):
         return
 
     def get_mode(self):
-        """ Get the mixer settings. """
+        ''' Get the mixer settings. '''
         return self.mode
 
     def _freq_stepper_up_cb(self, button=None):
-        """ Moves the horizontal zoom slider to the left one notch,
+        ''' Moves the horizontal zoom slider to the left one notch,
         where one notch is 1/100 of the total range. This correspond
         to zooming out as a larger number of Hertz or milliseconds
-        will be represented by the same space on the screen. """
+        will be represented by the same space on the screen. '''
         new_value = self._freq_range.get_value() +\
                     (self.UPPER - self.LOWER) / 100.0
         if new_value <= self.UPPER:
@@ -291,9 +300,9 @@ class SensorToolbar(gtk.Toolbar):
             self._freq_range.set_value(self.UPPER)
 
     def _freq_stepper_down_cb(self, button=None):
-        """ Moves the horizontal zoom slider to the right one notch,
+        ''' Moves the horizontal zoom slider to the right one notch,
         where one notch is 1/100 of the total range. This corresponds
-        to zooming in. """
+        to zooming in. '''
         new_value = self._freq_range.get_value() -\
                     (self.UPPER - self.LOWER) / 100.0
         if new_value >= self.LOWER:
@@ -302,7 +311,7 @@ class SensorToolbar(gtk.Toolbar):
             self._freq_range.set_value(self.LOWER)
 
     def cb_page_sizef(self, button=None):
-        """ Callback to scale the frequency range (zoom in and out) """
+        ''' Callback to scale the frequency range (zoom in and out) '''
         if self._update_page_size_id:
             gobject.source_remove(self._update_page_size_id)
         self._update_page_size_id =\
@@ -310,7 +319,7 @@ class SensorToolbar(gtk.Toolbar):
         return True
 
     def update_page_size(self):
-        """ Set up the scaling of the display. """
+        ''' Set up the scaling of the display. '''
         self._update_page_size_id = None
         new_value = round(self.activity.adjustmentf.value * 100.0) / 100.0
         if self.activity.adjustmentf.value != new_value:
@@ -323,7 +332,7 @@ class SensorToolbar(gtk.Toolbar):
         return False
 
     def set_sound_context(self):
-        """ Called when analog sensing is selected """
+        ''' Called when analog sensing is selected '''
         self.set_show_hide_windows(mode='sound')
         # self.sensor_context_off()
         # gobject.timeout_add(500, self.sound_context_on)
@@ -331,7 +340,7 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.CONTEXT = 'sound'
 
     def set_sensor_context(self):
-        """ Called when digital sensing is selected """
+        ''' Called when digital sensing is selected '''
         self.set_show_hide_windows(mode='sensor')
         # self.sound_context_off()
         # gobject.timeout_add(500, self.sensor_context_on)
@@ -339,28 +348,27 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.CONTEXT = 'sensor'
 
     def set_show_hide_windows(self, mode='sound'):
-        """ Shows the appropriate window identified by the mode """
+        ''' Shows the appropriate window identified by the mode '''
         self.activity.wave.set_context_on()
         for i in range(self.activity.audiograb.channels):
             self.activity.side_toolbars[i].set_show_hide(True, mode)
 
     def sensor_context_off(self):
-        """ Called when a DC sensor is no longer selected """
+        ''' Called when a DC sensor is no longer selected '''
         # self.activity.audiograb.pause_grabbing()
         self.activity.audiograb.stop_grabbing()
 
     def sensor_context_on(self):
-        """ Called when a DC sensor is selected """
+        ''' Called when a DC sensor is selected '''
         # self.activity.audiograb.set_sensor_type(self.mode)
         self._update_string_for_textbox()
-        # FIXME
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
         # self.activity.audiograb.resume_grabbing()
         self.activity.audiograb.start_grabbing()
         return False
 
     def sound_context_off(self):
-        """ Called when an analog sensor is no longer selected """
+        ''' Called when an analog sensor is no longer selected '''
         self.gain, self.y_mag = self.activity.wave.get_mag_params()
         self.capture_gain = self.activity.audiograb.get_capture_gain()
         self.mic_boost = self.activity.audiograb.get_mic_boost()
@@ -368,7 +376,7 @@ class SensorToolbar(gtk.Toolbar):
         self.activity.audiograb.stop_grabbing()
 
     def sound_context_on(self):
-        """ Called when an analog sensor is selected """
+        ''' Called when an analog sensor is selected '''
         # self.activity.audiograb.set_sensor_type('sound')
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self._update_string_for_textbox()
@@ -378,7 +386,7 @@ class SensorToolbar(gtk.Toolbar):
         return False
 
     def set_sample_value(self, value='', channel=0):
-        """ Write a sample value to the textbox. """
+        ''' Write a sample value to the textbox. '''
         gtk.threads_enter()
         self.values[channel] = value
         self._update_string_for_textbox()
@@ -386,8 +394,8 @@ class SensorToolbar(gtk.Toolbar):
         return
 
     def record_control_cb(self, button=None):
-        """ Depending upon the selected interval, does either a logging
-        session, or just logs the current buffer. """
+        ''' Depending upon the selected interval, does either a logging
+        session, or just logs the current buffer. '''
         if self.activity.audiograb.we_are_logging:
             self.activity.audiograb.set_logging_params(start_stop=False)
             self._record.set_icon('media-record')
@@ -414,10 +422,10 @@ class SensorToolbar(gtk.Toolbar):
             self.activity.new_recording = True
 
     def interval_convert(self):
-        """ Converts interval string to an integer that denotes the
+        ''' Converts interval string to an integer that denotes the
         number of times the audiograb buffer must be called before a
         value is written.  When set to 0, the whole of current buffer
-        will be written. """
+        will be written. '''
         interval_dictionary = {'1/10 second': 0.1, '1 second': 1,
                                '30 seconds': 30,
                                '5 minutes': 300, '30 minutes': 1800}
@@ -429,7 +437,7 @@ class SensorToolbar(gtk.Toolbar):
             return 0
 
     def log_interval_cb(self, combobox):
-        """ Callback from the Logging Interval Combo box: sets status """
+        ''' Callback from the Logging Interval Combo box: sets status '''
         if self._log_interval_combo.get_active() != -1:
             intervals = ['1/10 second', '1 second', '30 seconds',
                          '5 minutes', '30 minutes']
@@ -437,14 +445,14 @@ class SensorToolbar(gtk.Toolbar):
                               intervals[self._log_interval_combo.get_active()]
 
     def _update_string_for_textbox(self):
-        """ Update the status field at the bottom of the canvas. """
+        ''' Update the status field at the bottom of the canvas. '''
         if self.mode == 'sound':
             self.string_for_textbox = (self.STR_AC + '\t')
         elif self.mode == 'resistance':
-            self.string_for_textbox = (self.STR_DC + "\n")
+            self.string_for_textbox = (self.STR_DC + '\n')
             self.string_for_textbox += self.STR_RESISTANCE
         else:
-            self.string_for_textbox = (self.STR_DC + "\n")
+            self.string_for_textbox = (self.STR_DC + '\n')
             self.string_for_textbox += self.STR_VOLTAGE
         if self.activity.wave.get_fft_mode():
             scalex = self.STR_XAXIS_TEXT % {
@@ -463,4 +471,4 @@ class SensorToolbar(gtk.Toolbar):
         # FIX ME
         if self.activity.wave.get_invert_state():
             self.string_for_textbox += self.STR_INVERT
-        self.activity.text_box.set_data_params(0, self.string_for_textbox)
+        self.activity.text_box.set_label(self.string_for_textbox)
