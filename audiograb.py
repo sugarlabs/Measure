@@ -299,14 +299,14 @@ class AudioGrab():
         return _avg(data_buffer) * self._voltage_gain + self._voltage_bias
 
     def set_freeze_the_display(self, freeze=False):
-        '''Useful when just the display is needed to be frozen, but logging
-        should continue'''
+        ''' Useful when just the display is needed to be frozen, but
+        logging should continue '''
         self.dont_queue_the_buffer = not freeze
-        if not freeze:
-            log.debug('taking a screenshot %d' % (
-                    self._capture_counter))
-            self.set_logging_params(start_stop=True, interval=0,
-                                    screenshot=True)
+
+    def take_screenshot(self):
+        ''' Capture the current screen to the Journal '''
+        log.debug('taking a screenshot %d' % (self._capture_counter))
+        self.set_logging_params(start_stop=True, interval=0, screenshot=True)
 
     def get_freeze_the_display(self):
         '''Returns state of queueing the buffer'''

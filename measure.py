@@ -241,8 +241,13 @@ class MeasureActivity(activity.Activity):
 
             self._pause = ToolButton('media-playback-pause')
             toolbox.toolbar.insert(self._pause, -1)
-            self._pause.set_tooltip(_('Capture sample now'))
+            self._pause.set_tooltip(_('Freeze the display'))
             self._pause.connect('clicked', self._pause_play_cb)
+
+            self._capture = ToolButton('image-saveoff')
+            toolbox.toolbar.insert(self._capture, -1)
+            self._capture.set_tooltip(_('Capture sample now'))
+            self._capture.connect('clicked', self._capture_cb)
 
             separator = gtk.SeparatorToolItem()
             separator.props.draw = False
@@ -267,8 +272,13 @@ class MeasureActivity(activity.Activity):
 
             self._pause = ToolButton('media-playback-pause')
             self.control_toolbar.insert(self._pause, -1)
-            self._pause.set_tooltip(_('Capture sample now'))
+            self._pause.set_tooltip(_('Freeze the display'))
             self._pause.connect('clicked', self._pause_play_cb)
+
+            self._capture = ToolButton('image-saveoff')
+            self.control_toolbar.insert(self._capture, -1)
+            self._capture.set_tooltip(_('Capture sample now'))
+            self._capture.connect('clicked', self._capture_cb)
 
             toolbox.set_current_toolbar(1)
 
@@ -373,9 +383,13 @@ class MeasureActivity(activity.Activity):
         else:
             self.audiograb.set_freeze_the_display(True)
             self._pause.set_icon('media-playback-pause')
-            self._pause.set_tooltip(_('Capture sample now'))
+            self._pause.set_tooltip(_('Freeze the display'))
             self._pause.show()
         return False
+
+    def _capture_cb(self, button=None):
+        ''' Callback for screen capture '''
+        self.audiograb.take_screenshot()
 
     def get_icon_colors_from_sugar(self):
         ''' Returns the icon colors from the Sugar profile '''
