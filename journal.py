@@ -56,8 +56,8 @@ class DataLogger():
         ''' Start a new logging session by updating session parameters '''
         self.activity.session_id += 1
 
-        self.data_buffer.append('%s: %s' % (_('Session'),
-                                            str(self.activity.session_id)))
+        self.data_buffer.append('%s: %d' % (_('Session'),
+                                            self.activity.session_id))
         self.data_buffer.append('%s: %s' % (_('User'), user))
         self.data_buffer.append('%s: %s' % (_('Mode'), self.MODE_LABELS[mode]))
         self.data_buffer.append('%s: %s' % (_('Interval'),
@@ -67,9 +67,12 @@ class DataLogger():
                                                 channels))
         return self.activity.session_id
 
-    def write_value(self, value=''):
+    def write_value(self, value='', channel=None):
         '''Append the value passed to data_buffer '''
-        self.data_buffer.append(value)
+        if channel is None:
+            self.data_buffer.append('%s' % (str(value)))
+        else:
+            self.data_buffer.append('%d: %s' % (channel, str(value)))
 
     def stop_session(self):
         '''Write the data_buffer onto a file'''

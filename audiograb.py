@@ -341,10 +341,10 @@ class AudioGrab():
                     value = self._sample_frequency(data_buffer)
                 value_string = int(value)
             if self.channels > 1:
-                self.activity.data_logger.write_value(
-                    '%d, %s' % (channel, value_string))
+                self.activity.data_logger.write_value(value_string,
+                                                      channel=channel)
             else:
-                self.activity.data_logger.write_value('%s' % (value_string))
+                self.activity.data_logger.write_value(value_string)
             self._debounce = True
 
     def start_sound_device(self):
