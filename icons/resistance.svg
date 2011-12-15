@@ -19,6 +19,16 @@
    id="defs8" />
 
 <path
-   d="m 2,27.5 4.5,0 6,-9.5 6,19 8,-19 6,19 6,-19 6,19 4,-9.5 4.5,0"
+   d="m 1.2395658,35.54687 2.5971858,0 4.6172192,-4.328642 6.9258292,8.657285 9.234438,-8.657285 6.925829,8.657285 8.080133,-8.657285 6.925829,8.657285 4.61722,-4.328643 2.597185,0"
    id="path2989"
-   style="fill:none;stroke:#ffffff;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" /></svg>
+   style="fill:none;stroke:#ffffff;stroke-width:2.47913194;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" /><text
+   x="18.330078"
+   y="25"
+   id="text3751"
+   xml:space="preserve"
+   style="font-size:11px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"><tspan
+     x="18.330078"
+     y="25"
+     id="tspan3753"
+     style="font-size:24px;fill:#ffffff">Ω</tspan></text>
+</svg>
