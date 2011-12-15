@@ -259,11 +259,11 @@ class AudioGrab():
             if self._display_counter == 0:
                 if self.activity.sensor_toolbar.mode == 'resistance':
                     self.activity.sensor_toolbar.set_sample_value(
-                        self._calibrate_resistance(temp_buffer),
+                        int(self._calibrate_resistance(temp_buffer)),
                         channel=channel)
                 else:
                     self.activity.sensor_toolbar.set_sample_value(
-                        self._calibrate_voltage(temp_buffer),
+                        '%0.3f' % (self._calibrate_voltage(temp_buffer)),
                         channel=channel)
                 self._display_counter = DISPLAY_DUTY_CYCLE
             else:
@@ -332,14 +332,14 @@ class AudioGrab():
                 else:
                     value = self._calibrate_voltage(data_buffer)
                     value_string = '0.3f' % (value)
-                self.activity.sensor_toolbar.set_sample_value(
-                    value, channel=channel)
             else:
                 if not self.activity.wave.get_fft_mode():
                     value = self._sample_sound(data_buffer)
                 else:
                     value = self._sample_frequency(data_buffer)
                 value_string = int(value)
+            self.activity.sensor_toolbar.set_sample_value(
+                value_string, channel=channel)
             if self.channels > 1:
                 self.activity.data_logger.write_value(value_string,
                                                       channel=channel)

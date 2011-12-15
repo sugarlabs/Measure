@@ -34,7 +34,7 @@ log.setLevel(logging.DEBUG)
 
 def _is_xo(hw):
     ''' Return True if this is xo hardware '''
-    return hw in [XO1, XO15, XO175]
+    return True # hw in [XO1, XO15, XO175]
 
 
 class SensorToolbar(gtk.Toolbar):
@@ -82,7 +82,7 @@ class SensorToolbar(gtk.Toolbar):
         self.time = RadioToolButton(group=None)
         self.time.set_named_icon('media-audio')
         self.insert(self.time, -1)
-        self.time.set_tooltip(_('Audio'))
+        self.time.set_tooltip(_('Sound'))
         self.time.connect(
             'clicked', self.analog_resistance_voltage_mode_cb, 'sound')
 

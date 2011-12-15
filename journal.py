@@ -21,9 +21,8 @@
 
 import gtk
 import cairo
-
-from os import environ, remove
-from os.path import join, exists
+import time
+import os
 from numpy import array
 from gettext import gettext as _
 
@@ -60,6 +59,9 @@ class DataLogger():
                                             self.activity.session_id))
         self.data_buffer.append('%s: %s' % (_('User'), user))
         self.data_buffer.append('%s: %s' % (_('Mode'), self.MODE_LABELS[mode]))
+        self.data_buffer.append('%s: %s' % (
+                _('Date'), time.strftime('%Y-%m-%dT%H:%M:%S',
+                                         time.localtime())))
         self.data_buffer.append('%s: %s' % (_('Interval'),
                                             str(logging_interval)))
         if channels > 1:
@@ -80,8 +82,9 @@ class DataLogger():
     
     def take_screenshot(self, capture_count=1):
         ''' Take a screenshot and save to the Journal '''
-        tmp_file_path = join(environ['SUGAR_ACTIVITY_ROOT'], 'instance',
-                         'screen_capture_' + str(capture_count) + '.png')
+        tmp_file_path = os.path.join(
+            os.environ['SUGAR_ACTIVITY_ROOT'], 'instance',
+            'screen_capture_' + str(capture_count) + '.png')
 
         log.debug('saving screen capture to temp file %s' % (tmp_file_path))
 
@@ -98,7 +101,7 @@ class DataLogger():
         img_surface.write_to_png(tmp_file_path)
 
         gtk.threads_leave()
-        if exists(tmp_file_path):
+        if os.path.exists(tmp_file_path):
             dsobject = datastore.create()
             try:
                 dsobject.metadata['title'] = '%s %d' % (_('Waveform'),
@@ -113,6 +116,6 @@ class DataLogger():
             finally:
                 dsobject.destroy()
                 del dsobject
-            remove(tmp_file_path)
+            os.remove(tmp_file_path)
             return True
         return False
