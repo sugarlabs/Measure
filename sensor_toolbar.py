@@ -34,7 +34,7 @@ log.setLevel(logging.DEBUG)
 
 def _is_xo(hw):
     ''' Return True if this is xo hardware '''
-    return True # hw in [XO1, XO15, XO175]
+    return hw in [XO1, XO15, XO175]
 
 
 class SensorToolbar(gtk.Toolbar):

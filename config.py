@@ -51,8 +51,8 @@ QUIT_DC_MODE_ENABLE = False
 QUIT_CAPTURE_GAIN = 100
 QUIT_BIAS = True
 
-# Maximum no. of screenshots Measure will save while recording in Sound context
-SOUND_MAX_WAVE_LOGS = 10
+# Maximum no. of data samples Measure will save
+MAX_LOG_ENTRIES = 1000
 
 # Duty cycle of display value update
 DISPLAY_DUTY_CYCLE = 100
