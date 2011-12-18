@@ -43,12 +43,15 @@ class SensorToolbar(gtk.Toolbar):
 
     LOWER = 0.0
     UPPER = 1.0
-    STR_DC = \
-        _("Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)") \
-        + ' '
+    STR_DC_R = \
+        _("Resistive sensor (connect sensor to pink 'Mic In' on left side \
+of XO)") + ' '
+    STR_DC_V = \
+        _("Voltage sensor (connect sensor to pink 'Mic In' on left side \
+of XO)") + ' '
     STR_AC = _('Sound') + ' '
-    STR_RESISTANCE = _('Resistance') + ' ' + _('Ohms') + ' '
-    STR_VOLTAGE = _('Voltage') + ' ' + _('Volts') + ' '
+    STR_RESISTANCE = _('Resistance') + ' (' + _('Ohms') + ') '
+    STR_VOLTAGE = _('Voltage') + ' (' + _('Volts') + ') '
     STR_TIME = _('Time Base') + ' '
     STR_FREQUENCY = _('Frequency Base') + ' '
     STR_INVERT = ' ' + _('Invert') + ' '
@@ -445,10 +448,10 @@ class SensorToolbar(gtk.Toolbar):
     def update_string_for_textbox(self):
         ''' Update the status field at the bottom of the canvas. '''
         if self.mode == 'resistance':
-            string_for_textbox = (self.STR_DC + '\n')
+            string_for_textbox = (self.STR_DC_R + '\n')
             string_for_textbox += self.STR_RESISTANCE
         elif self.mode == 'voltage':
-            string_for_textbox = (self.STR_DC + '\n')
+            string_for_textbox = (self.STR_DC_V + '\n')
             string_for_textbox += self.STR_VOLTAGE
         else:
             string_for_textbox = (self.STR_AC + '\t')
