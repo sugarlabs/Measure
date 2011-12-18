@@ -838,10 +838,10 @@ class AudioGrab():
 
         log.debug('parameters: dc mode: %s, bias: %s, gain: %s, boost: %s' % (
                 str(mode), str(bias), str(gain), str(boost)))
-        if mode is not None and \
-           (mode != self.get_dc_mode()) or self.channels == 1):
+
+        if mode is not None:
             # If we change to/from dc mode, we need to rebuild the pipelines
-            log.debug('dc mode has changed')
+            log.debug('sensor mode has changed')
             self.stop_grabbing()
             if self.channels > 1:
                 self._unlink_sink_queues()
