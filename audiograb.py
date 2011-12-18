@@ -88,12 +88,12 @@ class AudioGrab():
             self.channels = None
 
         self.we_are_logging = False
-        self._logging_sample = False
+        self._log_this_sample = False
         self._logging_timer = None
         self._logging_counter = 0
         self._logging_interval = 0
         self._channels_logged = []
-        self._debouncing = False
+        self._busy = False
         self._take_screenshot = True
 
         self._dont_queue_the_buffer = False
@@ -236,8 +236,8 @@ class AudioGrab():
         if not self._dont_queue_the_buffer:
             self._new_buffer(temp_buffer, channel=channel)
 
-        if self._debouncing:  # busy writing previous sample
-            return
+        if self._busy:  # busy writing previous sample
+            return False
         if self.we_are_logging:
             if self._logging_counter == MAX_LOG_ENTRIES:
                 self._logging_counter = 0
@@ -246,16 +246,16 @@ class AudioGrab():
             else:
                 if self._logging_interval == 0:
                     self._emit_for_logging(temp_buffer, channel=channel)
-                    self._logging_sample = False
+                    self._log_this_sample = False
                     self.we_are_logging = False
                     self.activity.data_logger.stop_session()
-                elif self._logging_sample:
-                    # FIXME: Sample channels in order
-                    if not self._channels_logged[channel]:
+                elif self._log_this_sample:
+                    # Sample channels in order
+                    if self._channels_logged.index(False) == channel:
                         self._channels_logged[channel] = True
                         # Have we logged every channel?
-                        if not False in self._channels_logged:
-                            self._logging_sample = False
+                        if self._channels_logged.count(True) == self.channels:
+                            self._log_this_sample = False
                             for i in range(self.channels):
                                 self._channels_logged[i] = False
                             self._logging_counter += 1
@@ -279,9 +279,12 @@ class AudioGrab():
         return False
 
     def _sample_sound(self, data_buffer):
+        ''' The average magnitude of the sound '''
         return _avg(data_buffer, abs_value=True)
+        # return abs(data_buffer[0])  # something fast
 
     def _sample_frequency(self, data_buffer):
+        ''' The maximum frequency in the sample '''
             r = []
             for j in rfft(data_buffer):
                 r.append(abs(j))
@@ -322,8 +325,8 @@ class AudioGrab():
 
     def _emit_for_logging(self, data_buffer, channel=0):
         '''Sends the data for logging'''
-        if not self._debouncing:
-            self._debouncing = True
+        if not self._busy:
+            self._busy = True
             if self._take_screenshot: 
                 if self.activity.data_logger.take_screenshot(
                     self._logging_counter):
@@ -331,7 +334,7 @@ class AudioGrab():
                 else:
                     log.debug('failed to take screenshot %d' % (
                             self._logging_counter))
-                self._debouncing = False
+                self._busy = False
                 return
             if self.activity.CONTEXT == 'sensor':
                 if self.activity.sensor_toolbar.mode == 'resistance':
@@ -355,9 +358,10 @@ class AudioGrab():
             else:
                 self.activity.data_logger.write_value(
                     value_string, sample=self._logging_counter)
-            self._debouncing = False
+            self._busy = False
         else:
-            log.debug('skipping sample %d.%d' % (self._logging_counter, channel))
+            log.debug('skipping sample %d.%d' % (
+                    self._logging_counter, channel))
 
     def start_sound_device(self):
         '''Start or Restart grabbing data from the audio capture'''
@@ -379,16 +383,16 @@ class AudioGrab():
             if self._logging_timer:
                 self._logging_timer.cancel()
                 self._logging_timer = None
-                self._logging_sample = False
+                self._log_this_sample = False
         elif interval != 0:
             self._make_timer()
         self._take_screenshot = screenshot
-        self._debouncing = False
+        self._busy = False
 
     def _sample_now(self):
         ''' Log the current sample now. This method is called from the
         _logging_timer object when the interval expires. '''
-        self._logging_sample = True
+        self._log_this_sample = True
         self._make_timer()
 
     def _make_timer(self):
