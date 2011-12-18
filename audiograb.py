@@ -91,6 +91,7 @@ class AudioGrab():
         self._log_this_sample = False
         self._logging_timer = None
         self._logging_counter = 0
+        self._image_counter = 0
         self._logging_interval = 0
         self._channels_logged = []
         self._busy = False
@@ -281,15 +282,14 @@ class AudioGrab():
     def _sample_sound(self, data_buffer):
         ''' The average magnitude of the sound '''
         return _avg(data_buffer, abs_value=True)
-        # return abs(data_buffer[0])  # something fast
 
     def _sample_frequency(self, data_buffer):
         ''' The maximum frequency in the sample '''
-            r = []
-            for j in rfft(data_buffer):
-                r.append(abs(j))
-            # Convert output to Hertz
-            return r.index(max(r)) * 48000. / len(data_buffer)
+        r = []
+        for j in rfft(data_buffer):
+            r.append(abs(j))
+        # Convert output to Hertz
+        return r.index(max(r)) * 48000. / len(data_buffer)
 
     def _calibrate_resistance(self, data_buffer):
         ''' Return calibrated value for resistance '''
@@ -329,8 +329,8 @@ class AudioGrab():
             self._busy = True
             if self._take_screenshot: 
                 if self.activity.data_logger.take_screenshot(
-                    self._logging_counter):
-                    self._logging_counter += 1
+                    self._image_counter):
+                    self._image_counter += 1
                 else:
                     log.debug('failed to take screenshot %d' % (
                             self._logging_counter))
@@ -384,6 +384,7 @@ class AudioGrab():
                 self._logging_timer.cancel()
                 self._logging_timer = None
                 self._log_this_sample = False
+                self._logging_counter = 0
         elif interval != 0:
             self._make_timer()
         self._take_screenshot = screenshot
