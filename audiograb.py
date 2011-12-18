@@ -81,9 +81,6 @@ class AudioGrab():
             self._voltage_gain = -0.0001471
             self._voltage_bias = 1.695
 
-        self._take_screenshot = True
-        self._debounce = True
-
         self.rate = RATE
         if self.activity.hw == XO1:
             self.channels = 1
@@ -96,6 +93,8 @@ class AudioGrab():
         self._logging_counter = 0
         self._logging_interval = 0
         self._channels_logged = []
+        self._debouncing = False
+        self._take_screenshot = True
 
         self._dont_queue_the_buffer = False
 
@@ -237,6 +236,8 @@ class AudioGrab():
         if not self._dont_queue_the_buffer:
             self._new_buffer(temp_buffer, channel=channel)
 
+        if self._debouncing:  # busy writing previous sample
+            return
         if self.we_are_logging:
             if self._logging_counter == MAX_LOG_ENTRIES:
                 self._logging_counter = 0
@@ -249,11 +250,7 @@ class AudioGrab():
                     self.we_are_logging = False
                     self.activity.data_logger.stop_session()
                 elif self._logging_sample:
-                    # FIXME: Sample every channel (once and in order?)
-                    '''
-                    self._channels_logged[channel] = True
-                    self._logging_sample = False
-                    '''
+                    # FIXME: Sample channels in order
                     if not self._channels_logged[channel]:
                         self._channels_logged[channel] = True
                         # Have we logged every channel?
@@ -261,6 +258,7 @@ class AudioGrab():
                             self._logging_sample = False
                             for i in range(self.channels):
                                 self._channels_logged[i] = False
+                            self._logging_counter += 1
                         self._emit_for_logging(temp_buffer, channel=channel)
 
         # In sensor mode, periodly update the textbox with a sample value
@@ -324,8 +322,8 @@ class AudioGrab():
 
     def _emit_for_logging(self, data_buffer, channel=0):
         '''Sends the data for logging'''
-        if self._debounce:
-            self._debounce = False
+        if not self._debouncing:
+            self._debouncing = True
             if self._take_screenshot: 
                 if self.activity.data_logger.take_screenshot(
                     self._logging_counter):
@@ -333,7 +331,7 @@ class AudioGrab():
                 else:
                     log.debug('failed to take screenshot %d' % (
                             self._logging_counter))
-                self._debounce = True
+                self._debouncing = False
                 return
             if self.activity.CONTEXT == 'sensor':
                 if self.activity.sensor_toolbar.mode == 'resistance':
@@ -351,11 +349,15 @@ class AudioGrab():
             self.activity.sensor_toolbar.set_sample_value(
                 value_string, channel=channel)
             if self.channels > 1:
-                self.activity.data_logger.write_value(value_string,
-                                                      channel=channel)
+                self.activity.data_logger.write_value(
+                    value_string, channel=channel,
+                    sample=self._logging_counter)
             else:
-                self.activity.data_logger.write_value(value_string)
-            self._debounce = True
+                self.activity.data_logger.write_value(
+                    value_string, sample=self._logging_counter)
+            self._debouncing = False
+        else:
+            log.debug('skipping sample %d.%d' % (self._logging_counter, channel))
 
     def start_sound_device(self):
         '''Start or Restart grabbing data from the audio capture'''
@@ -369,10 +371,8 @@ class AudioGrab():
 
     def set_logging_params(self, start_stop=False, interval=0,
                            screenshot=True):
-        '''Configures for logging of data i.e. starts or stops a session
-        Sets an interval if logging interval is to be started
-        Sets if screenshot of waveform is to be taken or values need to be
-        written'''
+        ''' Configures for logging of data: starts or stops a session;
+        sets the logging interval; and flags if screenshot is taken. '''
         self.we_are_logging = start_stop
         self._logging_interval = interval
         if not start_stop:
@@ -383,6 +383,7 @@ class AudioGrab():
         elif interval != 0:
             self._make_timer()
         self._take_screenshot = screenshot
+        self._debouncing = False
 
     def _sample_now(self):
         ''' Log the current sample now. This method is called from the
@@ -391,17 +392,15 @@ class AudioGrab():
         self._make_timer()
 
     def _make_timer(self):
-        ''' Create the next timer that will go off at the proper interval.
-        This is used when the user has selected a sampling interval > 0
-        and the we_are_logging is True. '''
+        ''' Create the next timer that will trigger data logging. '''
         self._logging_timer = Timer(self._logging_interval, self._sample_now)
         self._logging_timer.start()
 
     def set_sampling_rate(self, sr):
-        '''Sets the sampling rate of the logging device Sampling rate
-        must be given as an integer for example 16000 for setting
+        ''' Sets the sampling rate of the logging device. Sampling
+        rate must be given as an integer for example 16000 for setting
         16Khz sampling rate The sampling rate would be set in the
-        device to the nearest available'''
+        device to the nearest available. '''
         self.pause_grabbing()
         caps_str = 'audio/x-raw-int,rate=%d,channels=%d,depth=16' % (
             sr, self.channels)
@@ -409,13 +408,8 @@ class AudioGrab():
         self.resume_grabbing()
 
     def get_sampling_rate(self):
-        '''Gets the sampling rate of the capture device'''
+        ''' Gets the sampling rate of the capture device '''
         return int(self.caps1.get_property('caps')[0]['rate'])
-
-    def set_callable1(self, callable1):
-        '''Sets the callable to the drawing function for giving the
-        data at the end of idle-add'''
-        self.callable1 = callable1
 
     def start_grabbing(self):
         '''Called right at the start of the Activity'''
@@ -431,7 +425,7 @@ class AudioGrab():
     def resume_grabbing(self):
         '''When Activity becomes active after going to background'''
         # self.start_sound_device()
-        # self.resume_state()
+        # self.restore_state()
         # self.set_handoff_signal(True)
         return
 
@@ -442,7 +436,6 @@ class AudioGrab():
 
     def _find_control(self, prefixes):
         '''Try to find a mixer control matching one of the prefixes.
-
         The control with the best match (smallest difference in length
         between label and prefix) will be returned. If no match is found,
         None is returned.
@@ -462,7 +455,6 @@ class AudioGrab():
             diff = best_prefix(label, prefixes)
             if diff is not None:
                 controls.append((track, diff))
-
         controls.sort(key=lambda e: e[1])
         if controls:
             log.debug('Found control: %s' %\
@@ -474,7 +466,6 @@ class AudioGrab():
                         self.channels = channels
                         log.debug('setting channels to %d' % (self.channels))
             return controls[0][0]
-
         return None
 
     def save_state(self):
@@ -486,9 +477,9 @@ class AudioGrab():
         self.capture_gain = self.get_capture_gain()
         self.mic_boost = self.get_mic_boost()
 
-    def resume_state(self):
+    def restore_state(self):
         '''Put back all audio control settings from the saved state'''
-        log.debug('Resume state')
+        log.debug('Restore state')
         self.set_master(self.master)
         self.set_bias(self.bias)
         self.set_dc_mode(self.dc_mode)
@@ -847,14 +838,16 @@ class AudioGrab():
 
         log.debug('parameters: dc mode: %s, bias: %s, gain: %s, boost: %s' % (
                 str(mode), str(bias), str(gain), str(boost)))
-        if mode is not None and mode != self.get_dc_mode():
+        if mode is not None and \
+           (mode != self.get_dc_mode()) or self.channels == 1):
             # If we change to/from dc mode, we need to rebuild the pipelines
             log.debug('dc mode has changed')
             self.stop_grabbing()
-            self._unlink_sink_queues()
+            if self.channels > 1:
+                self._unlink_sink_queues()
+            self.start_grabbing()
             self.set_dc_mode(mode)
             log.debug('dcmode is: %s' % (str(self.get_dc_mode())))
-            self.start_grabbing()
 
         if bias is not None:
             self.set_bias(bias)
