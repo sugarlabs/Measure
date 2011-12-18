@@ -60,7 +60,7 @@ class DataLogger():
         self.data_buffer.append('%s: %s' % (_('User'), user))
         self.data_buffer.append('%s: %s' % (_('Mode'), self.MODE_LABELS[mode]))
         self.data_buffer.append('%s: %s' % (
-                _('Date'), time.strftime('%Y-%m-%dT%H:%M:%S',
+                _('Date'), time.strftime('%Y-%m-%d %H:%M:%S',
                                          time.localtime())))
         self.data_buffer.append('%s: %s' % (_('Interval'),
                                             str(logging_interval)))
@@ -69,12 +69,13 @@ class DataLogger():
                                                 channels))
         return self.activity.session_id
 
-    def write_value(self, value='', channel=None):
+    def write_value(self, value='', channel=None, sample=0):
         '''Append the value passed to data_buffer '''
         if channel is None:
-            self.data_buffer.append('%s' % (str(value)))
+            self.data_buffer.append('%d: %s' % (sample, str(value)))
         else:
-            self.data_buffer.append('%d: %s' % (channel, str(value)))
+            self.data_buffer.append('%d.%d: %s' % (
+                    sample, channel, str(value)))
 
     def stop_session(self):
         '''Write the data_buffer onto a file'''
