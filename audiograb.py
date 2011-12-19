@@ -254,13 +254,13 @@ class AudioGrab():
                     # Sample channels in order
                     if self._channels_logged.index(False) == channel:
                         self._channels_logged[channel] = True
+                        self._emit_for_logging(temp_buffer, channel=channel)
                         # Have we logged every channel?
                         if self._channels_logged.count(True) == self.channels:
                             self._log_this_sample = False
                             for i in range(self.channels):
                                 self._channels_logged[i] = False
                             self._logging_counter += 1
-                        self._emit_for_logging(temp_buffer, channel=channel)
 
         # In sensor mode, periodly update the textbox with a sample value
         if self.activity.CONTEXT == 'sensor' and not self.we_are_logging:
