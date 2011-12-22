@@ -77,7 +77,7 @@ class AudioGrab():
         elif self.activity.hw == XO15:
             self._voltage_gain = -0.0001471
             self._voltage_bias = 1.695
-        else:
+        else:  # XO 1.75
             self._voltage_gain = 0.00007692
             self._voltage_bias = 0.719
 
