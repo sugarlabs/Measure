@@ -77,14 +77,16 @@ class AudioGrab():
         elif self.activity.hw == XO15:
             self._voltage_gain = -0.0001471
             self._voltage_bias = 1.695
-        else:  # FIXME: Calibrate 1.75
-            self._voltage_gain = -0.0001471
-            self._voltage_bias = 1.695
+        else:
+            self._voltage_gain = 0.00007692
+            self._voltage_bias = 0.719
 
         self.rate = RATE
         if self.activity.hw == XO1:
+            log.debug('setting channels to 1')
             self.channels = 1
         else:
+            log.debug('setting channels to None')
             self.channels = None
 
         self.we_are_logging = False
@@ -294,15 +296,16 @@ class AudioGrab():
     def _calibrate_resistance(self, data_buffer):
         ''' Return calibrated value for resistance '''
         # See <http://bugs.sugarlabs.org/ticket/552#comment:7>
-        # TODO: test this calibration on XO 1.5, XO 1.75
         avg_buffer = _avg(data_buffer)
         if self.activity.hw == XO1:
             return 2.718 ** ((avg_buffer * 0.000045788) + 8.0531)
-        else:
+        elif self.activity.hw == XO15:
             if avg_buffer > 0:
                 return (420000000 / avg_buffer) - 13500
             else:
                 return 420000000
+        else:  # XO 1.75
+            return (46000000 / (30514 - avg_buffer)) - 1150
 
     def _calibrate_voltage(self, data_buffer):
         ''' Return calibrated value for voltage '''
