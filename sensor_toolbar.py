@@ -335,17 +335,13 @@ of XO)") + ' '
     def set_sound_context(self):
         ''' Called when analog sensing is selected '''
         self.set_show_hide_windows(mode='sound')
-        # self.sensor_context_off()
-        # gobject.timeout_add(500, self.sound_context_on)
-        gobject.timeout_add(1000, self.sound_context_on)
+        gobject.timeout_add(500, self.sound_context_on)
         self.activity.CONTEXT = 'sound'
 
     def set_sensor_context(self):
         ''' Called when digital sensing is selected '''
         self.set_show_hide_windows(mode='sensor')
-        # self.sound_context_off()
-        # gobject.timeout_add(500, self.sensor_context_on)
-        gobject.timeout_add(1000, self.sensor_context_on)
+        gobject.timeout_add(500, self.sensor_context_on)
         self.activity.CONTEXT = 'sensor'
 
     def set_show_hide_windows(self, mode='sound'):
@@ -361,7 +357,6 @@ of XO)") + ' '
 
     def sensor_context_on(self):
         ''' Called when a DC sensor is selected '''
-        # self.activity.audiograb.set_sensor_type(self.mode)
         self.update_string_for_textbox()
         self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
         # self.activity.audiograb.resume_grabbing()
@@ -373,16 +368,13 @@ of XO)") + ' '
         self.gain, self.y_mag = self.activity.wave.get_mag_params()
         self.capture_gain = self.activity.audiograb.get_capture_gain()
         self.mic_boost = self.activity.audiograb.get_mic_boost()
-        # self.activity.audiograb.stop_sound_device()
         self.activity.audiograb.stop_grabbing()
 
     def sound_context_on(self):
         ''' Called when an analog sensor is selected '''
-        # self.activity.audiograb.set_sensor_type('sound')
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self.update_string_for_textbox()
         self.update_trigger_control()
-        # self.activity.audiograb.start_sound_device()
         self.activity.audiograb.start_grabbing()
         return False
 
