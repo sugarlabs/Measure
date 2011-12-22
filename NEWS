@@ -3,9 +3,11 @@
 ENHANCEMENTS:
 * stereo capture
 * calibrated data logging
-* reconfigured toolbars to better reflect usage
+* multi-channel data logging
+* time-stamped data logging
+* reconfigured toolbars to better reflect common use
 
-BUGFIX:
+BUGFIXES:
 * screen capture works again
 * journal spam eliminated
 
