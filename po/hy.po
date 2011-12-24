@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2011-12-05 22:29+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2011-12-23 03:33+0200\n"
+"Last-Translator: Jasmine <udea_jasmine@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Measure"
-msgstr "Միջոցառում"
+msgstr "Չափում"
 
 #: sensor_toolbar.py:49
 msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
@@ -27,14 +27,16 @@ msgstr ""
 "Սենսորները, DC (սենսորը միացնել XO-ի ձախ մասում գտնվող վարդագույն 'Mic "
 "In'-ին )"
 
+# Bias/Offset
 #: sensor_toolbar.py:51
 msgid "Bias/Offset Enabled"
 msgstr "Շեղում/վերականգնումը միացված է"
 
 #: sensor_toolbar.py:51
 msgid "Ohms"
-msgstr "Ohms"
+msgstr "Ohm"
 
+# Bias/Offset
 #: sensor_toolbar.py:52
 msgid "Bias/Offset Disabled"
 msgstr "Շեղում/վերականգնումն անջատված է"
@@ -89,7 +91,7 @@ msgstr "Կանգնեցնել գրանցումը"
 
 #: sound_toolbar.py:50
 msgid "Capture now"
-msgstr "Գրավել այժմ"
+msgstr "Պահել այս պահը"
 
 #: sound_toolbar.py:51
 msgid "Every 30 sec."
@@ -122,7 +124,7 @@ msgstr "Ելման հաճախականությունը"
 #: sound_toolbar.py:71
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
-msgstr "X առանցքի մասշտաբը. 1 բաժանումը = %(division)s %(unit)s"
+msgstr "X առանցքի սանդղակը. 1 բաժանումը = %(division)s %(unit)s"
 
 #: sound_toolbar.py:73
 msgid "ms"
@@ -138,11 +140,11 @@ msgstr "Սառեցնել էկրանը"
 
 #: sound_toolbar.py:151 sound_toolbar.py:297
 msgid "Capture sample now"
-msgstr "Պահպանել կադրը այժմ"
+msgstr "Պահպանել կադրն այս պահիս"
 
 #: sound_toolbar.py:162
 msgid "None"
-msgstr "Ոչինչ"
+msgstr "Ոչ մեկը"
 
 #: sound_toolbar.py:162
 msgid "Rising Edge"
@@ -158,11 +160,11 @@ msgstr "Ստեղծել ձգան"
 
 #: sound_toolbar.py:186
 msgid "Zoom out"
-msgstr "Հեռվացնել"
+msgstr "Փոքրացնել"
 
 #: sound_toolbar.py:199
 msgid "Zoom in"
-msgstr "Մոտեցնել"
+msgstr "Խոշորացնել"
 
 #: sound_toolbar.py:294
 msgid "Stop sampling"
@@ -194,11 +196,11 @@ msgstr "Ազդանշանի տեսքը"
 
 #: toolbar_side.py:46 toolbar_side.py:120
 msgid "Increase amplitude"
-msgstr "Մեծացնել լայնույթը"
+msgstr "Մեծացնել տատանումների մեծությունը"
 
 #: toolbar_side.py:61 toolbar_side.py:122
 msgid "Decrease amplitude"
-msgstr "Փոքրացնել լայնույթը"
+msgstr "Փոքրացնել տատանումների մեծությունը"
 
 #: toolbar_side.py:125
 msgid "Increase bias"
@@ -218,7 +220,7 @@ msgstr "<Ctrl>Q"
 
 #: measure.py:310
 msgid "Measure Log"
-msgstr "Չափման լոգ"
+msgstr "Չափման մուտքագրում"
 
 #~ msgid "Start Logging"
 #~ msgstr "Սկսել մուտք գործել ցանց "
