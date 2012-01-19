@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2011-12-09 22:34+0200\n"
+"PO-Revision-Date: 2011-12-20 21:00+0200\n"
 "Last-Translator: FRKS <frks@frks.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pl\n"
@@ -201,14 +201,12 @@ msgid "Decrease amplitude"
 msgstr "Zmniejsz amplitudę"
 
 #: toolbar_side.py:125
-#, fuzzy
 msgid "Increase bias"
-msgstr "Zwiększ nachylenie/odchylenie"
+msgstr "Zwiększ odchylenie"
 
 #: toolbar_side.py:127
-#, fuzzy
 msgid "Decrease bias"
-msgstr "Zmniejsz nachylenie/odchylenie"
+msgstr "Zmniejsz odchylenie"
 
 #: measure.py:210 measure.py:216
 msgid "Sensors"
