@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2011-10-04 21:09+0200\n"
+"POT-Creation-Date: 2011-12-19 00:33-0500\n"
+"PO-Revision-Date: 2012-01-22 10:59+0200\n"
 "Last-Translator: samy boutayeb <s.boutayeb@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fr\n"
@@ -21,202 +21,226 @@ msgstr ""
 msgid "Measure"
 msgstr "Mesure"
 
-#: sensor_toolbar.py:49
-msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
-msgstr "Capteurs, CC (connecter le capteur au port 'Mic In' à gauche du XO)"
-
-#: sensor_toolbar.py:51
-msgid "Bias/Offset Enabled"
-msgstr "Biais/décalage activé"
-
-#: sensor_toolbar.py:51
-msgid "Ohms"
-msgstr "Ohms"
-
-#: sensor_toolbar.py:52
-msgid "Bias/Offset Disabled"
-msgstr "Biais/décalage désactivé"
-
-#: sensor_toolbar.py:52
-msgid "Volts"
-msgstr "Volts"
-
-#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
-msgid "Invert"
-msgstr "Inversion"
-
-#: sensor_toolbar.py:67 sensor_toolbar.py:193
-msgid "Resistance Sensor"
-msgstr "Capteur de résistance"
-
-#: sensor_toolbar.py:74 sensor_toolbar.py:202
-msgid "Voltage Sensor"
-msgstr "Capteur de tension"
-
-#: sensor_toolbar.py:98
-msgid "1/10 second"
-msgstr "1/10 de seconde"
-
-#: sensor_toolbar.py:98 sensor_toolbar.py:109
-msgid "1 second"
-msgstr "1 seconde"
-
-#: sensor_toolbar.py:98
-msgid "30 seconds"
-msgstr "30 secondes"
-
-#: sensor_toolbar.py:99
-msgid "5 minutes"
-msgstr "5 minutes"
-
-#: sensor_toolbar.py:99
-msgid "30 minutes"
-msgstr "30 minutes"
-
-#: sensor_toolbar.py:102 sound_toolbar.py:134
-msgid "Sampling interval"
-msgstr "Pas d'échantillonnage"
-
-#: sensor_toolbar.py:119 sensor_toolbar.py:153
-msgid "Start Recording"
-msgstr "Commencer l'enregistrement"
-
-#: sensor_toolbar.py:147
-msgid "Stop Recording"
-msgstr "Arrêter l'enregistrement"
-
-#: sound_toolbar.py:50
-msgid "Capture now"
-msgstr "Capturer maintenant"
-
-#: sound_toolbar.py:51
-msgid "Every 30 sec."
-msgstr "Toutes les 30 s."
-
-#: sound_toolbar.py:52
-msgid "Every 2 min."
-msgstr "Toutes les 2 min."
-
-#: sound_toolbar.py:53
-msgid "Every 10 min."
-msgstr "Toutes les 10 min."
-
-#: sound_toolbar.py:54
-msgid "Every 30 min."
-msgstr "Toutes les 30 min."
-
-#: sound_toolbar.py:65 measure.py:197 measure.py:203
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
 msgid "Sound"
 msgstr "Son"
 
-#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "Ohms"
+
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "Volts"
+
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr "Hz"
+
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr "Session"
+
+#: journal.py:60
+msgid "User"
+msgstr "Utilisateur"
+
+#: journal.py:61
+msgid "Mode"
+msgstr "Mode"
+
+#: journal.py:63
+msgid "Date"
+msgstr "Date"
+
+#: journal.py:65
+msgid "Interval"
+msgstr "Intervalle"
+
+#: journal.py:68
+msgid "Channels"
+msgstr "Canaux"
+
+#: journal.py:108
+msgid "Waveform"
+msgstr "Forme d'onde"
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr "Capteurs"
+
+#: measure.py:219
+msgid "Controls"
+msgstr "Contrôles"
+
+#: measure.py:228
+msgid "Capture mode"
+msgstr "Mode capture"
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr "Figer l'écran"
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr "Capturer un échantillon maintenant"
+
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:350
+msgid "Measure Log"
+msgstr "Journal des mesures"
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr "Défiger l'écran"
+
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Capteur de résistance, (connecter le capteur au port 'Mic In' à gauche du "
+"XO)"
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Capteur de tension (connecter le capteur au port 'Mic In' à gauche du XO)"
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr "Résistance"
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr "Tension"
+
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
 msgid "Time Base"
 msgstr "Base de temps"
 
-#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
 msgid "Frequency Base"
 msgstr "Base de fréquence"
 
-#: sound_toolbar.py:71
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr "Inversion"
+
+#: sensor_toolbar.py:58
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr "Échelle de l'axe X : 1 division = %(division)s %(unit)s"
 
-#: sound_toolbar.py:73
+#: sensor_toolbar.py:60
 msgid "ms"
 msgstr "ms"
 
-#: sound_toolbar.py:75
-msgid "Hz"
-msgstr "Hz"
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr "Capteur de résistance"
 
-#: sound_toolbar.py:109 sound_toolbar.py:321
-msgid "Freeze the display"
-msgstr "Figer l'écran"
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr "Capteur de tension"
 
-#: sound_toolbar.py:151 sound_toolbar.py:297
-msgid "Capture sample now"
-msgstr "Capturer un échantillon maintenant"
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr "1/10 de seconde"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr "1 seconde"
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr "30 secondes"
+
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr "5 minutes"
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr "30 minutes"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr "Pas d'échantillonnage"
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:404
+msgid "Start Recording"
+msgstr "Commencer l'enregistrement"
+
+#: sensor_toolbar.py:160
 msgid "None"
 msgstr "Aucun"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:160
 msgid "Rising Edge"
 msgstr "Front montant"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:160
 msgid "Falling Edge"
 msgstr "Front descendant"
 
-#: sound_toolbar.py:175
+#: sensor_toolbar.py:170
 msgid "Create a trigger"
 msgstr "Créer un déclencheur"
 
-#: sound_toolbar.py:186
+#: sensor_toolbar.py:178
 msgid "Zoom out"
 msgstr "Zoom arrière"
 
-#: sound_toolbar.py:199
+#: sensor_toolbar.py:190
 msgid "Zoom in"
 msgstr "Zoom avant"
 
-#: sound_toolbar.py:294
-msgid "Stop sampling"
-msgstr "Arrêter l'échantillonnage"
+#: sensor_toolbar.py:422
+msgid "Stop Recording"
+msgstr "Arrêter l'enregistrement"
 
-#: sound_toolbar.py:299
-msgid "Start sampling"
-msgstr "Démarrer l'échantillonnage"
-
-#: sound_toolbar.py:316
-msgid "Unfreeze the display"
-msgstr "Défiger l'écran"
-
-#: journal.py:53 measure.py:328
-msgid "Session"
-msgstr "Session"
-
-#: journal.py:55
-msgid "User"
-msgstr "Utilisateur"
-
-#: journal.py:56
-msgid "Interval"
-msgstr "Intervalle"
-
-#: journal.py:91
-msgid "Waveform"
-msgstr "Forme d'onde"
-
-#: toolbar_side.py:46 toolbar_side.py:120
+#: toolbar_side.py:50 toolbar_side.py:131
 msgid "Increase amplitude"
 msgstr "Augmenter l'amplitude"
 
-#: toolbar_side.py:61 toolbar_side.py:122
+#: toolbar_side.py:65 toolbar_side.py:133
 msgid "Decrease amplitude"
 msgstr "Diminuer l'amplitude"
 
-#: toolbar_side.py:125
+#: toolbar_side.py:136
 msgid "Increase bias"
 msgstr "Augmenter le biais"
 
-#: toolbar_side.py:127
+#: toolbar_side.py:138
 msgid "Decrease bias"
 msgstr "Diminuer le biais"
 
-#: measure.py:210 measure.py:216
-msgid "Sensors"
-msgstr "Capteurs"
+#~ msgid "Bias/Offset Enabled"
+#~ msgstr "Biais/décalage activé"
 
-#: measure.py:240
-msgid "<Ctrl>Q"
-msgstr "<Ctrl>Q"
+#~ msgid "Bias/Offset Disabled"
+#~ msgstr "Biais/décalage désactivé"
 
-#: measure.py:310
-msgid "Measure Log"
-msgstr "Journal des mesures"
+#~ msgid "Every 30 sec."
+#~ msgstr "Toutes les 30 s."
+
+#~ msgid "Every 2 min."
+#~ msgstr "Toutes les 2 min."
+
+#~ msgid "Every 10 min."
+#~ msgstr "Toutes les 10 min."
+
+#~ msgid "Every 30 min."
+#~ msgstr "Toutes les 30 min."
+
+#~ msgid "Stop sampling"
+#~ msgstr "Arrêter l'échantillonnage"
+
+#~ msgid "Start sampling"
+#~ msgstr "Démarrer l'échantillonnage"
 
 #~ msgid "Show sheet and graphs"
 #~ msgstr "Montrer feuille et graphiques"
