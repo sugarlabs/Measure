@@ -6,218 +6,217 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2008-08-26 19:15-0400\n"
-"Last-Translator: Eduardo H. Silva <HoboPrimate@gmail.com>\n"
+"POT-Creation-Date: 2011-12-19 00:33-0500\n"
+"PO-Revision-Date: 2012-01-23 02:44+0200\n"
+"Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Pootle 1.1.0rc2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Measure"
 msgstr "Medir"
 
-#: sensor_toolbar.py:49
-msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
-msgstr ""
-
-#: sensor_toolbar.py:51
-msgid "Bias/Offset Enabled"
-msgstr ""
-
-#: sensor_toolbar.py:51
-msgid "Ohms"
-msgstr ""
-
-#: sensor_toolbar.py:52
-msgid "Bias/Offset Disabled"
-msgstr ""
-
-#: sensor_toolbar.py:52
-msgid "Volts"
-msgstr ""
-
-#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
-msgid "Invert"
-msgstr ""
-
-#: sensor_toolbar.py:67 sensor_toolbar.py:193
-msgid "Resistance Sensor"
-msgstr ""
-
-#: sensor_toolbar.py:74 sensor_toolbar.py:202
-msgid "Voltage Sensor"
-msgstr ""
-
-#: sensor_toolbar.py:98
-msgid "1/10 second"
-msgstr ""
-
-#: sensor_toolbar.py:98 sensor_toolbar.py:109
-msgid "1 second"
-msgstr "1 segundo"
-
-#: sensor_toolbar.py:98
-#, fuzzy
-msgid "30 seconds"
-msgstr "1 segundo"
-
-#: sensor_toolbar.py:99
-#, fuzzy
-msgid "5 minutes"
-msgstr "1 minuto"
-
-#: sensor_toolbar.py:99
-#, fuzzy
-msgid "30 minutes"
-msgstr "1 minuto"
-
-#: sensor_toolbar.py:102 sound_toolbar.py:134
-msgid "Sampling interval"
-msgstr ""
-
-#: sensor_toolbar.py:119 sensor_toolbar.py:153
-msgid "Start Recording"
-msgstr ""
-
-#: sensor_toolbar.py:147
-msgid "Stop Recording"
-msgstr ""
-
-#: sound_toolbar.py:50
-msgid "Capture now"
-msgstr ""
-
-#: sound_toolbar.py:51
-msgid "Every 30 sec."
-msgstr ""
-
-#: sound_toolbar.py:52
-msgid "Every 2 min."
-msgstr ""
-
-#: sound_toolbar.py:53
-msgid "Every 10 min."
-msgstr ""
-
-#: sound_toolbar.py:54
-msgid "Every 30 min."
-msgstr ""
-
-#: sound_toolbar.py:65 measure.py:197 measure.py:203
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
 msgid "Sound"
-msgstr ""
+msgstr "Som"
 
-#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
-msgid "Time Base"
-msgstr ""
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "Ohms"
 
-#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
-msgid "Frequency Base"
-msgstr ""
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "Volts"
 
-#: sound_toolbar.py:71
-#, python-format
-msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
-msgstr ""
-
-#: sound_toolbar.py:73
-msgid "ms"
-msgstr ""
-
-#: sound_toolbar.py:75
+#: journal.py:45 sensor_toolbar.py:62
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
-#: sound_toolbar.py:109 sound_toolbar.py:321
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr "Sessão"
+
+#: journal.py:60
+msgid "User"
+msgstr "Utilizador"
+
+#: journal.py:61
+msgid "Mode"
+msgstr "Modo"
+
+#: journal.py:63
+msgid "Date"
+msgstr "Data"
+
+#: journal.py:65
+msgid "Interval"
+msgstr "Intervalo"
+
+#: journal.py:68
+msgid "Channels"
+msgstr "Canais"
+
+#: journal.py:108
+msgid "Waveform"
+msgstr "Forma de onda"
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr "Sensores"
+
+#: measure.py:219
+msgid "Controls"
+msgstr "Controlos"
+
+#: measure.py:228
+msgid "Capture mode"
+msgstr "Modo de captura"
+
+#: measure.py:245 measure.py:276 measure.py:387
 msgid "Freeze the display"
 msgstr ""
 
-#: sound_toolbar.py:151 sound_toolbar.py:297
+#: measure.py:250 measure.py:281
 msgid "Capture sample now"
-msgstr ""
+msgstr "Capturar amostra agora"
 
-#: sound_toolbar.py:162
-msgid "None"
-msgstr ""
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
 
-#: sound_toolbar.py:162
-msgid "Rising Edge"
-msgstr ""
+#: measure.py:350
+msgid "Measure Log"
+msgstr "Registo Medir"
 
-#: sound_toolbar.py:162
-msgid "Falling Edge"
-msgstr ""
-
-#: sound_toolbar.py:175
-msgid "Create a trigger"
-msgstr ""
-
-#: sound_toolbar.py:186
-msgid "Zoom out"
-msgstr ""
-
-#: sound_toolbar.py:199
-msgid "Zoom in"
-msgstr ""
-
-#: sound_toolbar.py:294
-msgid "Stop sampling"
-msgstr ""
-
-#: sound_toolbar.py:299
-msgid "Start sampling"
-msgstr ""
-
-#: sound_toolbar.py:316
+#: measure.py:382
 msgid "Unfreeze the display"
 msgstr ""
 
-#: journal.py:53 measure.py:328
-msgid "Session"
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Sensor resistivo (liga sensor à entrada rosa 'Mic in' no lado esquerdo do "
+"XO)"
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Sensor de voltagem (liga sensor à entrada rosa 'Mic in' no lado esquerdo do "
+"XO)"
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr "Resistência"
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr "Voltagem"
+
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
+msgid "Time Base"
+msgstr "Base do Tempo"
+
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
+msgid "Frequency Base"
+msgstr "Base da Frequência"
+
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr "Inverter"
+
+#: sensor_toolbar.py:58
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "Escala Eixo X: 1 divisão = %(division)s %(unit)s"
+
+#: sensor_toolbar.py:60
+msgid "ms"
+msgstr "ms"
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr "Sensor de Resistência"
+
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr "Sensor de Voltagem"
+
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr "1/10 de segundo"
+
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr "1 segundo"
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr "30 segundos"
+
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr "5 minutos"
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr "30 minutos"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr "Intervalo de amostragem"
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:404
+msgid "Start Recording"
+msgstr "Começar a Gravação"
+
+#: sensor_toolbar.py:160
+msgid "None"
+msgstr "Nenhum"
+
+#: sensor_toolbar.py:160
+msgid "Rising Edge"
 msgstr ""
 
-#: journal.py:55
-msgid "User"
+#: sensor_toolbar.py:160
+msgid "Falling Edge"
 msgstr ""
 
-#: journal.py:56
-msgid "Interval"
+#: sensor_toolbar.py:170
+msgid "Create a trigger"
 msgstr ""
 
-#: journal.py:91
-msgid "Waveform"
-msgstr ""
+#: sensor_toolbar.py:178
+msgid "Zoom out"
+msgstr "Afastar zoom"
 
-#: toolbar_side.py:46 toolbar_side.py:120
+#: sensor_toolbar.py:190
+msgid "Zoom in"
+msgstr "Aproximar zoom"
+
+#: sensor_toolbar.py:422
+msgid "Stop Recording"
+msgstr "Parar a Gravação"
+
+#: toolbar_side.py:50 toolbar_side.py:131
 msgid "Increase amplitude"
-msgstr ""
+msgstr "Aumentar a amplitude"
 
-#: toolbar_side.py:61 toolbar_side.py:122
+#: toolbar_side.py:65 toolbar_side.py:133
 msgid "Decrease amplitude"
-msgstr ""
+msgstr "Diminuir a amplitude"
 
-#: toolbar_side.py:125
+#: toolbar_side.py:136
 msgid "Increase bias"
 msgstr ""
 
-#: toolbar_side.py:127
+#: toolbar_side.py:138
 msgid "Decrease bias"
-msgstr ""
-
-#: measure.py:210 measure.py:216
-msgid "Sensors"
-msgstr ""
-
-#: measure.py:240
-msgid "<Ctrl>Q"
-msgstr ""
-
-#: measure.py:310
-msgid "Measure Log"
 msgstr ""
 
 #~ msgid "Spectrum value"
