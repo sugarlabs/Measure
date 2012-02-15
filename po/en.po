@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-19 00:33-0500\n"
-"PO-Revision-Date: 2012-01-23 20:52+0200\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-02-15 17:23+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en\n"
@@ -167,7 +167,7 @@ msgstr "30 minutes"
 msgid "Sampling interval"
 msgstr "Sampling interval"
 
-#: sensor_toolbar.py:150 sensor_toolbar.py:404
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
 msgid "Start Recording"
 msgstr "Start Recording"
 
@@ -195,7 +195,7 @@ msgstr "Zoom out"
 msgid "Zoom in"
 msgstr "Zoom in"
 
-#: sensor_toolbar.py:422
+#: sensor_toolbar.py:414
 msgid "Stop Recording"
 msgstr "Stop Recording"
 
@@ -214,6 +214,9 @@ msgstr "Increase bias"
 #: toolbar_side.py:138
 msgid "Decrease bias"
 msgstr "Decrease bias"
+
+#~ msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+#~ msgstr "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
 
 #~ msgid "Bias/Offset Enabled"
 #~ msgstr "Bias/Offset Enabled"
