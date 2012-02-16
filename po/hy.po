@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-19 00:33-0500\n"
-"PO-Revision-Date: 2012-01-24 14:45+0200\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-01-25 16:25+0200\n"
 "Last-Translator: anush.mkrtchyan <anush.mkrtchyan@ca1492.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
@@ -48,7 +48,7 @@ msgstr "Օգտագործող"
 
 #: journal.py:61
 msgid "Mode"
-msgstr "Եղանակ"
+msgstr "Ռեժիմ"
 
 #: journal.py:63
 msgid "Date"
@@ -76,7 +76,7 @@ msgstr "Հսկիչներ"
 
 #: measure.py:228
 msgid "Capture mode"
-msgstr "Պահպանման եղանակը"
+msgstr "Պահպանման ռեժիմը"
 
 #: measure.py:245 measure.py:276 measure.py:387
 msgid "Freeze the display"
@@ -171,7 +171,7 @@ msgstr "30 րոպե"
 msgid "Sampling interval"
 msgstr "Կադրի լուսանկարման ինտերվալ"
 
-#: sensor_toolbar.py:150 sensor_toolbar.py:404
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
 msgid "Start Recording"
 msgstr "Սկսել տեսագրությունը"
 
@@ -199,7 +199,7 @@ msgstr "Փոքրացնել"
 msgid "Zoom in"
 msgstr "Խոշորացնել"
 
-#: sensor_toolbar.py:422
+#: sensor_toolbar.py:414
 msgid "Stop Recording"
 msgstr "Կանգնեցնել գրանցումը"
 
