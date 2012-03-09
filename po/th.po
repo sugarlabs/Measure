@@ -6,217 +6,218 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2011-08-23 17:51+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-03-09 09:13+0200\n"
+"Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Pootle 2.0.1\n"
+"X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
 msgid "Measure"
 msgstr "วัดค่า"
 
-#: sensor_toolbar.py:49
-msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
-msgstr ""
-
-#: sensor_toolbar.py:51
-msgid "Bias/Offset Enabled"
-msgstr ""
-
-#: sensor_toolbar.py:51
-msgid "Ohms"
-msgstr ""
-
-#: sensor_toolbar.py:52
-msgid "Bias/Offset Disabled"
-msgstr ""
-
-#: sensor_toolbar.py:52
-msgid "Volts"
-msgstr ""
-
-#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
-msgid "Invert"
-msgstr ""
-
-#: sensor_toolbar.py:67 sensor_toolbar.py:193
-msgid "Resistance Sensor"
-msgstr ""
-
-#: sensor_toolbar.py:74 sensor_toolbar.py:202
-msgid "Voltage Sensor"
-msgstr ""
-
-#: sensor_toolbar.py:98
-msgid "1/10 second"
-msgstr ""
-
-#: sensor_toolbar.py:98 sensor_toolbar.py:109
-msgid "1 second"
-msgstr "1 วินาที"
-
-#: sensor_toolbar.py:98
-msgid "30 seconds"
-msgstr "30 วินาที"
-
-#: sensor_toolbar.py:99
-msgid "5 minutes"
-msgstr "5 นาที"
-
-#: sensor_toolbar.py:99
-msgid "30 minutes"
-msgstr "30 นาที"
-
-#: sensor_toolbar.py:102 sound_toolbar.py:134
-msgid "Sampling interval"
-msgstr ""
-
-#: sensor_toolbar.py:119 sensor_toolbar.py:153
-msgid "Start Recording"
-msgstr ""
-
-#: sensor_toolbar.py:147
-msgid "Stop Recording"
-msgstr ""
-
-#: sound_toolbar.py:50
-msgid "Capture now"
-msgstr ""
-
-#: sound_toolbar.py:51
-msgid "Every 30 sec."
-msgstr ""
-
-#: sound_toolbar.py:52
-msgid "Every 2 min."
-msgstr ""
-
-#: sound_toolbar.py:53
-msgid "Every 10 min."
-msgstr ""
-
-#: sound_toolbar.py:54
-msgid "Every 30 min."
-msgstr ""
-
-#: sound_toolbar.py:65 measure.py:197 measure.py:203
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
 msgid "Sound"
 msgstr "เสียง"
 
-#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
-msgid "Time Base"
-msgstr ""
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "โอห์ม"
 
-#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
-msgid "Frequency Base"
-msgstr ""
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "โวลต์"
 
-#: sound_toolbar.py:71
-#, python-format
-msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
-msgstr ""
-
-#: sound_toolbar.py:73
-msgid "ms"
-msgstr ""
-
-#: sound_toolbar.py:75
+#: journal.py:45 sensor_toolbar.py:62
 msgid "Hz"
-msgstr ""
+msgstr "เฮิร์ตซ์"
 
-#: sound_toolbar.py:109 sound_toolbar.py:321
-msgid "Freeze the display"
-msgstr ""
-
-#: sound_toolbar.py:151 sound_toolbar.py:297
-msgid "Capture sample now"
-msgstr ""
-
-#: sound_toolbar.py:162
-msgid "None"
-msgstr "ไม่มี"
-
-#: sound_toolbar.py:162
-msgid "Rising Edge"
-msgstr ""
-
-#: sound_toolbar.py:162
-msgid "Falling Edge"
-msgstr ""
-
-#: sound_toolbar.py:175
-msgid "Create a trigger"
-msgstr ""
-
-#: sound_toolbar.py:186
-msgid "Zoom out"
-msgstr "ขยายออก"
-
-#: sound_toolbar.py:199
-msgid "Zoom in"
-msgstr "ขยายเข้า"
-
-#: sound_toolbar.py:294
-msgid "Stop sampling"
-msgstr ""
-
-#: sound_toolbar.py:299
-msgid "Start sampling"
-msgstr ""
-
-#: sound_toolbar.py:316
-msgid "Unfreeze the display"
-msgstr ""
-
-#: journal.py:53 measure.py:328
+#: journal.py:58 measure.py:363
 msgid "Session"
-msgstr "วาระงาน"
+msgstr "ระยะเวลา"
 
-#: journal.py:55
+#: journal.py:60
 msgid "User"
 msgstr "ผู้ใช้"
 
-#: journal.py:56
+#: journal.py:61
+msgid "Mode"
+msgstr "แบบ"
+
+#: journal.py:63
+msgid "Date"
+msgstr "วันที่"
+
+#: journal.py:65
 msgid "Interval"
-msgstr ""
+msgstr "ช่วงเวลา"
 
-#: journal.py:91
+#: journal.py:68
+msgid "Channels"
+msgstr "ช่อง"
+
+#: journal.py:108
 msgid "Waveform"
-msgstr ""
+msgstr "รูปแบบของคลื่น"
 
-#: toolbar_side.py:46 toolbar_side.py:120
-msgid "Increase amplitude"
-msgstr ""
-
-#: toolbar_side.py:61 toolbar_side.py:122
-msgid "Decrease amplitude"
-msgstr ""
-
-#: toolbar_side.py:125
-msgid "Increase bias"
-msgstr ""
-
-#: toolbar_side.py:127
-msgid "Decrease bias"
-msgstr ""
-
-#: measure.py:210 measure.py:216
+#: measure.py:212 measure.py:218
 msgid "Sensors"
-msgstr "ตัวตรวจจับ"
+msgstr "เซ็นเซอร์"
 
-#: measure.py:240
+#: measure.py:219
+msgid "Controls"
+msgstr "ควบคุม"
+
+#: measure.py:228
+msgid "Capture mode"
+msgstr "โหมดจับภาพ"
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr "หยุดจอภาพ"
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr "จับภาพตัวอย่าง"
+
+#: measure.py:260
 msgid "<Ctrl>Q"
-msgstr ""
+msgstr "<Ctrl>Q"
 
-#: measure.py:310
+#: measure.py:350
 msgid "Measure Log"
+msgstr "บันทึกการใช้งานวัดค่า"
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr "เลิกหยุดจอภาพ"
+
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
+"เซ็นเซอร์ความต้านทาน(เชื่อมต่อเซ็นเซอร์ไปที่ช่อง 'Mic In' สีชมพู "
+"ทางด้านซ้ายของ XO)"
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"เซ็นเซอร์แรงดันไฟฟ้า(เชื่อมต่อเซ็นเซอร์ไปที่ช่อง 'Mic In' สีชมพู "
+"ทางด้านซ้ายของ XO)"
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr "ความต้านทาน"
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr "แรงดันไฟฟ้า"
+
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
+msgid "Time Base"
+msgstr "ฐานเวลา"
+
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
+msgid "Frequency Base"
+msgstr "ฐานความถี่"
+
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr "ตรงข้าม"
+
+#: sensor_toolbar.py:58
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "มาตราส่วนแกน X : 1 ช่อง = %(division)s%(unit)s"
+
+#: sensor_toolbar.py:60
+msgid "ms"
+msgstr "มิลลิวินาที"
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr "ตรวจจับความต้านทาน"
+
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr "ตรวจจับแรงดันไฟฟ้า"
+
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr "1/10วินาที"
+
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr "1 วินาที"
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr "30 วินาที"
+
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr "5 นาที"
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr "30 นาที"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr "ช่วงเวลาที่เก็บตัวอย่าง"
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
+msgid "Start Recording"
+msgstr "เริ่มการบันทึก"
+
+#: sensor_toolbar.py:160
+msgid "None"
+msgstr "ไม่มี"
+
+#: sensor_toolbar.py:160
+msgid "Rising Edge"
+msgstr "เพิ่มขอบ"
+
+#: sensor_toolbar.py:160
+msgid "Falling Edge"
+msgstr "ตกขอบ"
+
+#: sensor_toolbar.py:170
+msgid "Create a trigger"
+msgstr "สร้างตัวกระตุ้น"
+
+#: sensor_toolbar.py:178
+msgid "Zoom out"
+msgstr "ขยายออก"
+
+#: sensor_toolbar.py:190
+msgid "Zoom in"
+msgstr "ขยายเข้า"
+
+#: sensor_toolbar.py:414
+msgid "Stop Recording"
+msgstr "หยุดการบันทึก"
+
+#: toolbar_side.py:50 toolbar_side.py:131
+msgid "Increase amplitude"
+msgstr "เพิ่มความสูงคลื่นเสียง"
+
+#: toolbar_side.py:65 toolbar_side.py:133
+msgid "Decrease amplitude"
+msgstr "ลดความสูงคลื่นเสียง"
+
+#: toolbar_side.py:136
+msgid "Increase bias"
+msgstr "เพิ่มเส้นทแยง"
+
+#: toolbar_side.py:138
+msgid "Decrease bias"
+msgstr "ลดเส้นทแยง"
 
 # correction
 #~ msgid "Spectrum value"
