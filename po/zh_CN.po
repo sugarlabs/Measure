@@ -1,0 +1,240 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-03-15 03:35+0200\n"
+"Last-Translator: lite <litekok@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "测量"
+
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
+msgid "Sound"
+msgstr "声音"
+
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "欧姆"
+
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "伏特"
+
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr "赫兹"
+
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr "会话"
+
+#: journal.py:60
+msgid "User"
+msgstr "用户"
+
+#: journal.py:61
+msgid "Mode"
+msgstr "模式"
+
+#: journal.py:63
+msgid "Date"
+msgstr "日期"
+
+#: journal.py:65
+msgid "Interval"
+msgstr "间隔"
+
+#: journal.py:68
+msgid "Channels"
+msgstr "频道"
+
+#: journal.py:108
+msgid "Waveform"
+msgstr "波形"
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr "传感器"
+
+#: measure.py:219
+msgid "Controls"
+msgstr "控制"
+
+#: measure.py:228
+msgid "Capture mode"
+msgstr "捕捉模式"
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr "显示冻结"
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr "现在采集样本"
+
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:350
+msgid "Measure Log"
+msgstr "测量日志"
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr "显示解冻"
+
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr "电阻式传感器（连接传感器到XO左侧的粉红色‘Mic In’）"
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr "电压传感器（连接传感器到XO左侧的粉红色‘Mic In’）"
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr "电阻"
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr "电压"
+
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
+msgid "Time Base"
+msgstr "基于时间"
+
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
+msgid "Frequency Base"
+msgstr "基于频率"
+
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr "反转"
+
+#: sensor_toolbar.py:58
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "X轴比例：1格=%(division)s %(unit)s"
+
+#: sensor_toolbar.py:60
+msgid "ms"
+msgstr "毫秒"
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr "电阻传感器"
+
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr "电压传感器"
+
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr "1/10秒"
+
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr "1秒"
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr "30秒"
+
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr "5分钟"
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr "30分钟"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr "采样间隔"
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
+msgid "Start Recording"
+msgstr "开始录制"
+
+#: sensor_toolbar.py:160
+msgid "None"
+msgstr "无"
+
+#: sensor_toolbar.py:160
+msgid "Rising Edge"
+msgstr "上升沿"
+
+#: sensor_toolbar.py:160
+msgid "Falling Edge"
+msgstr "下降沿"
+
+#: sensor_toolbar.py:170
+msgid "Create a trigger"
+msgstr "创建触发器"
+
+#: sensor_toolbar.py:178
+msgid "Zoom out"
+msgstr "缩小"
+
+#: sensor_toolbar.py:190
+msgid "Zoom in"
+msgstr "放大"
+
+#: sensor_toolbar.py:414
+msgid "Stop Recording"
+msgstr "停止录制"
+
+#: toolbar_side.py:50 toolbar_side.py:131
+msgid "Increase amplitude"
+msgstr "增加振幅"
+
+#: toolbar_side.py:65 toolbar_side.py:133
+msgid "Decrease amplitude"
+msgstr "减少振幅"
+
+#: toolbar_side.py:136
+msgid "Increase bias"
+msgstr "增加偏移"
+
+#: toolbar_side.py:138
+msgid "Decrease bias"
+msgstr "减少偏移"
+
+#~ msgid "Bias/Offset Enabled"
+#~ msgstr "启用偏置/偏移"
+
+#~ msgid "Bias/Offset Disabled"
+#~ msgstr "禁用偏置/偏移"
+
+#~ msgid "Every 30 sec."
+#~ msgstr "每隔30秒"
+
+#~ msgid "Every 2 min."
+#~ msgstr "每隔2分钟"
+
+#~ msgid "Every 10 min."
+#~ msgstr "每隔10分钟"
+
+#~ msgid "Every 30 min."
+#~ msgstr "每隔30分钟"
+
+#~ msgid "Stop sampling"
+#~ msgstr "停止采样"
+
+#~ msgid "Start sampling"
+#~ msgstr "开始采样"
