@@ -1,0 +1,216 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-03-30 05:44+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: af\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr ""
+
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
+msgid "Sound"
+msgstr "Klank"
+
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr ""
+
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr ""
+
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr ""
+
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr ""
+
+#: journal.py:60
+msgid "User"
+msgstr ""
+
+#: journal.py:61
+msgid "Mode"
+msgstr ""
+
+#: journal.py:63
+msgid "Date"
+msgstr "Datum"
+
+#: journal.py:65
+msgid "Interval"
+msgstr ""
+
+#: journal.py:68
+msgid "Channels"
+msgstr ""
+
+#: journal.py:108
+msgid "Waveform"
+msgstr ""
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr ""
+
+#: measure.py:219
+msgid "Controls"
+msgstr ""
+
+#: measure.py:228
+msgid "Capture mode"
+msgstr ""
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr ""
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr ""
+
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr ""
+
+#: measure.py:350
+msgid "Measure Log"
+msgstr ""
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr ""
+
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr ""
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr ""
+
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
+msgid "Time Base"
+msgstr ""
+
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
+msgid "Frequency Base"
+msgstr ""
+
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr ""
+
+#: sensor_toolbar.py:58
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: sensor_toolbar.py:60
+msgid "ms"
+msgstr ""
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr ""
+
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr ""
+
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr ""
+
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr ""
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr ""
+
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr ""
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr ""
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr ""
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
+msgid "Start Recording"
+msgstr ""
+
+#: sensor_toolbar.py:160
+msgid "None"
+msgstr "Geen"
+
+#: sensor_toolbar.py:160
+msgid "Rising Edge"
+msgstr ""
+
+#: sensor_toolbar.py:160
+msgid "Falling Edge"
+msgstr ""
+
+#: sensor_toolbar.py:170
+msgid "Create a trigger"
+msgstr ""
+
+#: sensor_toolbar.py:178
+msgid "Zoom out"
+msgstr "Zoem uit"
+
+#: sensor_toolbar.py:190
+msgid "Zoom in"
+msgstr "Zoem in"
+
+#: sensor_toolbar.py:414
+msgid "Stop Recording"
+msgstr ""
+
+#: toolbar_side.py:50 toolbar_side.py:131
+msgid "Increase amplitude"
+msgstr ""
+
+#: toolbar_side.py:65 toolbar_side.py:133
+msgid "Decrease amplitude"
+msgstr ""
+
+#: toolbar_side.py:136
+msgid "Increase bias"
+msgstr ""
+
+#: toolbar_side.py:138
+msgid "Decrease bias"
+msgstr ""
