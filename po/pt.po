@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-19 00:33-0500\n"
-"PO-Revision-Date: 2012-01-23 02:44+0200\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-04-02 23:36+0200\n"
 "Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pt\n"
@@ -101,14 +101,14 @@ msgstr ""
 #: sensor_toolbar.py:47
 msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
-"Sensor resistivo (liga sensor à entrada rosa 'Mic in' no lado esquerdo do "
+"Sensor resistivo (liga o sensor à entrada rosa 'Mic in' no lado esquerdo do "
 "XO)"
 
 #: sensor_toolbar.py:50
 msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
-"Sensor de voltagem (liga sensor à entrada rosa 'Mic in' no lado esquerdo do "
-"XO)"
+"Sensor de voltagem (liga o sensor à entrada rosa 'Mic in' no lado esquerdo "
+"do XO)"
 
 #: sensor_toolbar.py:53
 msgid "Resistance"
@@ -120,11 +120,11 @@ msgstr "Voltagem"
 
 #: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
 msgid "Time Base"
-msgstr "Base do Tempo"
+msgstr "Base de Tempo"
 
 #: sensor_toolbar.py:56 sensor_toolbar.py:224
 msgid "Frequency Base"
-msgstr "Base da Frequência"
+msgstr "Base de Frequência"
 
 #: sensor_toolbar.py:57 toolbar_side.py:44
 msgid "Invert"
@@ -171,7 +171,7 @@ msgstr "30 minutos"
 msgid "Sampling interval"
 msgstr "Intervalo de amostragem"
 
-#: sensor_toolbar.py:150 sensor_toolbar.py:404
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
 msgid "Start Recording"
 msgstr "Começar a Gravação"
 
@@ -181,15 +181,15 @@ msgstr "Nenhum"
 
 #: sensor_toolbar.py:160
 msgid "Rising Edge"
-msgstr ""
+msgstr "Flanco Ascendente"
 
 #: sensor_toolbar.py:160
 msgid "Falling Edge"
-msgstr ""
+msgstr "Flanco Descendente"
 
 #: sensor_toolbar.py:170
 msgid "Create a trigger"
-msgstr ""
+msgstr "Criar um disparador"
 
 #: sensor_toolbar.py:178
 msgid "Zoom out"
@@ -199,7 +199,7 @@ msgstr "Afastar zoom"
 msgid "Zoom in"
 msgstr "Aproximar zoom"
 
-#: sensor_toolbar.py:422
+#: sensor_toolbar.py:414
 msgid "Stop Recording"
 msgstr "Parar a Gravação"
 
