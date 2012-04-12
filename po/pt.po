@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-15 00:33-0500\n"
-"PO-Revision-Date: 2012-04-03 01:07+0200\n"
+"PO-Revision-Date: 2012-04-13 00:22+0200\n"
 "Last-Translator: Eduardo H. <hoboprimate@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pt\n"
@@ -96,7 +96,7 @@ msgstr "Registo Medir"
 
 #: measure.py:382
 msgid "Unfreeze the display"
-msgstr ""
+msgstr "Descongelar a visualização"
 
 #: sensor_toolbar.py:47
 msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
@@ -213,11 +213,11 @@ msgstr "Diminuir a amplitude"
 
 #: toolbar_side.py:136
 msgid "Increase bias"
-msgstr ""
+msgstr "Aumentar bias"
 
 #: toolbar_side.py:138
 msgid "Decrease bias"
-msgstr ""
+msgstr "Diminuir bias"
 
 #~ msgid "Spectrum value"
 #~ msgstr "Valor de espectro"
