@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-07 22:48-0400\n"
-"PO-Revision-Date: 2011-10-04 19:35+0200\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-03-01 14:02+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hus\n"
@@ -21,207 +21,238 @@ msgstr ""
 msgid "Measure"
 msgstr "T'ípoy"
 
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
+msgid "Sound"
+msgstr "Kawidhtaláb"
+
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "Ohms"
+
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "Voltios"
+
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr "Hercio(hz)"
+
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr "Tamkudh t´ojláb"
+
+#: journal.py:60
+msgid "User"
+msgstr "Eyendhom"
+
+#: journal.py:61
+msgid "Mode"
+msgstr ""
+
+#: journal.py:63
+#, fuzzy
+msgid "Date"
+msgstr "Ajumtal íts'"
+
+#: journal.py:65
+msgid "Interval"
+msgstr "Jalk´uxtaláb"
+
+#: journal.py:68
+#, fuzzy
+msgid "Channels"
+msgstr "Belilchik"
+
+#: journal.py:108
+msgid "Waveform"
+msgstr "In aytal an yunk´idh"
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr "Ots'bixtaláb"
+
+#: measure.py:219
+msgid "Controls"
+msgstr ""
+
+#: measure.py:228
+#, fuzzy
+msgid "Capture mode"
+msgstr "Xowé' ka yak'wa'"
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr "Ka kubla' an walek"
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr "Ka yak'wa' xo' an tejwamédhomtaláb"
+
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:350
+msgid "Measure Log"
+msgstr "In áy an lejbaxtaláb"
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr "Ka tsab lek'wdha' an walek"
+
 # microfono = kawidhmédhomtaláb
-#: sensor_toolbar.py:49
-msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+#: sensor_toolbar.py:47
+#, fuzzy
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 "Ots'bil DC (ka xapchij an ots'bil tin jólil an kawidhmédhomtaláb axi majudh "
 "iko' tin k'watab waltelil an XO)"
 
-# pelk´ontaláb = desviación
-#: sensor_toolbar.py:51
-msgid "Bias/Offset Enabled"
-msgstr "Sesgo/Walkadh pelk´ontaláb"
+# microfono = kawidhmédhomtaláb
+#: sensor_toolbar.py:50
+#, fuzzy
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Ots'bil DC (ka xapchij an ots'bil tin jólil an kawidhmédhomtaláb axi majudh "
+"iko' tin k'watab waltelil an XO)"
 
-#: sensor_toolbar.py:51
-msgid "Ohms"
-msgstr "Ohms"
+#: sensor_toolbar.py:53
+#, fuzzy
+msgid "Resistance"
+msgstr "kuxúdh"
 
-#: sensor_toolbar.py:52
-msgid "Bias/Offset Disabled"
-msgstr "Sesgo/Yab walkadh"
+#: sensor_toolbar.py:54
+#, fuzzy
+msgid "Voltage"
+msgstr "k'amáltsáj"
 
-#: sensor_toolbar.py:52
-msgid "Volts"
-msgstr "Voltios"
-
-#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
-msgid "Invert"
-msgstr "Wenk´ow"
-
-#: sensor_toolbar.py:67 sensor_toolbar.py:193
-msgid "Resistance Sensor"
-msgstr "Ots´bixtal an tsápláp"
-
-#: sensor_toolbar.py:74 sensor_toolbar.py:202
-msgid "Voltage Sensor"
-msgstr "Ots'bixtal kal an k'amal ts' áj"
-
-# adhik k'ij = segundos
-#: sensor_toolbar.py:98
-msgid "1/10 second"
-msgstr "Láju adhik k'ij"
-
-#: sensor_toolbar.py:98 sensor_toolbar.py:109
-msgid "1 second"
-msgstr "Jún adhik k'ij"
-
-#: sensor_toolbar.py:98
-msgid "30 seconds"
-msgstr "Jun inik láju adhik k'ij"
-
-# minutos = tsakam k'ij
-#: sensor_toolbar.py:99
-msgid "5 minutes"
-msgstr "bó' tsakam k'ij"
-
-#: sensor_toolbar.py:99
-msgid "30 minutes"
-msgstr "jun inik láju tsakam k'ij"
-
-#: sensor_toolbar.py:102 sound_toolbar.py:134
-msgid "Sampling interval"
-msgstr "K’elbadh jolat ti ts'ejel tejwamédhomtaláb"
-
-#: sensor_toolbar.py:119 sensor_toolbar.py:153
-msgid "Start Recording"
-msgstr "Tujchij an ts'át'altaláb"
-
-#: sensor_toolbar.py:147
-msgid "Stop Recording"
-msgstr "Kubla' an ts'át'altaláb"
-
-#: sound_toolbar.py:50
-msgid "Capture now"
-msgstr "Xowé' ka yak'wa'"
-
-#: sound_toolbar.py:51
-msgid "Every 30 sec."
-msgstr "Ti jun inik láju adhik k'ij"
-
-#: sound_toolbar.py:52
-msgid "Every 2 min."
-msgstr "Ti tsabchik tsakam k'ij"
-
-#: sound_toolbar.py:53
-msgid "Every 10 min."
-msgstr "Ti láju tsakam k'ij"
-
-#: sound_toolbar.py:54
-msgid "Every 30 min."
-msgstr "Ti jun inik láju tsakam k'ij"
-
-#: sound_toolbar.py:65 measure.py:197 measure.py:203
-msgid "Sound"
-msgstr "Kawidhtaláb"
-
-#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
 msgid "Time Base"
 msgstr "Aknixtaláb aytal ki´j"
 
-#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
 msgid "Frequency Base"
 msgstr "Kits'lab aknixtaláb wilk'idhaytaláb"
 
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr "Wenk´ow"
+
 # eje = ts'ejel kits'láb
-#: sound_toolbar.py:71
+#: sensor_toolbar.py:58
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr ""
 "Ts'ejel kitsláb X tsalpantal t'ipláb: 1 mu'uxtaláb = %(division)s %(unit)s"
 
-#: sound_toolbar.py:73
+#: sensor_toolbar.py:60
 msgid "ms"
 msgstr "ms"
 
-#: sound_toolbar.py:75
-msgid "Hz"
-msgstr "Hercio(hz)"
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr "Ots´bixtal an tsápláp"
 
-#: sound_toolbar.py:109 sound_toolbar.py:321
-msgid "Freeze the display"
-msgstr "Ka kubla' an walek"
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr "Ots'bixtal kal an k'amal ts' áj"
 
-#: sound_toolbar.py:151 sound_toolbar.py:297
-msgid "Capture sample now"
-msgstr "Ka yak'wa' xo' an tejwamédhomtaláb"
+# adhik k'ij = segundos
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr "Láju adhik k'ij"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr "Jún adhik k'ij"
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr "Jun inik láju adhik k'ij"
+
+# minutos = tsakam k'ij
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr "bó' tsakam k'ij"
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr "jun inik láju tsakam k'ij"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr "K’elbadh jolat ti ts'ejel tejwamédhomtaláb"
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
+msgid "Start Recording"
+msgstr "Tujchij an ts'át'altaláb"
+
+#: sensor_toolbar.py:160
 msgid "None"
 msgstr "Mani jún"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:160
 msgid "Rising Edge"
 msgstr "Ka puwedha´ in puwél an xám"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:160
 msgid "Falling Edge"
 msgstr "Ka tsiptimédha' in puwél an xám"
 
-#: sound_toolbar.py:175
+#: sensor_toolbar.py:170
 msgid "Create a trigger"
 msgstr "Ts'ejka' jún i kwi'íl"
 
-#: sound_toolbar.py:186
+#: sensor_toolbar.py:178
 msgid "Zoom out"
 msgstr "Tsipti'médha'(ówmédha') ok'tsalap"
 
-#: sound_toolbar.py:199
+#: sensor_toolbar.py:190
 msgid "Zoom in"
 msgstr "Puwedha'(ututuy) ok'tsalap"
 
-#: sound_toolbar.py:294
-msgid "Stop sampling"
-msgstr "Kubla'ani t'iplabchik"
+#: sensor_toolbar.py:414
+msgid "Stop Recording"
+msgstr "Kubla' an ts'át'altaláb"
 
-#: sound_toolbar.py:299
-msgid "Start sampling"
-msgstr "Ts'ikinal an t'iplábchik"
-
-#: sound_toolbar.py:316
-msgid "Unfreeze the display"
-msgstr "Ka tsab lek'wdha' an walek"
-
-#: journal.py:53 measure.py:328
-msgid "Session"
-msgstr "Tamkudh t´ojláb"
-
-#: journal.py:55
-msgid "User"
-msgstr "Eyendhom"
-
-#: journal.py:56
-msgid "Interval"
-msgstr "Jalk´uxtaláb"
-
-#: journal.py:91
-msgid "Waveform"
-msgstr "In aytal an yunk´idh"
-
-#: toolbar_side.py:46 toolbar_side.py:120
+#: toolbar_side.py:50 toolbar_side.py:131
 msgid "Increase amplitude"
 msgstr "Ka puwedha' in owél"
 
-#: toolbar_side.py:61 toolbar_side.py:122
+#: toolbar_side.py:65 toolbar_side.py:133
 msgid "Decrease amplitude"
 msgstr "Ka tsiptimédha' in owél"
 
-#: toolbar_side.py:125
+#: toolbar_side.py:136
 msgid "Increase bias"
 msgstr "Yanedha' sesgo/an pelk'ontaláb"
 
-#: toolbar_side.py:127
+#: toolbar_side.py:138
 msgid "Decrease bias"
 msgstr "We'médha' sesgo/an pelk'ontaláb"
 
-#: measure.py:210 measure.py:216
-msgid "Sensors"
-msgstr "Ots'bixtaláb"
+# pelk´ontaláb = desviación
+#~ msgid "Bias/Offset Enabled"
+#~ msgstr "Sesgo/Walkadh pelk´ontaláb"
 
-#: measure.py:240
-msgid "<Ctrl>Q"
-msgstr "<Ctrl>Q"
+#~ msgid "Bias/Offset Disabled"
+#~ msgstr "Sesgo/Yab walkadh"
 
-#: measure.py:310
-msgid "Measure Log"
-msgstr "In áy an lejbaxtaláb"
+#~ msgid "Every 30 sec."
+#~ msgstr "Ti jun inik láju adhik k'ij"
+
+#~ msgid "Every 2 min."
+#~ msgstr "Ti tsabchik tsakam k'ij"
+
+#~ msgid "Every 10 min."
+#~ msgstr "Ti láju tsakam k'ij"
+
+#~ msgid "Every 30 min."
+#~ msgstr "Ti jun inik láju tsakam k'ij"
+
+#~ msgid "Stop sampling"
+#~ msgstr "Kubla'ani t'iplabchik"
+
+#~ msgid "Start sampling"
+#~ msgstr "Ts'ikinal an t'iplábchik"

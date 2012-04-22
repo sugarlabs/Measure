@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-21 00:30-0400\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
 "PO-Revision-Date: 2008-01-14 19:50+0000\n"
 "Last-Translator: Jaume <jaume@nualart.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,107 +20,263 @@ msgstr ""
 msgid "Measure"
 msgstr "Mesura"
 
-#: drawWaveform.py:205 drawWaveform.py:260
-msgid "Spectrum value"
-msgstr "Valor de l'espectre"
-
-#: drawWaveform.py:330
-msgid "RMS   : "
-msgstr "RMS"
-
-#: drawWaveform.py:330
-msgid "AVG   : "
-msgstr "AVG"
-
-#: drawWaveform.py:331
-msgid "Scale:"
-msgstr "Escale:"
-
-#: drawWaveform.py:332
-msgid "X Axis: "
-msgstr "Eix X:"
-
-#: drawWaveform.py:332
-msgid "Y Axis : "
-msgstr "Eix Y:"
-
-#: electrical_ui.py:38 electrical_ui.py:151
-msgid "Click for DC"
-msgstr "Clic per DC"
-
-#: electrical_ui.py:50 electrical_ui.py:172
-msgid "Click for Bias Off"
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
+msgid "Sound"
 msgstr ""
 
-#: electrical_ui.py:61 electrical_ui.py:192
-msgid "Click for Frequency base"
-msgstr "Clic per la base de freqüència"
-
-#: electrical_ui.py:116 electrical_ui.py:256
-msgid "Pause"
-msgstr "Pausa"
-
-#: electrical_ui.py:126 electrical_ui.py:203
-msgid "Show values"
-msgstr "Mostra valors"
-
-#: electrical_ui.py:141
-msgid "Click for AC"
-msgstr "Clic per AC"
-
-#: electrical_ui.py:163
-msgid "Click for Bias On"
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
 msgstr ""
 
-#: electrical_ui.py:183
-msgid "Click for Time base"
-msgstr "Clic per base de temps"
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr ""
 
-#: electrical_ui.py:212
-msgid "Hide values"
-msgstr "Oculta valors"
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr ""
 
-#: electrical_ui.py:249
-msgid "Resume"
-msgstr "Reprendre"
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr ""
 
-#: logging_ui.py:44 logging_ui.py:50
-msgid "Snapshot"
-msgstr "Captura de pantalla"
+#: journal.py:60
+msgid "User"
+msgstr ""
 
-#: logging_ui.py:44
+#: journal.py:61
+msgid "Mode"
+msgstr ""
+
+#: journal.py:63
+msgid "Date"
+msgstr ""
+
+#: journal.py:65
+msgid "Interval"
+msgstr ""
+
+#: journal.py:68
+msgid "Channels"
+msgstr ""
+
+#: journal.py:108
+msgid "Waveform"
+msgstr ""
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr ""
+
+#: measure.py:219
+msgid "Controls"
+msgstr ""
+
+#: measure.py:228
+msgid "Capture mode"
+msgstr ""
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr ""
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr ""
+
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr ""
+
+#: measure.py:350
+msgid "Measure Log"
+msgstr ""
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr ""
+
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr ""
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr ""
+
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
+msgid "Time Base"
+msgstr ""
+
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
+msgid "Frequency Base"
+msgstr ""
+
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr ""
+
+#: sensor_toolbar.py:58
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr ""
+
+#: sensor_toolbar.py:60
+msgid "ms"
+msgstr ""
+
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr ""
+
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr ""
+
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr ""
+
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
 msgid "1 second"
 msgstr "1 segon"
 
-#: logging_ui.py:44
-msgid "1 minute"
+#: sensor_toolbar.py:129
+#, fuzzy
+msgid "30 seconds"
+msgstr "1 segon"
+
+#: sensor_toolbar.py:130
+#, fuzzy
+msgid "5 minutes"
 msgstr "1 minut"
 
-#: logging_ui.py:44
-msgid "1 hour"
-msgstr "1 hora"
+#: sensor_toolbar.py:130
+#, fuzzy
+msgid "30 minutes"
+msgstr "1 minut"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr ""
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
+msgid "Start Recording"
+msgstr ""
+
+#: sensor_toolbar.py:160
+msgid "None"
+msgstr ""
+
+#: sensor_toolbar.py:160
+msgid "Rising Edge"
+msgstr ""
+
+#: sensor_toolbar.py:160
+msgid "Falling Edge"
+msgstr ""
+
+#: sensor_toolbar.py:170
+msgid "Create a trigger"
+msgstr ""
+
+#: sensor_toolbar.py:178
+msgid "Zoom out"
+msgstr ""
+
+#: sensor_toolbar.py:190
+msgid "Zoom in"
+msgstr ""
+
+#: sensor_toolbar.py:414
+msgid "Stop Recording"
+msgstr ""
+
+#: toolbar_side.py:50 toolbar_side.py:131
+msgid "Increase amplitude"
+msgstr ""
+
+#: toolbar_side.py:65 toolbar_side.py:133
+msgid "Decrease amplitude"
+msgstr ""
+
+#: toolbar_side.py:136
+msgid "Increase bias"
+msgstr ""
+
+#: toolbar_side.py:138
+msgid "Decrease bias"
+msgstr ""
+
+#~ msgid "Spectrum value"
+#~ msgstr "Valor de l'espectre"
+
+#~ msgid "RMS   : "
+#~ msgstr "RMS"
+
+#~ msgid "AVG   : "
+#~ msgstr "AVG"
+
+#~ msgid "Scale:"
+#~ msgstr "Escale:"
+
+#~ msgid "X Axis: "
+#~ msgstr "Eix X:"
+
+#~ msgid "Y Axis : "
+#~ msgstr "Eix Y:"
+
+#~ msgid "Click for DC"
+#~ msgstr "Clic per DC"
+
+#~ msgid "Click for Frequency base"
+#~ msgstr "Clic per la base de freqüència"
+
+#~ msgid "Pause"
+#~ msgstr "Pausa"
+
+#~ msgid "Show values"
+#~ msgstr "Mostra valors"
+
+#~ msgid "Click for AC"
+#~ msgstr "Clic per AC"
+
+#~ msgid "Click for Time base"
+#~ msgstr "Clic per base de temps"
+
+#~ msgid "Hide values"
+#~ msgstr "Oculta valors"
+
+#~ msgid "Resume"
+#~ msgstr "Reprendre"
+
+#~ msgid "Snapshot"
+#~ msgstr "Captura de pantalla"
+
+#~ msgid "1 minute"
+#~ msgstr "1 minut"
+
+#~ msgid "1 hour"
+#~ msgstr "1 hora"
 
 # no esta clara aquesta traduccio
-#: logging_ui.py:68 logging_ui.py:144
-msgid "Start Logging"
-msgstr "Comença l'entrada"
+#~ msgid "Start Logging"
+#~ msgstr "Comença l'entrada"
 
-#: logging_ui.py:82 logging_ui.py:167
-msgid "Show Log"
-msgstr "Mostra el registre"
+#~ msgid "Show Log"
+#~ msgstr "Mostra el registre"
 
-#: logging_ui.py:134
-msgid "Stop Logging"
-msgstr "Atura l'entrada"
+#~ msgid "Stop Logging"
+#~ msgstr "Atura l'entrada"
 
-#: logging_ui.py:159
-msgid "Remove Log"
-msgstr "Esborra el registre"
-
-#, fuzzy
-#~ msgid "5 seconds"
-#~ msgstr "1 segon"
-
-#, fuzzy
-#~ msgid "5 minutes"
-#~ msgstr "1 minut"
+#~ msgid "Remove Log"
+#~ msgstr "Esborra el registre"

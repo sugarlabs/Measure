@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-19 00:33-0500\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
 "PO-Revision-Date: 2012-01-22 10:59+0200\n"
 "Last-Translator: samy boutayeb <s.boutayeb@free.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -170,7 +170,7 @@ msgstr "30 minutes"
 msgid "Sampling interval"
 msgstr "Pas d'échantillonnage"
 
-#: sensor_toolbar.py:150 sensor_toolbar.py:404
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
 msgid "Start Recording"
 msgstr "Commencer l'enregistrement"
 
@@ -198,7 +198,7 @@ msgstr "Zoom arrière"
 msgid "Zoom in"
 msgstr "Zoom avant"
 
-#: sensor_toolbar.py:422
+#: sensor_toolbar.py:414
 msgid "Stop Recording"
 msgstr "Arrêter l'enregistrement"
 

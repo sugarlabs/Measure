@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-07 22:48-0400\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
 "PO-Revision-Date: 2011-10-04 20:34+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: el\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,204 +21,230 @@ msgstr ""
 msgid "Measure"
 msgstr "Μέτρηση"
 
-#: sensor_toolbar.py:49
-msgid "Sensors, DC (connect sensor to pink 'Mic In' on left side of XO)"
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
+#: sensor_toolbar.py:259
+msgid "Sound"
+msgstr "Ήχος"
+
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "Ωμ"
+
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "Βολτ"
+
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr "Χερτζ"
+
+#: journal.py:58 measure.py:363
+msgid "Session"
+msgstr "Συνεδρία"
+
+#: journal.py:60
+msgid "User"
+msgstr "Χρήστης"
+
+#: journal.py:61
+msgid "Mode"
+msgstr ""
+
+#: journal.py:63
+msgid "Date"
+msgstr ""
+
+#: journal.py:65
+msgid "Interval"
+msgstr "Διάστημα"
+
+#: journal.py:68
+msgid "Channels"
+msgstr ""
+
+#: journal.py:108
+msgid "Waveform"
+msgstr "Κυματιστή μορφή"
+
+#: measure.py:212 measure.py:218
+msgid "Sensors"
+msgstr "Αισθητήρες"
+
+#: measure.py:219
+msgid "Controls"
+msgstr ""
+
+#: measure.py:228
+#, fuzzy
+msgid "Capture mode"
+msgstr "Αιχμαλώτιση εικόνας τώρα"
+
+#: measure.py:245 measure.py:276 measure.py:387
+msgid "Freeze the display"
+msgstr "Παγώστε την οθόνη"
+
+#: measure.py:250 measure.py:281
+msgid "Capture sample now"
+msgstr "Αιχμαλωτίστε το δείγμα τώρα"
+
+#: measure.py:260
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q"
+
+#: measure.py:350
+msgid "Measure Log"
+msgstr "Μετρήστε Καταγραφή"
+
+#: measure.py:382
+msgid "Unfreeze the display"
+msgstr "Διακόψετε το πάγωμα της οθόνης"
+
+#: sensor_toolbar.py:47
+#, fuzzy
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 "Αισθητήρες, DC (συνδέστε τον αισθητήρα στο ροζ \"Mic In\" στην αριστερή πλευρά "
 "του ΧΟ)"
 
-#: sensor_toolbar.py:51
-msgid "Bias/Offset Enabled"
-msgstr "Διαγώνιος/Αποτύπωμα ενεργοποιημένο"
+#: sensor_toolbar.py:50
+#, fuzzy
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Αισθητήρες, DC (συνδέστε τον αισθητήρα στο ροζ \"Mic In\" στην αριστερή πλευρά "
+"του ΧΟ)"
 
-#: sensor_toolbar.py:51
-msgid "Ohms"
-msgstr "Ωμ"
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr ""
 
-#: sensor_toolbar.py:52
-msgid "Bias/Offset Disabled"
-msgstr "Διαγώνιος/Αποτύπωμα Απενεργοποιημένο"
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr ""
 
-#: sensor_toolbar.py:52
-msgid "Volts"
-msgstr "Βολτ"
-
-#: sensor_toolbar.py:53 sensor_toolbar.py:81 sound_toolbar.py:68
-msgid "Invert"
-msgstr "Αντιστροφή"
-
-#: sensor_toolbar.py:67 sensor_toolbar.py:193
-msgid "Resistance Sensor"
-msgstr "Αισθητήρας Αντίστασης"
-
-#: sensor_toolbar.py:74 sensor_toolbar.py:202
-msgid "Voltage Sensor"
-msgstr "Αισθητήρας Τάσης"
-
-#: sensor_toolbar.py:98
-msgid "1/10 second"
-msgstr "1/10 δευτερολέπτου"
-
-#: sensor_toolbar.py:98 sensor_toolbar.py:109
-msgid "1 second"
-msgstr "1 δευτερόλεπτο"
-
-#: sensor_toolbar.py:98
-msgid "30 seconds"
-msgstr "5 δευτερόλεπτα"
-
-#: sensor_toolbar.py:99
-msgid "5 minutes"
-msgstr "5 λεπτά"
-
-#: sensor_toolbar.py:99
-msgid "30 minutes"
-msgstr "30 λεπτά"
-
-#: sensor_toolbar.py:102 sound_toolbar.py:134
-msgid "Sampling interval"
-msgstr "Διάστημα δειγματοληψίας"
-
-#: sensor_toolbar.py:119 sensor_toolbar.py:153
-msgid "Start Recording"
-msgstr "Έναρξη Ηχογράφησης"
-
-#: sensor_toolbar.py:147
-msgid "Stop Recording"
-msgstr "Διακοπή ηχογράφησης"
-
-#: sound_toolbar.py:50
-msgid "Capture now"
-msgstr "Αιχμαλώτιση εικόνας τώρα"
-
-#: sound_toolbar.py:51
-msgid "Every 30 sec."
-msgstr "Κάθε 30 δευτερόλεπτα"
-
-#: sound_toolbar.py:52
-msgid "Every 2 min."
-msgstr "Κάθε 2 λεπτά"
-
-#: sound_toolbar.py:53
-msgid "Every 10 min."
-msgstr "Κάθε 10 λεπτά"
-
-#: sound_toolbar.py:54
-msgid "Every 30 min."
-msgstr "Κάθε 30 λεπτά"
-
-#: sound_toolbar.py:65 measure.py:197 measure.py:203
-msgid "Sound"
-msgstr "Ήχος"
-
-#: sound_toolbar.py:66 sound_toolbar.py:92 sound_toolbar.py:341 measure.py:229
+#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
 msgid "Time Base"
 msgstr "Βάση του χρόνου"
 
-#: sound_toolbar.py:67 sound_toolbar.py:99 sound_toolbar.py:351
+#: sensor_toolbar.py:56 sensor_toolbar.py:224
 msgid "Frequency Base"
 msgstr "Βάση Συχνότητας"
 
-#: sound_toolbar.py:71
+#: sensor_toolbar.py:57 toolbar_side.py:44
+msgid "Invert"
+msgstr "Αντιστροφή"
+
+#: sensor_toolbar.py:58
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr "Κλίμακα Άξονα Χ: 1 τμήμα = %(division)s %(unit)s"
 
-#: sound_toolbar.py:73
+#: sensor_toolbar.py:60
 msgid "ms"
 msgstr "χιλιοστό δευτερολέπτου"
 
-#: sound_toolbar.py:75
-msgid "Hz"
-msgstr "Χερτζ"
+#: sensor_toolbar.py:98 sensor_toolbar.py:266
+msgid "Resistance Sensor"
+msgstr "Αισθητήρας Αντίστασης"
 
-#: sound_toolbar.py:109 sound_toolbar.py:321
-msgid "Freeze the display"
-msgstr "Παγώστε την οθόνη"
+#: sensor_toolbar.py:108 sensor_toolbar.py:273
+msgid "Voltage Sensor"
+msgstr "Αισθητήρας Τάσης"
 
-#: sound_toolbar.py:151 sound_toolbar.py:297
-msgid "Capture sample now"
-msgstr "Αιχμαλωτίστε το δείγμα τώρα"
+#: sensor_toolbar.py:129
+msgid "1/10 second"
+msgstr "1/10 δευτερολέπτου"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:129 sensor_toolbar.py:140
+msgid "1 second"
+msgstr "1 δευτερόλεπτο"
+
+#: sensor_toolbar.py:129
+msgid "30 seconds"
+msgstr "5 δευτερόλεπτα"
+
+#: sensor_toolbar.py:130
+msgid "5 minutes"
+msgstr "5 λεπτά"
+
+#: sensor_toolbar.py:130
+msgid "30 minutes"
+msgstr "30 λεπτά"
+
+#: sensor_toolbar.py:133
+msgid "Sampling interval"
+msgstr "Διάστημα δειγματοληψίας"
+
+#: sensor_toolbar.py:150 sensor_toolbar.py:396
+msgid "Start Recording"
+msgstr "Έναρξη Ηχογράφησης"
+
+#: sensor_toolbar.py:160
 msgid "None"
 msgstr "Κανένα"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:160
 msgid "Rising Edge"
 msgstr "Αναδυόμενη άκρη"
 
-#: sound_toolbar.py:162
+#: sensor_toolbar.py:160
 msgid "Falling Edge"
 msgstr "Άκρη σε πτώση"
 
-#: sound_toolbar.py:175
+#: sensor_toolbar.py:170
 msgid "Create a trigger"
 msgstr "Δημιουργείστε ένα έναυσμα"
 
-#: sound_toolbar.py:186
+#: sensor_toolbar.py:178
 msgid "Zoom out"
 msgstr "Σμίκρυνση"
 
-#: sound_toolbar.py:199
+#: sensor_toolbar.py:190
 msgid "Zoom in"
 msgstr "Μεγέθυνση"
 
-#: sound_toolbar.py:294
-msgid "Stop sampling"
-msgstr "Διακοπή δειγματοληψίας"
+#: sensor_toolbar.py:414
+msgid "Stop Recording"
+msgstr "Διακοπή ηχογράφησης"
 
-#: sound_toolbar.py:299
-msgid "Start sampling"
-msgstr "Έναρξη δειγματοληψίας"
-
-#: sound_toolbar.py:316
-msgid "Unfreeze the display"
-msgstr "Διακόψετε το πάγωμα της οθόνης"
-
-#: journal.py:53 measure.py:328
-msgid "Session"
-msgstr "Συνεδρία"
-
-#: journal.py:55
-msgid "User"
-msgstr "Χρήστης"
-
-#: journal.py:56
-msgid "Interval"
-msgstr "Διάστημα"
-
-#: journal.py:91
-msgid "Waveform"
-msgstr "Κυματιστή μορφή"
-
-#: toolbar_side.py:46 toolbar_side.py:120
+#: toolbar_side.py:50 toolbar_side.py:131
 msgid "Increase amplitude"
 msgstr "Αυξήστε το εύρος"
 
-#: toolbar_side.py:61 toolbar_side.py:122
+#: toolbar_side.py:65 toolbar_side.py:133
 msgid "Decrease amplitude"
 msgstr "Μειώστε το εύρος"
 
-#: toolbar_side.py:125
+#: toolbar_side.py:136
 msgid "Increase bias"
 msgstr "Αυξήστε δυναμικό πόλωσης"
 
-#: toolbar_side.py:127
+#: toolbar_side.py:138
 msgid "Decrease bias"
 msgstr "Μειώστε δυναμικό πόλωσης"
 
-#: measure.py:210 measure.py:216
-msgid "Sensors"
-msgstr "Αισθητήρες"
+#~ msgid "Bias/Offset Enabled"
+#~ msgstr "Διαγώνιος/Αποτύπωμα ενεργοποιημένο"
 
-#: measure.py:240
-msgid "<Ctrl>Q"
-msgstr "<Ctrl>Q"
+#~ msgid "Bias/Offset Disabled"
+#~ msgstr "Διαγώνιος/Αποτύπωμα Απενεργοποιημένο"
 
-#: measure.py:310
-msgid "Measure Log"
-msgstr "Μετρήστε Καταγραφή"
+#~ msgid "Every 30 sec."
+#~ msgstr "Κάθε 30 δευτερόλεπτα"
+
+#~ msgid "Every 2 min."
+#~ msgstr "Κάθε 2 λεπτά"
+
+#~ msgid "Every 10 min."
+#~ msgstr "Κάθε 10 λεπτά"
+
+#~ msgid "Every 30 min."
+#~ msgstr "Κάθε 30 λεπτά"
+
+#~ msgid "Stop sampling"
+#~ msgstr "Διακοπή δειγματοληψίας"
+
+#~ msgid "Start sampling"
+#~ msgstr "Έναρξη δειγματοληψίας"
 
 #~ msgid "Spectrum value"
 #~ msgstr "Τιμή κλίμακας"
