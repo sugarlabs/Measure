@@ -226,7 +226,8 @@ class DrawWaveform(gtk.DrawingArea):
     def do_property_notify_event(self, event):
         if event.atom == self._redraw_atom:
             self.queue_draw()
-        return
+            return True
+        return False
 
     def do_realize(self):
         """ Called when we are creating all of our window resources """
@@ -304,6 +305,47 @@ class DrawWaveform(gtk.DrawingArea):
         self.trigger_ypos = event.y / float(self.allocation.height)
         return True
 
+    def _calculate_trigger_position(self, samples, y_mag, buf):
+        ''' If there is a trigger, we need to calculate an offset '''
+        xpos = self.trigger_xpos
+        ypos = self.trigger_ypos
+        samples_to_end = int(samples * (1 - xpos))
+
+        ypos -= 0.5
+        if y_mag == 0:
+            ypos *= -32767.0 / 0.01
+        else:
+            ypos *= -32767.0 / y_mag
+
+        x_offset = self.allocation.width * xpos - \
+                   (samples - samples_to_end) * self.draw_interval
+
+        position = -1
+        if self.triggering == self.TRIGGER_POS:
+            ints = buf[samples - samples_to_end: - samples_to_end - 3] <= ypos
+            ints &= buf[samples - samples_to_end + 1: - samples_to_end - 2] > \
+                    ypos
+            ints = where(ints)[0]
+            if len(ints) > 0:
+                position = max(position, ints[-1])
+        elif self.triggering == self.TRIGGER_NEG:
+            ints = buf[samples - samples_to_end: -samples_to_end - 3] >= ypos
+            ints &= buf[samples - samples_to_end + 1: -samples_to_end - 2] < \
+                    ypos
+            ints = where(ints)[0]
+            if len(ints) > 0:
+                position = max(position, ints[-1])
+
+        if position == -1:
+            position = len(buf) - samples_to_end - 2
+        else:
+            position = position + samples - samples_to_end
+            x_offset -= int(
+                (float(-buf[position] + ypos) / \
+                     (buf[position + 1] - buf[position])) * \
+                    self.draw_interval + 0.5)
+        return position, samples_to_end
+
     def _expose(self, widget, event):
         """The 'expose' event handler does all the drawing"""
 
@@ -324,53 +366,9 @@ class DrawWaveform(gtk.DrawingArea):
 
                     if not self.fft_show:
                         if self.triggering != self.TRIGGER_NONE:
-                            xpos = self.trigger_xpos
-                            ypos = self.trigger_ypos
-                            samples_to_end = int(samples * (1 - xpos))
-
-                            ypos -= 0.5
-                            if self.y_mag[graph_id] == 0:
-                                ypos *= -32767.0
-                            else:
-                                ypos *= -32767.0 / self.y_mag[graph_id]
-
-                            x_offset = self.allocation.width\
-                                * xpos - (samples - samples_to_end)\
-                                * self.draw_interval
-
-                            position = -1
-                            if self.triggering == self.TRIGGER_POS:
-                                ints = buf[samples - samples_to_end:\
-                                               - samples_to_end - 3] <= ypos
-                                ints &= buf[samples - samples_to_end + 1:\
-                                                - samples_to_end - 2] > ypos
-
-                                ints = where(ints)[0]
-                                if len(ints) > 0:
-                                    position = max(position, ints[-1])
-
-                            elif self.triggering == self.TRIGGER_NEG:
-                                ints = buf[samples - samples_to_end:\
-                                           -samples_to_end - 3] >= ypos
-                                ints &= buf[samples - samples_to_end + 1:\
-                                            -samples_to_end - 2] < ypos
-
-                                ints = where(ints)[0]
-                                if len(ints) > 0:
-                                    position = max(position, ints[-1])
-
-                            if position == -1:
-                                position = len(buf) - samples_to_end - 2
-                            else:
-                                position = position + samples - samples_to_end
-                                try:
-                                    x_offset -=\
-                                        int((float(-buf[position] + ypos)\
-                                        / (buf[position + 1] - buf[position]))\
-                                        * self.draw_interval + 0.5)
-                                except:
-                                    pass
-
+                            position, samples_to_end = \
+                                self._calculate_trigger_position(
+                                samples, self.y_mag[graph_id], buf)
                             data = buf[position - samples + samples_to_end:\
                                 position + samples_to_end + 2].astype(float64)
                         else:
