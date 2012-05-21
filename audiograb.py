@@ -218,6 +218,9 @@ class AudioGrab():
         else:
             log.debug('ignoring channels > %d' % (min(self.channels,
                                                       MAX_GRAPHS)))
+        if self._pad_count == self.channels:
+            log.debug('pipeline added...')
+            self.activity.sensor_toolbar.unlock_radio_buttons()
 
     def set_handoff_signal(self, handoff_state):
         '''Sets whether the handoff signal would generate an interrupt

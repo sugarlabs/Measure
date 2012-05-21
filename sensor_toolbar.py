@@ -282,18 +282,17 @@ of XO)") + ' '
         else:
             logging.error('unknown mode %s' % (mode_to_set))
         self.update_string_for_textbox()
-        # Wait long enough for channels to be selected
-        gobject.timeout_add(2000, self._unlock_radio_buttons, mode_to_set)
         return False
 
-    def _unlock_radio_buttons(self, mode_to_set):
+    def unlock_radio_buttons(self):
         ''' Enable radio button selection '''
+        logging.debug('unlocking radio buttons')
         if self._radio_button_pushed:
-            if mode_to_set == 'sound':
+            if self.mode == 'sound':
                 self.time.set_active(True)
-            elif mode_to_set == 'resistance':
+            elif self.mode == 'resistance':
                 self.resistance.set_active(True)
-            elif mode_to_set == 'voltage':
+            elif self.mode == 'voltage':
                 self.voltage.set_active(True)
         self._lock_radio_buttons = False
         self._radio_button_pushed = False
