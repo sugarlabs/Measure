@@ -429,15 +429,23 @@ class AudioGrab():
 
     def pause_grabbing(self):
         '''When Activity goes into background'''
-        # self.save_state()
-        # self.stop_sound_device()
+        if self.we_are_logging:
+            log.debug('We are logging... will not pause grabbing.')
+        else:
+            log.debug('Pause grabbing.')
+            self.save_state()
+            self.stop_sound_device()
         return
 
     def resume_grabbing(self):
         '''When Activity becomes active after going to background'''
-        # self.start_sound_device()
-        # self.restore_state()
-        # self.set_handoff_signal(True)
+        if self.we_are_logging:
+            log.debug('We are logging... already grabbing.')
+        else:
+            log.debug('Restore grabbing.')
+            self.restore_state()
+            self.start_sound_device()
+            self.set_handoff_signal(True)
         return
 
     def stop_grabbing(self):
@@ -493,7 +501,11 @@ class AudioGrab():
         log.debug('Restore state')
         self.set_master(self.master)
         self.set_bias(self.bias)
+        self.stop_grabbing()
+        if self.channels > 1:
+            self._unlink_sink_queues()
         self.set_dc_mode(self.dc_mode)
+        self.start_grabbing()
         self.set_capture_gain(self.capture_gain)
         self.set_mic_boost(self.mic_boost)
 

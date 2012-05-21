@@ -134,7 +134,7 @@ class MeasureActivity(activity.Activity):
         self._active = True
         self._dsobject = None
 
-        self.connect('notify::active', self._active_cb)
+        self.connect('notify::active', self._notify_active_cb)
         self.connect('destroy', self.on_quit)
 
         self.data_logger = DataLogger(self)
@@ -301,14 +301,17 @@ class MeasureActivity(activity.Activity):
         '''Clean up, close journal on quit'''
         self.audiograb.on_activity_quit()
 
-    def _active_cb(self, widget, pspec):
+    def _notify_active_cb(self, widget, pspec):
         ''' Callback to handle starting/pausing capture when active/idle '''
         if self._first:
+            log.debug('_notify_active_cb: start grabbing')
             self.audiograb.start_grabbing()
             self._first = False
-        if not self.props.active and self._active:
+        elif not self.props.active:
+            log.debug('_notify_active_cb: pause grabbing')
             self.audiograb.pause_grabbing()
-        elif self.props.active and not self._active:
+        elif self.props.active:
+            log.debug('_notify_active_cb: resume grabbing')
             self.audiograb.resume_grabbing()
 
         self._active = self.props.active
