@@ -339,7 +339,7 @@ class DrawWaveform(gtk.DrawingArea):
                                 * self.draw_interval
 
                             position = -1
-                            if self.triggering and self.TRIGGER_POS:
+                            if self.triggering == self.TRIGGER_POS:
                                 ints = buf[samples - samples_to_end:\
                                                - samples_to_end - 3] <= ypos
                                 ints &= buf[samples - samples_to_end + 1:\
@@ -349,7 +349,7 @@ class DrawWaveform(gtk.DrawingArea):
                                 if len(ints) > 0:
                                     position = max(position, ints[-1])
 
-                            if self.triggering and self.TRIGGER_NEG:
+                            elif self.triggering == self.TRIGGER_NEG:
                                 ints = buf[samples - samples_to_end:\
                                            -samples_to_end - 3] >= ypos
                                 ints &= buf[samples - samples_to_end + 1:\
