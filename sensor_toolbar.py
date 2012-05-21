@@ -21,7 +21,7 @@ import gobject
 import os
 from gettext import gettext as _
 
-from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175
+from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
@@ -34,7 +34,7 @@ log.setLevel(logging.DEBUG)
 
 def _is_xo(hw):
     ''' Return True if this is xo hardware '''
-    return hw in [XO1, XO15, XO175]
+    return hw in [XO1, XO15, XO175, XO30]
 
 
 class SensorToolbar(gtk.Toolbar):
@@ -68,6 +68,8 @@ of XO)") + ' '
 
         self.activity = activity
         self._channels = channels
+        self._lock_radio_buttons = False
+        self._radio_button_pushed = False
         self.values = []
         for i in range(self._channels):
             self.values.append('')
@@ -235,8 +237,14 @@ of XO)") + ' '
     def analog_resistance_voltage_mode_cb(self, button=None,
                                    mode_to_set='sound'):
         ''' Callback for Analog/Resistance/Voltage Buttons '''
-        if self.mode == mode_to_set:
+        if self._lock_radio_buttons:
+            logging.debug('mode selector locked')
+            self._radio_button_pushed = True
             return
+        if self.mode == mode_to_set:
+            logging.debug('mode already set to %s' % mode_to_set)
+            return
+        self._lock_radio_buttons = True
         if self.activity.CONTEXT == 'sound':
             self.sound_context_off()
         else:
@@ -274,7 +282,21 @@ of XO)") + ' '
         else:
             logging.error('unknown mode %s' % (mode_to_set))
         self.update_string_for_textbox()
+        # Wait long enough for channels to be selected
+        gobject.timeout_add(2000, self._unlock_radio_buttons, mode_to_set)
         return False
+
+    def _unlock_radio_buttons(self, mode_to_set):
+        ''' Enable radio button selection '''
+        if self._radio_button_pushed:
+            if mode_to_set == 'sound':
+                self.time.set_active(True)
+            elif mode_to_set == 'resistance':
+                self.resistance.set_active(True)
+            elif mode_to_set == 'voltage':
+                self.voltage.set_active(True)
+        self._lock_radio_buttons = False
+        self._radio_button_pushed = False
 
     def set_mode(self, mode='sound'):
         ''' Set the mixer settings to match the current mode. '''
