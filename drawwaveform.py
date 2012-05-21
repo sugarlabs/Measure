@@ -329,7 +329,10 @@ class DrawWaveform(gtk.DrawingArea):
                             samples_to_end = int(samples * (1 - xpos))
 
                             ypos -= 0.5
-                            ypos *= -32767.0 / self.y_mag[graph_id]
+                            if self.y_mag[graph_id] == 0:
+                                ypos *= -32767.0
+                            else:
+                                ypos *= -32767.0 / self.y_mag[graph_id]
 
                             x_offset = self.allocation.width\
                                 * xpos - (samples - samples_to_end)\
