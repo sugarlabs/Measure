@@ -4,11 +4,12 @@ ENHANCEMENTS:
 * New translations
 
 BUG_FIX:
-* Lock mode-selection radio buttons while mode is being reset (#3616)
+* Lock mode-selection radio buttons while mode is being reset (#3616).
 * Fixed logic error that was causing triggering on both rising and
-  falling edges (#2203)
-* Fixed typo that had caused triggers to stop working.
-* Replaced deprecated "commands" with "subprocess"
+  falling edges (#2203).
+* Fixed typo that had caused triggers to stop working (also #2203).
+* Replaced deprecated "commands" with "subprocess".
+* Pause grabbing (releasing audio device) when activity is not active.
 
 36
 
