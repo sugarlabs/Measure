@@ -61,6 +61,7 @@ DISPLAY_DUTY_CYCLE = 100
 XO1 = 'xo1'
 XO15 = 'xo1.5'
 XO175 = 'xo1.75'
+XO30 = 'xo3.0'
 UNKNOWN = 'unknown'
 
 # Bounds of side slider
