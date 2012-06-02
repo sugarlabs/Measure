@@ -77,7 +77,10 @@ class AudioGrab():
         elif self.activity.hw == XO15:
             self._voltage_gain = -0.0001471
             self._voltage_bias = 1.695
-        else:  # XO 1.75
+        elif self.activity.hw == XO175:
+            self._voltage_gain = 0.000051
+            self._voltage_bias = 1.372
+        else:  # XO 3.0
             self._voltage_gain = 0.00007692
             self._voltage_bias = 0.719
 
@@ -307,7 +310,9 @@ class AudioGrab():
                 return (420000000 / avg_buffer) - 13500
             else:
                 return 420000000
-        else:  # XO 1.75
+        elif self.activity.hw == XO175:
+            return (180000000 / (30700 - avg_buf)) - 3150
+        else:  # XO 3.0
             return (46000000 / (30514 - avg_buffer)) - 1150
 
     def _calibrate_voltage(self, data_buffer):
