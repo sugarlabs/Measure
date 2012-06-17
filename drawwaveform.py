@@ -111,6 +111,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.color = []
         self.source = []
         self.graph_id = []
+        self.visibility = []
 
         self.max_samples = 115
         self.max_samples_fact = 3
@@ -132,6 +133,7 @@ class DrawWaveform(gtk.DrawingArea):
             self.type .append(0)
             self.color.append('#FF0000')
             self.source.append(0)
+            self.visibility.append(True)
             self.graph_id.append(x)
 
         self.ringbuffer = []
@@ -354,6 +356,8 @@ class DrawWaveform(gtk.DrawingArea):
 
             #Iterate for each graph
             for graph_id in self.graph_id:
+                if not self.visibility[graph_id]:
+                    continue
                 if self.graph_show_state[graph_id]:
                     buf = self.ringbuffer[graph_id].read(None, self.input_step)
                     samples = ceil(self.allocation.width / self.draw_interval)
@@ -523,3 +527,6 @@ class DrawWaveform(gtk.DrawingArea):
 
     def set_bias_param(self, bias=0, channel=0):
         self.bias[channel] = bias
+
+    def set_visibility(self, state, channel=0):
+        self.visibility[channel] = state

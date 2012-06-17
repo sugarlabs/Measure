@@ -40,6 +40,11 @@ class SideToolbar(gtk.Toolbar):
         self.mode = 'sound'
         self.mode_values = {'sound': 3, 'sensor': 2}
 
+        self._toggle = gtk.CheckButton()
+        self._toggle.set_active(True)
+        self._toggle.connect('clicked', self.toggle_cb)
+        self._toggle.show()
+
         self._invert = ToolButton('invert')
         self._invert.set_tooltip(_('Invert'))
         self._invert.connect('clicked', self.invert_control_cb)
@@ -66,7 +71,6 @@ class SideToolbar(gtk.Toolbar):
         self.button_down.connect('clicked', self._button_down_cb)
         self.button_down.show()
 
-
         self.box1 = gtk.VBox(False, 0)
 
         if self._channel == 0:
@@ -77,6 +81,7 @@ class SideToolbar(gtk.Toolbar):
                                  False, True, 0)
         else:
             self.box1.pack_start(self._color_wave('#FFFFFF'), False, True, 0)
+        self.box1.pack_start(self._toggle, False, True, 0)
         self.box1.pack_start(self._invert, False, True, 0)
         self.box1.pack_start(self.button_up, False, True, 0)
         self.box1.pack_start(self.yscrollbar, True, True, 0)
@@ -139,6 +144,11 @@ class SideToolbar(gtk.Toolbar):
             self._invert.show()
         self.yscrollbar.set_value(self.mode_values[self.mode])
         return
+
+    def toggle_cb(self, data=None):
+        self.activity.wave.set_visibility(self._toggle.get_active(),
+                                          channel=self._channel)
+        return True
 
     def invert_control_cb(self, data=None):
         ''' Callback for Invert Button '''
