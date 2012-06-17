@@ -311,7 +311,7 @@ class AudioGrab():
             else:
                 return 420000000
         elif self.activity.hw == XO175:
-            return (180000000 / (30700 - avg_buf)) - 3150
+            return (180000000 / (30700 - avg_buffer)) - 3150
         else:  # XO 3.0
             return (46000000 / (30514 - avg_buffer)) - 1150
 
