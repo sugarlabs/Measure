@@ -2,7 +2,7 @@
 #
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
-#    Copyright (C) 2009,10 Walter Bender
+#    Copyright (C) 2009-12 Walter Bender
 #    
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -73,7 +73,7 @@ class DataLogger():
         '''Append the value passed to data_buffer '''
         if channel is None:
             self.data_buffer.append('%d: %s' % (sample, str(value)))
-        else:
+        elif self.activity.wave.visibility[channel]:
             self.data_buffer.append('%d.%d: %s' % (
                     sample, channel, str(value)))
 
