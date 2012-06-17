@@ -45,7 +45,7 @@ class SideToolbar(gtk.Toolbar):
         self._toggle.connect('clicked', self.toggle_cb)
         self._toggle.show()
         self._toggle_box = gtk.HBox()
-        self._toggle_box.pack_start(self._toggle, False, True, 10)
+        self._toggle_box.pack_start(self._toggle, False, True, 18)
 
         self._invert = ToolButton('invert')
         self._invert.set_tooltip(_('Invert'))
