@@ -172,6 +172,26 @@ of XO)") + ' '
             self._trigger_combo.set_tooltip_text(_('Create a trigger'))
         self._trigger_tool = ToolComboBox(self._trigger_combo)
         self.insert(self._trigger_tool, -1)
+
+        if self.activity.has_toolbarbox:
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = True
+            self.insert(separator, -1)
+
+        # Set up Tuning Combo box
+        self._tuning_combo = ComboBox()
+        self.tuning = [_('None'), _('guitar'), _('violin'), _('viola'),
+                       _('cello'), _('bass')]
+        self._tuning_changed_id = self._tuning_combo.connect(
+            'changed', self.update_tuning_control)
+        for i, s in enumerate(self.tuning):
+            self._tuning_combo.append_item(i, s, None)
+        self._tuning_combo.set_active(0)
+        if hasattr(self._tuning_combo, 'set_tooltip_text'):
+            self._tuning_combo.set_tooltip_text(_('Tune an instrument'))
+        self._tuning_tool = ToolComboBox(self._tuning_combo)
+        self.insert(self._tuning_tool, -1)
+
         self.show_all()
 
     def add_frequency_slider(self, toolbar):
@@ -210,6 +230,11 @@ of XO)") + ' '
 
         self.activity.wave.set_trigger(self.trigger_conf[active])
         return
+
+    def update_tuning_control(self, *args):
+        ''' Callback for tuning control '''
+        self.activity.wave.instrument = \
+            self.tuning[self._tuning_combo.get_active()]
 
     def _timefreq_control_cb(self, button=None):
         ''' Callback for Freq. Button '''

@@ -2,7 +2,7 @@
 #
 # Author:  Arjun Sarwal   arjun@laptop.org
 # Copyright (C) 2007, Arjun Sarwal
-# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009-12 Walter Bender
 # Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
 # This program is free software; you can redistribute it and/or modify
@@ -28,6 +28,13 @@ log = logging.getLogger('Measure')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
+from gettext import gettext as _
+
+TUNING_DICT = {_('guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
+               _('violin'): [195.998, 293.665, 440, 659.255],
+               _('viola'): [130.813, 195.998, 293.665, 440],
+               _('cello'): [65.4064, 97.9989, 146.832, 220],
+               _('bass'): [41.2034, 55, 73.4162, 97.9989]}
 
 class DrawWaveform(gtk.DrawingArea):
     """ Handles all the drawing of waveforms """
@@ -86,6 +93,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.Rv = 0
 
         self._BACKGROUND_LINE_THICKNESS = 0.8
+        self._TUNING_LINE_THICKNESS = 1
         self._TRIGGER_LINE_THICKNESS = 3
         self._FOREGROUND_LINE_THICKNESS = 6
 
@@ -121,6 +129,8 @@ class DrawWaveform(gtk.DrawingArea):
         self.input_step = 1
 
         self.debug_str = 'start'
+
+        self.instrument = None
 
         self.context = True
 
@@ -241,27 +251,32 @@ class DrawWaveform(gtk.DrawingArea):
 
         colormap = self.get_colormap()
 
+        # Sound data
         self._line_gc = []
         for graph_id in self.graph_id:
             if len(self.color) > graph_id:
                 clr = colormap.alloc_color(self.color[graph_id])
-
                 self._line_gc.append(self.window.new_gc(foreground=clr))
                 self._line_gc[graph_id].set_line_attributes(
                     self._FOREGROUND_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
                     gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-
                 self._line_gc[graph_id].set_foreground(clr)
 
-        # Sugar stroke color
+        # Trigger marks
         clr = colormap.alloc_color(self.color[0])
-
         self._trigger_line_gc = self.window.new_gc(foreground=clr)
         self._trigger_line_gc.set_line_attributes(
             self._TRIGGER_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
             gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-
         self._trigger_line_gc.set_foreground(clr)
+
+        # Tuning lines
+        clr = colormap.alloc_color(self.color[1])
+        self._tuning_line_gc = self.window.new_gc(foreground=clr)
+        self._tuning_line_gc.set_line_attributes(
+            self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+            gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
+        self._tuning_line_gc.set_foreground(clr)
 
         self._create_background_pixmap()
         return
@@ -351,8 +366,19 @@ class DrawWaveform(gtk.DrawingArea):
     def _expose(self, widget, event):
         """The 'expose' event handler does all the drawing"""
 
+        width, height = self.window.get_size()
+
         # Real time drawing
         if self.context and self.active:
+
+            # Draw tuning lines
+            # If we are tuning, we want to scale by 10
+            scale = 10. * self.freq_div / 500.
+            if self.fft_show and self.instrument in TUNING_DICT:
+                for note in TUNING_DICT[self.instrument]:
+                    x = int(note / scale)  # need to check scale factor
+                    self.window.draw_line(self._tuning_line_gc,
+                                          x, 0, x, height)
 
             #Iterate for each graph
             for graph_id in self.graph_id:
@@ -367,7 +393,6 @@ class DrawWaveform(gtk.DrawingArea):
                         return
 
                     x_offset = 0
-
                     if not self.fft_show:
                         if self.triggering != self.TRIGGER_NONE:
                             position, samples_to_end = \
