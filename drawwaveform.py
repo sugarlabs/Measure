@@ -30,11 +30,12 @@ logging.basicConfig()
 
 from gettext import gettext as _
 
-TUNING_DICT = {_('guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
-               _('violin'): [195.998, 293.665, 440, 659.255],
-               _('viola'): [130.813, 195.998, 293.665, 440],
-               _('cello'): [65.4064, 97.9989, 146.832, 220],
-               _('bass'): [41.2034, 55, 73.4162, 97.9989]}
+# TRANS: Please use short versions of instrument names if possible
+TUNING_DICT = {_('Guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
+               _('Violin'): [195.998, 293.665, 440, 659.255],
+               _('Viola'): [130.813, 195.998, 293.665, 440],
+               _('Cello'): [65.4064, 97.9989, 146.832, 220],
+               _('Bass'): [41.2034, 55, 73.4162, 97.9989]}
 
 class DrawWaveform(gtk.DrawingArea):
     """ Handles all the drawing of waveforms """

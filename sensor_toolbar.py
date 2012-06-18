@@ -180,8 +180,9 @@ of XO)") + ' '
 
         # Set up Tuning Combo box
         self._tuning_combo = ComboBox()
-        self.tuning = [_('None'), _('guitar'), _('violin'), _('viola'),
-                       _('cello'), _('bass')]
+        # TRANS: Please use short versions of instrument names if possible
+        self.tuning = [_('None'), _('Guitar'), _('Violin'), _('Viola'),
+                       _('Cello'), _('Bass')]
         self._tuning_changed_id = self._tuning_combo.connect(
             'changed', self.update_tuning_control)
         for i, s in enumerate(self.tuning):
