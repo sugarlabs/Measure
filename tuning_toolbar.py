@@ -39,7 +39,7 @@ class TuningToolbar(gtk.Toolbar):
         # Set up Tuning Combo box
         self._tuning_combo = ComboBox()
         self.tuning = [_('None'), _('Guitar'), _('Violin'), _('Viola'),
-                       _('Cello'), _('Bass')]
+                       _('Cello'), _('Bass'), _('Charango')]
         self._tuning_changed_id = self._tuning_combo.connect(
             'changed', self.update_tuning_control)
         for i, s in enumerate(self.tuning):
