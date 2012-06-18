@@ -1,6 +1,14 @@
+40
+
+ENHANCEMENTS:
+* New icon for tuning toolbar by Manuel Quiñones
+* Added Charango
+* New translations
+* Add entry for user-specified tuning line
+
 39
 
-ENAHNCEMENT:
+ENAHNCEMENTS:
 * Add tuning lines for guitar, violin, viola, cello, and bass (#3657)
 * Channel mute (#3680)
 
