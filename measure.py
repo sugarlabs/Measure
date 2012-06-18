@@ -58,6 +58,7 @@ from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
+from tuning_toolbar import TuningToolbar
 from config import ICONS_DIR, XO1, XO15, XO175, UNKNOWN
 
 import logging
@@ -206,6 +207,7 @@ class MeasureActivity(activity.Activity):
             self.set_toolbox(toolbox)
 
         self.sensor_toolbar = SensorToolbar(self, self.audiograb.channels)
+        self.tuning_toolbar = TuningToolbar(self)
         self.control_toolbar = gtk.Toolbar()
         if self.has_toolbarbox:
             sensor_button = ToolbarButton(
@@ -214,8 +216,17 @@ class MeasureActivity(activity.Activity):
                 icon_name='sensor-tools')
             toolbox.toolbar.insert(sensor_button, -1)
             sensor_button.show()
+            tuning_button = ToolbarButton(
+                # TRANS: Tuning insruments
+                label=_('Tuning'),
+                page=self.tuning_toolbar,
+                icon_name='tuning-tools')
+            toolbox.toolbar.insert(tuning_button, -1)
+            tuning_button.show()
         else:
             toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
+            # TRANS: Tuning insruments
+            toolbox.add_toolbar(_('Tuning'), self.tuning_toolbar)
             toolbox.add_toolbar(_('Controls'), self.control_toolbar)
         self.sensor_toolbar.show()
 
