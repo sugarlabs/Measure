@@ -133,6 +133,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.debug_str = 'start'
 
         self.instrument = None
+        self.tuning_line = 0.0
 
         self.context = True
 
@@ -279,6 +280,12 @@ class DrawWaveform(gtk.DrawingArea):
             self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
             gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
         self._tuning_line_gc.set_foreground(clr)
+        clr = colormap.alloc_color(self.color[0])
+        self._tuning_line_2_gc = self.window.new_gc(foreground=clr)
+        self._tuning_line_2_gc.set_line_attributes(
+            self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+            gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
+        self._tuning_line_2_gc.set_foreground(clr)
 
         self._create_background_pixmap()
         return
@@ -378,9 +385,12 @@ class DrawWaveform(gtk.DrawingArea):
             scale = 10. * self.freq_div / 500.
             if self.fft_show and self.instrument in TUNING_DICT:
                 for note in TUNING_DICT[self.instrument]:
-                    x = int(note / scale)  # need to check scale factor
-                    self.window.draw_line(self._tuning_line_gc,
-                                          x, 0, x, height)
+                    x = int(note / scale)
+                    self.window.draw_line(
+                        self._tuning_line_gc, x, 0, x, height)
+            if self.fft_show and self.tuning_line > 0.0:
+                x = int(self.tuning_line / scale)
+                self.window.draw_line(self._tuning_line_2_gc, x, 0, x, height)
 
             #Iterate for each graph
             for graph_id in self.graph_id:

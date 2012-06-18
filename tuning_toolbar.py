@@ -50,9 +50,40 @@ class TuningToolbar(gtk.Toolbar):
         self._tuning_tool = ToolComboBox(self._tuning_combo)
         self.insert(self._tuning_tool, -1)
 
+        if self.activity.has_toolbarbox:
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = True
+            self.insert(separator, -1)
+
+        self._freq_entry = gtk.Entry()
+        self._freq_entry.set_text('0')
+        if hasattr(self._freq_entry, 'set_tooltip_text'):
+            self._freq_entry.set_tooltip_text(_('enter a frequency to display'))
+        self._freq_entry.set_width_chars(8)
+        self._freq_entry.show()
+        toolitem = gtk.ToolItem()
+        toolitem.add(self._freq_entry)
+        self.insert(toolitem, -1)
+        toolitem.show()
+
+        self._new_tuning_line = ToolButton('tuning-tools')
+        self._new_tuning_line.show()
+        self.insert(self._new_tuning_line, -1)
+        self._new_tuning_line.set_tooltip(_('Add tuning line'))
+        self._new_tuning_line.connect('clicked', self.tuning_line_cb)
+
         self.show_all()
 
     def update_tuning_control(self, *args):
         ''' Callback for tuning control '''
         self.activity.wave.instrument = \
             self.tuning[self._tuning_combo.get_active()]
+
+    def tuning_line_cb(self, *args):
+        ''' Callback for tuning insert '''
+        freq = self._freq_entry.get_text()
+        try:
+            self.activity.wave.tuning_line = float(freq)
+        except ValueError:
+            self.activity.wave.tuning_line = 0.0
+            self._freq_entry.set_text('0')
