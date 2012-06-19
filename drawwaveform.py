@@ -95,7 +95,8 @@ class DrawWaveform(gtk.DrawingArea):
         self.Rv = 0
 
         self._BACKGROUND_LINE_THICKNESS = 0.8
-        self._TUNING_LINE_THICKNESS = 1
+        self._TUNING_LINE_THICKNESS = 2
+        self._HARMONIC_LINE_THICKNESS = 1
         self._TRIGGER_LINE_THICKNESS = 3
         self._FOREGROUND_LINE_THICKNESS = 6
 
@@ -134,6 +135,7 @@ class DrawWaveform(gtk.DrawingArea):
 
         self.instrument = None
         self.tuning_line = 0.0
+        self.harmonics = False
 
         self.context = True
 
@@ -280,12 +282,13 @@ class DrawWaveform(gtk.DrawingArea):
             self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
             gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
         self._tuning_line_gc.set_foreground(clr)
+
         clr = colormap.alloc_color(self.color[0])
-        self._tuning_line_2_gc = self.window.new_gc(foreground=clr)
-        self._tuning_line_2_gc.set_line_attributes(
-            self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+        self._harmonic_gc = self.window.new_gc(foreground=clr)
+        self._harmonic_gc.set_line_attributes(
+            self._HARMONIC_THICKNESS, gtk.gdk.LINE_SOLID,
             gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-        self._tuning_line_2_gc.set_foreground(clr)
+        self._harmonic_gc.set_foreground(clr)
 
         self._create_background_pixmap()
         return
@@ -388,9 +391,21 @@ class DrawWaveform(gtk.DrawingArea):
                     x = int(note / scale)
                     self.window.draw_line(
                         self._tuning_line_gc, x, 0, x, height)
+                for note in TUNING_DICT[self.instrument]:
+                    if self.harmonics:
+                        x = int(note / scale)
+                        for i in range(3):
+                            j = i + 2
+                            self.window.draw_line(self._harmonic_gc, x * j,
+                                                  20 * j, x * j, height)
             if self.fft_show and self.tuning_line > 0.0:
                 x = int(self.tuning_line / scale)
-                self.window.draw_line(self._tuning_line_2_gc, x, 0, x, height)
+                self.window.draw_line(self._tuning_line_gc, x, 0, x, height)
+                if self.harmonics:
+                    for i in range(3):
+                        j = i + 2
+                        self.window.draw_line(self._harmonic_gc, x * j,
+                                              20 * j, x * j, height)
 
             #Iterate for each graph
             for graph_id in self.graph_id:
