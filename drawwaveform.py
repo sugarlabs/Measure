@@ -286,7 +286,7 @@ class DrawWaveform(gtk.DrawingArea):
         clr = colormap.alloc_color(self.color[0])
         self._harmonic_gc = self.window.new_gc(foreground=clr)
         self._harmonic_gc.set_line_attributes(
-            self._HARMONIC_THICKNESS, gtk.gdk.LINE_SOLID,
+            self._HARMONIC_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
             gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
         self._harmonic_gc.set_foreground(clr)
 

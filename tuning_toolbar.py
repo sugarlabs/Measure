@@ -47,7 +47,7 @@ class TuningToolbar(gtk.Toolbar):
             self._tuning_combo.append_item(i, s, None)
         self._tuning_combo.set_active(0)
         if hasattr(self._tuning_combo, 'set_tooltip_text'):
-            self._tuning_combo.set_tooltip_text(_('Tune an instrument'))
+            self._tuning_combo.set_tooltip_text(_('Tune an instrument.'))
         self._tuning_tool = ToolComboBox(self._tuning_combo)
         self.insert(self._tuning_tool, -1)
 
@@ -82,7 +82,7 @@ class TuningToolbar(gtk.Toolbar):
         self._harmonic = ToolButton('harmonics')
         self._harmonic.show()
         self.insert(self._harmonic, -1)
-        self._harmonic.set_tooltip(_('Add harmonics.'))
+        self._harmonic.set_tooltip(_('Show harmonics.'))
         self._harmonic.connect('clicked', self.harmonic_cb)
 
         self.show_all()
@@ -97,10 +97,10 @@ class TuningToolbar(gtk.Toolbar):
         self.activity.wave.harmonics = not self.activity.wave.harmonics
         if self.activity.wave.harmonics:
             self._harmonic.set_icon('harmonics-off')
-            self._harmonic.set_tooltip(_('Remove harmonics.'))
+            self._harmonic.set_tooltip(_('Hide harmonics.'))
         else:
             self._harmonic.set_icon('harmonics')
-            self._harmonic.set_tooltip(_('Add harmonics.'))
+            self._harmonic.set_tooltip(_('Show harmonics.'))
 
     def tuning_line_cb(self, *args):
         ''' Callback for tuning insert '''
