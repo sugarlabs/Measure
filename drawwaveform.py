@@ -37,6 +37,10 @@ TUNING_DICT = {_('Guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
                _('Cello'): [65.4064, 97.9989, 146.832, 220],
                _('Bass'): [41.2034, 55, 73.4162, 97.9989],
                _('Charango'): [329.63, 392, 440, 523.25, 659.26]}
+               #TRANS: Recorder tuned to key of F
+               _('Recorder (F)'): []}
+               #TRANS: Recorder tuned to key of C
+               _('Recorder (C)'): []}
 
 class DrawWaveform(gtk.DrawingArea):
     """ Handles all the drawing of waveforms """
