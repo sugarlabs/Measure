@@ -58,7 +58,8 @@ class TuningToolbar(gtk.Toolbar):
         self._freq_entry = gtk.Entry()
         self._freq_entry.set_text('0')
         if hasattr(self._freq_entry, 'set_tooltip_text'):
-            self._freq_entry.set_tooltip_text(_('enter a frequency to display'))
+            self._freq_entry.set_tooltip_text(
+                _('Enter a frequency to display.'))
         self._freq_entry.set_width_chars(8)
         self._freq_entry.show()
         toolitem = gtk.ToolItem()
@@ -69,8 +70,19 @@ class TuningToolbar(gtk.Toolbar):
         self._new_tuning_line = ToolButton('tuning-tools')
         self._new_tuning_line.show()
         self.insert(self._new_tuning_line, -1)
-        self._new_tuning_line.set_tooltip(_('Add tuning line'))
+        self._new_tuning_line.set_tooltip(_('Add a tuning line.'))
         self._new_tuning_line.connect('clicked', self.tuning_line_cb)
+
+        if self.activity.has_toolbarbox:
+            separator = gtk.SeparatorToolItem()
+            separator.props.draw = True
+            self.insert(separator, -1)
+
+        self._harmonic = ToolButton('harmonics')
+        self._harmonic.show()
+        self.insert(self._harmonic, -1)
+        self._harmonic.set_tooltip(_('Add harmonics.'))
+        self._harmonic.connect('clicked', self.harmonic_cb)
 
         self.show_all()
 
@@ -78,6 +90,10 @@ class TuningToolbar(gtk.Toolbar):
         ''' Callback for tuning control '''
         self.activity.wave.instrument = \
             self.tuning[self._tuning_combo.get_active()]
+
+    def harmonic_cb(self, *args):
+        ''' Callback for harmonics control '''
+        self.activity.wave.harmonics = not self.activity.wave.harmonics
 
     def tuning_line_cb(self, *args):
         ''' Callback for tuning insert '''
