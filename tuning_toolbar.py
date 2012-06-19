@@ -35,6 +35,7 @@ class TuningToolbar(gtk.Toolbar):
         gtk.Toolbar.__init__(self)
 
         self.activity = activity
+        self._show_tuning_line = False
 
         # Set up Tuning Combo box
         self._tuning_combo = ComboBox()
@@ -70,7 +71,7 @@ class TuningToolbar(gtk.Toolbar):
         self._new_tuning_line = ToolButton('tuning-tools')
         self._new_tuning_line.show()
         self.insert(self._new_tuning_line, -1)
-        self._new_tuning_line.set_tooltip(_('Add a tuning line.'))
+        self._new_tuning_line.set_tooltip(_('Show tuning line.'))
         self._new_tuning_line.connect('clicked', self.tuning_line_cb)
 
         if self.activity.has_toolbarbox:
@@ -94,12 +95,27 @@ class TuningToolbar(gtk.Toolbar):
     def harmonic_cb(self, *args):
         ''' Callback for harmonics control '''
         self.activity.wave.harmonics = not self.activity.wave.harmonics
+        if self.activity.wave.harmonics:
+            self._harmonic.set_icon('harmonics-off')
+            self._harmonic.set_tooltip(_('Remove harmonics.'))
+        else:
+            self._harmonic.set_icon('harmonics')
+            self._harmonic.set_tooltip(_('Add harmonics.'))
 
     def tuning_line_cb(self, *args):
         ''' Callback for tuning insert '''
-        freq = self._freq_entry.get_text()
-        try:
-            self.activity.wave.tuning_line = float(freq)
-        except ValueError:
+        if self._show_tuning_line:
             self.activity.wave.tuning_line = 0.0
-            self._freq_entry.set_text('0')
+            self._new_tuning_line.set_icon('tuning-tools')
+            self._new_tuning_line.set_tooltip(_('Show tuning line.'))
+            self._show_tuning_line = False
+        else:
+            freq = self._freq_entry.get_text()
+            try:
+                self.activity.wave.tuning_line = float(freq)
+                self._new_tuning_line.set_icon('tuning-tools-off')
+                self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
+                self._show_tuning_line = True
+            except ValueError:
+                self.activity.wave.tuning_line = 0.0
+                self._freq_entry.set_text('0')
