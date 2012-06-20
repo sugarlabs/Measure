@@ -12,7 +12,6 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-
 import gtk
 import gobject
 import os
@@ -27,6 +26,12 @@ import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 
+
+OCTAVES = ['C͵͵', 'C͵', 'C', 'c', 'c′', 'c′′', 'c′′′', 'c′′′′', 'c′′′′′']
+NOTES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭',
+         'G', 'G♯/A♭']
+A0 = 27.5
+TWELTHROOT2 = 1.05946309435929
 
 class TuningToolbar(gtk.Toolbar):
     ''' The toolbar for tuning instruments '''
@@ -56,8 +61,34 @@ class TuningToolbar(gtk.Toolbar):
             separator.props.draw = True
             self.insert(separator, -1)
 
+        # Set up octaves combo box
+        self._octave_combo = ComboBox()
+        self.octave = OCTAVES
+        self._octave_changed_id = self._octave_combo.connect(
+            'changed', self.update_note)
+        for i, s in enumerate(self.octave):
+            self._octave_combo.append_item(i, s, None)
+        self._octave_combo.set_active(4)  # middle C
+        if hasattr(self._octave_combo, 'set_tooltip_text'):
+            self._octave_combo.set_tooltip_text(_('Octaves'))
+        self._octave_tool = ToolComboBox(self._octave_combo)
+        self.insert(self._octave_tool, -1)
+
+        # Set up notes combo box
+        self._notes_combo = ComboBox()
+        self.notes = NOTES
+        self._notes_changed_id = self._notes_combo.connect(
+            'changed', self.update_note)
+        for i, s in enumerate(self.notes):
+            self._notes_combo.append_item(i, s, None)
+        self._notes_combo.set_active(0)  # A
+        if hasattr(self._notes_combo, 'set_tooltip_text'):
+            self._notes_combo.set_tooltip_text(_('Notes'))
+        self._notes_tool = ToolComboBox(self._notes_combo)
+        self.insert(self._notes_tool, -1)
+
         self._freq_entry = gtk.Entry()
-        self._freq_entry.set_text('0')
+        self._freq_entry.set_text('440')
         if hasattr(self._freq_entry, 'set_tooltip_text'):
             self._freq_entry.set_tooltip_text(
                 _('Enter a frequency to display.'))
@@ -86,6 +117,15 @@ class TuningToolbar(gtk.Toolbar):
         self._harmonic.connect('clicked', self.harmonic_cb)
 
         self.show_all()
+
+    def update_note(self, *args):
+        ''' Calculate the frequency based on octave and note combos '''
+        f = A0 * pow(TWELTHROOT2, self._notes_combo.get_active() + \
+                         (self._octave_combo.get_active() * 12))
+        self._freq_entry.set_text(str(f))
+        if self._show_tuning_line:
+            self.activity.wave.tuning_line = f
+        return
 
     def update_tuning_control(self, *args):
         ''' Callback for tuning control '''
