@@ -26,8 +26,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-19 00:31-0400\n"
-"PO-Revision-Date: 2012-06-19 08:33+0200\n"
+"POT-Creation-Date: 2012-06-21 00:32-0400\n"
+"PO-Revision-Date: 2012-06-21 07:30+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_GB\n"
@@ -42,29 +42,39 @@ msgid "Measure"
 msgstr "Measure"
 
 #. TRANS: Please use short versions of instrument names if possible
-#: drawwaveform.py:34 tuning_toolbar.py:41
+#: drawwaveform.py:34 tuning_toolbar.py:57
 msgid "Guitar"
 msgstr "Guitar"
 
-#: drawwaveform.py:35 tuning_toolbar.py:41
+#: drawwaveform.py:35 tuning_toolbar.py:57
 msgid "Violin"
 msgstr "Violin"
 
-#: drawwaveform.py:36 tuning_toolbar.py:41
+#: drawwaveform.py:36 tuning_toolbar.py:57
 msgid "Viola"
 msgstr "Viola"
 
-#: drawwaveform.py:37 tuning_toolbar.py:42
+#: drawwaveform.py:37 tuning_toolbar.py:58
 msgid "Cello"
 msgstr "Cello"
 
-#: drawwaveform.py:38 tuning_toolbar.py:42
+#: drawwaveform.py:38 tuning_toolbar.py:58
 msgid "Bass"
 msgstr "Bass"
 
-#: drawwaveform.py:39 tuning_toolbar.py:42
+#: drawwaveform.py:39 tuning_toolbar.py:58
 msgid "Charango"
 msgstr "Charango"
+
+#. TRANS: Recorder tuned to key of F
+#: drawwaveform.py:41
+msgid "Recorder (F)"
+msgstr "Recorder (F)"
+
+#. TRANS: Recorder tuned to key of C
+#: drawwaveform.py:43
+msgid "Recorder (C)"
+msgstr "Recorder (C)"
 
 #: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:90
 #: sensor_toolbar.py:268
@@ -221,7 +231,7 @@ msgstr "Sampling interval"
 msgid "Start Recording"
 msgstr "Start Recording"
 
-#: sensor_toolbar.py:162 tuning_toolbar.py:41
+#: sensor_toolbar.py:162 tuning_toolbar.py:57
 msgid "None"
 msgstr "None"
 
@@ -265,17 +275,45 @@ msgstr "Increase bias"
 msgid "Decrease bias"
 msgstr "Decrease bias"
 
-#: tuning_toolbar.py:49
-msgid "Tune an instrument"
-msgstr "Tune an instrument"
+#: tuning_toolbar.py:58
+msgid "Recorder"
+msgstr "Recorder"
 
-#: tuning_toolbar.py:61
-msgid "enter a frequency to display"
-msgstr "enter a frequency to display"
+#: tuning_toolbar.py:65
+msgid "Tune an instrument."
+msgstr "Tune an instrument."
 
-#: tuning_toolbar.py:72
-msgid "Add tuning line"
-msgstr "Add tuning line"
+#: tuning_toolbar.py:83
+msgid "Octaves"
+msgstr "Octaves"
+
+#: tuning_toolbar.py:96
+msgid "Notes"
+msgstr "Notes"
+
+#: tuning_toolbar.py:107
+msgid "Enter a frequency to display."
+msgstr "Enter a frequency to display."
+
+#: tuning_toolbar.py:118 tuning_toolbar.py:235
+msgid "Show tuning line."
+msgstr "Show tuning line."
+
+#: tuning_toolbar.py:129 tuning_toolbar.py:228
+msgid "Show harmonics."
+msgstr "Show harmonics."
+
+#: tuning_toolbar.py:140
+msgid "Play a note."
+msgstr "Play a note."
+
+#: tuning_toolbar.py:225
+msgid "Hide harmonics."
+msgstr "Hide harmonics."
+
+#: tuning_toolbar.py:244
+msgid "Hide tuning line."
+msgstr "Hide tuning line."
 
 #~ msgid "Bias/Offset Enabled"
 #~ msgstr "Bias/Offset Enabled"
