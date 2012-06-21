@@ -26,6 +26,8 @@ except ImportError:
     MEASURE_ROOT = os.environ['HOME']
     SUGAR = False
 
+from gettext import gettext as _
+
 ICONS_DIR = os.path.join(MEASURE_ROOT, 'icons')
 
 # Multiplied with width and height to set placement of text
@@ -67,3 +69,18 @@ UNKNOWN = 'unknown'
 # Bounds of side slider
 LOWER = 0.0
 UPPER = 4.0
+
+# TRANS: Please use short versions of instrument names if possible
+INSTRUMENT_DICT = {
+    _('Guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
+    _('Violin'): [195.998, 293.665, 440, 659.255],
+    _('Viola'): [130.813, 195.998, 293.665, 440],
+    _('Cello'): [65.4064, 97.9989, 146.832, 220],
+    _('Bass'): [41.2034, 55, 73.4162, 97.9989],
+    _('Charango'): [329.63, 392, 440, 523.25, 659.26],
+    _('Ukulele'): [261.626, 329.628, 391.995, 440],
+    _('Sitar'): [174.614, 130.813, 195.998, 65.4064, 391.995,
+                            261.626, 523.251],
+    _('Mandolin'): [195.998, 293.665, 440, 659.255],
+    _('Recorder'): [391.995]
+    }

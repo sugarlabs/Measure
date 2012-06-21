@@ -21,6 +21,7 @@ from numpy import array, where, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 
 from config import MAX_GRAPHS, RATE, LOWER, UPPER
+from config import INSTRUMENT_DICT
 
 # Initialize logging.
 import logging
@@ -30,17 +31,6 @@ logging.basicConfig()
 
 from gettext import gettext as _
 
-# TRANS: Please use short versions of instrument names if possible
-TUNING_DICT = {_('Guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
-               _('Violin'): [195.998, 293.665, 440, 659.255],
-               _('Viola'): [130.813, 195.998, 293.665, 440],
-               _('Cello'): [65.4064, 97.9989, 146.832, 220],
-               _('Bass'): [41.2034, 55, 73.4162, 97.9989],
-               _('Charango'): [329.63, 392, 440, 523.25, 659.26],
-               #TRANS: Recorder tuned to key of F
-               _('Recorder (F)'): [],
-               #TRANS: Recorder tuned to key of C
-               _('Recorder (C)'): []}
 
 class DrawWaveform(gtk.DrawingArea):
     """ Handles all the drawing of waveforms """
@@ -390,12 +380,12 @@ class DrawWaveform(gtk.DrawingArea):
             # Draw tuning lines
             # If we are tuning, we want to scale by 10
             scale = 10. * self.freq_div / 500.
-            if self.fft_show and self.instrument in TUNING_DICT:
-                for note in TUNING_DICT[self.instrument]:
+            if self.fft_show and self.instrument in INSTRUMENT_DICT:
+                for note in INSTRUMENT_DICT[self.instrument]:
                     x = int(note / scale)
                     self.window.draw_line(
                         self._tuning_line_gc, x, 0, x, height)
-                for note in TUNING_DICT[self.instrument]:
+                for note in INSTRUMENT_DICT[self.instrument]:
                     if self.harmonics:
                         x = int(note / scale)
                         for i in range(3):
@@ -444,6 +434,8 @@ class DrawWaveform(gtk.DrawingArea):
                             self.fftx = fft.rfft(buf)
                             self.fftx = abs(self.fftx)
                             data = multiply(self.fftx, 0.02, self.fftx)
+                            if data.argmax() > 0:
+                                print data.argmax() * 48000. / len(data)
                         except ValueError:
                             # TODO: Figure out how this can happen.
                             #       Shape mismatch between window and buf

@@ -17,7 +17,8 @@ import gobject
 import os
 from gettext import gettext as _
 
-from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30
+from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30, \
+    INSTRUMENT_DICT
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
@@ -28,9 +29,8 @@ log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 
 
-OCTAVES = ['C͵͵', 'C͵', 'C', 'c', 'c′', 'c′′', 'c′′′', 'c′′′′', 'c′′′′′']
-NOTES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭',
-         'G', 'G♯/A♭']
+NOTES = ['C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭',
+         'G', 'G♯/A♭', 'A', 'A♯/B♭', 'B']
 SHARP = '♯'
 FLAT = '♭'
 A0 = 27.5
@@ -51,47 +51,40 @@ class TuningToolbar(gtk.Toolbar):
         self.activity = activity
         self._show_tuning_line = False
         self._updating_note = True
+        self._tuning_tool = None
 
-        # Set up Tuning Combo box
-        self._tuning_combo = ComboBox()
-        self.tuning = [_('None'), _('Guitar'), _('Violin'), _('Viola'),
-                       _('Cello'), _('Bass'), _('Charango'), _('Recorder')]
-        self._tuning_changed_id = self._tuning_combo.connect(
-            'changed', self.update_tuning_control)
-        for i, s in enumerate(self.tuning):
-            self._tuning_combo.append_item(i, s, None)
-        self._tuning_combo.set_active(0)
-        if hasattr(self._tuning_combo, 'set_tooltip_text'):
-            self._tuning_combo.set_tooltip_text(_('Tune an instrument.'))
-        self._tuning_tool = ToolComboBox(self._tuning_combo)
-        self.insert(self._tuning_tool, -1)
+        # Set up Instrument Combo box
+        self._instrument_combo = ComboBox()
+        self.instrument = [_('None')]
+        for k in INSTRUMENT_DICT.keys():
+            self.instrument.append(k)
+        self._instrument_changed_id = self._instrument_combo.connect(
+            'changed', self.update_instrument_control)
+        for i, s in enumerate(self.instrument):
+            self._instrument_combo.append_item(i, s, None)
+        self._instrument_combo.set_active(0)
+        if hasattr(self._instrument_combo, 'set_tooltip_text'):
+            self._instrument_combo.set_tooltip_text(_('Tune an instrument.'))
+        self._instrument_tool = ToolComboBox(self._instrument_combo)
+        self.insert(self._instrument_tool, -1)
 
         if self.activity.has_toolbarbox:
             separator = gtk.SeparatorToolItem()
             separator.props.draw = True
             self.insert(separator, -1)
 
-        # Set up octaves combo box
-        self._octave_combo = ComboBox()
-        self.octave = OCTAVES
-        self._octave_changed_id = self._octave_combo.connect(
-            'changed', self.update_note)
-        for i, s in enumerate(self.octave):
-            self._octave_combo.append_item(i, s, None)
-        self._octave_combo.set_active(4)  # middle C
-        if hasattr(self._octave_combo, 'set_tooltip_text'):
-            self._octave_combo.set_tooltip_text(_('Octaves'))
-        self._octave_tool = ToolComboBox(self._octave_combo)
-        self.insert(self._octave_tool, -1)
-
-        # Set up notes combo box
         self._notes_combo = ComboBox()
-        self.notes = NOTES
+        n = 0
+        for octave in range(9):
+            for i in range(len(NOTES)):
+                if octave == 0 and i < 9:  # Start with A0
+                    continue
+                self._notes_combo.append_item(
+                    n, note_octave(i, octave), None)
+                n += 1
+        self._notes_combo.set_active(48) # A4
         self._notes_changed_id = self._notes_combo.connect(
             'changed', self.update_note)
-        for i, s in enumerate(self.notes):
-            self._notes_combo.append_item(i, s, None)
-        self._notes_combo.set_active(0)  # A
         if hasattr(self._notes_combo, 'set_tooltip_text'):
             self._notes_combo.set_tooltip_text(_('Notes'))
         self._notes_tool = ToolComboBox(self._notes_combo)
@@ -157,18 +150,47 @@ class TuningToolbar(gtk.Toolbar):
         self.show_all()
 
     def update_note(self, *args):
-        ''' Calculate the frequency based on octave and note combos '''
+        ''' Calculate the frequency based on note combo '''
         if not hasattr(self, '_freq_entry'):  # Still setting up toolbar
             return
-        freq = A0 * pow(TWELTHROOT2, self._notes_combo.get_active() + \
-                         (self._octave_combo.get_active() * 12))
+        i = self._notes_combo.get_active()
+        freq = A0 * pow(TWELTHROOT2, i)
         self._updating_note = True
         self._freq_entry.set_text('%0.3f' % (freq))
         self.label.set_markup(SPAN % (style.COLOR_WHITE.get_html(),
-                                      NOTES[self._notes_combo.get_active()]))
+                                      note_octave(index_to_note(i),
+                                                  index_to_octave(i))))
         if self._show_tuning_line:
             self.activity.wave.tuning_line = freq
         return
+
+    def update_tuning_control(self, *args):
+        ''' Update note '''
+        if not hasattr(self, '_freq_entry'):  # Still setting up toolbar?
+            return
+        instrument = self.instrument[self._instrument_combo.get_active()]
+        if not instrument in INSTRUMENT_DICT:
+            return
+        if self.tuning[self._tuning_combo.get_active()] == _('All notes'):
+            self._notes_combo.set_active(
+                freq_index(INSTRUMENT_DICT[instrument][0]))
+            self.activity.wave.instrument = instrument
+            self.activity.wave.tuning_line = 0.0
+            self._new_tuning_line.set_icon('tuning-tools')
+            self._new_tuning_line.set_tooltip(_('Show tuning line.'))
+            self._show_tuning_line = False
+        else:
+            freq = INSTRUMENT_DICT[instrument][
+                self._tuning_combo.get_active() - 1]  # All notes is 0
+            self._notes_combo.set_active(
+                freq_index(INSTRUMENT_DICT[instrument][
+                        self._tuning_combo.get_active() - 1]))
+            self.activity.wave.instrument = None
+            self.activity.wave.tuning_line = freq
+            self._new_tuning_line.set_icon('tuning-tools-off')
+            self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
+            self._show_tuning_line = True
+        self._updating_note = False
 
     def update_freq_entry(self, *args):
         # Calcualte a note from a frequency
@@ -184,8 +206,8 @@ class TuningToolbar(gtk.Toolbar):
                     return
                 for i in range(88):
                     f = A0 * pow(TWELTHROOT2, i)
-                    if freq > f * 0.97 and freq < f * 1.03:
-                        label = NOTES[i % 12]
+                    if freq < f * 1.03 and freq > f * 0.97:
+                        label = NOTES[index_to_note(i)]
                         # calculate if we are sharp or flat
                         if freq < f * 0.98:
                             label = '%s %s %s' % (FLAT, label, FLAT)
@@ -211,11 +233,33 @@ class TuningToolbar(gtk.Toolbar):
                 return
         self._updating_note = False
 
+    def update_instrument_control(self, *args):
+        ''' Callback for instrument control '''
+        instrument = self.instrument[self._instrument_combo.get_active()]
+        if self._tuning_tool is not None:
+            self.remove(self._tuning_tool)
+        if instrument == _('None'):
+            self.activity.wave.instrument = None
+            return
+        self.activity.wave.instrument = instrument
 
-    def update_tuning_control(self, *args):
-        ''' Callback for tuning control '''
-        self.activity.wave.instrument = \
-            self.tuning[self._tuning_combo.get_active()]
+        # Add a Tuning Combo box for this instrument
+        self._tuning_combo = ComboBox()
+        self.tuning = [_('All notes')]
+        for f in INSTRUMENT_DICT[instrument]:
+            self.tuning.append(freq_note(f))
+        self._tuning_changed_id = self._tuning_combo.connect(
+            'changed', self.update_tuning_control)
+        for i, s in enumerate(self.tuning):
+            self._tuning_combo.append_item(i, s, None)
+        self._tuning_combo.set_active(0)
+        if hasattr(self._tuning_combo, 'set_tooltip_text'):
+            self._tuning_combo.set_tooltip_text(instrument)
+        self._tuning_tool = ToolComboBox(self._tuning_combo)
+        self.insert(self._tuning_tool, 1)
+        self._tuning_combo.show()
+        self._tuning_tool.show()
+        self.show_all()
 
     def harmonic_cb(self, *args):
         ''' Callback for harmonics control '''
@@ -249,6 +293,33 @@ class TuningToolbar(gtk.Toolbar):
 
     def play_cb(self, *args):
         ''' Play a tone at current frequency '''
-        # TODO: conflict with gstreamer?
+        # TODO: pause/restart capture??
         f = float(self._freq_entry.get_text())
         os.system('speaker-test -t sine -l 1 -f %f' % (f))
+
+def note_octave(note, octave):
+    if '/' in NOTES[note]:
+        flat, sharp = NOTES[note].split('/')
+        return '%s%d/%s%d' % (flat, octave, sharp, octave)
+    else:
+        return '%s%d' % (NOTES[note], octave)
+
+def freq_note(freq):
+    for i in range(88):
+        f = A0 * pow(TWELTHROOT2, i)
+        if freq < f * 1.03 and freq > f * 0.97:  # Found a match
+            return note_octave(index_to_note(i), index_to_octave(i))
+    return '?'
+
+def freq_index(freq):
+    for i in range(88):
+        f = A0 * pow(TWELTHROOT2, i)
+        if freq < f * 1.03 and freq > f * 0.97:  # Found a match
+            return i
+    return 0
+
+def index_to_octave(i):
+    return int((i - 3) / 12) + 1  # -3 because we start with A
+
+def index_to_note(i):
+    return (i-3) % 12  # -3 because we start with A
