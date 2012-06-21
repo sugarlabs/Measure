@@ -29,8 +29,8 @@ log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 
 
-NOTES = ['C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭',
-         'G', 'G♯/A♭', 'A', 'A♯/B♭', 'B']
+NOTES = ['C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭', 'A',
+         'A♯/B♭', 'B']
 SHARP = '♯'
 FLAT = '♭'
 A0 = 27.5
@@ -240,7 +240,10 @@ class TuningToolbar(gtk.Toolbar):
             self.remove(self._tuning_tool)
         if instrument == _('None'):
             self.activity.wave.instrument = None
+            if hasattr(self, '_notes_tool'):
+                self.insert(self._notes_tool, 2)
             return
+        self.remove(self._notes_tool)
         self.activity.wave.instrument = instrument
 
         # Add a Tuning Combo box for this instrument
