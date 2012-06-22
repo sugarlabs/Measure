@@ -22,6 +22,7 @@ from ringbuffer import RingBuffer1d
 
 from config import MAX_GRAPHS, RATE, LOWER, UPPER
 from config import INSTRUMENT_DICT
+from tuning_toolbar import A0, C8, freq_note
 
 # Initialize logging.
 import logging
@@ -40,6 +41,9 @@ class DrawWaveform(gtk.DrawingArea):
     TRIGGER_NONE = 0
     TRIGGER_POS = 1
     TRIGGER_NEG = 2
+    COLORS = ['#B20008', '#FFC169', '#F8E800', '#00588C', '#7F00BF', '#8BFF7A',
+              '#00A0FF', '#BCCEFF', '#008009', '#F8E800', '#AC32FF', '#FFFFFF']
+
 
     def __init__(self, activity, input_frequency=RATE, channels=1):
         """ Initialize drawing area and scope parameter """
@@ -269,6 +273,16 @@ class DrawWaveform(gtk.DrawingArea):
             gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
         self._trigger_line_gc.set_foreground(clr)
 
+        # Instrument tuning lines
+        self._instrument_gc = []
+        for c in self.COLORS:
+            clr = colormap.alloc_color(c)
+            self._instrument_gc.append(self.window.new_gc(foreground=clr))
+            self._instrument_gc[-1].set_line_attributes(
+                self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+                gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
+            self._instrument_gc[-1].set_foreground(clr)
+
         # Tuning lines
         clr = colormap.alloc_color(self.color[1])
         self._tuning_line_gc = self.window.new_gc(foreground=clr)
@@ -381,16 +395,16 @@ class DrawWaveform(gtk.DrawingArea):
             # If we are tuning, we want to scale by 10
             scale = 10. * self.freq_div / 500.
             if self.fft_show and self.instrument in INSTRUMENT_DICT:
-                for note in INSTRUMENT_DICT[self.instrument]:
+                for n, note in enumerate(INSTRUMENT_DICT[self.instrument]):
                     x = int(note / scale)
                     self.window.draw_line(
-                        self._tuning_line_gc, x, 0, x, height)
-                for note in INSTRUMENT_DICT[self.instrument]:
+                        self._instrument_gc[n], x, 0, x, height)
+                for n, note in enumerate(INSTRUMENT_DICT[self.instrument]):
                     if self.harmonics:
                         x = int(note / scale)
                         for i in range(3):
                             j = i + 2
-                            self.window.draw_line(self._harmonic_gc, x * j,
+                            self.window.draw_line(self._instrument_gc[n], x * j,
                                                   20 * j, x * j, height)
             if self.fft_show and self.tuning_line > 0.0:
                 x = int(self.tuning_line / scale)
@@ -434,8 +448,6 @@ class DrawWaveform(gtk.DrawingArea):
                             self.fftx = fft.rfft(buf)
                             self.fftx = abs(self.fftx)
                             data = multiply(self.fftx, 0.02, self.fftx)
-                            if data.argmax() > 0:
-                                print data.argmax() * 48000. / len(data)
                         except ValueError:
                             # TODO: Figure out how this can happen.
                             #       Shape mismatch between window and buf
@@ -467,7 +479,19 @@ class DrawWaveform(gtk.DrawingArea):
                     # Use ints or draw_lines will throw warnings
                     lines = zip(lines.astype('int'), data.astype('int'))
 
-                    if not self.fft_show:
+                    if self.fft_show:
+                        n = data.argmin()
+                        if self.tuning_line > 0 and n > 0:
+                            # Interpolate
+                            a, b, c = \
+                                lines[n - 1][0], lines[n][0], lines[n + 1][0]
+                            x = b - (0.5 * a / (a + b + c)) + (
+                                0.5 * c / (a + b + c))
+                            x *= scale
+                            if x > A0 and x < C8:
+                                self.activity.tuning_toolbar.label.set_markup(
+                                    freq_note(x, flatsharp=True))
+                    else:
                         if self.triggering != self.TRIGGER_NONE:
                             x = int(self.trigger_xpos * self.allocation.width)
                             y = int(self.trigger_ypos * self.allocation.height)

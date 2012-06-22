@@ -204,31 +204,7 @@ class TuningToolbar(gtk.Toolbar):
                 if freq > C8 * 1.03:
                     self.label.set_text('> C8')
                     return
-                for i in range(88):
-                    f = A0 * pow(TWELTHROOT2, i)
-                    if freq < f * 1.03 and freq > f * 0.97:
-                        label = NOTES[index_to_note(i)]
-                        # calculate if we are sharp or flat
-                        if freq < f * 0.98:
-                            label = '%s %s %s' % (FLAT, label, FLAT)
-                            self.label.set_markup(SPAN % (
-                                    COLOR_RED.get_html(), label))
-                        elif freq < f * 0.99:
-                            label = '%s %s %s' % (FLAT, label, FLAT)
-                            self.label.set_markup(SPAN % (
-                                    COLOR_YELLOW.get_html(), label))
-                        elif freq > f * 1.02:
-                            label = '%s %s %s' % (SHARP, label, SHARP)
-                            self.label.set_markup(SPAN % (
-                                    COLOR_RED.get_html(), label))
-                        elif freq > f * 1.01:
-                            label = '%s %s %s' % (SHARP, label, SHARP)
-                            self.label.set_markup(SPAN % (
-                                    COLOR_YELLOW.get_html(), label))
-                        else:
-                            self.label.set_markup(SPAN % (
-                                    style.COLOR_WHITE.get_html(), label))
-                        return
+                self.label.set_markup(freq_note(freq, flatsharp=True))
             except ValueError:
                 return
         self._updating_note = False
@@ -307,12 +283,33 @@ def note_octave(note, octave):
     else:
         return '%s%d' % (NOTES[note], octave)
 
-def freq_note(freq):
-    for i in range(88):
-        f = A0 * pow(TWELTHROOT2, i)
-        if freq < f * 1.03 and freq > f * 0.97:  # Found a match
-            return note_octave(index_to_note(i), index_to_octave(i))
-    return '?'
+def freq_note(freq, flatsharp=False):
+    if flatsharp:  # calculate if we are sharp or flat
+        for i in range(88):
+            f = A0 * pow(TWELTHROOT2, i)
+            if freq < f * 1.03 and freq > f * 0.97:
+                label = NOTES[index_to_note(i)]
+                if freq < f * 0.98:
+                    label = '%s %s %s' % (FLAT, label, FLAT)
+                    return SPAN % (COLOR_RED.get_html(), label)
+                elif freq < f * 0.99:
+                    label = '%s %s %s' % (FLAT, label, FLAT)
+                    return SPAN % (COLOR_YELLOW.get_html(), label)
+                elif freq > f * 1.02:
+                    label = '%s %s %s' % (SHARP, label, SHARP)
+                    return SPAN % (COLOR_RED.get_html(), label)
+                elif freq > f * 1.01:
+                    label = '%s %s %s' % (SHARP, label, SHARP)
+                    return SPAN % (COLOR_YELLOW.get_html(), label)
+                else:
+                    return SPAN % (style.COLOR_WHITE.get_html(), label)
+    else:
+        for i in range(88):
+            f = A0 * pow(TWELTHROOT2, i)
+            if freq < f * 1.03 and freq > f * 0.97:  # Found a match
+                return note_octave(index_to_note(i), index_to_octave(i))
+        return '?'
+
 
 def freq_index(freq):
     for i in range(88):
@@ -321,8 +318,10 @@ def freq_index(freq):
             return i
     return 0
 
+
 def index_to_octave(i):
     return int((i - 3) / 12) + 1  # -3 because we start with A
+
 
 def index_to_note(i):
     return (i-3) % 12  # -3 because we start with A
