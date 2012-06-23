@@ -219,7 +219,7 @@ of XO)") + ' '
 
         # Force time domain when switching modes
         if self.activity.wave.get_fft_mode():
-            self._timefreq_control_cb()
+            self.activity.timefreq_control()
         # Turn off logging when switching modes
         if self.activity.audiograb.we_are_logging:
             self.record_control_cb()
