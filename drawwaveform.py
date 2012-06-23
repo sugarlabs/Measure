@@ -41,7 +41,7 @@ class DrawWaveform(gtk.DrawingArea):
     TRIGGER_NONE = 0
     TRIGGER_POS = 1
     TRIGGER_NEG = 2
-    COLORS = ['#B20008', '#FFC169', '#F8E800', '#00588C', '#7F00BF', '#8BFF7A',
+    COLORS = ['#B20008', '#00588C', '#F8E800', '#7F00BF', '#4BFF3A', '#FFA109',
               '#00A0FF', '#BCCEFF', '#008009', '#F8E800', '#AC32FF', '#FFFFFF']
 
 
@@ -275,13 +275,19 @@ class DrawWaveform(gtk.DrawingArea):
 
         # Instrument tuning lines
         self._instrument_gc = []
+        self._instrument_h_gc = []
         for c in self.COLORS:
             clr = colormap.alloc_color(c)
             self._instrument_gc.append(self.window.new_gc(foreground=clr))
+            self._instrument_h_gc.append(self.window.new_gc(foreground=clr))
             self._instrument_gc[-1].set_line_attributes(
                 self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
                 gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
+            self._instrument_h_gc[-1].set_line_attributes(
+                self._HARMONIC_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
+                gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
             self._instrument_gc[-1].set_foreground(clr)
+            self._instrument_h_gc[-1].set_foreground(clr)
 
         # Tuning lines
         clr = colormap.alloc_color(self.color[1])
@@ -404,8 +410,8 @@ class DrawWaveform(gtk.DrawingArea):
                         x = int(note / scale)
                         for i in range(3):
                             j = i + 2
-                            self.window.draw_line(self._instrument_gc[n], x * j,
-                                                  20 * j, x * j, height)
+                            self.window.draw_line(self._instrument_h_gc[n],
+                                                  x * j, 20 * j, x * j, height)
             if self.fft_show and self.tuning_line > 0.0:
                 x = int(self.tuning_line / scale)
                 self.window.draw_line(self._tuning_line_gc, x, 0, x, height)
