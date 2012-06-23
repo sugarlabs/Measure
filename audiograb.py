@@ -293,11 +293,18 @@ class AudioGrab():
 
     def _sample_frequency(self, data_buffer):
         ''' The maximum frequency in the sample '''
-        r = []
-        for j in rfft(data_buffer):
-            r.append(abs(j))
+        buf = rfft(data_buffer)
+        buf = abs(buf)
+        maxi = buf.argmax()
+        if maxi == 0:
+            pitch = 0.0
+        else:  # Simple interpolation
+            a, b, c = buf[maxi - 1], buf[maxi], buf[maxi + 1]
+            maxi -= a / float(a + b + c)
+            maxi += c / float(a + b + c)
+            pitch = maxi * 48000 / (len(buf) * 2)
         # Convert output to Hertz
-        return r.index(max(r)) * 48000. / len(data_buffer)
+        return pitch
 
     def _calibrate_resistance(self, data_buffer):
         ''' Return calibrated value for resistance '''
