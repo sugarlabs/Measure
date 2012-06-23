@@ -231,18 +231,12 @@ class MeasureActivity(activity.Activity):
         self.sensor_toolbar.show()
 
         if self.has_toolbarbox:
-            self.label_mode_img = gtk.Image()
-            self.label_mode_img.set_from_pixbuf(self.mode_images['sound'])
-            self.label_mode_tool = gtk.ToolItem()
-            self.label_mode_tool.add(self.label_mode_img)
-            # TRANSLATORS: This is the current mode: audio, voltage, etc.
-            self.label_mode_img.set_tooltip_text(_('Capture mode'))
-            toolbox.toolbar.insert(self.label_mode_tool, -1)
-
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = True
-            toolbox.toolbar.insert(separator, -1)
-            separator.show()
+            # Set up Frequency-domain Button
+            self.freq = ToolButton('domain-time')
+            toolbox.toolbar.insert(self.freq, -1)
+            self.freq.show()
+            self.freq.set_tooltip(_('Time Base'))
+            self.freq.connect('clicked', self.timefreq_control)
 
             self.sensor_toolbar.add_frequency_slider(toolbox.toolbar)
 
@@ -275,6 +269,13 @@ class MeasureActivity(activity.Activity):
             self.set_toolbox(toolbox)
             sensor_button.set_expanded(True)
         else:
+            # Set up Frequency-domain Button
+            self.freq = ToolButton('domain-time')
+            self.control_toolbar.insert(self.freq, -1)
+            self.freq.show()
+            self.freq.set_tooltip(_('Time Base'))
+            self.freq.connect('clicked', self.timefreq_control)
+
             self.sensor_toolbar.add_frequency_slider(self.control_toolbar)
 
             separator = gtk.SeparatorToolItem()
@@ -405,6 +406,30 @@ class MeasureActivity(activity.Activity):
     def _capture_cb(self, button=None):
         ''' Callback for screen capture '''
         self.audiograb.take_screenshot()
+
+    def timefreq_control(self, button=None):
+        ''' Callback for Freq. Button '''
+        # Turn off logging when switching modes
+        if self.audiograb.we_are_logging:
+            self.sensor_toolbar.record_control_cb()
+        if self.wave.get_fft_mode():
+            self.wave.set_fft_mode(False)
+            self.freq.set_icon('domain-time')
+            self.freq.set_tooltip(_('Time Base'))
+        else:
+            self.wave.set_fft_mode(True)
+            self.freq.set_icon('domain-freq')
+            self.freq.set_tooltip(_('Frequency Base'))
+            # Turn off triggering in Frequencey Base
+            self.sensor_toolbar.trigger_combo.set_active(
+                self.wave.TRIGGER_NONE)
+            self.wave.set_trigger(self.wave.TRIGGER_NONE)
+            # Turn off invert in Frequencey Base
+            for i in range(self._channels):
+                if self.wave.get_invert_state(channel=i):
+                    self.side_toolbars[i].invert_control_cb()
+        self.sensor_toolbar.update_string_for_textbox()
+        return False
 
     def get_icon_colors_from_sugar(self):
         ''' Returns the icon colors from the Sugar profile '''

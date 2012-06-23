@@ -116,17 +116,6 @@ of XO)") + ' '
         separator.props.draw = True
         self.insert(separator, -1)
 
-        # Set up Frequency-domain Button
-        self.freq = ToolButton('domain-time')
-        self.insert(self.freq, -1)
-        self.freq.show()
-        self.freq.set_tooltip(_('Time Base'))
-        self.freq.connect('clicked', self._timefreq_control_cb)
-
-        separator = gtk.SeparatorToolItem()
-        separator.props.draw = True
-        self.insert(separator, -1)
-
         self._log_interval_combo = ComboBox()
         self.interval = [_('1/10 second'), _('1 second'), _('30 seconds'),
                          _('5 minutes'), _('30 minutes')]
@@ -158,19 +147,19 @@ of XO)") + ' '
             self.insert(separator, -1)
 
         # Set up Trigger Combo box
-        self._trigger_combo = ComboBox()
+        self.trigger_combo = ComboBox()
         self.trigger = [_('None'), _('Rising Edge'), _('Falling Edge')]
         self.trigger_conf = [self.activity.wave.TRIGGER_NONE,
                              self.activity.wave.TRIGGER_POS,
                              self.activity.wave.TRIGGER_NEG]
-        self._trigger_changed_id = self._trigger_combo.connect('changed',
+        self._trigger_changed_id = self.trigger_combo.connect('changed',
                                        self.update_trigger_control)
         for i, s in enumerate(self.trigger):
-            self._trigger_combo.append_item(i, s, None)
-        self._trigger_combo.set_active(0)
-        if hasattr(self._trigger_combo, 'set_tooltip_text'):
-            self._trigger_combo.set_tooltip_text(_('Create a trigger'))
-        self._trigger_tool = ToolComboBox(self._trigger_combo)
+            self.trigger_combo.append_item(i, s, None)
+        self.trigger_combo.set_active(0)
+        if hasattr(self.trigger_combo, 'set_tooltip_text'):
+            self.trigger_combo.set_tooltip_text(_('Create a trigger'))
+        self._trigger_tool = ToolComboBox(self.trigger_combo)
         self.insert(self._trigger_tool, -1)
 
         self.show_all()
@@ -204,36 +193,13 @@ of XO)") + ' '
     def update_trigger_control(self, *args):
         ''' Callback for trigger control '''
         if self.activity.wave.get_fft_mode():
-            self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
-        active = self._trigger_combo.get_active()
+            self.trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
+        active = self.trigger_combo.get_active()
         if active == -1:
             return
 
         self.activity.wave.set_trigger(self.trigger_conf[active])
         return
-
-    def _timefreq_control_cb(self, button=None):
-        ''' Callback for Freq. Button '''
-        # Turn off logging when switching modes
-        if self.activity.audiograb.we_are_logging:
-            self.record_control_cb()
-        if self.activity.wave.get_fft_mode():
-            self.activity.wave.set_fft_mode(False)
-            self.freq.set_icon('domain-time')
-            self.freq.set_tooltip(_('Time Base'))
-        else:
-            self.activity.wave.set_fft_mode(True)
-            self.freq.set_icon('domain-freq')
-            self.freq.set_tooltip(_('Frequency Base'))
-            # Turn off triggering in Frequencey Base
-            self._trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
-            self.activity.wave.set_trigger(self.activity.wave.TRIGGER_NONE)
-            # Turn off invert in Frequencey Base
-            for i in range(self._channels):
-                if self.activity.wave.get_invert_state(channel=i):
-                    self.activity.side_toolbars[i].invert_control_cb()
-        self.update_string_for_textbox()
-        return False
 
     def analog_resistance_voltage_mode_cb(self, button=None,
                                    mode_to_set='sound'):
@@ -259,29 +225,7 @@ of XO)") + ' '
             self.record_control_cb()
 
         self.set_mode(mode_to_set)
-
-        if mode_to_set == 'sound':
-            self.set_sound_context()
-            if self.activity.has_toolbarbox:
-                self.activity.label_mode_img.set_from_pixbuf(
-                    self.activity.mode_images['sound'])
-                self.activity.label_mode_img.set_tooltip_text(_('Sound'))
-        elif mode_to_set == 'resistance':
-            self.set_sensor_context()
-            if self.activity.has_toolbarbox:
-                self.activity.label_mode_img.set_from_pixbuf(
-                    self.activity.mode_images['resistance'])
-                self.activity.label_mode_img.set_tooltip_text(
-                    _('Resistance Sensor'))
-        elif mode_to_set == 'voltage':
-            self.set_sensor_context()
-            if self.activity.has_toolbarbox:
-                self.activity.label_mode_img.set_from_pixbuf(
-                    self.activity.mode_images['voltage'])
-                self.activity.label_mode_img.set_tooltip_text(
-                    _('Voltage Sensor'))
-        else:
-            logging.error('unknown mode %s' % (mode_to_set))
+        self.set_sensor_context()
         self.update_string_for_textbox()
         return False
 

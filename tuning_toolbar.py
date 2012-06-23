@@ -221,7 +221,9 @@ class TuningToolbar(gtk.Toolbar):
             return
         self.remove(self._notes_tool)
         self.activity.wave.instrument = instrument
-
+        # If we are not already in freq. base, switch.
+        if not self.activity.wave.get_fft_mode():
+            self.activity.timefreq_control()
         # Add a Tuning Combo box for this instrument
         self._tuning_combo = ComboBox()
         self.tuning = [_('All notes')]
@@ -269,6 +271,9 @@ class TuningToolbar(gtk.Toolbar):
             except ValueError:
                 self.activity.wave.tuning_line = 0.0
                 self._freq_entry.set_text('0')
+            # If we are not already in freq. base, switch.
+            if not self.activity.wave.get_fft_mode():
+                self.activity.timefreq_control()
 
     def play_cb(self, *args):
         ''' Play a tone at current frequency '''
