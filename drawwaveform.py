@@ -491,8 +491,8 @@ class DrawWaveform(gtk.DrawingArea):
                             # Interpolate
                             a, b, c = \
                                 lines[n - 1][0], lines[n][0], lines[n + 1][0]
-                            x = b - (0.5 * a / (a + b + c)) + (
-                                0.5 * c / (a + b + c))
+                            x = b - (a / float(a + b + c)) + (
+                                c / float(a + b + c))
                             x *= scale
                             if x > A0 and x < C8:
                                 self.activity.tuning_toolbar.label.set_markup(
