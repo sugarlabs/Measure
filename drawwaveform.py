@@ -486,7 +486,8 @@ class DrawWaveform(gtk.DrawingArea):
 
                     if self.fft_show:
                         n = data.argmin()
-                        if self.tuning_line > 0 and n > 0:
+                        if self.tuning_line > 0 and \
+                                n > 0 and n < len(lines) - 1:
                             # Interpolate
                             a, b, c = \
                                 lines[n - 1][0], lines[n][0], lines[n + 1][0]
