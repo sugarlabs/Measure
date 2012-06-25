@@ -1,3 +1,16 @@
+42
+
+ENHANCEMENTS:
+* New translations
+* Added cavaco (cavaquinho)
+* Switch to freq. base if harmonics button pushed
+* Blank trace while playing tone
+* Define/save/restore custom instruments
+* Match size of screen capture to size of trace window
+
+BUG_FIX:
+* Add support for old systems that lack subprocess.check_output method
+
 41
 
 ENHANCEMENTS:
