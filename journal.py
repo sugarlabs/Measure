@@ -91,10 +91,10 @@ class DataLogger():
 
         gtk.threads_enter()
 
-        win = self.activity.wave.get_window()
+        win = self.activity.wave.get_window() 
+        width, height = win.get_size()
         cr = win.cairo_create()
         surface = cr.get_target()
-        width, height =  gtk.gdk.screen_width(), gtk.gdk.screen_height()
         img_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, width, height)
         cr = cairo.Context(img_surface)
         cr.set_source_surface(surface)
