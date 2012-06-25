@@ -313,7 +313,7 @@ of XO)") + ' '
     def set_show_hide_windows(self, mode='sound'):
         ''' Shows the appropriate window identified by the mode '''
         self.activity.wave.set_context_on()
-        for i in range(self.activity.audiograb.channels):
+        for i in range(self._channels):
             self.activity.side_toolbars[i].set_show_hide(True, mode)
 
     def sensor_context_off(self):
