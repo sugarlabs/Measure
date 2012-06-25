@@ -608,3 +608,7 @@ class DrawWaveform(gtk.DrawingArea):
 
     def set_visibility(self, state, channel=0):
         self.visibility[channel] = state
+
+    def get_visibility(self, channel=0):
+        return self.visibility[channel]
+
