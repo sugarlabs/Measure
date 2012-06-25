@@ -248,6 +248,9 @@ class TuningToolbar(gtk.Toolbar):
         if self.activity.wave.harmonics:
             self._harmonic.set_icon('harmonics-off')
             self._harmonic.set_tooltip(_('Hide harmonics.'))
+            if self.activity.wave.instrument is None and \
+               self.activity.wave.tuning_line == 0.0:
+                self._load_tuning_line()
         else:
             self._harmonic.set_icon('harmonics')
             self._harmonic.set_tooltip(_('Show harmonics.'))
@@ -260,20 +263,24 @@ class TuningToolbar(gtk.Toolbar):
             self._new_tuning_line.set_tooltip(_('Show tuning line.'))
             self._show_tuning_line = False
         else:
-            freq = self._freq_entry.get_text()
-            try:
-                self.activity.wave.tuning_line = float(freq)
-                if freq < 0:
-                    freq = -freq
-                self._new_tuning_line.set_icon('tuning-tools-off')
-                self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
-                self._show_tuning_line = True
-            except ValueError:
-                self.activity.wave.tuning_line = 0.0
-                self._freq_entry.set_text('0')
-            # If we are not already in freq. base, switch.
-            if not self.activity.wave.get_fft_mode():
-                self.activity.timefreq_control()
+            self._load_tuning_line()
+
+    def _load_tuning_line(self):
+        ''' Read the freq entry and use value to set tuning line '''
+        freq = self._freq_entry.get_text()
+        try:
+            self.activity.wave.tuning_line = float(freq)
+            if freq < 0:
+                freq = -freq
+            self._new_tuning_line.set_icon('tuning-tools-off')
+            self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
+            self._show_tuning_line = True
+        except ValueError:
+            self.activity.wave.tuning_line = 0.0
+            self._freq_entry.set_text('0')
+        # If we are not already in freq. base, switch.
+        if not self.activity.wave.get_fft_mode():
+            self.activity.timefreq_control()
 
     def play_cb(self, *args):
         ''' Play a tone at current frequency '''
