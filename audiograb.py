@@ -182,6 +182,7 @@ class AudioGrab():
                                                          'dc input bias',
                                                          'v_refout'])
             self._mic_boost_control = self._find_control(['mic boost',
+                                                          'mic1 boost',
                                                           'mic boost (+20db)',
                                                           'internal mic boost',
                                                           'analog mic boost'])
