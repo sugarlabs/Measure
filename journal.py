@@ -3,7 +3,7 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009-12 Walter Bender
-#    
+#
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -44,12 +44,13 @@ class DataLogger():
         'voltage': _('Volts'),
         'frequency': _('Hz')
         }
+
     def __init__(self, activity):
         ''' We store csv data in the Journal entry for Measure; screen captures
             are stored in separate Journal entries '''
         self.activity = activity
         self.data_buffer = []
-            
+
     def start_new_session(self, user='', xscale=0, yscale=0,
                           logging_interval='', channels=1, mode='sound'):
         ''' Start a new logging session by updating session parameters '''
@@ -80,7 +81,7 @@ class DataLogger():
     def stop_session(self):
         '''Write the data_buffer onto a file'''
         return
-    
+
     def take_screenshot(self, capture_count=1):
         ''' Take a screenshot and save to the Journal '''
         tmp_file_path = os.path.join(
@@ -91,7 +92,7 @@ class DataLogger():
 
         gtk.threads_enter()
 
-        win = self.activity.wave.get_window() 
+        win = self.activity.wave.get_window()
         width, height = win.get_size()
         cr = win.cairo_create()
         surface = cr.get_target()
