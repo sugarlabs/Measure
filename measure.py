@@ -425,7 +425,7 @@ class MeasureActivity(activity.Activity):
                 self.wave.TRIGGER_NONE)
             self.wave.set_trigger(self.wave.TRIGGER_NONE)
             # Turn off invert in Frequencey Base
-            for i in range(self._channels):
+            for i in range(self.audiograb.channels):
                 if self.wave.get_invert_state(channel=i):
                     self.side_toolbars[i].invert_control_cb()
         self.sensor_toolbar.update_string_for_textbox()
