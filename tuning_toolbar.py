@@ -54,18 +54,18 @@ class TuningToolbar(gtk.Toolbar):
         self._tuning_tool = None
 
         # Set up Instrument Combo box
-        self._instrument_combo = ComboBox()
+        self.instrument_combo = ComboBox()
         self.instrument = [_('None')]
         for k in INSTRUMENT_DICT.keys():
             self.instrument.append(k)
-        self._instrument_changed_id = self._instrument_combo.connect(
+        self._instrument_changed_id = self.instrument_combo.connect(
             'changed', self.update_instrument_control)
-        for i, s in enumerate(self.instrument):
-            self._instrument_combo.append_item(i, s, None)
-        self._instrument_combo.set_active(0)
-        if hasattr(self._instrument_combo, 'set_tooltip_text'):
-            self._instrument_combo.set_tooltip_text(_('Tune an instrument.'))
-        self._instrument_tool = ToolComboBox(self._instrument_combo)
+        for i, instrument in enumerate(self.instrument):
+            self.instrument_combo.append_item(i, instrument, None)
+        self.instrument_combo.set_active(0)
+        if hasattr(self.instrument_combo, 'set_tooltip_text'):
+            self.instrument_combo.set_tooltip_text(_('Tune an instrument.'))
+        self._instrument_tool = ToolComboBox(self.instrument_combo)
         self.insert(self._instrument_tool, -1)
 
         if self.activity.has_toolbarbox:
@@ -168,7 +168,7 @@ class TuningToolbar(gtk.Toolbar):
         ''' Update note '''
         if not hasattr(self, '_freq_entry'):  # Still setting up toolbar?
             return
-        instrument = self.instrument[self._instrument_combo.get_active()]
+        instrument = self.instrument[self.instrument_combo.get_active()]
         if not instrument in INSTRUMENT_DICT:
             return
         if self.tuning[self._tuning_combo.get_active()] == _('All notes'):
@@ -211,7 +211,7 @@ class TuningToolbar(gtk.Toolbar):
 
     def update_instrument_control(self, *args):
         ''' Callback for instrument control '''
-        instrument = self.instrument[self._instrument_combo.get_active()]
+        instrument = self.instrument[self.instrument_combo.get_active()]
         if self._tuning_tool is not None:
             self.remove(self._tuning_tool)
         if instrument == _('None'):
@@ -315,12 +315,79 @@ class TuningToolbar(gtk.Toolbar):
         self.activity.wave.set_context_on()
         self.activity.wave.set_active(wave_status)
 
+
+class InstrumentToolbar(gtk.Toolbar):
+    ''' The toolbar for adding new instruments '''
+
+    def __init__(self, activity):
+        gtk.Toolbar.__init__(self)
+        self.activity = activity
+        self.new_instruments = []
+
+        self._name_entry = gtk.Entry()
+        self._name_entry.set_text(_('my instrument'))
+        self._name_entry_changed_id = self._name_entry.connect(
+            'changed', self.update_name_entry)
+        if hasattr(self._name_entry, 'set_tooltip_text'):
+            self._name_entry.set_tooltip_text(
+                _('Enter instrument name.'))
+        self._name_entry.set_width_chars(24)
+        self._name_entry.show()
+        toolitem = gtk.ToolItem()
+        toolitem.add(self._name_entry)
+        self.insert(toolitem, -1)
+        toolitem.show()
+
+        self._notes_combo = ComboBox()
+        n = 0
+        for octave in range(9):
+            for i in range(len(NOTES)):
+                if octave == 0 and i < 9:  # Start with A0
+                    continue
+                self._notes_combo.append_item(
+                    n, note_octave(i, octave), None)
+                n += 1
+        self._notes_combo.set_active(48) # A4
+        if hasattr(self._notes_combo, 'set_tooltip_text'):
+            self._notes_combo.set_tooltip_text(_('Notes'))
+        self._notes_tool = ToolComboBox(self._notes_combo)
+        self.insert(self._notes_tool, -1)
+        self._notes_tool.show()
+
+        self._new_note = ToolButton('list-add')
+        self._new_note.show()
+        self.insert(self._new_note, -1)
+        self._new_note.set_tooltip(_('Add a new note.'))
+        self._new_note.connect('clicked', self.new_note_cb)
+
+    def update_name_entry(self, *args):
+        ''' Add name to INSTRUMENT_DICT and combo box '''
+        # Wait until a note has been added...
+        return
+
+    def new_note_cb(self, *args):
+        ''' Add a new note to instrument tuning list '''
+        name = self._name_entry.get_text()
+        if name not in INSTRUMENT_DICT:
+            INSTRUMENT_DICT[name] = []
+            self.activity.tuning_toolbar.instrument.append(name)
+            i = len(self.activity.tuning_toolbar.instrument)
+            self.activity.tuning_toolbar.instrument_combo.append_item(
+                i, name, None)
+            self.new_instruments.append(name)
+        i = self._notes_combo.get_active()
+        freq = A0 * pow(TWELTHROOT2, i)
+        if freq not in INSTRUMENT_DICT[name]:
+            INSTRUMENT_DICT[name].append(freq)
+
+
 def note_octave(note, octave):
     if '/' in NOTES[note]:
         flat, sharp = NOTES[note].split('/')
         return '%s%d/%s%d' % (flat, octave, sharp, octave)
     else:
         return '%s%d' % (NOTES[note], octave)
+
 
 def freq_note(freq, flatsharp=False):
     if flatsharp:  # calculate if we are sharp or flat

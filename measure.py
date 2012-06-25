@@ -58,8 +58,8 @@ from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
-from tuning_toolbar import TuningToolbar
-from config import ICONS_DIR, XO1, XO15, XO175, UNKNOWN
+from tuning_toolbar import TuningToolbar, InstrumentToolbar
+from config import ICONS_DIR, XO1, XO15, XO175, UNKNOWN, INSTRUMENT_DICT
 
 import logging
 
@@ -131,6 +131,7 @@ class MeasureActivity(activity.Activity):
         self.hw = _get_hardware()
         self.new_recording = False
         self.session_id = 0
+        self.read_metadata()
 
         self._active = True
         self._dsobject = None
@@ -208,6 +209,7 @@ class MeasureActivity(activity.Activity):
 
         self.sensor_toolbar = SensorToolbar(self, self.audiograb.channels)
         self.tuning_toolbar = TuningToolbar(self)
+        self.new_instrument_toolbar = InstrumentToolbar(self)
         self.control_toolbar = gtk.Toolbar()
         if self.has_toolbarbox:
             sensor_button = ToolbarButton(
@@ -223,10 +225,18 @@ class MeasureActivity(activity.Activity):
                 icon_name='tuning-tools')
             toolbox.toolbar.insert(tuning_button, -1)
             tuning_button.show()
+            new_instrument_button = ToolbarButton(
+                label=_('Add instrument'),
+                page=self.new_instrument_toolbar,
+                icon_name='view-source')
+            toolbox.toolbar.insert(new_instrument_button, -1)
+            new_instrument_button.show()
         else:
             toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
             # TRANS: Tuning insruments
             toolbox.add_toolbar(_('Tuning'), self.tuning_toolbar)
+            toolbox.add_toolbar(_('Add instrument'),
+                                self.new_instrument_toolbar)
             toolbox.add_toolbar(_('Controls'), self.control_toolbar)
         self.sensor_toolbar.show()
 
@@ -239,11 +249,6 @@ class MeasureActivity(activity.Activity):
             self.freq.connect('clicked', self.timefreq_control)
 
             self.sensor_toolbar.add_frequency_slider(toolbox.toolbar)
-
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = True
-            toolbox.toolbar.insert(separator, -1)
-            separator.show()
 
             self._pause = ToolButton('media-playback-pause')
             toolbox.toolbar.insert(self._pause, -1)
@@ -329,8 +334,31 @@ class MeasureActivity(activity.Activity):
         self._active = self.props.active
         self.wave.set_active(self._active)
 
+    def read_metadata(self):
+        ''' Any saved instruments? '''
+        for data in self.metadata.keys():
+            if data[0:3] == '...':  # instrument
+                log.debug('found an instrument %s' % (data[3:]))
+                instrument = data[3:]
+                log.debug(self.metadata[data])
+                INSTRUMENT_DICT[instrument] = []
+                for note in self.metadata[data].split(' '):
+                    INSTRUMENT_DICT[instrument].append(float(note))
+
     def write_file(self, file_path):
         ''' Write data to journal, if there is any data to write '''
+        # Check to see if there are any new instruments to save
+        if hasattr(self, 'new_instrument_toolbar'):
+            for i, instrument in enumerate(
+                self.new_instrument_toolbar.new_instruments):
+                log.debug('saving %s' % (instrument))
+                notes = ''
+                for i, note in enumerate(INSTRUMENT_DICT[instrument]):
+                    notes += '%0.3f' % note
+                    if i < len(INSTRUMENT_DICT[instrument]) - 1:
+                        notes += ' '
+                self.metadata['...%s' % (instrument)] = notes
+
         # FIXME: Don't use ""s around data
         if hasattr(self, 'data_logger') and \
                 self.new_recording and \
