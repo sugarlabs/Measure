@@ -44,7 +44,6 @@ class DrawWaveform(gtk.DrawingArea):
     COLORS = ['#B20008', '#00588C', '#F8E800', '#7F00BF', '#4BFF3A', '#FFA109',
               '#00A0FF', '#BCCEFF', '#008009', '#F8E800', '#AC32FF', '#FFFFFF']
 
-
     def __init__(self, activity, input_frequency=RATE, channels=1):
         """ Initialize drawing area and scope parameter """
         gtk.DrawingArea.__init__(self)
@@ -563,12 +562,13 @@ class DrawWaveform(gtk.DrawingArea):
 
             self.draw_interval = 5.0
 
-            self.set_max_samples(ceil(self.allocation.width\
-                             / float(self.draw_interval) * 2) * self.input_step)
+            self.set_max_samples(
+                ceil(self.allocation.width / \
+                        float(self.draw_interval) * 2) * self.input_step)
 
             # Create the (blackman) window
-            self.fft_window = blackman(ceil(self.allocation.width\
-                                               / float(self.draw_interval) * 2))
+            self.fft_window = blackman(
+                ceil(self.allocation.width / float(self.draw_interval) * 2))
 
             self.draw_interval *= wanted_step / self.input_step
         else:
@@ -611,4 +611,3 @@ class DrawWaveform(gtk.DrawingArea):
 
     def get_visibility(self, channel=0):
         return self.visibility[channel]
-

@@ -345,7 +345,7 @@ class AudioGrab():
         '''Sends the data for logging'''
         if not self._busy:
             self._busy = True
-            if self._take_screenshot: 
+            if self._take_screenshot:
                 if self.activity.data_logger.take_screenshot(
                     self._image_counter):
                     self._image_counter += 1

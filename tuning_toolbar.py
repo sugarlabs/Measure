@@ -17,7 +17,7 @@ import gobject
 import subprocess
 from gettext import gettext as _
 
-from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30, \
+from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30,\
     INSTRUMENT_DICT
 
 from sugar.graphics.toolbutton import ToolButton
@@ -82,7 +82,7 @@ class TuningToolbar(gtk.Toolbar):
                 self._notes_combo.append_item(
                     n, note_octave(i, octave), None)
                 n += 1
-        self._notes_combo.set_active(48) # A4
+        self._notes_combo.set_active(48)  # A4
         self._notes_changed_id = self._notes_combo.connect(
             'changed', self.update_note)
         if hasattr(self._notes_combo, 'set_tooltip_text'):
@@ -347,7 +347,7 @@ class InstrumentToolbar(gtk.Toolbar):
                 self._notes_combo.append_item(
                     n, note_octave(i, octave), None)
                 n += 1
-        self._notes_combo.set_active(48) # A4
+        self._notes_combo.set_active(48)  # A4
         if hasattr(self._notes_combo, 'set_tooltip_text'):
             self._notes_combo.set_tooltip_text(_('Notes'))
         self._notes_tool = ToolComboBox(self._notes_combo)
@@ -430,4 +430,4 @@ def index_to_octave(i):
 
 
 def index_to_note(i):
-    return (i-3) % 12  # -3 because we start with A
+    return (i - 3) % 12  # -3 because we start with A

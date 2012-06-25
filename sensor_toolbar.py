@@ -434,4 +434,3 @@ of XO)") + ' '
         if invert:
             string_for_textbox += self.STR_INVERT
         self.activity.text_box.set_label(string_for_textbox)
-
