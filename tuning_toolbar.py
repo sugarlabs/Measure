@@ -14,7 +14,7 @@
 
 import gtk
 import gobject
-import os
+import subprocess
 from gettext import gettext as _
 
 from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30, \
@@ -283,10 +283,37 @@ class TuningToolbar(gtk.Toolbar):
             self.activity.timefreq_control()
 
     def play_cb(self, *args):
-        ''' Play a tone at current frequency '''
-        # TODO: pause/restart capture??
-        f = float(self._freq_entry.get_text())
-        os.system('speaker-test -t sine -l 1 -f %f' % (f))
+        ''' Save settings, turn off display, and then play a tone at
+        the current frequency '''
+        freq = float(self._freq_entry.get_text())
+        channels = []
+        for c in range(self.activity.audiograb.channels):
+            channels.append(self.activity.wave.get_visibility(channel=c))
+            self.activity.wave.set_visibility(False, channel=c)
+        wave_status = self.activity.wave.get_active()
+        self.activity.wave.set_context_off()
+        self.activity.wave.set_active(False)
+        gobject.timeout_add(200, self.play_sound, freq, channels, wave_status)
+
+    def play_sound(self, freq, channels, wave_status):
+        ''' Play the sound and then restore wave settings '''
+        if hasattr(subprocess, 'check_output'):
+            try:
+                output = subprocess.check_output(
+                    ['speaker-test', '-t', 'sine', '-l', '1', '-f', '%f' % (
+                            freq)])
+            except subprocess.CalledProcessError:
+                log.warning('call to speaker-test failed?')
+        else:
+            import commands
+            (status, output) = commands.getstatusoutput(
+                'speaker-test -t sine -l 1 -f %f' % (f))
+            if status != 0:
+                log.warning('call to speaker-test failed?')
+        for c in range(self.activity.audiograb.channels):
+            self.activity.wave.set_visibility(channels[c], channel=c)
+        self.activity.wave.set_context_on()
+        self.activity.wave.set_active(wave_status)
 
 def note_octave(note, octave):
     if '/' in NOTES[note]:
