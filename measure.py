@@ -68,6 +68,9 @@ log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
 
+PREFIX = '♬'
+
+
 def _get_hardware():
     ''' Determine whether we are using XO 1.0, 1.5, or "unknown" hardware '''
     product = _get_dmi('product_name')
@@ -143,17 +146,14 @@ class MeasureActivity(activity.Activity):
 
         self.hw = _get_hardware()
         log.debug('running on %s hardware' % (self.hw))
+        self.wave = DrawWaveform(self)
         if self.hw == XO15:
-            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
         elif self.hw == XO175:
-            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO175(self.wave.new_buffer, self)
         elif self.hw == XO1:
-            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_XO1(self.wave.new_buffer, self)
         else:
-            self.wave = DrawWaveform(self)
             self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
 
         # no sharing
@@ -337,9 +337,10 @@ class MeasureActivity(activity.Activity):
     def read_metadata(self):
         ''' Any saved instruments? '''
         for data in self.metadata.keys():
-            if data[0:3] == '...':  # instrument
-                log.debug('found an instrument %s' % (data[3:]))
-                instrument = data[3:]
+            log.debug(data)
+            if data[0] == PREFIX:  # instrument
+                log.debug('found an instrument %s' % (data[1:]))
+                instrument = data[1:]
                 log.debug(self.metadata[data])
                 INSTRUMENT_DICT[instrument] = []
                 for note in self.metadata[data].split(' '):
@@ -357,7 +358,7 @@ class MeasureActivity(activity.Activity):
                     notes += '%0.3f' % note
                     if i < len(INSTRUMENT_DICT[instrument]) - 1:
                         notes += ' '
-                self.metadata['...%s' % (instrument)] = notes
+                self.metadata['%s%s' % (PREFIX, instrument)] = notes
 
         # FIXME: Don't use ""s around data
         if hasattr(self, 'data_logger') and \
