@@ -26,7 +26,7 @@ from tuning_toolbar import A0, C8, freq_note
 
 # Initialize logging.
 import logging
-log = logging.getLogger('Measure')
+log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 

@@ -36,7 +36,7 @@ from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
 
 import logging
 
-log = logging.getLogger('Measure')
+log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
 
