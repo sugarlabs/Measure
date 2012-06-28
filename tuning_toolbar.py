@@ -307,7 +307,7 @@ class TuningToolbar(gtk.Toolbar):
         else:
             import commands
             (status, output) = commands.getstatusoutput(
-                'speaker-test -t sine -l 1 -f %f' % (f))
+                'speaker-test -t sine -l 1 -f %f' % (freq))
             if status != 0:
                 log.warning('call to speaker-test failed?')
         for c in range(self.activity.audiograb.channels):
