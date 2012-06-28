@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-24 00:30-0400\n"
-"PO-Revision-Date: 2012-06-24 08:21+0200\n"
+"POT-Creation-Date: 2012-06-26 00:31-0400\n"
+"PO-Revision-Date: 2012-06-28 08:23+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -46,18 +46,22 @@ msgid "Charango"
 msgstr "Charango"
 
 #: config.py:81
+msgid "Cavaquinho"
+msgstr "Cavaquinho"
+
+#: config.py:82
 msgid "Ukulele"
 msgstr "Ukulele"
 
-#: config.py:82
+#: config.py:83
 msgid "Sitar"
 msgstr "Sitar"
 
-#: config.py:84
+#: config.py:85
 msgid "Mandolin"
 msgstr "Mandolin"
 
-#: config.py:85
+#: config.py:86
 msgid "Recorder"
 msgstr "Recorder"
 
@@ -77,72 +81,76 @@ msgstr "Volts"
 msgid "Hz"
 msgstr "Hz"
 
-#: journal.py:58 measure.py:378
+#: journal.py:59 measure.py:406
 msgid "Session"
 msgstr "Session"
 
-#: journal.py:60
+#: journal.py:61
 msgid "User"
 msgstr "User"
 
-#: journal.py:61
+#: journal.py:62
 msgid "Mode"
 msgstr "Mode"
 
-#: journal.py:63
+#: journal.py:64
 msgid "Date"
 msgstr "Date"
 
-#: journal.py:65
+#: journal.py:66
 msgid "Interval"
 msgstr "Interval"
 
-#: journal.py:68
+#: journal.py:69
 msgid "Channels"
 msgstr "Channels"
 
-#: journal.py:108
+#: journal.py:109
 msgid "Waveform"
 msgstr "Waveform"
 
-#: measure.py:214 measure.py:227
+#: measure.py:216 measure.py:235
 msgid "Sensors"
 msgstr "Sensors"
 
 #. TRANS: Tuning insruments
-#: measure.py:221 measure.py:229
+#: measure.py:223 measure.py:237
 msgid "Tuning"
 msgstr "Tuning"
 
-#: measure.py:230
+#: measure.py:229 measure.py:238
+msgid "Add instrument"
+msgstr "Add instrument"
+
+#: measure.py:240
 msgid "Controls"
 msgstr "Controls"
 
-#: measure.py:238 measure.py:276 measure.py:418 sensor_toolbar.py:55
+#: measure.py:248 measure.py:281 measure.py:446 sensor_toolbar.py:55
 msgid "Time Base"
 msgstr "Time Base"
 
-#: measure.py:250 measure.py:288 measure.py:402
+#: measure.py:255 measure.py:293 measure.py:430
 msgid "Freeze the display"
 msgstr "Freeze the display"
 
-#: measure.py:255 measure.py:293
+#: measure.py:260 measure.py:298
 msgid "Capture sample now"
 msgstr "Capture sample now"
 
-#: measure.py:265
+#: measure.py:270
 msgid "<Ctrl>Q"
 msgstr "<Ctrl>Q"
 
-#: measure.py:365
+#: measure.py:393
 msgid "Measure Log"
 msgstr "Measure Log"
 
-#: measure.py:397
+#: measure.py:425
 msgid "Unfreeze the display"
 msgstr "Unfreeze the display"
 
-#: measure.py:422 sensor_toolbar.py:56
+#: measure.py:450 sensor_toolbar.py:56
 msgid "Frequency Base"
 msgstr "Frequency Base"
 
@@ -259,7 +267,7 @@ msgstr "Decrease bias"
 msgid "Tune an instrument."
 msgstr "Tune an instrument."
 
-#: tuning_toolbar.py:89
+#: tuning_toolbar.py:89 tuning_toolbar.py:352
 msgid "Notes"
 msgstr "Notes"
 
@@ -267,11 +275,11 @@ msgstr "Notes"
 msgid "Enter a frequency to display."
 msgstr "Enter a frequency to display."
 
-#: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:260
+#: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:263
 msgid "Show tuning line."
 msgstr "Show tuning line."
 
-#: tuning_toolbar.py:122 tuning_toolbar.py:253
+#: tuning_toolbar.py:122 tuning_toolbar.py:256
 msgid "Show harmonics."
 msgstr "Show harmonics."
 
@@ -283,13 +291,25 @@ msgstr "Play a note."
 msgid "All notes"
 msgstr "All notes"
 
-#: tuning_toolbar.py:191 tuning_toolbar.py:269
+#: tuning_toolbar.py:191 tuning_toolbar.py:276
 msgid "Hide tuning line."
 msgstr "Hide tuning line."
 
 #: tuning_toolbar.py:250
 msgid "Hide harmonics."
 msgstr "Hide harmonics."
+
+#: tuning_toolbar.py:328
+msgid "my instrument"
+msgstr "my instrument"
+
+#: tuning_toolbar.py:333
+msgid "Enter instrument name."
+msgstr "Enter instrument name."
+
+#: tuning_toolbar.py:360
+msgid "Add a new note."
+msgstr "Add a new note."
 
 #~ msgid "Recorder (F)"
 #~ msgstr "Recorder (F)"
