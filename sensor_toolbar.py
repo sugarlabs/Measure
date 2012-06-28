@@ -81,7 +81,7 @@ of XO)") + ' '
         self.capture_gain = CAPTURE_GAIN
         self.mic_boost = MIC_BOOST
 
-        self.mode = None
+        self.mode = 'sound'
 
         # Set up Time-domain Button
         self.time = RadioToolButton(group=None)
