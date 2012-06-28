@@ -8,8 +8,9 @@ ENHANCEMENTS:
 * Define/save/restore custom instruments
 * Match size of screen capture to size of trace window
 
-BUG_FIX:
+BUG FIXES:
 * Add support for old systems that lack subprocess.check_output method
+* Fixed regression for mode switching when deboucing radio buttons
 
 41
 
@@ -32,7 +33,7 @@ ENAHNCEMENTS:
 * Add tuning lines for guitar, violin, viola, cello, and bass (#3657)
 * Channel mute (#3680)
 
-BUG_FIX:
+BUG FIX:
 * Typo preventing resistance mode from working on XO 1.75 hardware
 
 38
@@ -45,7 +46,7 @@ ENHANCEMENT:
 ENHANCEMENTS:
 * New translations
 
-BUG_FIX:
+BUG FIXES:
 * Lock mode-selection radio buttons while mode is being reset (#3616).
 * Fixed logic error that was causing triggering on both rising and
   falling edges (#2203).
@@ -62,7 +63,7 @@ ENHANCEMENTS:
 * time-stamped data logging
 * reconfigured toolbars to better reflect common use
 
-BUGFIXES:
+BUG FIXES:
 * screen capture works again
 * journal spam eliminated
 
@@ -71,7 +72,7 @@ BUGFIXES:
 ENHANCEMENTS:
 * new translations
 
-BUGFIX:
+BUG FIX:
 * fixed problem with pootle that was preventing new strings to be committed
 
 34 
