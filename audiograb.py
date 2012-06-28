@@ -876,6 +876,9 @@ class AudioGrab():
             self.start_grabbing()
             self.set_dc_mode(mode)
             log.debug('dcmode is: %s' % (str(self.get_dc_mode())))
+            if self.activity.hw == 'XO1' and \
+               hasattr(self.activity, 'sensor_toolbar'):
+                self.activity.sensor_toolbar.unlock_radio_buttons()
 
         if bias is not None:
             self.set_bias(bias)
