@@ -225,7 +225,12 @@ of XO)") + ' '
             self.record_control_cb()
 
         self.set_mode(mode_to_set)
-        self.set_sensor_context()
+        if mode_to_set == 'sound':
+            self.set_sound_context()
+        elif mode_to_set == 'resistance':
+            self.set_sensor_context()
+        elif mode_to_set == 'voltage':
+            self.set_sensor_context()
         self.update_string_for_textbox()
         return False
 
