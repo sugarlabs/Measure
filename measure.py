@@ -337,9 +337,8 @@ class MeasureActivity(activity.Activity):
     def read_metadata(self):
         ''' Any saved instruments? '''
         for data in self.metadata.keys():
-            log.debug(data)
             if data[0] == PREFIX:  # instrument
-                log.debug('found an instrument %s' % (data[1:]))
+                log.debug('found an instrument: %s' % (data[1:]))
                 instrument = data[1:]
                 log.debug(self.metadata[data])
                 INSTRUMENT_DICT[instrument] = []
