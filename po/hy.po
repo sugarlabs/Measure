@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2012-08-06 16:29+0200\n"
+"PO-Revision-Date: 2012-08-27 21:49+0200\n"
 "Last-Translator: anush.mkrtchyan <anush.mkrtchyan@ca1492.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: hy\n"
@@ -41,9 +41,10 @@ msgstr "Թավջութակ"
 msgid "Bass"
 msgstr "Բաս"
 
+# Լարային երաժշտական գործիք Բոլիվիայում
 #: config.py:80
 msgid "Charango"
-msgstr ""
+msgstr "Չարանգո"
 
 #: config.py:81
 msgid "Cavaquinho"
