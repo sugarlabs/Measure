@@ -447,7 +447,8 @@ class DrawWaveform(gtk.DrawingArea):
                         # FFT
                         try:
                             # Multiply input with the window
-                            multiply(buf, self.fft_window, buf)
+                            multiply(buf.astype(float64), self.fft_window,
+                                     buf.astype(float64))
 
                             # Should be fast enough even without pow(2) stuff.
                             self.fftx = fft.rfft(buf)
