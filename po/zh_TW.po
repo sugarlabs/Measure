@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"POT-Creation-Date: 2012-06-26 00:31-0400\n"
 "PO-Revision-Date: 2012-03-21 19:28+0200\n"
 "Last-Translator: Yuan <yuanchao@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,8 +21,51 @@ msgstr ""
 msgid "Measure"
 msgstr "量測活動"
 
-#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:88
-#: sensor_toolbar.py:259
+#: config.py:75
+msgid "Guitar"
+msgstr ""
+
+#: config.py:76
+msgid "Violin"
+msgstr ""
+
+#: config.py:77
+msgid "Viola"
+msgstr ""
+
+#: config.py:78
+msgid "Cello"
+msgstr ""
+
+#: config.py:79
+msgid "Bass"
+msgstr ""
+
+#: config.py:80
+msgid "Charango"
+msgstr ""
+
+#: config.py:81
+msgid "Cavaquinho"
+msgstr ""
+
+#: config.py:82
+msgid "Ukulele"
+msgstr ""
+
+#: config.py:83
+msgid "Sitar"
+msgstr ""
+
+#: config.py:85
+msgid "Mandolin"
+msgstr ""
+
+#: config.py:86
+msgid "Recorder"
+msgstr ""
+
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:90
 msgid "Sound"
 msgstr "聲音"
 
@@ -38,65 +81,78 @@ msgstr "電位"
 msgid "Hz"
 msgstr "赫茲"
 
-#: journal.py:58 measure.py:363
+#: journal.py:59 measure.py:406
 msgid "Session"
 msgstr "作業階段"
 
-#: journal.py:60
+#: journal.py:61
 msgid "User"
 msgstr "使用者"
 
-#: journal.py:61
+#: journal.py:62
 msgid "Mode"
 msgstr "模式"
 
-#: journal.py:63
+#: journal.py:64
 msgid "Date"
 msgstr "日期"
 
-#: journal.py:65
+#: journal.py:66
 msgid "Interval"
 msgstr "時間間隔"
 
-#: journal.py:68
+#: journal.py:69
 msgid "Channels"
 msgstr "頻道"
 
-#: journal.py:108
+#: journal.py:109
 msgid "Waveform"
 msgstr "波形"
 
-#: measure.py:212 measure.py:218
+#: measure.py:216 measure.py:235
 msgid "Sensors"
 msgstr "感應器"
 
-#: measure.py:219
+#. TRANS: Tuning insruments
+#: measure.py:223 measure.py:237
+msgid "Tuning"
+msgstr ""
+
+#: measure.py:229 measure.py:238
+msgid "Add instrument"
+msgstr ""
+
+#: measure.py:240
 msgid "Controls"
 msgstr "控制"
 
-#: measure.py:228
-msgid "Capture mode"
-msgstr "擷取模式"
+#: measure.py:248 measure.py:281 measure.py:446 sensor_toolbar.py:55
+msgid "Time Base"
+msgstr "時基座標"
 
-#: measure.py:245 measure.py:276 measure.py:387
+#: measure.py:255 measure.py:293 measure.py:430
 msgid "Freeze the display"
 msgstr "凍結顯示"
 
-#: measure.py:250 measure.py:281
+#: measure.py:260 measure.py:298
 msgid "Capture sample now"
 msgstr "現在開始擷取"
 
-#: measure.py:260
+#: measure.py:270
 msgid "<Ctrl>Q"
 msgstr "<Ctrl>Q"
 
-#: measure.py:350
+#: measure.py:393
 msgid "Measure Log"
 msgstr "量測紀錄"
 
-#: measure.py:382
+#: measure.py:425
 msgid "Unfreeze the display"
 msgstr "復原顯示"
+
+#: measure.py:450 sensor_toolbar.py:56
+msgid "Frequency Base"
+msgstr "頻率座標"
 
 #: sensor_toolbar.py:47
 msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
@@ -114,15 +170,7 @@ msgstr "電阻"
 msgid "Voltage"
 msgstr "電壓"
 
-#: sensor_toolbar.py:55 sensor_toolbar.py:121 sensor_toolbar.py:220
-msgid "Time Base"
-msgstr "時基座標"
-
-#: sensor_toolbar.py:56 sensor_toolbar.py:224
-msgid "Frequency Base"
-msgstr "頻率座標"
-
-#: sensor_toolbar.py:57 toolbar_side.py:44
+#: sensor_toolbar.py:57 toolbar_side.py:51
 msgid "Invert"
 msgstr "反相"
 
@@ -135,85 +183,136 @@ msgstr "X 軸尺度: 一格相當於 %(division)s %(unit)s"
 msgid "ms"
 msgstr "毫秒"
 
-#: sensor_toolbar.py:98 sensor_toolbar.py:266
+#: sensor_toolbar.py:100
 msgid "Resistance Sensor"
 msgstr "電阻式感應器"
 
-#: sensor_toolbar.py:108 sensor_toolbar.py:273
+#: sensor_toolbar.py:110
 msgid "Voltage Sensor"
 msgstr "電位式感應器"
 
-#: sensor_toolbar.py:129
+#: sensor_toolbar.py:120
 msgid "1/10 second"
 msgstr "1/10 秒"
 
-#: sensor_toolbar.py:129 sensor_toolbar.py:140
+#: sensor_toolbar.py:120 sensor_toolbar.py:131
 msgid "1 second"
 msgstr "1 秒"
 
-#: sensor_toolbar.py:129
+#: sensor_toolbar.py:120
 msgid "30 seconds"
 msgstr "30 秒"
 
-#: sensor_toolbar.py:130
+#: sensor_toolbar.py:121
 msgid "5 minutes"
 msgstr "5 分"
 
-#: sensor_toolbar.py:130
+#: sensor_toolbar.py:121
 msgid "30 minutes"
 msgstr "30 分"
 
-#: sensor_toolbar.py:133
+#: sensor_toolbar.py:124
 msgid "Sampling interval"
 msgstr "取樣週期"
 
-#: sensor_toolbar.py:150 sensor_toolbar.py:396
+#: sensor_toolbar.py:141 sensor_toolbar.py:362
 msgid "Start Recording"
 msgstr "開始紀錄"
 
-#: sensor_toolbar.py:160
+#: sensor_toolbar.py:151 tuning_toolbar.py:58 tuning_toolbar.py:217
 msgid "None"
 msgstr "無"
 
-#: sensor_toolbar.py:160
+#: sensor_toolbar.py:151
 msgid "Rising Edge"
 msgstr "上升邊緣"
 
-#: sensor_toolbar.py:160
+#: sensor_toolbar.py:151
 msgid "Falling Edge"
 msgstr "下降邊緣"
 
-#: sensor_toolbar.py:170
+#: sensor_toolbar.py:161
 msgid "Create a trigger"
 msgstr "新增觸發"
 
-#: sensor_toolbar.py:178
+#: sensor_toolbar.py:170
 msgid "Zoom out"
 msgstr "縮小"
 
-#: sensor_toolbar.py:190
+#: sensor_toolbar.py:182
 msgid "Zoom in"
 msgstr "放大"
 
-#: sensor_toolbar.py:414
+#: sensor_toolbar.py:380
 msgid "Stop Recording"
 msgstr "停止紀錄"
 
-#: toolbar_side.py:50 toolbar_side.py:131
+#: toolbar_side.py:57 toolbar_side.py:138
 msgid "Increase amplitude"
 msgstr "增加振幅"
 
-#: toolbar_side.py:65 toolbar_side.py:133
+#: toolbar_side.py:72 toolbar_side.py:140
 msgid "Decrease amplitude"
 msgstr "減少振幅"
 
-#: toolbar_side.py:136
+#: toolbar_side.py:143
 msgid "Increase bias"
 msgstr "增加位移"
 
-#: toolbar_side.py:138
+#: toolbar_side.py:145
 msgid "Decrease bias"
 msgstr "減少位移"
+
+#: tuning_toolbar.py:67
+msgid "Tune an instrument."
+msgstr ""
+
+#: tuning_toolbar.py:89 tuning_toolbar.py:352
+msgid "Notes"
+msgstr ""
+
+#: tuning_toolbar.py:100
+msgid "Enter a frequency to display."
+msgstr ""
+
+#: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:263
+msgid "Show tuning line."
+msgstr ""
+
+#: tuning_toolbar.py:122 tuning_toolbar.py:256
+msgid "Show harmonics."
+msgstr ""
+
+#: tuning_toolbar.py:133
+msgid "Play a note."
+msgstr ""
+
+#: tuning_toolbar.py:174 tuning_toolbar.py:229
+msgid "All notes"
+msgstr ""
+
+#: tuning_toolbar.py:191 tuning_toolbar.py:276
+msgid "Hide tuning line."
+msgstr ""
+
+#: tuning_toolbar.py:250
+msgid "Hide harmonics."
+msgstr ""
+
+#: tuning_toolbar.py:328
+msgid "my instrument"
+msgstr ""
+
+#: tuning_toolbar.py:333
+msgid "Enter instrument name."
+msgstr ""
+
+#: tuning_toolbar.py:360
+msgid "Add a new note."
+msgstr ""
+
+#~ msgid "Capture mode"
+#~ msgstr "擷取模式"
 
 #~ msgid "Bias/Offset Enabled"
 #~ msgstr "偏壓 / 位移 啟用"
