@@ -725,33 +725,35 @@ class AudioGrab():
 
     def set_mic_boost(self, mic_boost=False):
         '''Set Mic Boost.
-        True = +20dB, False = 0dB'''
+        for analog mic boost: True = +20dB, False = 0dB
+        for mic1 boost: True = 8, False = 0'''
         if self._labels_available:
             if self._mic_boost_control is None:
                 log.warning('set_mic_boost: no boost control in mixer')
                 return
-            # If there is a flag property, use set_mute
-            if self._mic_boost_control not in self._mixer.list_tracks() or \
+            # If there is a volume, use set volume
+            if hasattr(self._mic_boost_control, 'min_volume'):
+                if mic_boost:
+                    log.debug('setting boost to %s' % (
+                            str(self._mic_boost_control.max_volume)))
+                    self._set_volume(self._mic_boost_control, 'boost', 100)
+                else:
+                    log.debug('setting boost to %s' % (
+                            str(self._mic_boost_control.min_volume)))
+                    self._set_volume(self._mic_boost_control, 'boost', 0)
+            # Else if there is a flag property, use set_mute
+            elif self._mic_boost_control not in self._mixer.list_tracks() or \
                hasattr(self._mic_boost_control.props, 'flags'):
+                log.debug('setting boost to %s' % (str(not mic_boost)))
                 self._set_mute(
                     self._mic_boost_control, 'Mic Boost', not mic_boost)
-            # Otherwise, set volume to max or min value
-            elif mic_boost:
-                log.debug('setting boost to %s' % (
-                        str(self._mic_boost_control.max_volume)))
-                self._mixer.set_volume(self._mic_boost_control,
-                                       self._mic_boost_control.max_volume)
-            else:
-                log.debug('setting boost to %s' % (
-                        str(self._mic_boost_control.min_volume)))
-                self._mixer.set_volume(self._mic_boost_control,
-                                       self._mic_boost_control.min_volume)
         else:
             self.amixer_set('Mic Boost (+20dB)', mic_boost)
 
     def get_mic_boost(self):
         '''Return Mic Boost setting.
-        True = +20dB, False = 0dB'''
+        for analog mic boost: True = +20dB, False = 0dB
+        for mic1 boost: True = 8, False = 0'''
         if self._labels_available:
             if self._mic_boost_control is None:
                 log.warning('get_mic_boost: no boost control in mixer')
