@@ -17,8 +17,8 @@ import gobject
 import subprocess
 from gettext import gettext as _
 
-from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO30,\
-    INSTRUMENT_DICT
+from config import XO175, INSTRUMENT_DICT
+from audiograb import check_output
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.combobox import ComboBox
@@ -293,23 +293,19 @@ class TuningToolbar(gtk.Toolbar):
         wave_status = self.activity.wave.get_active()
         self.activity.wave.set_context_off()
         self.activity.wave.set_active(False)
+        if self.activity.hw in [XO4, XO175]:
+            self.activity.audiograb.stop_grabbing()
         gobject.timeout_add(200, self.play_sound, freq, channels, wave_status)
 
     def play_sound(self, freq, channels, wave_status):
         ''' Play the sound and then restore wave settings '''
-        if hasattr(subprocess, 'check_output'):
-            try:
-                output = subprocess.check_output(
-                    ['speaker-test', '-t', 'sine', '-l', '1', '-f', '%f' % (
-                            freq)])
-            except subprocess.CalledProcessError:
-                log.warning('call to speaker-test failed?')
-        else:
-            import commands
-            (status, output) = commands.getstatusoutput(
-                'speaker-test -t sine -l 1 -f %f' % (freq))
-            if status != 0:
-                log.warning('call to speaker-test failed?')
+        output = check_output(
+            ['speaker-test', '-t', 'sine', '-l', '1', '-f', '%f' % (freq)],
+            'call to speaker-test failed?')
+        if self.activity.hw in [XO4, XO175]:
+            self.activity.sensor_toolbar.set_mode('sound')
+            self.activity.sensor_toolbar.set_sound_context()
+            self.activity.audiograb.start_grabbing()
         for c in range(self.activity.audiograb.channels):
             self.activity.wave.set_visibility(channels[c], channel=c)
         self.activity.wave.set_context_on()
