@@ -21,6 +21,7 @@ pygst.require("0.10")
 import gtk
 import pango
 import os
+import subprocess
 import csv
 
 from gettext import gettext as _
@@ -54,12 +55,12 @@ except ImportError:
 
 from journal import DataLogger
 from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
-    AudioGrab_Unknown
+    AudioGrab_XO4, AudioGrab_Unknown
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
 from tuning_toolbar import TuningToolbar, InstrumentToolbar
-from config import ICONS_DIR, XO1, XO15, XO175, UNKNOWN, INSTRUMENT_DICT
+from config import ICONS_DIR, XO1, XO15, XO175, XO4, UNKNOWN, INSTRUMENT_DICT
 
 import logging
 
@@ -71,28 +72,26 @@ logging.basicConfig()
 PREFIX = '♬'
 
 
-def _get_hardware():
-    ''' Determine whether we are using XO 1.0, 1.5, or "unknown" hardware '''
-    product = _get_dmi('product_name')
-    if product is None:
-        if os.path.exists('/sys/devices/platform/lis3lv02d/position'):
-            return XO175
-        elif os.path.exists('/etc/olpc-release') or \
-             os.path.exists('/sys/power/olpc-pm'):
-            return XO1
-        else:
-            return UNKNOWN
-    if product != 'XO':
-        return UNKNOWN
+def get_hardware():
+    ''' Determine whether we are using XO 1.0, 1.5, ... or 'unknown'
+    hardware '''
     version = _get_dmi('product_version')
-    if version == '1' or version == '1.0':
+    # product = _get_dmi('product_name')
+    if version is None:
+        hwinfo_path = '/bin/olpc-hwinfo'
+        if os.path.exists(hwinfo_path) and os.access(hwinfo_path, os.X_OK):
+            model = check_output([hwinfo_path, 'model'], 'unknown hardware')
+            version = model.strip()
+    if version == '1':
         return XO1
     elif version == '1.5':
-        return XO15
+         return XO15
     elif version == '1.75':
         return XO175
+    elif version == '4':
+        return XO4
     else:
-        return UNKNOWN
+         return UNKNOWN
 
 
 def _get_dmi(node):
@@ -103,6 +102,28 @@ def _get_dmi(node):
         return open(path).readline().strip()
     except:
         return None
+
+
+def check_output(command, warning):
+    ''' Workaround for old systems without subprocess.check_output'''
+    if hasattr(subprocess, 'check_output'):
+        try:
+            output = subprocess.check_output(command)
+        except subprocess.CalledProcessError:
+            log.warning(warning)
+            return None
+    else:
+        import commands
+
+        cmd = ''
+        for c in command:
+            cmd += c
+            cmd += ' '
+        (status, output) = commands.getstatusoutput(cmd)
+        if status != 0:
+            log.warning(warning)
+            return None
+    return output
 
 
 class MeasureActivity(activity.Activity):
@@ -151,6 +172,8 @@ class MeasureActivity(activity.Activity):
             self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
         elif self.hw == XO175:
             self.audiograb = AudioGrab_XO175(self.wave.new_buffer, self)
+        elif self.hw == XO4:
+            self.audiograb = AudioGrab_XO4(self.wave.new_buffer, self)
         elif self.hw == XO1:
             self.audiograb = AudioGrab_XO1(self.wave.new_buffer, self)
         else:

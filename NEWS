@@ -1,3 +1,24 @@
+45
+
+ENHANCEMENTS:
+* OLPC XO 4 support
+
+BUG FIX:
+
+
+44
+
+BUG FIXES:
+* Work around recent changes to numpy library that caused FFT to stop working
+* Forcing XO 1.75, 3.0, and 4.0 to single channel
+  (until such time as multi-channel capture works reliably)
+* Fix problem with mic boost on 1.75 (#4288)
+
+43
+
+ENHANCEMENTS:
+* New translations
+
 42
 
 ENHANCEMENTS:

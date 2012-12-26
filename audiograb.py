@@ -32,7 +32,7 @@ from numpy.fft import rfft
 from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
                    MAX_LOG_ENTRIES, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
                    QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1, \
-                   XO15, XO175, MAX_GRAPHS
+                   XO15, XO175, XO4, MAX_GRAPHS
 
 import logging
 
@@ -77,7 +77,7 @@ class AudioGrab():
         elif self.activity.hw == XO15:
             self._voltage_gain = -0.0001471
             self._voltage_bias = 1.695
-        elif self.activity.hw == XO175:
+        elif self.activity.hw in [XO175, XO4]:
             self._voltage_gain = 0.000051
             self._voltage_bias = 1.372
         else:  # XO 3.0
@@ -318,7 +318,7 @@ class AudioGrab():
                 return (420000000 / avg_buffer) - 13500
             else:
                 return 420000000
-        elif self.activity.hw == XO175:
+        elif self.activity.hw in [XO175, XO4]:
             return (180000000 / (30700 - avg_buffer)) - 3150
         else:  # XO 3.0
             return (46000000 / (30514 - avg_buffer)) - 1150
@@ -933,6 +933,21 @@ class AudioGrab_XO15(AudioGrab):
 
 class AudioGrab_XO175(AudioGrab):
     ''' Override parameters for OLPC XO 1.75 laptop '''
+    def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
+        '''Helper to modify (some) of the sensor settings.'''
+        PARAMETERS = {
+            SENSOR_AC_NO_BIAS: (False, False, 80, True),
+            SENSOR_AC_BIAS: (False, True, 80, True),
+            SENSOR_DC_NO_BIAS: (True, False, 80, False),
+            SENSOR_DC_BIAS: (True, True, 90, False)
+        }
+        log.debug('Set Sensor Type to %s' % (str(sensor_type)))
+        mode, bias, gain, boost = PARAMETERS[sensor_type]
+        self._set_sensor_type(mode, bias, gain, boost)
+
+
+class AudioGrab_XO4(AudioGrab):
+    ''' Override parameters for OLPC XO 4 laptop '''
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Helper to modify (some) of the sensor settings.'''
         PARAMETERS = {
