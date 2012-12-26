@@ -55,7 +55,7 @@ except ImportError:
 
 from journal import DataLogger
 from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
-    AudioGrab_XO4, AudioGrab_Unknown
+    AudioGrab_XO4, AudioGrab_Unknown, check_output
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
@@ -72,7 +72,7 @@ logging.basicConfig()
 PREFIX = '♬'
 
 
-def get_hardware():
+def _get_hardware():
     ''' Determine whether we are using XO 1.0, 1.5, ... or 'unknown'
     hardware '''
     version = _get_dmi('product_version')
@@ -102,28 +102,6 @@ def _get_dmi(node):
         return open(path).readline().strip()
     except:
         return None
-
-
-def check_output(command, warning):
-    ''' Workaround for old systems without subprocess.check_output'''
-    if hasattr(subprocess, 'check_output'):
-        try:
-            output = subprocess.check_output(command)
-        except subprocess.CalledProcessError:
-            log.warning(warning)
-            return None
-    else:
-        import commands
-
-        cmd = ''
-        for c in command:
-            cmd += c
-            cmd += ' '
-        (status, output) = commands.getstatusoutput(cmd)
-        if status != 0:
-            log.warning(warning)
-            return None
-    return output
 
 
 class MeasureActivity(activity.Activity):
