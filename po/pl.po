@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2012-09-12 20:12+0200\n"
+"PO-Revision-Date: 2012-12-28 05:47+0200\n"
 "Last-Translator: Kamila <kamilafilipowska@yahoo.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: pl\n"
@@ -275,11 +275,11 @@ msgstr ""
 
 #: tuning_toolbar.py:89 tuning_toolbar.py:352
 msgid "Notes"
-msgstr ""
+msgstr "Nuty"
 
 #: tuning_toolbar.py:100
 msgid "Enter a frequency to display."
-msgstr ""
+msgstr "Wprowadź częstotliwość."
 
 #: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:263
 msgid "Show tuning line."
@@ -295,7 +295,7 @@ msgstr ""
 
 #: tuning_toolbar.py:174 tuning_toolbar.py:229
 msgid "All notes"
-msgstr ""
+msgstr "Wszystkie nuty"
 
 #: tuning_toolbar.py:191 tuning_toolbar.py:276
 msgid "Hide tuning line."
@@ -315,7 +315,7 @@ msgstr "Wprowadź nazwę instrumentu."
 
 #: tuning_toolbar.py:360
 msgid "Add a new note."
-msgstr ""
+msgstr "Dodaj nową nutę."
 
 #~ msgid "Capture mode"
 #~ msgstr "Tryb nagrywania"
