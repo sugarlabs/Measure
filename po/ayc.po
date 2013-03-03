@@ -1,0 +1,320 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-26 00:31-0400\n"
+"PO-Revision-Date: 2013-03-03 03:42+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ayc\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: activity/activity.info:2
+msgid "Measure"
+msgstr "Tupaña"
+
+#: config.py:75
+msgid "Guitar"
+msgstr "Jach'a charanku"
+
+#: config.py:76
+msgid "Violin"
+msgstr "Violín charanku"
+
+#: config.py:77
+msgid "Viola"
+msgstr "Wiyula"
+
+#: config.py:78
+msgid "Cello"
+msgstr "Chiru"
+
+#: config.py:79
+msgid "Bass"
+msgstr "Waju"
+
+#: config.py:80
+msgid "Charango"
+msgstr "Charanku"
+
+#: config.py:81
+msgid "Cavaquinho"
+msgstr "Cavaquinho tantiyu charanku"
+
+#: config.py:82
+msgid "Ukulele"
+msgstr "Ukelele charanku"
+
+#: config.py:83
+msgid "Sitar"
+msgstr "Cítara charanku"
+
+#: config.py:85
+msgid "Mandolin"
+msgstr "Mandolina charanku"
+
+#: config.py:86
+msgid "Recorder"
+msgstr "Flauta phusa"
+
+#  "Sonido"
+#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:90
+msgid "Sound"
+msgstr "Sijiqi"
+
+#: journal.py:43 sensor_toolbar.py:53
+msgid "Ohms"
+msgstr "Ohms chani"
+
+#: journal.py:44 sensor_toolbar.py:54
+msgid "Volts"
+msgstr "Voltios chani"
+
+#: journal.py:45 sensor_toolbar.py:62
+msgid "Hz"
+msgstr "Hercio(Hz) chani"
+
+#: journal.py:59 measure.py:406
+msgid "Session"
+msgstr "Yatiqäwi"
+
+#: journal.py:61
+msgid "User"
+msgstr "Apnaqiri"
+
+#: journal.py:62
+msgid "Mode"
+msgstr "Uka wakichatampi"
+
+#: journal.py:64
+msgid "Date"
+msgstr "Uru chimpu"
+
+#: journal.py:66
+msgid "Interval"
+msgstr "Maykipa"
+
+#: journal.py:69
+msgid "Channels"
+msgstr "Wakichäwinaka"
+
+#: journal.py:109
+msgid "Waveform"
+msgstr "Wayrnama saräwi"
+
+#: measure.py:216 measure.py:235
+msgid "Sensors"
+msgstr "Katjiri"
+
+#. TRANS: Tuning insruments
+#: measure.py:223 measure.py:237
+msgid "Tuning"
+msgstr "Thaqaña"
+
+#: measure.py:229 measure.py:238
+msgid "Add instrument"
+msgstr "Wakichata yapxataña"
+
+#: measure.py:240
+msgid "Controls"
+msgstr "Apnaqañanaka"
+
+#: measure.py:248 measure.py:281 measure.py:446 sensor_toolbar.py:55
+msgid "Time Base"
+msgstr "Luräwi qalltaña pacha t'aqa"
+
+#: measure.py:255 measure.py:293 measure.py:430
+msgid "Freeze the display"
+msgstr "Luräwi acht'ayaña"
+
+#: measure.py:260 measure.py:298
+msgid "Capture sample now"
+msgstr "Jichha machaqa wakichata yant'a katjma"
+
+#: measure.py:270
+msgid "<Ctrl>Q"
+msgstr "<Ctrl>Q wakichata chimpu"
+
+#: measure.py:393
+msgid "Measure Log"
+msgstr "Tupatanaka qillqata"
+
+#: measure.py:425
+msgid "Unfreeze the display"
+msgstr "Luräwi mayampi qhantayaña"
+
+#: measure.py:450 sensor_toolbar.py:56
+msgid "Frequency Base"
+msgstr "Luräwi qallta kutxatäwi chimpu"
+
+#: sensor_toolbar.py:47
+msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Ch'amani katjiri (qhana wila micrófono arsuñaru ch'amani katjiri katxaruyma "
+"  ukasti XO ch'iqäxankiwa)"
+
+#: sensor_toolbar.py:50
+msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
+msgstr ""
+"Voltaje chani ch'amani katjiri (qhana wila micrófono arsuñaru ch'amani "
+"katjiri katxaruyma ukasti XO ch'iqäxankiwa)"
+
+#: sensor_toolbar.py:53
+msgid "Resistance"
+msgstr "Resistencia sata ch'amanchiri"
+
+#: sensor_toolbar.py:54
+msgid "Voltage"
+msgstr "Voltaje chani"
+
+#: sensor_toolbar.py:57 toolbar_side.py:51
+msgid "Invert"
+msgstr "Kutjtayaña"
+
+#: sensor_toolbar.py:58
+#, python-format
+msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
+msgstr "Muyuri chiqa X Chani: 1 división = %(division)s %(unit)s wakichata"
+
+#: sensor_toolbar.py:60
+msgid "ms"
+msgstr "ms tupaña chimpu"
+
+#: sensor_toolbar.py:100
+msgid "Resistance Sensor"
+msgstr "Resistencia ch'amani katjiri"
+
+#: sensor_toolbar.py:110
+msgid "Voltage Sensor"
+msgstr "Voltaje ch'amani katjiripa"
+
+#: sensor_toolbar.py:120
+msgid "1/10 second"
+msgstr "1/10 jisk'a pacha t'ijtäwi"
+
+#: sensor_toolbar.py:120 sensor_toolbar.py:131
+msgid "1 second"
+msgstr "1 jisk'a pacha t'ijtäwi"
+
+#: sensor_toolbar.py:120
+msgid "30 seconds"
+msgstr "30 jisk'a pacha t'ijtäwi"
+
+#: sensor_toolbar.py:121
+msgid "5 minutes"
+msgstr "5 pacha t'ijtäwi"
+
+#: sensor_toolbar.py:121
+msgid "30 minutes"
+msgstr "30 pacha t'ijtäwi"
+
+#: sensor_toolbar.py:124
+msgid "Sampling interval"
+msgstr "Maykipa machaqa luräwinaka yant'a"
+
+#: sensor_toolbar.py:141 sensor_toolbar.py:362
+msgid "Start Recording"
+msgstr "Katuqaña qalltaña"
+
+#  "Ningun"
+#: sensor_toolbar.py:151 tuning_toolbar.py:58 tuning_toolbar.py:217
+msgid "None"
+msgstr "Jani mayani"
+
+#: sensor_toolbar.py:151
+msgid "Rising Edge"
+msgstr "Tukuyanaka taña jithitatayaña"
+
+#: sensor_toolbar.py:151
+msgid "Falling Edge"
+msgstr "Tukuyanaka taña jithtapiyaña"
+
+#: sensor_toolbar.py:161
+msgid "Create a trigger"
+msgstr "Machaqa q'axchiri uñstayaña"
+
+#  "Reducir(alejar) enfoque"
+#: sensor_toolbar.py:170
+msgid "Zoom out"
+msgstr "Jithtapiyaña (jithitayaña) uñjaña"
+
+#  "Aumentar(acercar) enfoque"
+#: sensor_toolbar.py:182
+msgid "Zoom in"
+msgstr "Yapxataña (jak'achaña) uñjaña"
+
+#: sensor_toolbar.py:380
+msgid "Stop Recording"
+msgstr "Katuqaña imaña sayt'ayaña"
+
+#: toolbar_side.py:57 toolbar_side.py:138
+msgid "Increase amplitude"
+msgstr "Ampsta yapxataña"
+
+#: toolbar_side.py:72 toolbar_side.py:140
+msgid "Decrease amplitude"
+msgstr "Ampsta jithtapiyaña"
+
+#: toolbar_side.py:143
+msgid "Increase bias"
+msgstr "Kichjta/saranukuña yapxataña"
+
+#: toolbar_side.py:145
+msgid "Decrease bias"
+msgstr "Kichjta/saranukuña jithtapiyaña"
+
+#: tuning_toolbar.py:67
+msgid "Tune an instrument."
+msgstr "Maya wakichaña chiqachaña"
+
+#: tuning_toolbar.py:89 tuning_toolbar.py:352
+msgid "Notes"
+msgstr "Yant'äwi chaninaka"
+
+#: tuning_toolbar.py:100
+msgid "Enter a frequency to display."
+msgstr "Maya kutxatayäwi uñachayañataki katjaña"
+
+#: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:263
+msgid "Show tuning line."
+msgstr "Chiqachaña chiqa sixsu uñachayaña"
+
+#: tuning_toolbar.py:122 tuning_toolbar.py:256
+msgid "Show harmonics."
+msgstr "Sumachirinaka uñachayaña"
+
+#: tuning_toolbar.py:133
+msgid "Play a note."
+msgstr "Yant'äwi chani mayampi nakhtayaña"
+
+#: tuning_toolbar.py:174 tuning_toolbar.py:229
+msgid "All notes"
+msgstr "Qawayata yant'äwi chaninaka"
+
+#: tuning_toolbar.py:191 tuning_toolbar.py:276
+msgid "Hide tuning line."
+msgstr "Chiqachaña chiqa sixsutanaka chhaqtayaña"
+
+#: tuning_toolbar.py:250
+msgid "Hide harmonics."
+msgstr "Sumachirinaka chhaqtayaña"
+
+#: tuning_toolbar.py:328
+msgid "my instrument"
+msgstr "Wakichañaja"
+
+#: tuning_toolbar.py:333
+msgid "Enter instrument name."
+msgstr "Wakichañana sutipa qillqantaña"
+
+#: tuning_toolbar.py:360
+msgid "Add a new note."
+msgstr "Machaqa yant'äwi chani yapxataña"
