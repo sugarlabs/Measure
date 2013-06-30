@@ -68,10 +68,9 @@ class TuningToolbar(gtk.Toolbar):
         self._instrument_tool = ToolComboBox(self.instrument_combo)
         self.insert(self._instrument_tool, -1)
 
-        if self.activity.has_toolbarbox:
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = True
-            self.insert(separator, -1)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
 
         self._notes_combo = ComboBox()
         n = 0
@@ -111,10 +110,9 @@ class TuningToolbar(gtk.Toolbar):
         self._new_tuning_line.set_tooltip(_('Show tuning line.'))
         self._new_tuning_line.connect('clicked', self.tuning_line_cb)
 
-        if self.activity.has_toolbarbox:
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = True
-            self.insert(separator, -1)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
 
         self._harmonic = ToolButton('harmonics')
         self._harmonic.show()
@@ -122,10 +120,9 @@ class TuningToolbar(gtk.Toolbar):
         self._harmonic.set_tooltip(_('Show harmonics.'))
         self._harmonic.connect('clicked', self.harmonic_cb)
 
-        if self.activity.has_toolbarbox:
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = True
-            self.insert(separator, -1)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = True
+        self.insert(separator, -1)
 
         self._play_tone = ToolButton('media-playback-start')
         self._play_tone.show()
@@ -133,11 +130,10 @@ class TuningToolbar(gtk.Toolbar):
         self._play_tone.set_tooltip(_('Play a note.'))
         self._play_tone.connect('clicked', self.play_cb)
 
-        if self.activity.has_toolbarbox:
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = False
-            separator.set_expand(True)
-            self.insert(separator, -1)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        self.insert(separator, -1)
 
         self.label = gtk.Label('')
         self.label.set_use_markup(True)

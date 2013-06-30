@@ -1,10 +1,21 @@
+47
+
+ENHANCEMENTS:
+* Ensure toolbars fit on narrow displays
+* Use button palette, radio buttons instead of combo boxes
+
+46
+
+ENHANCEMENT:
+* New translation
+
+BUG FIX:
+* Fix problem with sensor toolbars on XO4
+
 45
 
 ENHANCEMENTS:
 * OLPC XO 4 support
-
-BUG FIX:
-
 
 44
 

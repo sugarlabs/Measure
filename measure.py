@@ -3,7 +3,7 @@
 #
 # Written by Arjun Sarwal <arjun@laptop.org>
 # Copyright (C) 2007, Arjun Sarwal
-# Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2009-13 Walter Bender
 # Copyright (C) 2009, Benjamin Berg, Sebastian Berg
 #
 # This program is free software; you can redistribute it and/or modify
@@ -27,31 +27,15 @@ import csv
 from gettext import gettext as _
 
 from sugar.activity import activity
-try:  # 0.86+ toolbar widgets
-    from sugar.graphics.toolbarbox import ToolbarBox
-    _has_toolbarbox = True
-except ImportError:
-    _has_toolbarbox = False
-
-if _has_toolbarbox:
-    from sugar.activity.widgets import ActivityToolbarButton
-    from sugar.activity.widgets import StopButton
-    from sugar.graphics.toolbarbox import ToolbarButton
-else:
-    from sugar.activity.activity import ActivityToolbox
+from sugar.activity.widgets import ActivityToolbarButton
+from sugar.activity.widgets import StopButton
+from sugar.graphics.toolbarbox import ToolbarBox
+from sugar.graphics.toolbarbox import ToolbarButton
+from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics import style
 from sugar.datastore import datastore
-from sugar.graphics.toolbutton import ToolButton
 
-try:
-    from sugar import profile
-    _using_gconf = False
-except ImportError:
-    _using_gconf = True
-try:
-    import gconf
-except ImportError:
-    _using_gconf = False
+from sugar import profile
 
 from journal import DataLogger
 from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
@@ -67,7 +51,6 @@ import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 logging.basicConfig()
-
 
 PREFIX = '♬'
 
@@ -124,7 +107,6 @@ class MeasureActivity(activity.Activity):
         self.mode_images['voltage'] = gtk.gdk.pixbuf_new_from_file_at_size(
             os.path.join(ICONS_DIR, 'voltage.svg'), 45, 45)
 
-        self._using_gconf = _using_gconf
         self.icon_colors = self.get_icon_colors_from_sugar()
         self.stroke_color, self.fill_color = self.icon_colors.split(',')
         self.nick = self.get_nick_from_sugar()
@@ -145,7 +127,9 @@ class MeasureActivity(activity.Activity):
 
         self.hw = _get_hardware()
         log.debug('running on %s hardware' % (self.hw))
+
         self.wave = DrawWaveform(self)
+
         if self.hw == XO15:
             self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
         elif self.hw == XO175:
@@ -159,8 +143,6 @@ class MeasureActivity(activity.Activity):
 
         # no sharing
         self.max_participants = 1
-
-        self.has_toolbarbox = _has_toolbarbox
 
         box3 = gtk.HBox(False, 0)
         box3.pack_start(self.wave, True, True, 0)
@@ -192,114 +174,88 @@ class MeasureActivity(activity.Activity):
 
         self.set_canvas(box1)
 
-        if self.has_toolbarbox:
-            toolbox = ToolbarBox()
+        toolbox = ToolbarBox()
 
-            activity_button = ActivityToolbarButton(self)
-            toolbox.toolbar.insert(activity_button, 0)
-            activity_button.show()
-        else:
-            toolbox = ActivityToolbox(self)
-
-            # no sharing
-            if hasattr(toolbox, 'share'):
-                toolbox.share.hide()
-            elif hasattr(toolbox, 'props'):
-                toolbox.props.visible = False
-            self.set_toolbox(toolbox)
+        activity_button = ActivityToolbarButton(self)
+        toolbox.toolbar.insert(activity_button, 0)
+        activity_button.show()
 
         self.sensor_toolbar = SensorToolbar(self, self.audiograb.channels)
         self.tuning_toolbar = TuningToolbar(self)
         self.new_instrument_toolbar = InstrumentToolbar(self)
+        self._extras_toolbar = gtk.Toolbar()
         self.control_toolbar = gtk.Toolbar()
-        if self.has_toolbarbox:
-            sensor_button = ToolbarButton(
-                label=_('Sensors'),
-                page=self.sensor_toolbar,
-                icon_name='sensor-tools')
-            toolbox.toolbar.insert(sensor_button, -1)
-            sensor_button.show()
-            tuning_button = ToolbarButton(
-                # TRANS: Tuning insruments
-                label=_('Tuning'),
-                page=self.tuning_toolbar,
-                icon_name='tuning-tools')
-            toolbox.toolbar.insert(tuning_button, -1)
-            tuning_button.show()
-            new_instrument_button = ToolbarButton(
-                label=_('Add instrument'),
-                page=self.new_instrument_toolbar,
-                icon_name='view-source')
-            toolbox.toolbar.insert(new_instrument_button, -1)
-            new_instrument_button.show()
-        else:
-            toolbox.add_toolbar(_('Sensors'), self.sensor_toolbar)
+
+        sensor_button = ToolbarButton(
+            label=_('Sensors'),
+            page=self.sensor_toolbar,
+            icon_name='sensor-tools')
+        toolbox.toolbar.insert(sensor_button, -1)
+        sensor_button.show()
+        tuning_button = ToolbarButton(
             # TRANS: Tuning insruments
-            toolbox.add_toolbar(_('Tuning'), self.tuning_toolbar)
-            toolbox.add_toolbar(_('Add instrument'),
-                                self.new_instrument_toolbar)
-            toolbox.add_toolbar(_('Controls'), self.control_toolbar)
+            label=_('Tuning'),
+            page=self.tuning_toolbar,
+            icon_name='tuning-tools')
+        toolbox.toolbar.insert(tuning_button, -1)
+        tuning_button.show()
+        new_instrument_button = ToolbarButton(
+            label=_('Add instrument'),
+            page=self.new_instrument_toolbar,
+            icon_name='view-source')
+        toolbox.toolbar.insert(new_instrument_button, -1)
+        new_instrument_button.show()
+        self._extras_button = ToolbarButton(
+            page=self._extras_toolbar,
+            icon_name='domain-time')
+        toolbox.toolbar.insert(self._extras_button, -1)
+        self._extras_toolbar_item = gtk.ToolItem()
+        self._extras_toolbar.insert(self._extras_toolbar_item, -1)
+        self._extras_button.hide()
         self.sensor_toolbar.show()
 
-        if self.has_toolbarbox:
-            # Set up Frequency-domain Button
-            self.freq = ToolButton('domain-time')
-            toolbox.toolbar.insert(self.freq, -1)
-            self.freq.show()
-            self.freq.set_tooltip(_('Time Base'))
-            self.freq.connect('clicked', self.timefreq_control)
+        self._extra_tools = gtk.HBox()
 
-            self.sensor_toolbar.add_frequency_slider(toolbox.toolbar)
+        # Set up Frequency-domain Button
+        self.freq = ToolButton('domain-time')
+        self.freq.set_tooltip(_('Time Base'))
+        self.freq.connect('clicked', self.timefreq_control)
+        self.freq.show()
+        self._extra_tools.add(self.freq)
 
-            self._pause = ToolButton('media-playback-pause')
-            toolbox.toolbar.insert(self._pause, -1)
-            self._pause.set_tooltip(_('Freeze the display'))
-            self._pause.connect('clicked', self._pause_play_cb)
+        self.sensor_toolbar.add_frequency_slider(self._extra_tools)
 
-            self._capture = ToolButton('image-saveoff')
-            toolbox.toolbar.insert(self._capture, -1)
-            self._capture.set_tooltip(_('Capture sample now'))
-            self._capture.connect('clicked', self._capture_cb)
+        self._extra_item = gtk.ToolItem()
+        self._extra_item.add(self._extra_tools)
+        self._extra_tools.show()
+        toolbox.toolbar.insert(self._extra_item, -1)
+        self._extra_item.show()
 
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = False
-            separator.set_expand(True)
-            toolbox.toolbar.insert(separator, -1)
-            separator.show()
+        self._pause = ToolButton('media-playback-pause')
+        self._pause.set_tooltip(_('Freeze the display'))
+        self._pause.connect('clicked', self._pause_play_cb)
+        self._pause.show()
+        toolbox.toolbar.insert(self._pause, -1)
 
-            stop_button = StopButton(self)
-            stop_button.props.accelerator = _('<Ctrl>Q')
-            toolbox.toolbar.insert(stop_button, -1)
-            stop_button.show()
+        self._capture = ToolButton('image-saveoff')
+        self._capture.set_tooltip(_('Capture sample now'))
+        self._capture.connect('clicked', self._capture_cb)
+        self._capture.show()
+        toolbox.toolbar.insert(self._capture, -1)
 
-            self.set_toolbox(toolbox)
-            sensor_button.set_expanded(True)
-        else:
-            # Set up Frequency-domain Button
-            self.freq = ToolButton('domain-time')
-            self.control_toolbar.insert(self.freq, -1)
-            self.freq.show()
-            self.freq.set_tooltip(_('Time Base'))
-            self.freq.connect('clicked', self.timefreq_control)
+        separator = gtk.SeparatorToolItem()
+        separator.props.draw = False
+        separator.set_expand(True)
+        toolbox.toolbar.insert(separator, -1)
+        separator.show()
 
-            self.sensor_toolbar.add_frequency_slider(self.control_toolbar)
+        stop_button = StopButton(self)
+        stop_button.props.accelerator = _('<Ctrl>Q')
+        toolbox.toolbar.insert(stop_button, -1)
+        stop_button.show()
 
-            separator = gtk.SeparatorToolItem()
-            separator.props.draw = True
-            self.control_toolbar.insert(separator, -1)
-            separator.show()
-
-            self._pause = ToolButton('media-playback-pause')
-            self.control_toolbar.insert(self._pause, -1)
-            self._pause.set_tooltip(_('Freeze the display'))
-            self._pause.connect('clicked', self._pause_play_cb)
-
-            self._capture = ToolButton('image-saveoff')
-            self.control_toolbar.insert(self._capture, -1)
-            self._capture.set_tooltip(_('Capture sample now'))
-            self._capture.connect('clicked', self._capture_cb)
-
-            toolbox.set_current_toolbar(1)
+        self.set_toolbox(toolbox)
+        sensor_button.set_expanded(True)
 
         toolbox.show()
         self.sensor_toolbar.update_page_size()
@@ -314,6 +270,32 @@ class MeasureActivity(activity.Activity):
         self.sensor_toolbar.set_show_hide_windows()
         self.wave.set_active(True)
         self.wave.set_context_on()
+
+        gtk.gdk.screen_get_default().connect('size-changed',
+                                             self._configure_cb)
+        self._configure_cb(None)
+
+    def _configure_cb(self, event):
+        ''' Screen size has changed, so check to see if the toolbar
+        elements still fit.'''
+        self.width = gtk.gdk.screen_width()
+        if self.width < style.GRID_CELL_SIZE * 14:
+            self._extras_button.show()
+            if self._extra_tools in self._extra_item:
+                self._extra_item.remove(self._extra_tools)
+            if not self._extra_tools in self._extras_toolbar_item:
+                self._extras_toolbar_item.add(self._extra_tools)
+            self._extras_toolbar_item.show()
+        else:
+            self._extras_button.hide()
+            if self._extra_tools in self._extras_toolbar_item:
+                self._extras_toolbar_item.remove(self._extra_tools)
+            if not self._extra_tools in self._extra_item:
+                self._extra_item.add(self._extra_tools)
+            if self._extras_button.is_expanded():
+                self._extras_button.set_expanded(False)
+            self._extras_toolbar_item.hide()
+        self._extra_tools.show()
 
     def on_quit(self, data=None):
         '''Clean up, close journal on quit'''
@@ -462,18 +444,10 @@ class MeasureActivity(activity.Activity):
 
     def get_icon_colors_from_sugar(self):
         ''' Returns the icon colors from the Sugar profile '''
-        if self._using_gconf:
-            client = gconf.client_get_default()
-            return client.get_string('/desktop/sugar/user/color')
-        else:
-            return profile.get_color().to_string()
+        return profile.get_color().to_string()
 
     def get_nick_from_sugar(self):
         ''' Returns nick from Sugar '''
-        if self._using_gconf:
-            client = gconf.client_get_default()
-            return client.get_string('/desktop/sugar/user/nick')
-        else:
-            return profile.get_nick_name()
+        return profile.get_nick_name()
 
 gtk.gdk.threads_init()
