@@ -432,8 +432,7 @@ class MeasureActivity(activity.Activity):
             self.freq.set_icon('domain-freq')
             self.freq.set_tooltip(_('Frequency Base'))
             # Turn off triggering in Frequencey Base
-            self.sensor_toolbar.trigger_combo.set_active(
-                self.wave.TRIGGER_NONE)
+            self.sensor_toolbar.trigger_none.set_active(True)
             self.wave.set_trigger(self.wave.TRIGGER_NONE)
             # Turn off invert in Frequencey Base
             for i in range(self.audiograb.channels):

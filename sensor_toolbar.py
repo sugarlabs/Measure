@@ -26,8 +26,6 @@ from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO4
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.menuitem import MenuItem
-from sugar.graphics.combobox import ComboBox
-from sugar.graphics.toolcombobox import ToolComboBox
 from sugar.graphics.radiotoolbutton import RadioToolButton
 import logging
 log = logging.getLogger('measure-activity')
@@ -120,8 +118,13 @@ of XO)") + ' '
         self.insert(separator, -1)
 
         self._log_value = LOG_TIMER_VALUES[1]
+        self._log_label = gtk.Label(self._log_to_string(self._log_value))
+        toolitem = gtk.ToolItem()
+        toolitem.add(self._log_label)
+        self.insert(toolitem, -1)
+
         self._log_button = ToolButton('timer-10')
-        self._log_button.set_tooltip(_('Select log'))
+        self._log_button.set_tooltip(_('Select logging interval'))
         self._log_button.connect('clicked', self._log_selection_cb)
         self.insert(self._log_button, -1)
         self._setup_log_palette()
@@ -129,12 +132,16 @@ of XO)") + ' '
         # Set up Logging/Stop Logging Button
         self._record = ToolButton('media-record')
         self.insert(self._record, -1)
-        self._record.set_tooltip(_('Start Recording'))
+        self._record.set_tooltip(_('Start logging'))
         self._record.connect('clicked', self.record_control_cb)
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
+
+        toolitem = gtk.ToolItem()
+        toolitem.add(gtk.Label(_('Select trigger')))
+        self.insert(toolitem, -1)
 
         # Set up Trigger Combo box
         self.trigger_none = RadioToolButton()
@@ -174,6 +181,7 @@ of XO)") + ' '
 
     def set_log_idx(self, idx):
         self._log_value = LOG_TIMER_VALUES[idx]
+        self._log_label.set_text(self._log_to_string(self._log_value))
         if hasattr(self, '_log_button'):
             self._log_button.set_icon('timer-%d' % (self._log_value))
 
@@ -189,27 +197,24 @@ of XO)") + ' '
     def _log_to_seconds(self, tenth_seconds):
         return tenth_seconds / 10.
 
-    def _log_to_string(self, seconds):
-        tenth_seconds = seconds / 10
-        if seconds == 1:
+    def _log_to_string(self, tenth_seconds):
+        seconds = tenth_seconds / 10
+        if tenth_seconds == 1:
             return _('1/10 second')
+        elif seconds < 61:
+            return ngettext('%d second', '%d seconds', seconds) % seconds
         else:
-            return ngettext('%d second', '%d seconds', tenth_seconds) % \
-                tenth_seconds
+            minutes = seconds / 60
+            return ngettext('%d minute', '%d minutes', minutes) % minutes
 
     def _setup_log_palette(self):
         self._log_palette = self._log_button.get_palette()
 
-        for seconds in LOG_TIMER_VALUES:
-            tenth_seconds = seconds / 10
-            if seconds == 1:
-                text = _('1/10 second')
-            else:
-                text = ngettext('%d second', '%d seconds', tenth_seconds) % \
-                    tenth_seconds
-            menu_item = MenuItem(icon_name='timer-%d' % (seconds),
+        for tenth_seconds in LOG_TIMER_VALUES:
+            text = self._log_to_string(tenth_seconds)
+            menu_item = MenuItem(icon_name='timer-%d' % (tenth_seconds),
                                  text_label=text)
-            menu_item.connect('activate', self._log_selected_cb, seconds)
+            menu_item.connect('activate', self._log_selected_cb, tenth_seconds)
             self._log_palette.menu.append(menu_item)
             menu_item.show()
 
@@ -252,7 +257,7 @@ of XO)") + ' '
         if button is None:
             value = self.activity.wave.TRIGGER_NONE
         if self.activity.wave.get_fft_mode():
-            self.trigger_combo.set_active(self.activity.wave.TRIGGER_NONE)
+            self.trigger_none.set_active(True)
         else:
             self.activity.wave.set_trigger(value)
 
@@ -400,7 +405,7 @@ of XO)") + ' '
         ''' Called when an analog sensor is selected '''
         self.activity.wave.set_mag_params(self.gain, self.y_mag)
         self.update_string_for_textbox()
-        self.update_trigger_control_cb(None)
+        self.update_trigger_control_cb(None, self.activity.wave.TRIGGER_NONE)
         self.activity.audiograb.start_grabbing()
         return False
 
