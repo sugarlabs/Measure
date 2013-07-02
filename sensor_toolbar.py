@@ -118,9 +118,9 @@ of XO)") + ' '
         self.insert(separator, -1)
 
         self._log_value = LOG_TIMER_VALUES[1]
-        self._log_label = gtk.Label(self._log_to_string(self._log_value))
+        self.log_label = gtk.Label(self._log_to_string(self._log_value))
         toolitem = gtk.ToolItem()
-        toolitem.add(self._log_label)
+        toolitem.add(self.log_label)
         self.insert(toolitem, -1)
 
         self._log_button = ToolButton('timer-10')
@@ -140,7 +140,8 @@ of XO)") + ' '
         self.insert(separator, -1)
 
         toolitem = gtk.ToolItem()
-        toolitem.add(gtk.Label(_('Select trigger')))
+        self.trigger_label = gtk.Label(_('Trigger'))
+        toolitem.add(self.trigger_label)
         self.insert(toolitem, -1)
 
         # Set up Trigger Combo box
@@ -181,7 +182,7 @@ of XO)") + ' '
 
     def set_log_idx(self, idx):
         self._log_value = LOG_TIMER_VALUES[idx]
-        self._log_label.set_text(self._log_to_string(self._log_value))
+        self.log_label.set_text(self._log_to_string(self._log_value))
         if hasattr(self, '_log_button'):
             self._log_button.set_icon('timer-%d' % (self._log_value))
 
