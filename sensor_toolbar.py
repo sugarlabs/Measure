@@ -32,6 +32,10 @@ log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 
 LOG_TIMER_VALUES = [1, 10, 300, 3000, 18000]  # In 10th second intervals
+LOG_TIMER_LABELS = {1: _('1/10 second'), 10: _('1 second'),
+                    300: _('30 seconds'), 3000: _('5 minutes'),
+                    30000: _('30 minutes')}
+
 
 def _is_xo(hw):
     ''' Return True if this is xo hardware '''
@@ -199,14 +203,10 @@ of XO)") + ' '
         return tenth_seconds / 10.
 
     def _log_to_string(self, tenth_seconds):
-        seconds = tenth_seconds / 10
-        if tenth_seconds == 1:
-            return _('1/10 second')
-        elif seconds < 61:
-            return ngettext('%d second', '%d seconds', seconds) % seconds
+        if tenth_seconds in LOG_VALUE_LABELS:
+            return LOG_VALUE_LABELS[tenth_seconds]
         else:
-            minutes = seconds / 60
-            return ngettext('%d minute', '%d minutes', minutes) % minutes
+            return _('1 second')
 
     def _setup_log_palette(self):
         self._log_palette = self._log_button.get_palette()
@@ -214,7 +214,7 @@ of XO)") + ' '
         for tenth_seconds in LOG_TIMER_VALUES:
             text = self._log_to_string(tenth_seconds)
             menu_item = MenuItem(icon_name='timer-%d' % (tenth_seconds),
-                                 text_label=text)
+                                 text_label=_log_to_string(tenth_seconds))
             menu_item.connect('activate', self._log_selected_cb, tenth_seconds)
             self._log_palette.menu.append(menu_item)
             menu_item.show()
