@@ -203,8 +203,8 @@ of XO)") + ' '
         return tenth_seconds / 10.
 
     def _log_to_string(self, tenth_seconds):
-        if tenth_seconds in LOG_VALUE_LABELS:
-            return LOG_VALUE_LABELS[tenth_seconds]
+        if tenth_seconds in LOG_TIMER_LABELS:
+            return LOG_TIMER_LABELS[tenth_seconds]
         else:
             return _('1 second')
 
@@ -214,7 +214,7 @@ of XO)") + ' '
         for tenth_seconds in LOG_TIMER_VALUES:
             text = self._log_to_string(tenth_seconds)
             menu_item = MenuItem(icon_name='timer-%d' % (tenth_seconds),
-                                 text_label=_log_to_string(tenth_seconds))
+                                 text_label=self._log_to_string(tenth_seconds))
             menu_item.connect('activate', self._log_selected_cb, tenth_seconds)
             self._log_palette.menu.append(menu_item)
             menu_item.show()
