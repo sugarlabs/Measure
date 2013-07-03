@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-01 00:31-0400\n"
-"PO-Revision-Date: 2013-07-02 08:29+0200\n"
+"POT-Creation-Date: 2013-07-03 00:32-0400\n"
+"PO-Revision-Date: 2013-07-03 17:50+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -26,69 +26,73 @@ msgstr "Measure"
 msgid "oscilloscope program for visuallizing microphone input"
 msgstr "oscilloscope program for visuallzing microphone input"
 
-#: config.py:76
+#: config.py:76 sensor_toolbar.py:155 tuning_toolbar.py:225
+msgid "None"
+msgstr "None"
+
+#: config.py:77
 msgid "Guitar"
 msgstr "Guitar"
 
-#: config.py:77
+#: config.py:78
 msgid "Violin"
 msgstr "Violin"
 
-#: config.py:78
+#: config.py:79
 msgid "Viola"
 msgstr "Viola"
 
-#: config.py:79
+#: config.py:80
 msgid "Cello"
 msgstr "Cello"
 
-#: config.py:80
+#: config.py:81
 msgid "Bass"
 msgstr "Bass"
 
 #. TRANS: a small Andean stringed instrument of the lute family
-#: config.py:82
+#: config.py:83
 msgid "Charango"
 msgstr "Charango"
 
 #. TRANS: a small string instrument (also called machimbo)
-#: config.py:84
+#: config.py:85
 msgid "Cavaquinho"
 msgstr "Cavaquinho"
 
-#: config.py:85
+#: config.py:86
 msgid "Ukulele"
 msgstr "Ukulele"
 
-#: config.py:86
+#: config.py:87
 msgid "Sitar"
 msgstr "Sitar"
 
-#: config.py:88
+#: config.py:89
 msgid "Mandolin"
 msgstr "Mandolin"
 
-#: config.py:89
+#: config.py:90
 msgid "Recorder"
 msgstr "Recorder"
 
-#: journal.py:42 sensor_toolbar.py:55 sensor_toolbar.py:93
+#: journal.py:42 sensor_toolbar.py:57 sensor_toolbar.py:95
 msgid "Sound"
 msgstr "Sound"
 
-#: journal.py:43 sensor_toolbar.py:56
+#: journal.py:43 sensor_toolbar.py:58
 msgid "Ohms"
 msgstr "Ohms"
 
-#: journal.py:44 sensor_toolbar.py:57
+#: journal.py:44 sensor_toolbar.py:59
 msgid "Volts"
 msgstr "Volts"
 
-#: journal.py:45 sensor_toolbar.py:65
+#: journal.py:45 sensor_toolbar.py:67
 msgid "Hz"
 msgstr "Hz"
 
-#: journal.py:59 measure.py:389
+#: journal.py:59 measure.py:393
 msgid "Session"
 msgstr "Session"
 
@@ -129,11 +133,11 @@ msgstr "Tuning"
 msgid "Add instrument"
 msgstr "Add instrument"
 
-#: measure.py:221 measure.py:429 sensor_toolbar.py:58
+#: measure.py:221 measure.py:433 sensor_toolbar.py:60
 msgid "Time Base"
 msgstr "Time Base"
 
-#: measure.py:235 measure.py:413
+#: measure.py:235 measure.py:417
 msgid "Freeze the display"
 msgstr "Freeze the display"
 
@@ -145,95 +149,108 @@ msgstr "Capture sample now"
 msgid "<Ctrl>Q"
 msgstr "<Ctrl>Q"
 
-#: measure.py:376
+#: measure.py:380
 msgid "Measure Log"
 msgstr "Measure Log"
 
-#: measure.py:408
+#: measure.py:412
 msgid "Unfreeze the display"
 msgstr "Unfreeze the display"
 
-#: measure.py:433 sensor_toolbar.py:59
+#: measure.py:437 sensor_toolbar.py:61
 msgid "Frequency Base"
 msgstr "Frequency Base"
 
-#: sensor_toolbar.py:50
+#: sensor_toolbar.py:35
+msgid "1/10 second"
+msgstr "1/10 second"
+
+#: sensor_toolbar.py:35 sensor_toolbar.py:209
+msgid "1 second"
+msgstr "1 second"
+
+#: sensor_toolbar.py:36
+msgid "30 seconds"
+msgstr "30 seconds"
+
+#: sensor_toolbar.py:36
+msgid "5 minutes"
+msgstr "5 minutes"
+
+#: sensor_toolbar.py:37
+msgid "30 minutes"
+msgstr "30 minutes"
+
+#: sensor_toolbar.py:52
 msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 
-#: sensor_toolbar.py:53
+#: sensor_toolbar.py:55
 msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
 
-#: sensor_toolbar.py:56
+#: sensor_toolbar.py:58
 msgid "Resistance"
 msgstr "Resistance"
 
-#: sensor_toolbar.py:57
+#: sensor_toolbar.py:59
 msgid "Voltage"
 msgstr "Voltage"
 
-#: sensor_toolbar.py:60 toolbar_side.py:51
+#: sensor_toolbar.py:62 toolbar_side.py:51
 msgid "Invert"
 msgstr "Invert"
 
-#: sensor_toolbar.py:61
+#: sensor_toolbar.py:63
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr "X Axis Scale: 1 division = %(division)s %(unit)s"
 
-#: sensor_toolbar.py:63
+#: sensor_toolbar.py:65
 msgid "ms"
 msgstr "ms"
 
-#: sensor_toolbar.py:103
+#: sensor_toolbar.py:105
 msgid "Resistance Sensor"
 msgstr "Resistance Sensor"
 
-#: sensor_toolbar.py:113
+#: sensor_toolbar.py:115
 msgid "Voltage Sensor"
 msgstr "Voltage Sensor"
 
-#: sensor_toolbar.py:124
-msgid "Select log"
-msgstr "Select log"
+#: sensor_toolbar.py:131
+msgid "Select logging interval"
+msgstr "Select logging interval"
 
-#: sensor_toolbar.py:132 sensor_toolbar.py:422
-msgid "Start Recording"
-msgstr "Start Recording"
+#: sensor_toolbar.py:139
+msgid "Start logging"
+msgstr "Start logging"
 
-#: sensor_toolbar.py:143 tuning_toolbar.py:58 tuning_toolbar.py:213
-msgid "None"
-msgstr "None"
+#: sensor_toolbar.py:147
+msgid "Trigger"
+msgstr "Trigger"
 
-#: sensor_toolbar.py:151
+#: sensor_toolbar.py:163
 msgid "Rising Edge"
 msgstr "Rising Edge"
 
-#: sensor_toolbar.py:159
+#: sensor_toolbar.py:171
 msgid "Falling Edge"
 msgstr "Falling Edge"
 
-#: sensor_toolbar.py:195 sensor_toolbar.py:206
-msgid "1/10 second"
-msgstr "1/10 second"
-
-#: sensor_toolbar.py:197 sensor_toolbar.py:208
-#, python-format, 
-msgid "%d second"
-msgid_plural "%d seconds"
-msgstr[0] "%d second"
-msgstr[1] "%d seconds"
-
-#: sensor_toolbar.py:222
+#: sensor_toolbar.py:228
 msgid "Zoom out"
 msgstr "Zoom out"
 
-#: sensor_toolbar.py:238
+#: sensor_toolbar.py:244
 msgid "Zoom in"
 msgstr "Zoom in"
 
-#: sensor_toolbar.py:442
+#: sensor_toolbar.py:428
+msgid "Start Recording"
+msgstr "Start Recording"
+
+#: sensor_toolbar.py:448
 msgid "Stop Recording"
 msgstr "Stop Recording"
 
@@ -253,65 +270,63 @@ msgstr "Increase bias"
 msgid "Decrease bias"
 msgstr "Decrease bias"
 
-#: tuning_toolbar.py:67
+#: tuning_toolbar.py:56
 msgid "Tune an instrument."
 msgstr "Tune an instrument."
 
-#: tuning_toolbar.py:88 tuning_toolbar.py:344
+#: tuning_toolbar.py:68 tuning_toolbar.py:394
 msgid "Notes"
 msgstr "Notes"
 
-#: tuning_toolbar.py:99
+#: tuning_toolbar.py:76 tuning_toolbar.py:403
+msgid "Octaves"
+msgstr "Octaves"
+
+#: tuning_toolbar.py:89
 msgid "Enter a frequency to display."
 msgstr "Enter a frequency to display."
 
-#: tuning_toolbar.py:110 tuning_toolbar.py:176 tuning_toolbar.py:259
+#: tuning_toolbar.py:100 tuning_toolbar.py:288 tuning_toolbar.py:318
 msgid "Show tuning line."
 msgstr "Show tuning line."
 
-#: tuning_toolbar.py:120 tuning_toolbar.py:252
+#: tuning_toolbar.py:110 tuning_toolbar.py:311
 msgid "Show harmonics."
 msgstr "Show harmonics."
 
-#: tuning_toolbar.py:130
+#: tuning_toolbar.py:120
 msgid "Play a note."
 msgstr "Play a note."
 
-#: tuning_toolbar.py:170 tuning_toolbar.py:225
+#: tuning_toolbar.py:258 tuning_toolbar.py:259
 msgid "All notes"
 msgstr "All notes"
 
-#: tuning_toolbar.py:187 tuning_toolbar.py:272
+#: tuning_toolbar.py:295 tuning_toolbar.py:331
 msgid "Hide tuning line."
 msgstr "Hide tuning line."
 
-#: tuning_toolbar.py:246
+#: tuning_toolbar.py:305
 msgid "Hide harmonics."
 msgstr "Hide harmonics."
 
-#: tuning_toolbar.py:320
+#: tuning_toolbar.py:379
 msgid "my instrument"
 msgstr "my instrument"
 
-#: tuning_toolbar.py:325
+#: tuning_toolbar.py:384
 msgid "Enter instrument name."
 msgstr "Enter instrument name."
 
-#: tuning_toolbar.py:352
+#: tuning_toolbar.py:413
 msgid "Add a new note."
 msgstr "Add a new note."
 
+#~ msgid "Select log"
+#~ msgstr "Select log"
+
 #~ msgid "Controls"
 #~ msgstr "Controls"
-
-#~ msgid "30 seconds"
-#~ msgstr "30 seconds"
-
-#~ msgid "5 minutes"
-#~ msgstr "5 minutes"
-
-#~ msgid "30 minutes"
-#~ msgstr "30 minutes"
 
 #~ msgid "Sampling interval"
 #~ msgstr "Sampling interval"
@@ -327,9 +342,6 @@ msgstr "Add a new note."
 
 #~ msgid "Capture mode"
 #~ msgstr "Capture mode"
-
-#~ msgid "Octaves"
-#~ msgstr "Octaves"
 
 #~ msgid "Bias/Offset Enabled"
 #~ msgstr "Bias/Offset Enabled"
