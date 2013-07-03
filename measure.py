@@ -286,6 +286,8 @@ class MeasureActivity(activity.Activity):
             if not self._extra_tools in self._extras_toolbar_item:
                 self._extras_toolbar_item.add(self._extra_tools)
             self._extras_toolbar_item.show()
+            self.sensor_toolbar.log_label.hide()
+            self.sensor_toolbar.trigger_label.hide()
         else:
             self._extras_button.hide()
             if self._extra_tools in self._extras_toolbar_item:
@@ -295,6 +297,8 @@ class MeasureActivity(activity.Activity):
             if self._extras_button.is_expanded():
                 self._extras_button.set_expanded(False)
             self._extras_toolbar_item.hide()
+            self.sensor_toolbar.log_label.show()
+            self.sensor_toolbar.trigger_label.show()
         self._extra_tools.show()
 
     def on_quit(self, data=None):
@@ -432,8 +436,7 @@ class MeasureActivity(activity.Activity):
             self.freq.set_icon('domain-freq')
             self.freq.set_tooltip(_('Frequency Base'))
             # Turn off triggering in Frequencey Base
-            self.sensor_toolbar.trigger_combo.set_active(
-                self.wave.TRIGGER_NONE)
+            self.sensor_toolbar.trigger_none.set_active(True)
             self.wave.set_trigger(self.wave.TRIGGER_NONE)
             # Turn off invert in Frequencey Base
             for i in range(self.audiograb.channels):

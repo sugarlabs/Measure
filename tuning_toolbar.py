@@ -21,16 +21,15 @@ from config import XO175, INSTRUMENT_DICT
 from audiograb import check_output
 
 from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.combobox import ComboBox
-from sugar.graphics.toolcombobox import ToolComboBox
+from sugar.graphics.menuitem import MenuItem
 from sugar.graphics import style
 import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
 
 
-NOTES = ['C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭', 'A',
-         'A♯/B♭', 'B']
+NOTES = ['A', 'A♯/B♭', 'B', 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭',
+         'G', 'G♯/A♭']
 SHARP = '♯'
 FLAT = '♭'
 A0 = 27.5
@@ -53,47 +52,38 @@ class TuningToolbar(gtk.Toolbar):
         self._updating_note = True
         self._tuning_tool = None
 
-        # Set up Instrument Combo box
-        self.instrument_combo = ComboBox()
-        self.instrument = [_('None')]
-        for k in INSTRUMENT_DICT.keys():
-            self.instrument.append(k)
-        self._instrument_changed_id = self.instrument_combo.connect(
-            'changed', self.update_instrument_control)
-        for i, instrument in enumerate(self.instrument):
-            self.instrument_combo.append_item(i, instrument, None)
-        self.instrument_combo.set_active(0)
-        if hasattr(self.instrument_combo, 'set_tooltip_text'):
-            self.instrument_combo.set_tooltip_text(_('Tune an instrument.'))
-        self._instrument_tool = ToolComboBox(self.instrument_combo)
-        self.insert(self._instrument_tool, -1)
+        self._instrument_button = ToolButton('instruments')
+        self._instrument_button.set_tooltip(_('Tune an instrument.'))
+        self._instrument_button.connect('clicked',
+                                        self._button_selection_cb)
+        self.insert(self._instrument_button, -1)
+        self._setup_instrument_palette()
 
         separator = gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
-        self._notes_combo = ComboBox()
-        n = 0
-        for octave in range(9):
-            for i in range(len(NOTES)):
-                if octave == 0 and i < 9:  # Start with A0
-                    continue
-                self._notes_combo.append_item(
-                    n, note_octave(i, octave), None)
-                n += 1
-        self._notes_combo.set_active(48)  # A4
-        self._notes_changed_id = self._notes_combo.connect(
-            'changed', self.update_note)
-        if hasattr(self._notes_combo, 'set_tooltip_text'):
-            self._notes_combo.set_tooltip_text(_('Notes'))
-        self._notes_tool = ToolComboBox(self._notes_combo)
-        self.insert(self._notes_tool, -1)
+        self._note = 'A'
+        self._notes_button = ToolButton('notes')
+        self._notes_button.set_tooltip(_('Notes'))
+        self._notes_button.connect('clicked',
+                                        self._button_selection_cb)
+        self.insert(self._notes_button, -1)
+        self._setup_notes_palette()
+
+        self._octave = 4
+        self._octaves_button = ToolButton('octaves')
+        self._octaves_button.set_tooltip(_('Octaves'))
+        self._octaves_button.connect('clicked',
+                                        self._button_selection_cb)
+        self.insert(self._octaves_button, -1)
+        self._setup_octaves_palette()
 
         # The entry is used to display a note or for direct user input
         self._freq_entry = gtk.Entry()
         self._freq_entry.set_text('440')  # A
         self._freq_entry_changed_id = self._freq_entry.connect(
-            'changed', self.update_freq_entry)
+            'changed', self._update_freq_entry)
         if hasattr(self._freq_entry, 'set_tooltip_text'):
             self._freq_entry.set_tooltip_text(
                 _('Enter a frequency to display.'))
@@ -145,51 +135,22 @@ class TuningToolbar(gtk.Toolbar):
 
         self.show_all()
 
-    def update_note(self, *args):
-        ''' Calculate the frequency based on note combo '''
+    def _update_note(self):
+        ''' Calculate the frequency based on note and octave '''
         if not hasattr(self, '_freq_entry'):  # Still setting up toolbar
             return
-        i = self._notes_combo.get_active()
+        i = self._octave * 12 + NOTES.index(self._note)
         freq = A0 * pow(TWELTHROOT2, i)
         self._updating_note = True
         self._freq_entry.set_text('%0.3f' % (freq))
         self.label.set_markup(SPAN % (style.COLOR_WHITE.get_html(),
-                                      note_octave(index_to_note(i),
-                                                  index_to_octave(i))))
+                                      self._note + str(self._octave)))
         if self._show_tuning_line:
             self.activity.wave.tuning_line = freq
         return
 
-    def update_tuning_control(self, *args):
-        ''' Update note '''
-        if not hasattr(self, '_freq_entry'):  # Still setting up toolbar?
-            return
-        instrument = self.instrument[self.instrument_combo.get_active()]
-        if not instrument in INSTRUMENT_DICT:
-            return
-        if self.tuning[self._tuning_combo.get_active()] == _('All notes'):
-            self._notes_combo.set_active(
-                freq_index(INSTRUMENT_DICT[instrument][0]))
-            self.activity.wave.instrument = instrument
-            self.activity.wave.tuning_line = 0.0
-            self._new_tuning_line.set_icon('tuning-tools')
-            self._new_tuning_line.set_tooltip(_('Show tuning line.'))
-            self._show_tuning_line = False
-        else:
-            freq = INSTRUMENT_DICT[instrument][
-                self._tuning_combo.get_active() - 1]  # All notes is 0
-            self._notes_combo.set_active(
-                freq_index(INSTRUMENT_DICT[instrument][
-                        self._tuning_combo.get_active() - 1]))
-            self.activity.wave.instrument = None
-            self.activity.wave.tuning_line = freq
-            self._new_tuning_line.set_icon('tuning-tools-off')
-            self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
-            self._show_tuning_line = True
-        self._updating_note = False
-
-    def update_freq_entry(self, *args):
-        # Calcualte a note from a frequency
+    def _update_freq_entry(self, widget):
+        # Calculate a note from a frequency
         if not self._updating_note:  # Only if user types in a freq.
             try:
                 freq = float(self._freq_entry.get_text())
@@ -203,40 +164,138 @@ class TuningToolbar(gtk.Toolbar):
                 self.label.set_markup(freq_note(freq, flatsharp=True))
             except ValueError:
                 return
+
         self._updating_note = False
 
-    def update_instrument_control(self, *args):
+    def _button_selection_cb(self, widget):
+        palette = widget.get_palette()
+        if palette:
+            if not palette.is_up():
+                palette.popup(immediate=True, state=palette.SECONDARY)
+            else:
+                palette.popdown(immediate=True)
+            return
+
+    def _setup_notes_palette(self):
+        self._notes_palette = self._notes_button.get_palette()
+
+        for note in NOTES:
+            menu_item = MenuItem(icon_name='',
+                                 text_label=note)
+            menu_item.connect('activate', self._note_selected_cb, note)
+            self._notes_palette.menu.append(menu_item)
+            menu_item.show()
+
+    def _note_selected_cb(self, widget, note):
+        self._note = note
+        self._update_note()
+
+    def _setup_octaves_palette(self):
+        self._octaves_palette = self._octaves_button.get_palette()
+
+        for octave in range(9):
+            menu_item = MenuItem(icon_name='',
+                                 text_label=str(octave))
+            menu_item.connect('activate', self._octave_selected_cb, octave)
+            self._octaves_palette.menu.append(menu_item)
+            menu_item.show()
+
+    def _octave_selected_cb(self, widget, octave):
+        self._octave = octave
+        self._update_note()
+
+    def _setup_instrument_palette(self):
+        self.instrument_palette = self._instrument_button.get_palette()
+
+        self.instrument = []
+        for k in INSTRUMENT_DICT.keys():
+            self.instrument.append(k)
+            menu_item = MenuItem(icon_name='',
+                                 text_label=k)
+            menu_item.connect('activate', self.instrument_selected_cb, k)
+            self.instrument_palette.menu.append(menu_item)
+            menu_item.show()
+
+    def instrument_selected_cb(self, button, instrument):
         ''' Callback for instrument control '''
-        instrument = self.instrument[self.instrument_combo.get_active()]
+        logging.debug(instrument)
         if self._tuning_tool is not None:
             self.remove(self._tuning_tool)
+
         if instrument == _('None'):
             self.activity.wave.instrument = None
-            if hasattr(self, '_notes_tool'):
-                self.insert(self._notes_tool, 2)
+
+            # Remove any previous tuning button
+            if hasattr(self, '_tuning_button'):
+                self._tuning_button.destroy()
+
+            # Restore the notes, octaves buttons
+            if hasattr(self, '_notes_button'):
+                self.insert(self._notes_button, 2)
+                self.insert(self._octaves_button, 3)
             return
-        self.remove(self._notes_tool)
+
+        self.remove(self._notes_button)
+        self.remove(self._octaves_button)
+
         self.activity.wave.instrument = instrument
+
         # If we are not already in freq. base, switch.
         if not self.activity.wave.get_fft_mode():
             self.activity.timefreq_control()
-        # Add a Tuning Combo box for this instrument
-        self._tuning_combo = ComboBox()
-        self.tuning = [_('All notes')]
-        for f in INSTRUMENT_DICT[instrument]:
+
+        # Add a Tuning palette for this instrument
+        self._tuning_button = ToolButton('notes')
+        self._tuning_button.set_tooltip(instrument)
+        self._tuning_button.connect('clicked', self._button_selection_cb)
+        self.insert(self._tuning_button, 1)
+        self._setup_tuning_palette(instrument)
+
+    def _setup_tuning_palette(self, instrument):
+        self._tuning_palette = self._tuning_button.get_palette()
+
+        self.tuning = []
+        self.tuning.append(_('All notes'))
+        menu_item = MenuItem(icon_name='', text_label=_('All notes'))
+        menu_item.connect('activate', self._tuning_selected_cb,
+                          instrument, -1)
+        self._tuning_palette.menu.append(menu_item)
+        menu_item.show()
+
+        for i, f in enumerate(INSTRUMENT_DICT[instrument]):
             self.tuning.append(freq_note(f))
-        self._tuning_changed_id = self._tuning_combo.connect(
-            'changed', self.update_tuning_control)
-        for i, s in enumerate(self.tuning):
-            self._tuning_combo.append_item(i, s, None)
-        self._tuning_combo.set_active(0)
-        if hasattr(self._tuning_combo, 'set_tooltip_text'):
-            self._tuning_combo.set_tooltip_text(instrument)
-        self._tuning_tool = ToolComboBox(self._tuning_combo)
-        self.insert(self._tuning_tool, 1)
-        self._tuning_combo.show()
-        self._tuning_tool.show()
+            menu_item = MenuItem(icon_name='',
+                                 text_label=freq_note(f))
+            menu_item.connect('activate', self._tuning_selected_cb,
+                              instrument, i)
+            self._tuning_palette.menu.append(menu_item)
+            menu_item.show()
+
         self.show_all()
+
+    def _tuning_selected_cb(self, widget, instrument, fidx):
+        ''' Update note '''
+        if not hasattr(self, '_freq_entry'):  # Still setting up toolbar?
+            return
+
+        if not instrument in INSTRUMENT_DICT:
+            return
+
+        if fidx == -1:  # All notes
+            self.activity.wave.instrument = instrument
+            self.activity.wave.tuning_line = 0.0
+            self._new_tuning_line.set_icon('tuning-tools')
+            self._new_tuning_line.set_tooltip(_('Show tuning line.'))
+            self._show_tuning_line = False
+        else:
+            freq = INSTRUMENT_DICT[instrument][fidx]
+            self.activity.wave.instrument = None
+            self.activity.wave.tuning_line = freq
+            self._new_tuning_line.set_icon('tuning-tools-off')
+            self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
+            self._show_tuning_line = True
+
+        self._updating_note = False
 
     def harmonic_cb(self, *args):
         ''' Callback for harmonics control '''
@@ -330,27 +389,65 @@ class InstrumentToolbar(gtk.Toolbar):
         self.insert(toolitem, -1)
         toolitem.show()
 
-        self._notes_combo = ComboBox()
-        n = 0
-        for octave in range(9):
-            for i in range(len(NOTES)):
-                if octave == 0 and i < 9:  # Start with A0
-                    continue
-                self._notes_combo.append_item(
-                    n, note_octave(i, octave), None)
-                n += 1
-        self._notes_combo.set_active(48)  # A4
-        if hasattr(self._notes_combo, 'set_tooltip_text'):
-            self._notes_combo.set_tooltip_text(_('Notes'))
-        self._notes_tool = ToolComboBox(self._notes_combo)
-        self.insert(self._notes_tool, -1)
-        self._notes_tool.show()
+        self._note = 'A'
+        self._notes_button = ToolButton('notes')
+        self._notes_button.set_tooltip(_('Notes'))
+        self._notes_button.connect('clicked',
+                                        self._button_selection_cb)
+        self.insert(self._notes_button, -1)
+        self._setup_notes_palette()
+        self._notes_button.show()
+
+        self._octave = 4
+        self._octaves_button = ToolButton('octaves')
+        self._octaves_button.set_tooltip(_('Octaves'))
+        self._octaves_button.connect('clicked',
+                                        self._button_selection_cb)
+        self.insert(self._octaves_button, -1)
+        self._setup_octaves_palette()
+        self._octaves_button.show()
 
         self._new_note = ToolButton('list-add')
         self._new_note.show()
         self.insert(self._new_note, -1)
         self._new_note.set_tooltip(_('Add a new note.'))
         self._new_note.connect('clicked', self.new_note_cb)
+        self._new_note.show()
+
+    def _button_selection_cb(self, widget):
+        palette = widget.get_palette()
+        if palette:
+            if not palette.is_up():
+                palette.popup(immediate=True, state=palette.SECONDARY)
+            else:
+                palette.popdown(immediate=True)
+            return
+
+    def _setup_notes_palette(self):
+        self._notes_palette = self._notes_button.get_palette()
+
+        for note in NOTES:
+            menu_item = MenuItem(icon_name='',
+                                 text_label=note)
+            menu_item.connect('activate', self._note_selected_cb, note)
+            self._notes_palette.menu.append(menu_item)
+            menu_item.show()
+
+    def _note_selected_cb(self, widget, note):
+        self._note = note
+
+    def _setup_octaves_palette(self):
+        self._octaves_palette = self._octaves_button.get_palette()
+
+        for octave in range(9):
+            menu_item = MenuItem(icon_name='',
+                                 text_label=str(octave))
+            menu_item.connect('activate', self._octave_selected_cb, octave)
+            self._octaves_palette.menu.append(menu_item)
+            menu_item.show()
+
+    def _octave_selected_cb(self, widget, octave):
+        self._octave = octave
 
     def update_name_entry(self, *args):
         ''' Add name to INSTRUMENT_DICT and combo box '''
@@ -364,21 +461,29 @@ class InstrumentToolbar(gtk.Toolbar):
             INSTRUMENT_DICT[name] = []
             self.activity.tuning_toolbar.instrument.append(name)
             i = len(self.activity.tuning_toolbar.instrument)
-            self.activity.tuning_toolbar.instrument_combo.append_item(
-                i, name, None)
+            menu_item = MenuItem(icon_name='',
+                                 text_label=name)
+            menu_item.connect(
+                'activate',
+                self.activity.tuning_toolbar.instrument_selected_cb,
+                name)
+            self.activity.tuning_toolbar.instrument_palette.menu.append(
+                menu_item)
+            menu_item.show()
             self.new_instruments.append(name)
-        i = self._notes_combo.get_active()
-        freq = A0 * pow(TWELTHROOT2, i)
+
+        freq = A0 * pow(TWELTHROOT2,
+                        self._octave * 12 + NOTES.index(self._note))
         if freq not in INSTRUMENT_DICT[name]:
             INSTRUMENT_DICT[name].append(freq)
 
 
 def note_octave(note, octave):
-    if '/' in NOTES[note]:
-        flat, sharp = NOTES[note].split('/')
+    if '/' in note:
+        flat, sharp = note.split('/')
         return '%s%d/%s%d' % (flat, octave, sharp, octave)
     else:
-        return '%s%d' % (NOTES[note], octave)
+        return '%s%d' % (note, octave)
 
 
 def freq_note(freq, flatsharp=False):
@@ -386,7 +491,7 @@ def freq_note(freq, flatsharp=False):
         for i in range(88):
             f = A0 * pow(TWELTHROOT2, i)
             if freq < f * 1.03 and freq > f * 0.97:
-                label = NOTES[index_to_note(i)]
+                label = NOTES[i % 12] + str(int(i / 12))
                 if freq < f * 0.98:
                     label = '%s %s %s' % (FLAT, label, FLAT)
                     return SPAN % (COLOR_RED.get_html(), label)
@@ -405,7 +510,7 @@ def freq_note(freq, flatsharp=False):
         for i in range(88):
             f = A0 * pow(TWELTHROOT2, i)
             if freq < f * 1.03 and freq > f * 0.97:  # Found a match
-                return note_octave(index_to_note(i), index_to_octave(i))
+                return note_octave(NOTES[i % 12], int(i / 12))
         return '?'
 
 

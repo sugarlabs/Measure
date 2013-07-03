@@ -73,6 +73,7 @@ UPPER = 4.0
 
 # TRANS: Please use short versions of instrument names if possible
 INSTRUMENT_DICT = {
+    _('None'): [],
     _('Guitar'): [82.4069, 110, 146.832, 195.998, 246.942, 329.628],
     _('Violin'): [195.998, 293.665, 440, 659.255],
     _('Viola'): [130.813, 195.998, 293.665, 440],
