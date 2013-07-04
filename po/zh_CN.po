@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2012-07-03 13:18+0200\n"
-"Last-Translator: athurg <feng@jianbo.de>\n"
+"POT-Creation-Date: 2013-07-03 00:32-0400\n"
+"PO-Revision-Date: 2013-07-03 16:19+0200\n"
+"Last-Translator: lite <litekok@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -17,73 +17,84 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.5\n"
 
-#: activity/activity.info:2
+#. TRANS: "name" option from activity.info file
 msgid "Measure"
 msgstr "测量"
 
-#: config.py:75
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid "oscilloscope program for visuallizing microphone input"
+msgstr "用于可视化麦克风输入的示波器程序"
+
+#: config.py:76 sensor_toolbar.py:155 tuning_toolbar.py:225
+msgid "None"
+msgstr "无"
+
+#: config.py:77
 msgid "Guitar"
 msgstr "吉它"
 
-#: config.py:76
+#: config.py:78
 msgid "Violin"
 msgstr "小提琴"
 
-#: config.py:77
+#: config.py:79
 msgid "Viola"
 msgstr "中提琴"
 
-#: config.py:78
+#: config.py:80
 msgid "Cello"
 msgstr "大提琴"
 
 # Bass既有低音的意思，也有低音吉它、大贝司的意思。从上下文看，这连续的几个单词应该指的都是乐器名。
-#: config.py:79
+#: config.py:81
 msgid "Bass"
 msgstr "大贝司"
 
-#: config.py:80
+#. TRANS: a small Andean stringed instrument of the lute family
+#: config.py:83
 msgid "Charango"
 msgstr "夏朗哥吉他"
 
-#: config.py:81
+#. TRANS: a small string instrument (also called machimbo)
+#: config.py:85
 msgid "Cavaquinho"
 msgstr "四弦小吉他"
 
-#: config.py:82
+#: config.py:86
 msgid "Ukulele"
 msgstr "尤可里里琴"
 
 # 一种印度弦乐器
-#: config.py:83
+#: config.py:87
 msgid "Sitar"
 msgstr "西他"
 
-#: config.py:85
+#: config.py:89
 msgid "Mandolin"
 msgstr "曼陀林琴"
 
-#: config.py:86
+#: config.py:90
 msgid "Recorder"
 msgstr "录音机"
 
-#: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:90
+#: journal.py:42 sensor_toolbar.py:57 sensor_toolbar.py:95
 msgid "Sound"
 msgstr "声音"
 
-#: journal.py:43 sensor_toolbar.py:53
+#: journal.py:43 sensor_toolbar.py:58
 msgid "Ohms"
 msgstr "欧姆"
 
-#: journal.py:44 sensor_toolbar.py:54
+#: journal.py:44 sensor_toolbar.py:59
 msgid "Volts"
 msgstr "伏特"
 
-#: journal.py:45 sensor_toolbar.py:62
+#: journal.py:45 sensor_toolbar.py:67
 msgid "Hz"
 msgstr "赫兹"
 
-#: journal.py:59 measure.py:406
+#: journal.py:59 measure.py:393
 msgid "Session"
 msgstr "会话"
 
@@ -111,142 +122,138 @@ msgstr "频道"
 msgid "Waveform"
 msgstr "波形"
 
-#: measure.py:216 measure.py:235
+#: measure.py:190
 msgid "Sensors"
 msgstr "传感器"
 
 # 或许应该是调音？
 #. TRANS: Tuning insruments
-#: measure.py:223 measure.py:237
+#: measure.py:197
 msgid "Tuning"
 msgstr "调音器"
 
-#: measure.py:229 measure.py:238
+#: measure.py:203
 msgid "Add instrument"
 msgstr "添加仪器"
 
-#: measure.py:240
-msgid "Controls"
-msgstr "控制"
-
-#: measure.py:248 measure.py:281 measure.py:446 sensor_toolbar.py:55
+#: measure.py:221 measure.py:433 sensor_toolbar.py:60
 msgid "Time Base"
 msgstr "基于时间"
 
-#: measure.py:255 measure.py:293 measure.py:430
+#: measure.py:235 measure.py:417
 msgid "Freeze the display"
 msgstr "显示冻结"
 
-#: measure.py:260 measure.py:298
+#: measure.py:241
 msgid "Capture sample now"
 msgstr "现在采集样本"
 
-#: measure.py:270
+#: measure.py:253
 msgid "<Ctrl>Q"
 msgstr "<Ctrl>Q"
 
-#: measure.py:393
+#: measure.py:380
 msgid "Measure Log"
 msgstr "测量日志"
 
-#: measure.py:425
+#: measure.py:412
 msgid "Unfreeze the display"
 msgstr "显示解冻"
 
-#: measure.py:450 sensor_toolbar.py:56
+#: measure.py:437 sensor_toolbar.py:61
 msgid "Frequency Base"
 msgstr "基于频率"
 
-#: sensor_toolbar.py:47
+#: sensor_toolbar.py:35
+msgid "1/10 second"
+msgstr "1/10秒"
+
+#: sensor_toolbar.py:35 sensor_toolbar.py:209
+msgid "1 second"
+msgstr "1 秒"
+
+#: sensor_toolbar.py:36
+msgid "30 seconds"
+msgstr "30秒"
+
+#: sensor_toolbar.py:36
+msgid "5 minutes"
+msgstr "5分钟"
+
+#: sensor_toolbar.py:37
+msgid "30 minutes"
+msgstr "30分钟"
+
+#: sensor_toolbar.py:52
 msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr "电阻式传感器（连接传感器到XO左侧的粉红色‘Mic In’）"
 
-#: sensor_toolbar.py:50
+#: sensor_toolbar.py:55
 msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr "电压传感器（连接传感器到XO左侧的粉红色‘Mic In’）"
 
-#: sensor_toolbar.py:53
+#: sensor_toolbar.py:58
 msgid "Resistance"
 msgstr "电阻"
 
-#: sensor_toolbar.py:54
+#: sensor_toolbar.py:59
 msgid "Voltage"
 msgstr "电压"
 
-#: sensor_toolbar.py:57 toolbar_side.py:51
+#: sensor_toolbar.py:62 toolbar_side.py:51
 msgid "Invert"
 msgstr "反转"
 
-#: sensor_toolbar.py:58
+#: sensor_toolbar.py:63
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr "X轴比例：1格=%(division)s %(unit)s"
 
-#: sensor_toolbar.py:60
+#: sensor_toolbar.py:65
 msgid "ms"
 msgstr "毫秒"
 
-#: sensor_toolbar.py:100
+#: sensor_toolbar.py:105
 msgid "Resistance Sensor"
 msgstr "电阻传感器"
 
-#: sensor_toolbar.py:110
+#: sensor_toolbar.py:115
 msgid "Voltage Sensor"
 msgstr "电压传感器"
 
-#: sensor_toolbar.py:120
-msgid "1/10 second"
-msgstr "1/10秒"
+#: sensor_toolbar.py:131
+msgid "Select logging interval"
+msgstr "选择记录日志间隔"
 
-#: sensor_toolbar.py:120 sensor_toolbar.py:131
-msgid "1 second"
-msgstr "1秒"
+#: sensor_toolbar.py:139
+msgid "Start logging"
+msgstr "开始记录日志"
 
-#: sensor_toolbar.py:120
-msgid "30 seconds"
-msgstr "30秒"
+#: sensor_toolbar.py:147
+msgid "Trigger"
+msgstr "触发器"
 
-#: sensor_toolbar.py:121
-msgid "5 minutes"
-msgstr "5分钟"
-
-#: sensor_toolbar.py:121
-msgid "30 minutes"
-msgstr "30分钟"
-
-#: sensor_toolbar.py:124
-msgid "Sampling interval"
-msgstr "采样间隔"
-
-#: sensor_toolbar.py:141 sensor_toolbar.py:362
-msgid "Start Recording"
-msgstr "开始录制"
-
-#: sensor_toolbar.py:151 tuning_toolbar.py:58 tuning_toolbar.py:217
-msgid "None"
-msgstr "无"
-
-#: sensor_toolbar.py:151
+#: sensor_toolbar.py:163
 msgid "Rising Edge"
 msgstr "上升沿"
 
-#: sensor_toolbar.py:151
+#: sensor_toolbar.py:171
 msgid "Falling Edge"
 msgstr "下降沿"
 
-#: sensor_toolbar.py:161
-msgid "Create a trigger"
-msgstr "创建触发器"
-
-#: sensor_toolbar.py:170
+#: sensor_toolbar.py:228
 msgid "Zoom out"
 msgstr "缩小"
 
-#: sensor_toolbar.py:182
+#: sensor_toolbar.py:244
 msgid "Zoom in"
 msgstr "放大"
 
-#: sensor_toolbar.py:380
+#: sensor_toolbar.py:428
+msgid "Start Recording"
+msgstr "开始录制"
+
+#: sensor_toolbar.py:448
 msgid "Stop Recording"
 msgstr "停止录制"
 
@@ -266,53 +273,69 @@ msgstr "增加偏移"
 msgid "Decrease bias"
 msgstr "减少偏移"
 
-#: tuning_toolbar.py:67
+#: tuning_toolbar.py:56
 msgid "Tune an instrument."
 msgstr "调节仪器"
 
-#: tuning_toolbar.py:89 tuning_toolbar.py:352
+#: tuning_toolbar.py:68 tuning_toolbar.py:394
 msgid "Notes"
 msgstr "音符集"
 
-#: tuning_toolbar.py:100
+#: tuning_toolbar.py:76 tuning_toolbar.py:403
+msgid "Octaves"
+msgstr "八度音"
+
+#: tuning_toolbar.py:89
 msgid "Enter a frequency to display."
 msgstr "输入要显示的频率。"
 
-#: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:263
+#: tuning_toolbar.py:100 tuning_toolbar.py:288 tuning_toolbar.py:318
 msgid "Show tuning line."
 msgstr "显示调音线"
 
-#: tuning_toolbar.py:122 tuning_toolbar.py:256
+#: tuning_toolbar.py:110 tuning_toolbar.py:311
 msgid "Show harmonics."
 msgstr "显示谐波"
 
-#: tuning_toolbar.py:133
+#: tuning_toolbar.py:120
 msgid "Play a note."
 msgstr "播放音符"
 
-#: tuning_toolbar.py:174 tuning_toolbar.py:229
+#: tuning_toolbar.py:258 tuning_toolbar.py:259
 msgid "All notes"
 msgstr "所有音符"
 
-#: tuning_toolbar.py:191 tuning_toolbar.py:276
+#: tuning_toolbar.py:295 tuning_toolbar.py:331
 msgid "Hide tuning line."
 msgstr "隐藏调音线"
 
-#: tuning_toolbar.py:250
+#: tuning_toolbar.py:305
 msgid "Hide harmonics."
 msgstr "隐藏谐波"
 
-#: tuning_toolbar.py:328
+#: tuning_toolbar.py:379
 msgid "my instrument"
 msgstr "我的仪器"
 
-#: tuning_toolbar.py:333
+#: tuning_toolbar.py:384
 msgid "Enter instrument name."
 msgstr "输入仪器名"
 
-#: tuning_toolbar.py:360
+#: tuning_toolbar.py:413
 msgid "Add a new note."
 msgstr "添加新音符"
+
+#~ msgid "Select log"
+#~ msgstr "选择日志"
+
+#~ msgid "Controls"
+#~ msgstr "控制"
+
+#~ msgid "Sampling interval"
+#~ msgstr "采样间隔"
+
+#~ msgid "Create a trigger"
+#~ msgstr "创建触发器"
 
 #~ msgid "Capture mode"
 #~ msgstr "捕捉模式"

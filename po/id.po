@@ -35,8 +35,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2012-05-22 03:05+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2013-06-29 12:43+0200\n"
+"Last-Translator: andika <andika@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
@@ -46,17 +46,16 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #: activity/activity.info:2
-#, fuzzy
 msgid "Measure"
 msgstr "Mengukur"
 
 #: config.py:75
 msgid "Guitar"
-msgstr ""
+msgstr "Gitar"
 
 #: config.py:76
 msgid "Violin"
-msgstr ""
+msgstr "Biola"
 
 #: config.py:77
 msgid "Viola"
@@ -68,7 +67,7 @@ msgstr ""
 
 #: config.py:79
 msgid "Bass"
-msgstr ""
+msgstr "Bas"
 
 #: config.py:80
 msgid "Charango"
@@ -80,7 +79,7 @@ msgstr ""
 
 #: config.py:82
 msgid "Ukulele"
-msgstr ""
+msgstr "Ukulele"
 
 #: config.py:83
 msgid "Sitar"
@@ -88,78 +87,72 @@ msgstr ""
 
 #: config.py:85
 msgid "Mandolin"
-msgstr ""
+msgstr "Mandolin"
 
 #: config.py:86
 msgid "Recorder"
-msgstr ""
+msgstr "Recorder"
 
 #: journal.py:42 sensor_toolbar.py:52 sensor_toolbar.py:90
-#, fuzzy
 msgid "Sound"
 msgstr "Suara"
 
 #: journal.py:43 sensor_toolbar.py:53
 msgid "Ohms"
-msgstr ""
+msgstr "Ohm"
 
 #: journal.py:44 sensor_toolbar.py:54
 msgid "Volts"
-msgstr ""
+msgstr "Volt"
 
 #: journal.py:45 sensor_toolbar.py:62
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
 #: journal.py:59 measure.py:406
 msgid "Session"
-msgstr ""
+msgstr "Sesi"
 
 #: journal.py:61
-#, fuzzy
 msgid "User"
 msgstr "Pengguna"
 
 #: journal.py:62
-#, fuzzy
 msgid "Mode"
 msgstr "Mode"
 
 #: journal.py:64
-#, fuzzy
 msgid "Date"
 msgstr "Tanggal"
 
 #: journal.py:66
 msgid "Interval"
-msgstr ""
+msgstr "Interval"
 
 #: journal.py:69
-#, fuzzy
 msgid "Channels"
 msgstr "Kanal"
 
 #: journal.py:109
-#, fuzzy
 msgid "Waveform"
-msgstr "Gelombang"
+msgstr "Bentuk Gelombang"
 
 #: measure.py:216 measure.py:235
 msgid "Sensors"
-msgstr ""
+msgstr "Sensor"
 
 #. TRANS: Tuning insruments
 #: measure.py:223 measure.py:237
 msgid "Tuning"
-msgstr ""
+msgstr "Penalaan"
 
 #: measure.py:229 measure.py:238
 msgid "Add instrument"
-msgstr ""
+msgstr "Tambah instrumen"
 
 #: measure.py:240
 msgid "Controls"
-msgstr ""
+msgstr "Kendali"
 
 #: measure.py:248 measure.py:281 measure.py:446 sensor_toolbar.py:55
 msgid "Time Base"
