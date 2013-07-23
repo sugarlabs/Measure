@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-03 00:32-0400\n"
-"PO-Revision-Date: 2013-07-03 17:50+0200\n"
+"POT-Creation-Date: 2013-07-04 00:32-0400\n"
+"PO-Revision-Date: 2013-07-23 05:06+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -23,8 +23,8 @@ msgstr "Measure"
 
 #. TRANS: "summary" option from activity.info file
 #. TRANS: "description" option from activity.info file
-msgid "oscilloscope program for visuallizing microphone input"
-msgstr "oscilloscope program for visuallzing microphone input"
+msgid "oscilloscope program for visualizing microphone input"
+msgstr "oscilloscope program for visualizing microphone input"
 
 #: config.py:76 sensor_toolbar.py:155 tuning_toolbar.py:225
 msgid "None"
