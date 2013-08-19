@@ -12,17 +12,20 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+import os
+
 import gtk
 import gobject
-import subprocess
+
 from gettext import gettext as _
 
-from config import XO175, INSTRUMENT_DICT
+from config import XO4, XO175, INSTRUMENT_DICT
 from audiograb import check_output
 
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.menuitem import MenuItem
 from sugar.graphics import style
+
 import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
@@ -340,7 +343,6 @@ class TuningToolbar(gtk.Toolbar):
     def play_cb(self, *args):
         ''' Save settings, turn off display, and then play a tone at
         the current frequency '''
-        freq = float(self._freq_entry.get_text())
         channels = []
         for c in range(self.activity.audiograb.channels):
             channels.append(self.activity.wave.get_visibility(channel=c))
@@ -350,13 +352,14 @@ class TuningToolbar(gtk.Toolbar):
         self.activity.wave.set_active(False)
         if self.activity.hw in [XO4, XO175]:
             self.activity.audiograb.stop_grabbing()
+
+        freq = float(self._freq_entry.get_text())
         gobject.timeout_add(200, self.play_sound, freq, channels, wave_status)
 
     def play_sound(self, freq, channels, wave_status):
         ''' Play the sound and then restore wave settings '''
-        output = check_output(
-            ['speaker-test', '-t', 'sine', '-l', '1', '-f', '%f' % (freq)],
-            'call to speaker-test failed?')
+        self._play_sinewave(freq, 5000, 1)
+
         if self.activity.hw in [XO4, XO175]:
             self.activity.sensor_toolbar.set_mode('sound')
             self.activity.sensor_toolbar.set_sound_context()
@@ -365,6 +368,79 @@ class TuningToolbar(gtk.Toolbar):
             self.activity.wave.set_visibility(channels[c], channel=c)
         self.activity.wave.set_context_on()
         self.activity.wave.set_active(wave_status)
+
+    def _play_sinewave(self, pitch, amplitude=5000, duration=1):
+        """ Create a Csound score to play a sine wave. """
+        self.orchlines = []
+        self.scorelines = []
+        self.instrlist = []
+
+        try:
+            pitch = abs(float(pitch))
+            amplitude = abs(float(amplitude))
+            duration = abs(float(duration))
+        except ValueError:
+            logging.error('bad args to _play_sinewave')
+            return
+
+        self._prepare_sinewave(pitch, amplitude, duration)
+
+        path = os.path.join(self.activity.get_activity_root(), 'instance',
+                            'tmp.csd')
+        # Create a csound file from the score.
+        self._audio_write(path)
+
+        # Play the csound file.
+        output = check_output(['csound', path], 'call to csound failed?')
+        # os.system('csound ' + path + ' > /dev/null 2>&1')
+
+    def _prepare_sinewave(self, pitch, amplitude, duration, starttime=0,
+                          pitch_envelope=99, amplitude_envelope=100,
+                          instrument=1):
+
+        pitenv = pitch_envelope
+        ampenv = amplitude_envelope
+        if not 1 in self.instrlist:
+            self.orchlines.append("instr 1\n")
+            self.orchlines.append("kpitenv oscil 1, 1/p3, p6\n")
+            self.orchlines.append("aenv oscil 1, 1/p3, p7\n")
+            self.orchlines.append("asig oscil p5*aenv, p4*kpitenv, p8\n")
+            self.orchlines.append("out asig\n")
+            self.orchlines.append("endin\n\n")
+            self.instrlist.append(1)
+
+        self.scorelines.append("i1 %s %s %s %s %s %s %s\n" %
+                               (str(starttime), str(duration), str(pitch),
+                                str(amplitude), str(pitenv), str(ampenv),
+                                str(instrument)))
+
+    def _audio_write(self, file):
+        """ Compile a .csd file. """
+
+        csd = open(file, "w")
+        csd.write("<CsoundSynthesizer>\n\n")
+        csd.write("<CsOptions>\n")
+        csd.write("-+rtaudio=alsa -odevaudio -m0 -d -b256 -B512\n")
+        csd.write("</CsOptions>\n\n")
+        csd.write("<CsInstruments>\n\n")
+        csd.write("sr=16000\n")
+        csd.write("ksmps=50\n")
+        csd.write("nchnls=1\n\n")
+        for line in self.orchlines:
+            csd.write(line)
+        csd.write("\n</CsInstruments>\n\n")
+        csd.write("<CsScore>\n\n")
+        csd.write("f1 0 2048 10 1\n")
+        csd.write("f2 0 2048 10 1 0 .33 0 .2 0 .143 0 .111\n")
+        csd.write("f3 0 2048 10 1 .5 .33 .25 .2 .175 .143 .125 .111 .1\n")
+        csd.write("f10 0 2048 10 1 0 0 .3 0 .2 0 0 .1\n")
+        csd.write("f99 0 2048 7 1 2048 1\n")
+        csd.write("f100 0 2048 7 0. 10 1. 1900 1. 132 0.\n")
+        csd.write(self.scorelines.pop())
+        csd.write("e\n")
+        csd.write("\n</CsScore>\n")
+        csd.write("\n</CsoundSynthesizer>")
+        csd.close()
 
 
 class InstrumentToolbar(gtk.Toolbar):
