@@ -89,8 +89,8 @@ class AudioGrab():
             log.debug('setting channels to 1')
             self.channels = 1
         else:
-            log.debug('setting channels to None')
-            self.channels = None
+            log.warning('Guessing there are 2 channels')
+            self.channels = 2
 
         self.we_are_logging = False
         self._log_this_sample = False
@@ -101,9 +101,7 @@ class AudioGrab():
         self._channels_logged = []
         self._busy = False
         self._take_screenshot = True
-
         self._dont_queue_the_buffer = False
-
         self._dc_control = None
         self._mic_bias_control = None
         self._capture_control = None
@@ -112,10 +110,7 @@ class AudioGrab():
         self._display_counter = DISPLAY_DUTY_CYCLE
 
         self._query_mixer()
-        # If Channels was not found in the Capture controller, guess.
-        if self.channels is None:
-            log.warning('Guessing there are 2 channels')
-            self.channels = 2
+        
         self.activity.wave.set_channels(self.channels)
         for i in range(self.channels):
             self._channels_logged.append(False)
@@ -236,8 +231,6 @@ class AudioGrab():
         ''' Use a new buffer '''
         if not self._dont_queue_the_buffer:
             self.callable1(buf, channel=channel)
-        else:
-            pass
 
     def on_buffer(self, element, data_buffer, pad, channel):
         '''The function that is called whenever new data is available

@@ -1,3 +1,9 @@
+50
+
+CODE CLEANUP:
+* Remove duplicate hardware check (Alan Aguiar)
+* Set default channels to 2 (Alan Aguiar)
+
 49
 
 ENHANCEMENT:

@@ -112,7 +112,7 @@ class MeasureActivity(activity.Activity):
         self.nick = self.get_nick_from_sugar()
         self.CONTEXT = ''
         self.adjustmentf = None  # Freq. slider control
-        self.hw = _get_hardware()
+        
         self.new_recording = False
         self.session_id = 0
         self.read_metadata()
