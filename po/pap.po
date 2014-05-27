@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-04 00:32-0400\n"
-"PO-Revision-Date: 2013-11-17 22:06+0200\n"
-"Last-Translator: usuarionahuatl02 <proyecto.olpc@gmail.com>\n"
+"PO-Revision-Date: 2013-07-22 03:39+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: nah\n"
+"Language: pap\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,11 +28,11 @@ msgstr ""
 
 #: config.py:76 sensor_toolbar.py:155 tuning_toolbar.py:225
 msgid "None"
-msgstr "Ionse"
+msgstr "Ningun"
 
 #: config.py:77
 msgid "Guitar"
-msgstr "Tlatsotsonketl"
+msgstr ""
 
 #: config.py:78
 msgid "Violin"
@@ -78,19 +78,19 @@ msgstr ""
 
 #: journal.py:42 sensor_toolbar.py:57 sensor_toolbar.py:95
 msgid "Sound"
-msgstr "Kakistli"
+msgstr ""
 
 #: journal.py:43 sensor_toolbar.py:58
 msgid "Ohms"
-msgstr "Ohms"
+msgstr ""
 
 #: journal.py:44 sensor_toolbar.py:59
 msgid "Volts"
-msgstr "Voltios"
+msgstr ""
 
 #: journal.py:45 sensor_toolbar.py:67
 msgid "Hz"
-msgstr "Hz"
+msgstr ""
 
 #: journal.py:59 measure.py:393
 msgid "Session"
@@ -98,7 +98,7 @@ msgstr ""
 
 #: journal.py:61
 msgid "User"
-msgstr "Tlatekiujketl"
+msgstr ""
 
 #: journal.py:62
 msgid "Mode"
@@ -106,7 +106,7 @@ msgstr ""
 
 #: journal.py:64
 msgid "Date"
-msgstr "Tonalpouali"
+msgstr "Fecha"
 
 #: journal.py:66
 msgid "Interval"
@@ -127,7 +127,7 @@ msgstr ""
 #. TRANS: Tuning insruments
 #: measure.py:197
 msgid "Tuning"
-msgstr "Tlakuajchiuali"
+msgstr ""
 
 #: measure.py:203
 msgid "Add instrument"
@@ -135,7 +135,7 @@ msgstr ""
 
 #: measure.py:221 measure.py:433 sensor_toolbar.py:60
 msgid "Time Base"
-msgstr "Uasankayotl tlen tonalpoualli"
+msgstr ""
 
 #: measure.py:235 measure.py:417
 msgid "Freeze the display"
@@ -147,7 +147,7 @@ msgstr ""
 
 #: measure.py:253
 msgid "<Ctrl>Q"
-msgstr "<Ctrl>Q"
+msgstr ""
 
 #: measure.py:380
 msgid "Measure Log"
