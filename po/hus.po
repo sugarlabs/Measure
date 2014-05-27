@@ -355,7 +355,3 @@ msgstr ""
 
 #~ msgid "Start sampling"
 #~ msgstr "Ts'ikinal an t'iplábchik"
-
-#, fuzzy
-#~ msgid "Capture mode"
-#~ msgstr "Xowé' ka yak'wa'"
