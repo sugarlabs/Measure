@@ -8,3 +8,4 @@ show_launcher = yes
 license = GPLv2+
 update_url = http://wiki.laptop.org/go/Activities/G1G1
 summary = oscilloscope program for visualizing microphone input
+category = science
