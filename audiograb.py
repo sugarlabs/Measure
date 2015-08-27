@@ -938,6 +938,15 @@ class AudioGrab_XO175(AudioGrab):
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
 
+    def on_activity_quit(self):
+        AudioGrab.on_activity_quit(self)
+        output = check_output(
+            ['amixer', 'set', 'MIC1 Boost', "87%"],
+            'restore MIC1 Boost')  # OLPC OS up to 13.2.5
+        output = check_output(
+            ['amixer', 'set', 'Analog Mic Boost', "62%"],
+            'restore Analog Mic Boost')  # OLPC OS after 13.2.5
+
 
 class AudioGrab_XO4(AudioGrab):
     ''' Override parameters for OLPC XO 4 laptop '''
@@ -952,6 +961,12 @@ class AudioGrab_XO4(AudioGrab):
         log.debug('Set Sensor Type to %s' % (str(sensor_type)))
         mode, bias, gain, boost = PARAMETERS[sensor_type]
         self._set_sensor_type(mode, bias, gain, boost)
+
+    def on_activity_quit(self):
+        AudioGrab.on_activity_quit(self)
+        output = check_output(
+            ['amixer', 'set', 'Analog Mic Boost', "62%"],
+            'restore Analog Mic Boost')
 
 
 class AudioGrab_Unknown(AudioGrab):
