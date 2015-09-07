@@ -1,3 +1,12 @@
+52
+
+ENHANCEMENT:
+* New translations
+
+BUG FIX:
+* Restore mic mixer state on exit (James Cameron)
+
+
 51
 
 ENHANCEMENT:
