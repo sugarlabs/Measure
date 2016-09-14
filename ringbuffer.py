@@ -1,4 +1,5 @@
 # Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Copyright (C) 2016, James Cameron [Numpy 1.11.0]
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ class RingBuffer1d(object):
 
         self.offset = 0
 
-        self._data = np.zeros(length, dtype=dtype)
+        self._data = np.zeros(int(length), dtype=dtype)
 
         self.stored = 0
 
@@ -77,6 +78,7 @@ class RingBuffer1d(object):
         Positive values will give the latest information, negative values will
         give the newest added information from the buffer. (in normal order)
         """
+        step = int(step)
         if number == None:
             number = len(self._data) // step
 

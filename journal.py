@@ -3,6 +3,7 @@
 #    Author:  Arjun Sarwal   arjun@laptop.org
 #    Copyright (C) 2007, Arjun Sarwal
 #    Copyright (C) 2009-12 Walter Bender
+#    Copyright (C) 2016, James Cameron [Gtk+ 3.0]
 #
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -19,20 +20,22 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import gtk
+from gi.repository import Gdk, Gtk
 import cairo
 import time
 import os
+import StringIO
+import dbus
 from numpy import array
 from gettext import gettext as _
 
-from sugar.datastore import datastore
+from sugar3.datastore import datastore
+from sugar3.graphics import style
 
 # Initialize logging.
 import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
-logging.basicConfig()
 
 
 class DataLogger():
@@ -88,21 +91,15 @@ class DataLogger():
             os.environ['SUGAR_ACTIVITY_ROOT'], 'instance',
             'screen_capture_' + str(capture_count) + '.png')
 
-        log.debug('saving screen capture to temp file %s' % (tmp_file_path))
-
-        gtk.threads_enter()
-
-        win = self.activity.wave.get_window()
-        width, height = win.get_size()
-        cr = win.cairo_create()
-        surface = cr.get_target()
-        img_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, width, height)
-        cr = cairo.Context(img_surface)
-        cr.set_source_surface(surface)
+        window = self.activity.wave.get_window()
+        width, height = window.get_width(), window.get_height()
+        surface = Gdk.Window.create_similar_surface(window, cairo.CONTENT_COLOR,
+                                                    width, height)
+        cr = cairo.Context(surface)
+        Gdk.cairo_set_source_window(cr, window, 0, 0)
         cr.paint()
-        img_surface.write_to_png(tmp_file_path)
+        surface.write_to_png(tmp_file_path)
 
-        gtk.threads_leave()
         if os.path.exists(tmp_file_path):
             dsobject = datastore.create()
             try:
@@ -110,7 +107,7 @@ class DataLogger():
                                                        capture_count)
                 dsobject.metadata['keep'] = '0'
                 dsobject.metadata['buddies'] = ''
-                dsobject.metadata['preview'] = ''
+                dsobject.metadata['preview'] = self._get_preview_data(surface)
                 dsobject.metadata['icon-color'] = self.activity.icon_colors
                 dsobject.metadata['mime_type'] = 'image/png'
                 dsobject.set_file_path(tmp_file_path)
@@ -121,3 +118,33 @@ class DataLogger():
             os.remove(tmp_file_path)
             return True
         return False
+
+
+    def _get_preview_data(self, screenshot_surface):
+        screenshot_width = screenshot_surface.get_width()
+        screenshot_height = screenshot_surface.get_height()
+
+        preview_width, preview_height = style.zoom(300), style.zoom(225)
+        preview_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                                             preview_width, preview_height)
+        cr = cairo.Context(preview_surface)
+
+        scale_w = preview_width * 1.0 / screenshot_width
+        scale_h = preview_height * 1.0 / screenshot_height
+        scale = min(scale_w, scale_h)
+
+        translate_x = int((preview_width - (screenshot_width * scale)) / 2)
+        translate_y = int((preview_height - (screenshot_height * scale)) / 2)
+
+        cr.translate(translate_x, translate_y)
+        cr.scale(scale, scale)
+
+        cr.set_source_rgba(1, 1, 1, 0)
+        cr.set_operator(cairo.OPERATOR_SOURCE)
+        cr.paint()
+        cr.set_source_surface(screenshot_surface)
+        cr.paint()
+
+        preview_str = StringIO.StringIO()
+        preview_surface.write_to_png(preview_str)
+        return dbus.ByteArray(preview_str.getvalue())
