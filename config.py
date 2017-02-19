@@ -19,7 +19,7 @@ Global configuration for Measure.
 
 import os
 try:
-    from sugar.activity import activity
+    from sugar3.activity import activity
     MEASURE_ROOT = activity.get_bundle_path()
     SUGAR = True
 except ImportError:
@@ -60,11 +60,11 @@ MAX_LOG_ENTRIES = 1000
 DISPLAY_DUTY_CYCLE = 100
 
 # Hardware configurations
-XO1 = 'xo1'
-XO15 = 'xo1.5'
-XO175 = 'xo1.75'
-XO30 = 'xo3.0'
-XO4 = 'xo4'
+XO1 = 'XO-1'
+XO15 = 'XO-1.5'
+XO175 = 'XO-1.75'
+XO4 = 'XO-4'
+NL3 = 'NL3'
 UNKNOWN = 'unknown'
 
 # Bounds of side slider

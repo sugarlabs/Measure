@@ -4,6 +4,7 @@
 # Author:  Arjun Sarwal   arjun@laptop.org
 # Copyright (C) 2007, Arjun Sarwal
 # Copyright (C) 2009-11 Walter Bender
+# Copyright (C) 2016, James Cameron [Gtk+ 3.0]
 #
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,20 +17,20 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-import gtk
+from gi.repository import Gtk, GdkPixbuf
 from gettext import gettext as _
 
-from sugar.graphics.toolbutton import ToolButton
+from sugar3.graphics.toolbutton import ToolButton
 
 from config import LOWER, UPPER
 
 
-class SideToolbar(gtk.Toolbar):
+class SideToolbar(Gtk.Toolbar):
     ''' A toolbar on the side of the canvas for adjusting gain/bias '''
 
     def __init__(self, activity, channel=0):
         ''' Set up initial toolbars '''
-        gtk.Toolbar.__init__(self)
+        super(type(self), self).__init__()
 
         self.activity = activity
         self._channel = channel
@@ -40,11 +41,11 @@ class SideToolbar(gtk.Toolbar):
         self.mode = 'sound'
         self.mode_values = {'sound': 3, 'sensor': 2}
 
-        self._toggle = gtk.CheckButton()
+        self._toggle = Gtk.CheckButton()
         self._toggle.set_active(True)
         self._toggle.connect('clicked', self.toggle_cb)
         self._toggle.show()
-        self._toggle_box = gtk.HBox()
+        self._toggle_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._toggle_box.pack_start(self._toggle, False, True, 18)
 
         self._invert = ToolButton('invert')
@@ -58,22 +59,23 @@ class SideToolbar(gtk.Toolbar):
         self.button_up.connect('clicked', self._button_up_cb)
         self.button_up.show()
 
-        self.adjustmenty = gtk.Adjustment(self.mode_values[self.mode],
+        self.adjustmenty = Gtk.Adjustment(self.mode_values[self.mode],
                                           LOWER, UPPER,
                                           0.1, 0.1, 0.0)
         self.adjustmenty.connect('value_changed', self._yscrollbar_cb,
                                  self.adjustmenty)
-        self.yscrollbar = gtk.VScale(self.adjustmenty)
+        self.yscrollbar = Gtk.Scale(orientation=Gtk.Orientation.VERTICAL,
+                                    adjustment=self.adjustmenty)
         self.yscrollbar.set_draw_value(False)
         self.yscrollbar.set_inverted(True)
-        self.yscrollbar.set_update_policy(gtk.UPDATE_CONTINUOUS)
 
         self.button_down = ToolButton('amp-low')
         self.button_down.set_tooltip(_('Decrease amplitude'))
         self.button_down.connect('clicked', self._button_down_cb)
         self.button_down.show()
 
-        self.box1 = gtk.VBox(False, 0)
+        self.box1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                            homogeneous=False, spacing=0)
 
         if self._channel == 0:
             self.box1.pack_start(self._color_wave(self.activity.stroke_color),
@@ -94,15 +96,15 @@ class SideToolbar(gtk.Toolbar):
     def _yscrollbar_cb(self, adjy, data=None):
         ''' Callback for scrollbar '''
         if self.mode == 'sound':
-            self.activity.wave.set_mag_params(1.0, adjy.value,
+            self.activity.wave.set_mag_params(1.0, adjy.get_value(),
                                               channel=self._channel)
             self.activity.wave.set_bias_param(0,
                                               channel=self._channel)
         elif self.mode == 'sensor':
             self.activity.wave.set_bias_param(int(
-                    300 * (adjy.value - (UPPER - LOWER) / 2.)),
+                    300 * (adjy.get_value() - (UPPER - LOWER) / 2.)),
                                               channel=self._channel)
-        self.mode_values[self.mode] = adjy.value
+        self.mode_values[self.mode] = adjy.get_value()
         return True
 
     def _button_up_cb(self, data=None):
@@ -134,14 +136,14 @@ class SideToolbar(gtk.Toolbar):
         ''' Set the toolbar to either 'sound' or 'sensor' '''
         self.mode = mode
         if self.mode == 'sound':
-            self.button_up.set_icon('amp-high')
+            self.button_up.set_icon_name('amp-high')
             self.button_up.set_tooltip(_('Increase amplitude'))
-            self.button_down.set_icon('amp-low')
+            self.button_down.set_icon_name('amp-low')
             self.button_down.set_tooltip(_('Decrease amplitude'))
         elif self.mode == 'sensor':
-            self.button_up.set_icon('bias-high')
+            self.button_up.set_icon_name('bias-high')
             self.button_up.set_tooltip(_('Increase bias'))
-            self.button_down.set_icon('bias-low')
+            self.button_down.set_icon_name('bias-low')
             self.button_down.set_tooltip(_('Decrease bias'))
             self._invert.show()
         self.yscrollbar.set_value(self.mode_values[self.mode])
@@ -156,11 +158,11 @@ class SideToolbar(gtk.Toolbar):
         ''' Callback for Invert Button '''
         if self.activity.wave.get_invert_state(channel=self._channel):
             self.activity.wave.set_invert_state(False, self._channel)
-            self._invert.set_icon('invert')
+            self._invert.set_icon_name('invert')
             self._invert.show()
         elif not self.activity.wave.get_fft_mode():
             self.activity.wave.set_invert_state(True, self._channel)
-            self._invert.set_icon('invert2')
+            self._invert.set_icon_name('invert2')
             self._invert.show()
         self.activity.sensor_toolbar.update_string_for_textbox()
         return False
@@ -179,16 +181,16 @@ c9.179,0,9.179,27.668,18.358,27.668c4.59,0,6.986-6.917,9.332-13.834"\n\
 fill="none" stroke="%s" stroke-linecap="round" stroke-width="3.5"/>\n\
 </svg>' % (color)
         pixbuf = svg_str_to_pixbuf(svg)
-        img = gtk.Image()
+        img = Gtk.Image()
         img.set_from_pixbuf(pixbuf)
-        img_tool = gtk.ToolItem()
+        img_tool = Gtk.ToolItem()
         img_tool.add(img)
         return img_tool
 
 
 def svg_str_to_pixbuf(svg_string):
     ''' Load pixbuf from SVG string '''
-    pl = gtk.gdk.PixbufLoader('svg')
+    pl = GdkPixbuf.PixbufLoader.new_with_type('svg')
     pl.write(svg_string)
     pl.close()
     pixbuf = pl.get_pixbuf()

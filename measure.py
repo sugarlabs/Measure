@@ -5,6 +5,7 @@
 # Copyright (C) 2007, Arjun Sarwal
 # Copyright (C) 2009-13 Walter Bender
 # Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Copyright (C) 2016, James Cameron [GStreamer 1.0, Gtk+ 3.0]
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,31 +16,33 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+import gi
 
-import pygst
-pygst.require("0.10")
-import gtk
-import pango
+vs = {'Gdk': '3.0', 'GConf': '2.0', 'Gst': '1.0', 'Gtk': '3.0',
+      'SugarExt': '1.0'}
+for api, ver in vs.iteritems():
+    gi.require_version(api, ver)
+
+from gi.repository import Gdk, Gtk, Pango, GdkPixbuf, Gst, Gio
 import os
 import subprocess
 import csv
 
 from gettext import gettext as _
 
-from sugar.activity import activity
-from sugar.activity.widgets import ActivityToolbarButton
-from sugar.activity.widgets import StopButton
-from sugar.graphics.toolbarbox import ToolbarBox
-from sugar.graphics.toolbarbox import ToolbarButton
-from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics import style
-from sugar.datastore import datastore
+from sugar3.activity import activity
+from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.activity.widgets import StopButton
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.graphics.toolbarbox import ToolbarButton
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.graphics import style
+from sugar3.datastore import datastore
 
-from sugar import profile
+from sugar3 import profile
 
 from journal import DataLogger
-from audiograb import AudioGrab_XO175, AudioGrab_XO15, AudioGrab_XO1, \
-    AudioGrab_XO4, AudioGrab_Unknown, check_output
+import audiograb
 from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
@@ -50,41 +53,74 @@ import logging
 
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
-logging.basicConfig()
 
 PREFIX = '♬'
 
 
-def _get_hardware():
-    ''' Determine whether we are using XO 1.0, 1.5, ... or 'unknown'
-    hardware '''
-    version = _get_dmi('product_version')
-    # product = _get_dmi('product_name')
-    if version is None:
-        hwinfo_path = '/bin/olpc-hwinfo'
-        if os.path.exists(hwinfo_path) and os.access(hwinfo_path, os.X_OK):
-            model = check_output([hwinfo_path, 'model'], 'unknown hardware')
-            version = model.strip()
-    if version == '1':
-        return XO1
-    elif version == '1.5':
-         return XO15
-    elif version == '1.75':
-        return XO175
-    elif version == '4':
-        return XO4
-    else:
-         return UNKNOWN
+_OFW_TREE = '/ofw'
+_PROC_TREE = '/proc/device-tree'
+_DMI_DIRECTORY = '/sys/class/dmi/id'
 
 
-def _get_dmi(node):
-    ''' The desktop management interface should be a reliable source
-    for product and version information. '''
-    path = os.path.join('/sys/class/dmi/id', node)
-    try:
-        return open(path).readline().strip()
-    except:
+def _read_file(path):
+    if os.access(path, os.R_OK) == 0:
         return None
+
+    fd = open(path, 'r')
+    value = fd.read()
+    fd.close()
+    if value:
+        value = value.strip('\n')
+        return value
+    else:
+        return None
+
+
+def _read_device_tree(path):
+    value = _read_file(os.path.join(_PROC_TREE, path))
+    if value:
+        return value.strip('\x00')
+    value = _read_file(os.path.join(_OFW_TREE, path))
+    if value:
+        return value.strip('\x00')
+    return value
+
+
+def _get_firmware_number():
+    firmware_no = _read_device_tree('openprom/model')
+    if firmware_no is not None:
+        # try to extract Open Firmware version from OLPC style version
+        # string, e.g. "CL2   Q4B11  Q4B"
+        if firmware_no.startswith('CL'):
+            firmware_no = firmware_no[6:13].strip()
+        ec_name = _read_device_tree('ec-name')
+        if ec_name:
+            ec_name = ec_name.replace('Ver:', '')
+            firmware_no = '%(firmware)s with %(ec)s' % {
+                'firmware': firmware_no, 'ec': ec_name}
+
+    elif os.path.exists(os.path.join(_DMI_DIRECTORY, 'bios_version')):
+        firmware_no = _read_file(os.path.join(_DMI_DIRECTORY, 'bios_version'))
+    if firmware_no is None:
+        firmware_no = _('Not available')
+    return firmware_no
+
+
+def _get_hardware_model():
+    settings = Gio.Settings('org.sugarlabs.extensions.aboutcomputer')
+    model = settings.get_string('hardware-model')
+    if model:
+        return model
+
+    model = _read_device_tree('mfg-data/MN')
+
+    if model is None:
+        if 'NL3' in _get_firmware_number():
+            model = 'NL3'
+        if 'VirtualBox' in _get_firmware_number():
+            model = 'VirtualBox VM'
+
+    return model.split(' ')[0]
 
 
 class MeasureActivity(activity.Activity):
@@ -99,12 +135,13 @@ class MeasureActivity(activity.Activity):
 
         activity.Activity.__init__(self, handle)
 
+        self._image_counter = 1
         self.mode_images = {}
-        self.mode_images['sound'] = gtk.gdk.pixbuf_new_from_file_at_size(
+        self.mode_images['sound'] = GdkPixbuf.Pixbuf.new_from_file_at_size(
             os.path.join(ICONS_DIR, 'media-audio.svg'), 45, 45)
-        self.mode_images['resistance'] = gtk.gdk.pixbuf_new_from_file_at_size(
+        self.mode_images['resistance'] = GdkPixbuf.Pixbuf.new_from_file_at_size(
             os.path.join(ICONS_DIR, 'resistance.svg'), 45, 45)
-        self.mode_images['voltage'] = gtk.gdk.pixbuf_new_from_file_at_size(
+        self.mode_images['voltage'] = GdkPixbuf.Pixbuf.new_from_file_at_size(
             os.path.join(ICONS_DIR, 'voltage.svg'), 45, 45)
 
         self.icon_colors = self.get_icon_colors_from_sugar()
@@ -112,7 +149,9 @@ class MeasureActivity(activity.Activity):
         self.nick = self.get_nick_from_sugar()
         self.CONTEXT = ''
         self.adjustmentf = None  # Freq. slider control
-        
+
+        self.hw = _get_hardware_model()
+
         self.new_recording = False
         self.session_id = 0
         self.read_metadata()
@@ -125,50 +164,51 @@ class MeasureActivity(activity.Activity):
 
         self.data_logger = DataLogger(self)
 
-        self.hw = _get_hardware()
-        log.debug('running on %s hardware' % (self.hw))
-
         self.wave = DrawWaveform(self)
 
-        if self.hw == XO15:
-            self.audiograb = AudioGrab_XO15(self.wave.new_buffer, self)
-        elif self.hw == XO175:
-            self.audiograb = AudioGrab_XO175(self.wave.new_buffer, self)
-        elif self.hw == XO4:
-            self.audiograb = AudioGrab_XO4(self.wave.new_buffer, self)
-        elif self.hw == XO1:
-            self.audiograb = AudioGrab_XO1(self.wave.new_buffer, self)
-        else:
-            self.audiograb = AudioGrab_Unknown(self.wave.new_buffer, self)
+        ag = audiograb.AudioGrab_Unknown
+        ags = {'XO-1':    audiograb.AudioGrab_XO1,
+               'XO-1.5':  audiograb.AudioGrab_XO15,
+               'XO-1.75': audiograb.AudioGrab_XO175,
+               'XO-4':    audiograb.AudioGrab_XO4,
+               'NL3':     audiograb.AudioGrab_NL3,
+        }
+        if self.hw in ags:
+            ag = ags[self.hw]
+
+        self.audiograb = ag(self.wave.new_buffer, self)
 
         # no sharing
         self.max_participants = 1
 
-        box3 = gtk.HBox(False, 0)
+        box3 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
+                       homogeneous=False, spacing=0)
         box3.pack_start(self.wave, True, True, 0)
 
         # We need event boxes in order to set the background color.
         side_eventboxes = []
         self.side_toolbars = []
         for i in range(self.audiograb.channels):
-            side_eventboxes.append(gtk.EventBox())
+            side_eventboxes.append(Gtk.EventBox())
             side_eventboxes[i].modify_bg(
-                gtk.STATE_NORMAL, style.COLOR_TOOLBAR_GREY.get_gdk_color())
+                Gtk.StateType.NORMAL, style.COLOR_TOOLBAR_GREY.get_gdk_color())
             self.side_toolbars.append(SideToolbar(self, channel=i))
             side_eventboxes[i].add(self.side_toolbars[i].box1)
             box3.pack_start(side_eventboxes[i], False, True, 0)
 
-        event_box = gtk.EventBox()
-        self.text_box = gtk.Label()
-        self.text_box.set_justify(gtk.JUSTIFY_LEFT)
-        alist = pango.AttrList()
-        alist.insert(pango.AttrForeground(65535, 65535, 65535, 0, -1))
-        self.text_box.set_attributes(alist)
+        event_box = Gtk.EventBox()
+        self.text_box = Gtk.Label()
+        self.text_box.set_justify(Gtk.Justification.LEFT)
+
+        rgba = Gdk.RGBA()
+        rgba.red, rgba.green, rgba.blue, rgba.alpha = 1., 1., 1., 1.
+        self.text_box.override_background_color(Gtk.StateFlags.NORMAL, rgba)
         event_box.add(self.text_box)
         event_box.modify_bg(
-            gtk.STATE_NORMAL, style.COLOR_TOOLBAR_GREY.get_gdk_color())
+            Gtk.StateType.NORMAL, style.COLOR_TOOLBAR_GREY.get_gdk_color())
 
-        box1 = gtk.VBox(False, 0)
+        box1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                       homogeneous=False, spacing=0)
         box1.pack_start(box3, True, True, 0)
         box1.pack_start(event_box, False, True, 0)
 
@@ -183,9 +223,8 @@ class MeasureActivity(activity.Activity):
         self.sensor_toolbar = SensorToolbar(self, self.audiograb.channels)
         self.tuning_toolbar = TuningToolbar(self)
         self.new_instrument_toolbar = InstrumentToolbar(self)
-        self._extras_toolbar = gtk.Toolbar()
-        self.control_toolbar = gtk.Toolbar()
-
+        self._extras_toolbar = Gtk.Toolbar()
+        self.control_toolbar = Gtk.Toolbar()
         sensor_button = ToolbarButton(
             label=_('Sensors'),
             page=self.sensor_toolbar,
@@ -209,12 +248,12 @@ class MeasureActivity(activity.Activity):
             page=self._extras_toolbar,
             icon_name='domain-time')
         toolbox.toolbar.insert(self._extras_button, -1)
-        self._extras_toolbar_item = gtk.ToolItem()
+        self._extras_toolbar_item = Gtk.ToolItem()
         self._extras_toolbar.insert(self._extras_toolbar_item, -1)
         self._extras_button.hide()
         self.sensor_toolbar.show()
 
-        self._extra_tools = gtk.HBox()
+        self._extra_tools = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
         # Set up Frequency-domain Button
         self.freq = ToolButton('domain-time')
@@ -225,7 +264,7 @@ class MeasureActivity(activity.Activity):
 
         self.sensor_toolbar.add_frequency_slider(self._extra_tools)
 
-        self._extra_item = gtk.ToolItem()
+        self._extra_item = Gtk.ToolItem()
         self._extra_item.add(self._extra_tools)
         self._extra_tools.show()
         toolbox.toolbar.insert(self._extra_item, -1)
@@ -243,7 +282,7 @@ class MeasureActivity(activity.Activity):
         self._capture.show()
         toolbox.toolbar.insert(self._capture, -1)
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = False
         separator.set_expand(True)
         toolbox.toolbar.insert(separator, -1)
@@ -254,7 +293,7 @@ class MeasureActivity(activity.Activity):
         toolbox.toolbar.insert(stop_button, -1)
         stop_button.show()
 
-        self.set_toolbox(toolbox)
+        self.set_toolbar_box(toolbox)
         sensor_button.set_expanded(True)
 
         toolbox.show()
@@ -271,14 +310,14 @@ class MeasureActivity(activity.Activity):
         self.wave.set_active(True)
         self.wave.set_context_on()
 
-        gtk.gdk.screen_get_default().connect('size-changed',
-                                             self._configure_cb)
-        self._configure_cb(None)
+        screen = Gdk.Screen.get_default()
+        screen.connect('size-changed', self.__screen_size_changed_cb)
+        self.__screen_size_changed_cb(None)
 
-    def _configure_cb(self, event):
+    def __screen_size_changed_cb(self, event):
         ''' Screen size has changed, so check to see if the toolbar
         elements still fit.'''
-        self.width = gtk.gdk.screen_width()
+        self.width = Gdk.Screen.width()
         if self.width < style.GRID_CELL_SIZE * 14:
             self._extras_button.show()
             if self._extra_tools in self._extra_item:
@@ -308,14 +347,11 @@ class MeasureActivity(activity.Activity):
     def _notify_active_cb(self, widget, pspec):
         ''' Callback to handle starting/pausing capture when active/idle '''
         if self._first:
-            log.debug('_notify_active_cb: start grabbing')
             self.audiograb.start_grabbing()
             self._first = False
         elif not self.props.active:
-            log.debug('_notify_active_cb: pause grabbing')
             self.audiograb.pause_grabbing()
         elif self.props.active:
-            log.debug('_notify_active_cb: resume grabbing')
             self.audiograb.resume_grabbing()
 
         self._active = self.props.active
@@ -408,19 +444,20 @@ class MeasureActivity(activity.Activity):
         ''' Callback for Pause Button '''
         if self.audiograb.get_freeze_the_display():
             self.audiograb.set_freeze_the_display(False)
-            self._pause.set_icon('media-playback-start')
+            self._pause.set_icon_name('media-playback-start')
             self._pause.set_tooltip(_('Unfreeze the display'))
             self._pause.show()
         else:
             self.audiograb.set_freeze_the_display(True)
-            self._pause.set_icon('media-playback-pause')
+            self._pause.set_icon_name('media-playback-pause')
             self._pause.set_tooltip(_('Freeze the display'))
             self._pause.show()
         return False
 
     def _capture_cb(self, button=None):
         ''' Callback for screen capture '''
-        self.audiograb.take_screenshot()
+        self.data_logger.take_screenshot(self._image_counter)
+        self._image_counter += 1
 
     def timefreq_control(self, button=None):
         ''' Callback for Freq. Button '''
@@ -429,11 +466,11 @@ class MeasureActivity(activity.Activity):
             self.sensor_toolbar.record_control_cb()
         if self.wave.get_fft_mode():
             self.wave.set_fft_mode(False)
-            self.freq.set_icon('domain-time')
+            self.freq.set_icon_name('domain-time')
             self.freq.set_tooltip(_('Time Base'))
         else:
             self.wave.set_fft_mode(True)
-            self.freq.set_icon('domain-freq')
+            self.freq.set_icon_name('domain-freq')
             self.freq.set_tooltip(_('Frequency Base'))
             # Turn off triggering in Frequencey Base
             self.sensor_toolbar.trigger_none.set_active(True)
@@ -453,4 +490,4 @@ class MeasureActivity(activity.Activity):
         ''' Returns nick from Sugar '''
         return profile.get_nick_name()
 
-gtk.gdk.threads_init()
+Gst.init(None)

@@ -4,6 +4,7 @@
 # Copyright (C) 2007, Arjun Sarwal
 # Copyright (C) 2009-12 Walter Bender
 # Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Copyright (C) 2016, James Cameron [Gtk+ 3.0]
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,9 +16,9 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-import gtk
-from math import floor, ceil
-from numpy import array, where, float64, multiply, fft, arange, blackman
+from gi.repository import Gdk, Gtk
+from math import floor, ceil, pi
+from numpy import array, where, int16, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 
 from config import MAX_GRAPHS, RATE, LOWER, UPPER
@@ -28,12 +29,11 @@ from tuning_toolbar import A0, C8, freq_note
 import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
-logging.basicConfig()
 
 from gettext import gettext as _
 
 
-class DrawWaveform(gtk.DrawingArea):
+class DrawWaveform(Gtk.DrawingArea):
     """ Handles all the drawing of waveforms """
 
     __gtype_name__ = "MeasureDrawWaveform"
@@ -46,10 +46,10 @@ class DrawWaveform(gtk.DrawingArea):
 
     def __init__(self, activity, input_frequency=RATE, channels=1):
         """ Initialize drawing area and scope parameter """
-        gtk.DrawingArea.__init__(self)
+        super(type(self), self).__init__()
 
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK | \
-                        gtk.gdk.PROPERTY_CHANGE_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | \
+                        Gdk.EventMask.PROPERTY_CHANGE_MASK)
 
         self.activity = activity
         self._input_freq = input_frequency
@@ -63,7 +63,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.bias = []  # vertical position fine-tuning from slider
 
         self.active = False
-        self._redraw_atom = gtk.gdk.atom_intern('MeasureRedraw')
 
         self.buffers = array([])
         self.main_buffers = array([])
@@ -105,7 +104,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.scaleY = ""
 
         self._back_surf = None
-        self.expose_event_id = self.connect('expose_event', self._expose)
 
         self.pr_time = 0
         self.MAX_GRAPHS = MAX_GRAPHS     # Maximum simultaneous graphs
@@ -115,7 +113,6 @@ class DrawWaveform(gtk.DrawingArea):
         self.Ystart = []
         self.Xend = []
         self.Yend = []
-        self.type = []
         self.color = []
         self.source = []
         self.graph_id = []
@@ -142,13 +139,21 @@ class DrawWaveform(gtk.DrawingArea):
             self.Ystart.append(50)
             self.Xend.append(1000)
             self.Yend.append(500)
-            self.type .append(0)
             self.color.append('#FF0000')
             self.source.append(0)
             self.visibility.append(True)
             self.graph_id.append(x)
 
         self.ringbuffer = []
+
+        self._size_allocate_id = self.connect('size-allocate',
+                                              self._size_allocate_cb)
+        self._draw_id = self.connect('draw', self._draw_cb)
+
+    def _to_rgba(self, colour):
+        rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
+        rgba.parse(colour)
+        return rgba
 
     def set_channels(self, channels):
         ''' Add buffer per channel '''
@@ -159,18 +164,17 @@ class DrawWaveform(gtk.DrawingArea):
             self.Ystart[i] = 0
             self.Xend[i] = 1150
             self.Yend[i] = 750
-            self.type[i] = 0
             if i == 0:
-                self.color[i] = self.activity.stroke_color
+                self.color[i] = self._to_rgba(self.activity.stroke_color)
             elif i == 1:
-                self.color[i] = self.activity.fill_color
+                self.color[i] = self._to_rgba(self.activity.fill_color)
             else:
-                self.color[i] = '#FFFFFF'
+                self.color[i] = self._to_rgba('#FFFFFF')
             self.source[i] = 0
 
         for i in range(self.channels):
             self.ringbuffer.append(RingBuffer1d(self.max_samples,
-                                                dtype='int16'))
+                                                dtype=int16))
             self.y_mag.append(3.0)
             self.gain.append(1.0)
             self.bias.append(0)
@@ -181,7 +185,7 @@ class DrawWaveform(gtk.DrawingArea):
         if self.max_samples == num:
             return
         for i in range(self.channels):
-            new_buffer = RingBuffer1d(num, dtype='int16')
+            new_buffer = RingBuffer1d(num, dtype=int16)
             new_buffer.append(self.ringbuffer[i].read())
             self.ringbuffer[i] = new_buffer
         self.max_samples = num
@@ -195,17 +199,17 @@ class DrawWaveform(gtk.DrawingArea):
     def set_context_on(self):
         """ Return to an active state (context on) """
         if not self.context:
-            self.handler_unblock(self.expose_event_id)
+            self.handler_unblock(self._draw_id)
         self.context = True
-        self._indirect_queue_draw()
+        self._flush_redraw()
         return
 
     def set_context_off(self):
         """ Return to an inactive state (context off) """
         if self.context:
-            self.handler_block(self.expose_event_id)
+            self.handler_block(self._draw_id)
         self.context = False
-        self._indirect_queue_draw()
+        self._flush_redraw()
         return
 
     def set_invert_state(self, invert_state, channel=0):
@@ -222,129 +226,19 @@ class DrawWaveform(gtk.DrawingArea):
         consecutive points"""
         return self.draw_interval
 
-    def do_size_allocate(self, allocation):
+    def _size_allocate_cb(self, widget, allocation):
         """ Allocate a drawing area for the plot """
-        gtk.DrawingArea.do_size_allocate(self, allocation)
         self._update_mode()
-        if self.window is not None:
-            self._create_background_pixmap()
         return
 
-    def _indirect_queue_draw(self):
-        if self.window is None:
-            return
-        self.window.property_change(self._redraw_atom, self._redraw_atom,
-            32, gtk.gdk.PROP_MODE_REPLACE, [])
-        return
-
-    def do_property_notify_event(self, event):
-        if event.atom == self._redraw_atom:
-            self.queue_draw()
-            return True
-        return False
-
-    def do_realize(self):
-        """ Called when we are creating all of our window resources """
-
-        gtk.DrawingArea.do_realize(self)
-
-        # Force a native X window to exist
-        xid = self.window.xid
-
-        colormap = self.get_colormap()
-
-        # Sound data
-        self._line_gc = []
-        for graph_id in self.graph_id:
-            if len(self.color) > graph_id:
-                clr = colormap.alloc_color(self.color[graph_id])
-                self._line_gc.append(self.window.new_gc(foreground=clr))
-                self._line_gc[graph_id].set_line_attributes(
-                    self._FOREGROUND_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
-                    gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-                self._line_gc[graph_id].set_foreground(clr)
-
-        # Trigger marks
-        clr = colormap.alloc_color(self.color[0])
-        self._trigger_line_gc = self.window.new_gc(foreground=clr)
-        self._trigger_line_gc.set_line_attributes(
-            self._TRIGGER_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
-            gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-        self._trigger_line_gc.set_foreground(clr)
-
-        # Instrument tuning lines
-        self._instrument_gc = []
-        self._instrument_h_gc = []
-        for c in self.COLORS:
-            clr = colormap.alloc_color(c)
-            self._instrument_gc.append(self.window.new_gc(foreground=clr))
-            self._instrument_h_gc.append(self.window.new_gc(foreground=clr))
-            self._instrument_gc[-1].set_line_attributes(
-                self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
-                gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-            self._instrument_h_gc[-1].set_line_attributes(
-                self._HARMONIC_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
-                gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-            self._instrument_gc[-1].set_foreground(clr)
-            self._instrument_h_gc[-1].set_foreground(clr)
-
-        # Tuning lines
-        clr = colormap.alloc_color(self.color[1])
-        self._tuning_line_gc = self.window.new_gc(foreground=clr)
-        self._tuning_line_gc.set_line_attributes(
-            self._TUNING_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
-            gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-        self._tuning_line_gc.set_foreground(clr)
-
-        clr = colormap.alloc_color(self.color[0])
-        self._harmonic_gc = self.window.new_gc(foreground=clr)
-        self._harmonic_gc.set_line_attributes(
-            self._HARMONIC_LINE_THICKNESS, gtk.gdk.LINE_SOLID,
-            gtk.gdk.CAP_ROUND, gtk.gdk.JOIN_BEVEL)
-        self._harmonic_gc.set_foreground(clr)
-
-        self._create_background_pixmap()
-        return
-
-    def _create_background_pixmap(self):
-        """ Draw the gridlines for the plot """
-
-        back_surf = gtk.gdk.Pixmap(self.window, self._tick_size,
-                                   self._tick_size)
-        cr = back_surf.cairo_create()
-        cr.set_source_rgb(0, 0, 0)
-        cr.paint()
-
-        cr.set_line_width(self._BACKGROUND_LINE_THICKNESS)
-        cr.set_source_rgb(0.2, 0.2, 0.2)
-
-        x = 0
-        y = 0
-
-        for j in range(0, 2):
-            cr.move_to(x, y)
-            cr.rel_line_to(0, self._tick_size)
-            x = x + self._tick_size
-
-        x = 0
-        y = (self.allocation.height % self._tick_size) / 2 - self._tick_size
-
-        for j in range(0, 3):
-            cr.move_to(x, y)
-            cr.rel_line_to(self._tick_size, 0)
-            y = y + self._tick_size
-
-        cr.set_line_width(self._BACKGROUND_LINE_THICKNESS)
-        cr.stroke()
-
-        del cr
-        self.window.set_back_pixmap(back_surf, False)
-        return
+    def _flush_redraw(self):
+        Gdk.flush()
+        self.queue_draw()
 
     def do_button_press_event(self, event):
-        """ Set the trigger postion on a button-press event """
-        self.trigger_xpos = event.x / float(self.allocation.width)
-        self.trigger_ypos = event.y / float(self.allocation.height)
+        """ Set the trigger position on a button-press event """
+        self.trigger_xpos = event.x / float(self.get_allocated_width())
+        self.trigger_ypos = event.y / float(self.get_allocated_height())
         return True
 
     def _calculate_trigger_position(self, samples, y_mag, buf):
@@ -359,7 +253,7 @@ class DrawWaveform(gtk.DrawingArea):
         else:
             ypos *= -32767.0 / y_mag
 
-        x_offset = self.allocation.width * xpos - \
+        x_offset = self.get_allocated_width() * xpos - \
                    (samples - samples_to_end) * self.draw_interval
 
         position = -1
@@ -388,10 +282,37 @@ class DrawWaveform(gtk.DrawingArea):
                     self.draw_interval + 0.5)
         return position, samples_to_end
 
-    def _expose(self, widget, event):
-        """The 'expose' event handler does all the drawing"""
+    def _draw_cb(self, widget, cr):
+        w = self.get_allocated_width()
+        h = self.get_allocated_height()
 
-        width, height = self.window.get_size()
+        # black background
+        cr.set_source_rgb(0, 0, 0)
+        cr.paint()
+
+        # graticule
+        cr.set_line_width(self._BACKGROUND_LINE_THICKNESS)
+        cr.set_source_rgb(0.375, 0.375, 0.375)
+
+        t = self._tick_size
+
+        # vertical grid lines
+        x = 0
+        y = 0
+        for j in range(0, w, t):
+            cr.move_to(x, y)
+            cr.rel_line_to(0, h)
+            x += t
+
+        # horizontal grid lines
+        x = 0
+        y = 0
+        for j in range(0, h, t):
+            cr.move_to(x, y)
+            cr.rel_line_to(w, 0)
+            y += t
+
+        cr.stroke()
 
         # Real time drawing
         if self.context and self.active:
@@ -400,25 +321,43 @@ class DrawWaveform(gtk.DrawingArea):
             # If we are tuning, we want to scale by 10
             scale = 10. * self.freq_div / 500.
             if self.fft_show and self.instrument in INSTRUMENT_DICT:
+                cr.set_line_width(self._TUNING_LINE_THICKNESS)
                 for n, note in enumerate(INSTRUMENT_DICT[self.instrument]):
+                    c = self._to_rgba(self.COLORS[n])
+                    cr.set_source_rgb(c.red, c.green, c.blue)
                     x = int(note / scale)
-                    self.window.draw_line(
-                        self._instrument_gc[n], x, 0, x, height)
-                for n, note in enumerate(INSTRUMENT_DICT[self.instrument]):
-                    if self.harmonics:
+                    cr.move_to(x, 0)
+                    cr.line_to(x, h)
+                    cr.stroke()
+                if self.harmonics:
+                    cr.set_line_width(self._HARMONIC_LINE_THICKNESS)
+                    for n, note in enumerate(INSTRUMENT_DICT[self.instrument]):
+                        c = self._to_rgba(self.COLORS[n])
+                        cr.set_source_rgb(c.red, c.green, c.blue)
                         x = int(note / scale)
                         for i in range(3):
                             j = i + 2
-                            self.window.draw_line(self._instrument_h_gc[n],
-                                                  x * j, 20 * j, x * j, height)
+                            cr.move_to(x * j, 20 * j)
+                            cr.line_to(x * j, h)
+                        cr.stroke()
+
             if self.fft_show and self.tuning_line > 0.0:
                 x = int(self.tuning_line / scale)
-                self.window.draw_line(self._tuning_line_gc, x, 0, x, height)
+                cr.set_line_width(self._TUNING_LINE_THICKNESS)
+                c = self.color[1]
+                cr.set_source_rgb(c.red, c.green, c.blue)
+                cr.move_to(x, 0)
+                cr.line_to(x, h)
+                cr.stroke()
                 if self.harmonics:
+                    cr.set_line_width(self._HARMONIC_LINE_THICKNESS)
+                    c = self.color[0]
+                    cr.set_source_rgb(c.red, c.green, c.blue)
                     for i in range(3):
                         j = i + 2
-                        self.window.draw_line(self._harmonic_gc, x * j,
-                                              20 * j, x * j, height)
+                        cr.move_to(x * j, 20 * j)
+                        cr.line_to(x * j, h)
+                    cr.stroke()
 
             #Iterate for each graph
             for graph_id in self.graph_id:
@@ -426,10 +365,10 @@ class DrawWaveform(gtk.DrawingArea):
                     continue
                 if self.graph_show_state[graph_id]:
                     buf = self.ringbuffer[graph_id].read(None, self.input_step)
-                    samples = ceil(self.allocation.width / self.draw_interval)
+                    samples = int(ceil(w / self.draw_interval))
                     if len(buf) == 0:
                         # We don't have enough data to plot.
-                        self._indirect_queue_draw()
+                        self._flush_redraw()
                         return
 
                     x_offset = 0
@@ -457,7 +396,7 @@ class DrawWaveform(gtk.DrawingArea):
                         except ValueError:
                             # TODO: Figure out how this can happen.
                             #       Shape mismatch between window and buf
-                            self._indirect_queue_draw()
+                            self._flush_redraw()
                             return True
 
                     # Scaling the values
@@ -468,22 +407,20 @@ class DrawWaveform(gtk.DrawingArea):
                         if factor == 0:
                             factor = 0.01
                     if self.invert[graph_id]:
-                        data *= self.allocation.height / factor
+                        data *= h / factor
                     else:
-                        data *= -self.allocation.height / factor
+                        data *= -h / factor
                     data -= self.bias[graph_id]
 
                     if self.fft_show:
-                        data += self.allocation.height - 3
+                        data += h - 3
                     else:
-                        data += (self.allocation.height / 2.0)
+                        data += (h / 2.0)
 
                     # The actual drawing of the graph
                     lines = (arange(len(data), dtype='float32')\
                             * self.draw_interval) + x_offset
-
-                    # Use ints or draw_lines will throw warnings
-                    lines = zip(lines.astype('int'), data.astype('int'))
+                    lines = zip(lines, data)
 
                     if self.fft_show:
                         n = data.argmin()
@@ -500,23 +437,26 @@ class DrawWaveform(gtk.DrawingArea):
                                     freq_note(x, flatsharp=True))
                     else:
                         if self.triggering != self.TRIGGER_NONE:
-                            x = int(self.trigger_xpos * self.allocation.width)
-                            y = int(self.trigger_ypos * self.allocation.height)
+                            x = int(self.trigger_xpos * w)
+                            y = int(self.trigger_ypos * h)
                             length = int(self._TRIGGER_LINE_THICKNESS * 3.5)
-                            self.window.draw_line(self._trigger_line_gc,
-                                                  x - length, y,
-                                                  x + length, y)
-                            self.window.draw_line(self._trigger_line_gc,
-                                                  x, y - length,
-                                                  x, y - length)
+                            cr.set_line_width(self._TRIGGER_LINE_THICKNESS)
+                            cr.set_source_rgb(0.6953125, 0.0, 0.03125)
+                            cr.move_to(x - length, y)
+                            cr.line_to(x + length, y)
+                            cr.move_to(x, y - length)
+                            cr.line_to(x, y - length + self._TRIGGER_LINE_THICKNESS)
+                            cr.stroke()
 
-                    if self.type[graph_id] == 0:
-                        self.window.draw_lines(self._line_gc[graph_id], lines)
-                    else:
-                        self.window.draw_points(self._line_gc[graph_id], lines)
+                    cr.set_line_width(self._FOREGROUND_LINE_THICKNESS)
+                    c = self.color[graph_id]
+                    cr.set_source_rgb(c.red, c.green, c.blue)
+                    cr.move_to(lines[0][0], lines[0][1])
+                    for xy in lines[1:]:
+                        cr.line_to(xy[0], xy[1])
+                    cr.stroke()
 
-            self._indirect_queue_draw()
-        return True
+            self._flush_redraw()
 
     def set_graph_source(self, graph_id, source=0):
         """Sets from where the graph will get data
@@ -538,7 +478,7 @@ class DrawWaveform(gtk.DrawingArea):
         self.triggering = trigger
 
     def get_ticks(self):
-        return self.allocation.width / float(self._tick_size)
+        return self.get_allocated_width() / float(self._tick_size)
 
     def get_fft_mode(self):
         """Returns if FFT is ON (True) or OFF (False)"""
@@ -554,7 +494,7 @@ class DrawWaveform(gtk.DrawingArea):
         self._freq_range = freq_range
 
     def _update_mode(self):
-        if self.allocation.width <= 0:
+        if self.get_allocated_width() <= 0:
             return
 
         if self.fft_show:
@@ -565,12 +505,12 @@ class DrawWaveform(gtk.DrawingArea):
             self.draw_interval = 5.0
 
             self.set_max_samples(
-                ceil(self.allocation.width / \
+                ceil(self.get_allocated_width() / \
                         float(self.draw_interval) * 2) * self.input_step)
 
             # Create the (blackman) window
             self.fft_window = blackman(
-                ceil(self.allocation.width / float(self.draw_interval) * 2))
+                ceil(self.get_allocated_width() / float(self.draw_interval) * 2))
 
             self.draw_interval *= wanted_step / self.input_step
         else:
@@ -582,15 +522,15 @@ class DrawWaveform(gtk.DrawingArea):
             self.set_max_samples(samples * self.max_samples_fact)
 
             self.input_step = max(ceil(samples\
-                                           / (self.allocation.width / 3.0)), 1)
-            self.draw_interval = self.allocation.width\
+                                           / (self.get_allocated_width() / 3.0)), 1)
+            self.draw_interval = self.get_allocated_width()\
                                            / (float(samples) / self.input_step)
 
             self.fft_window = None
 
     def set_active(self, active):
         self.active = active
-        self._indirect_queue_draw()
+        self._flush_redraw()
 
     def get_active(self):
         return self.active

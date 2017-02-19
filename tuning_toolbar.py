@@ -2,6 +2,7 @@
 #! /usr/bin/python
 #
 # Copyright (C) 2009-12 Walter Bender
+# Copyright (C) 2016, James Cameron [Gtk+ 3.0]
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,19 +13,21 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+from gi.repository import Gtk
+from gi.repository import GObject
+
 import os
-
-import gtk
-import gobject
-
 from gettext import gettext as _
 
 from config import XO4, XO175, INSTRUMENT_DICT
 from audiograb import check_output
 
-from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.menuitem import MenuItem
-from sugar.graphics import style
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.graphics.combobox import ComboBox
+from sugar3.graphics.menuitem import MenuItem
+from sugar3.graphics.toolcombobox import ToolComboBox
+from sugar3.graphics import style
+
 
 import logging
 log = logging.getLogger('measure-activity')
@@ -44,11 +47,11 @@ COLOR_GREEN = style.Color('#00FF00')
 SPAN = '<span foreground="%s"><big><b>%s</b></big></span>'
 
 
-class TuningToolbar(gtk.Toolbar):
+class TuningToolbar(Gtk.Toolbar):
     ''' The toolbar for tuning instruments '''
 
     def __init__(self, activity):
-        gtk.Toolbar.__init__(self)
+        super(type(self), self).__init__()
 
         self.activity = activity
         self._show_tuning_line = False
@@ -62,7 +65,7 @@ class TuningToolbar(gtk.Toolbar):
         self.insert(self._instrument_button, -1)
         self._setup_instrument_palette()
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
@@ -83,7 +86,7 @@ class TuningToolbar(gtk.Toolbar):
         self._setup_octaves_palette()
 
         # The entry is used to display a note or for direct user input
-        self._freq_entry = gtk.Entry()
+        self._freq_entry = Gtk.Entry()
         self._freq_entry.set_text('440')  # A
         self._freq_entry_changed_id = self._freq_entry.connect(
             'changed', self._update_freq_entry)
@@ -92,7 +95,7 @@ class TuningToolbar(gtk.Toolbar):
                 _('Enter a frequency to display.'))
         self._freq_entry.set_width_chars(8)
         self._freq_entry.show()
-        toolitem = gtk.ToolItem()
+        toolitem = Gtk.ToolItem()
         toolitem.add(self._freq_entry)
         self.insert(toolitem, -1)
         toolitem.show()
@@ -103,7 +106,7 @@ class TuningToolbar(gtk.Toolbar):
         self._new_tuning_line.set_tooltip(_('Show tuning line.'))
         self._new_tuning_line.connect('clicked', self.tuning_line_cb)
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
@@ -113,7 +116,7 @@ class TuningToolbar(gtk.Toolbar):
         self._harmonic.set_tooltip(_('Show harmonics.'))
         self._harmonic.connect('clicked', self.harmonic_cb)
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
@@ -123,15 +126,15 @@ class TuningToolbar(gtk.Toolbar):
         self._play_tone.set_tooltip(_('Play a note.'))
         self._play_tone.connect('clicked', self.play_cb)
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = False
         separator.set_expand(True)
         self.insert(separator, -1)
 
-        self.label = gtk.Label('')
+        self.label = Gtk.Label(label='')
         self.label.set_use_markup(True)
         self.label.show()
-        toolitem = gtk.ToolItem()
+        toolitem = Gtk.ToolItem()
         toolitem.add(self.label)
         self.insert(toolitem, -1)
         toolitem.show()
@@ -174,7 +177,7 @@ class TuningToolbar(gtk.Toolbar):
         palette = widget.get_palette()
         if palette:
             if not palette.is_up():
-                palette.popup(immediate=True, state=palette.SECONDARY)
+                palette.popup(immediate=True)
             else:
                 palette.popdown(immediate=True)
             return
@@ -304,20 +307,20 @@ class TuningToolbar(gtk.Toolbar):
         ''' Callback for harmonics control '''
         self.activity.wave.harmonics = not self.activity.wave.harmonics
         if self.activity.wave.harmonics:
-            self._harmonic.set_icon('harmonics-off')
+            self._harmonic.set_icon_name('harmonics-off')
             self._harmonic.set_tooltip(_('Hide harmonics.'))
             if self.activity.wave.instrument is None and \
                self.activity.wave.tuning_line == 0.0:
                 self._load_tuning_line()
         else:
-            self._harmonic.set_icon('harmonics')
+            self._harmonic.set_icon_name('harmonics')
             self._harmonic.set_tooltip(_('Show harmonics.'))
 
     def tuning_line_cb(self, *args):
         ''' Callback for tuning insert '''
         if self._show_tuning_line:
             self.activity.wave.tuning_line = 0.0
-            self._new_tuning_line.set_icon('tuning-tools')
+            self._new_tuning_line.set_icon_name('tuning-tools')
             self._new_tuning_line.set_tooltip(_('Show tuning line.'))
             self._show_tuning_line = False
         else:
@@ -330,7 +333,7 @@ class TuningToolbar(gtk.Toolbar):
             self.activity.wave.tuning_line = float(freq)
             if freq < 0:
                 freq = -freq
-            self._new_tuning_line.set_icon('tuning-tools-off')
+            self._new_tuning_line.set_icon_name('tuning-tools-off')
             self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
             self._show_tuning_line = True
         except ValueError:
@@ -354,7 +357,7 @@ class TuningToolbar(gtk.Toolbar):
             self.activity.audiograb.stop_grabbing()
 
         freq = float(self._freq_entry.get_text())
-        gobject.timeout_add(200, self.play_sound, freq, channels, wave_status)
+        GObject.timeout_add(200, self.play_sound, freq, channels, wave_status)
 
     def play_sound(self, freq, channels, wave_status):
         ''' Play the sound and then restore wave settings '''
@@ -443,15 +446,15 @@ class TuningToolbar(gtk.Toolbar):
         csd.close()
 
 
-class InstrumentToolbar(gtk.Toolbar):
+class InstrumentToolbar(Gtk.Toolbar):
     ''' The toolbar for adding new instruments '''
 
     def __init__(self, activity):
-        gtk.Toolbar.__init__(self)
+        super(type(self), self).__init__()
         self.activity = activity
         self.new_instruments = []
 
-        self._name_entry = gtk.Entry()
+        self._name_entry = Gtk.Entry()
         self._name_entry.set_text(_('my instrument'))
         self._name_entry_changed_id = self._name_entry.connect(
             'changed', self.update_name_entry)
@@ -460,7 +463,7 @@ class InstrumentToolbar(gtk.Toolbar):
                 _('Enter instrument name.'))
         self._name_entry.set_width_chars(24)
         self._name_entry.show()
-        toolitem = gtk.ToolItem()
+        toolitem = Gtk.ToolItem()
         toolitem.add(self._name_entry)
         self.insert(toolitem, -1)
         toolitem.show()
@@ -494,7 +497,7 @@ class InstrumentToolbar(gtk.Toolbar):
         palette = widget.get_palette()
         if palette:
             if not palette.is_up():
-                palette.popup(immediate=True, state=palette.SECONDARY)
+                palette.popup(immediate=True)
             else:
                 palette.popdown(immediate=True)
             return

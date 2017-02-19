@@ -5,6 +5,7 @@
 # Copyright (C) 2007, Arjun Sarwal
 # Copyright (C) 2009-13 Walter Bender
 # Copyright (C) 2009, Benjamin Berg, Sebastian Berg
+# Copyright (C) 2016, James Cameron [Gtk+ 3.0]
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,17 +17,19 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import os
 from gettext import gettext as _
 from gettext import ngettext
 
 from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO4
 
-from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.menuitem import MenuItem
-from sugar.graphics.radiotoolbutton import RadioToolButton
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.graphics.combobox import ComboBox
+from sugar3.graphics.menuitem import MenuItem
+from sugar3.graphics.toolcombobox import ToolComboBox
+from sugar3.graphics.radiotoolbutton import RadioToolButton
 import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
@@ -37,12 +40,12 @@ LOG_TIMER_LABELS = {1: _('1/10 second'), 10: _('1 second'),
                     30000: _('30 minutes')}
 
 
-def _is_xo(hw):
-    ''' Return True if this is xo hardware '''
+def _can_use_dc(hw):
+    ''' Return True if this is DC sensor capable hardware '''
     return hw in [XO1, XO15, XO175, XO4]
 
 
-class SensorToolbar(gtk.Toolbar):
+class SensorToolbar(Gtk.Toolbar):
     ''' The toolbar for specifiying the sensor: sound, resitance, or
     voltage '''
 
@@ -69,7 +72,7 @@ of XO)") + ' '
     def __init__(self, activity, channels):
         ''' By default, start with resistance mode '''
 
-        gtk.Toolbar.__init__(self)
+        super(type(self), self).__init__()
 
         self.activity = activity
         self._channels = channels
@@ -89,17 +92,16 @@ of XO)") + ' '
         self.mode = 'sound'
 
         # Set up Time-domain Button
-        self.time = RadioToolButton(group=None)
-        self.time.set_named_icon('media-audio')
+        self.time = RadioToolButton(icon_name='media-audio', group=None)
         self.insert(self.time, -1)
         self.time.set_tooltip(_('Sound'))
         self.time.connect(
             'clicked', self.analog_resistance_voltage_mode_cb, 'sound')
 
         # Set up Resistance Button
-        self.resistance = RadioToolButton(group=self.time)
-        self.resistance.set_named_icon('resistance')
-        if _is_xo(self.activity.hw):
+        self.resistance = RadioToolButton(icon_name='resistance',
+                                          group=self.time)
+        if _can_use_dc(self.activity.hw):
             self.insert(self.resistance, -1)
         self.resistance.show()
         self.resistance.set_tooltip(_('Resistance Sensor'))
@@ -108,22 +110,21 @@ of XO)") + ' '
                                 'resistance')
 
         # Set up Voltage Button
-        self.voltage = RadioToolButton(group=self.time)
-        self.voltage.set_named_icon('voltage')
-        if _is_xo(self.activity.hw):
+        self.voltage = RadioToolButton(icon_name='voltage', group=self.time)
+        if _can_use_dc(self.activity.hw):
             self.insert(self.voltage, -1)
         self.voltage.set_tooltip(_('Voltage Sensor'))
         self.voltage.connect('clicked',
                              self.analog_resistance_voltage_mode_cb,
                              'voltage')
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
         self._log_value = LOG_TIMER_VALUES[1]
-        self.log_label = gtk.Label(self._log_to_string(self._log_value))
-        toolitem = gtk.ToolItem()
+        self.log_label = Gtk.Label(self._log_to_string(self._log_value))
+        toolitem = Gtk.ToolItem()
         toolitem.add(self.log_label)
         self.insert(toolitem, -1)
 
@@ -139,18 +140,18 @@ of XO)") + ' '
         self._record.set_tooltip(_('Start logging'))
         self._record.connect('clicked', self.record_control_cb)
 
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = True
         self.insert(separator, -1)
 
-        toolitem = gtk.ToolItem()
-        self.trigger_label = gtk.Label(_('Trigger'))
+        toolitem = Gtk.ToolItem()
+        self.trigger_label = Gtk.Label(_('Trigger'))
         toolitem.add(self.trigger_label)
         self.insert(toolitem, -1)
 
         # Set up Trigger Combo box
         self.trigger_none = RadioToolButton()
-        self.trigger_none.set_named_icon('trigger-none')
+        self.trigger_none.set_icon_name('trigger-none')
         self.insert(self.trigger_none, -1)
         self.trigger_none.set_tooltip(_('None'))
         self.trigger_none.connect('clicked',
@@ -158,7 +159,7 @@ of XO)") + ' '
                                   self.activity.wave.TRIGGER_NONE)
 
         self.trigger_rise = RadioToolButton(group=self.trigger_none)
-        self.trigger_rise.set_named_icon('trigger-rise')
+        self.trigger_rise.set_icon_name('trigger-rise')
         self.insert(self.trigger_rise, -1)
         self.trigger_rise.set_tooltip(_('Rising Edge'))
         self.trigger_rise.connect('clicked',
@@ -166,7 +167,7 @@ of XO)") + ' '
                                   self.activity.wave.TRIGGER_POS)
 
         self.trigger_fall = RadioToolButton(group=self.trigger_none)
-        self.trigger_fall.set_named_icon('trigger-fall')
+        self.trigger_fall.set_icon_name('trigger-fall')
         self.insert(self.trigger_fall, -1)
         self.trigger_fall.set_tooltip(_('Falling Edge'))
         self.trigger_fall.connect('clicked',
@@ -193,8 +194,7 @@ of XO)") + ' '
     def _log_selection_cb(self, widget):
         if self._log_palette:
             if not self._log_palette.is_up():
-                self._log_palette.popup(immediate=True,
-                                    state=self._log_palette.SECONDARY)
+                self._log_palette.popup(immediate=True)
             else:
                 self._log_palette.popdown(immediate=True)
             return
@@ -228,15 +228,13 @@ of XO)") + ' '
         self._freq_stepper_up.set_tooltip(_('Zoom out'))
         self._freq_stepper_up.connect('clicked', self._freq_stepper_up_cb)
         self._freq_stepper_up.show()
-
-        self.activity.adjustmentf = gtk.Adjustment(
+        self.activity.adjustmentf = Gtk.Adjustment(
             0.5, self.LOWER, self.UPPER, 0.01, 0.1, 0)
         self.activity.adjustmentf.connect('value_changed', self.cb_page_sizef)
-
-        self._freq_range = gtk.HScale(self.activity.adjustmentf)
+        self._freq_range = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL,
+                                     adjustment=self.activity.adjustmentf)
         self._freq_range.set_inverted(True)
         self._freq_range.set_draw_value(False)
-        self._freq_range.set_update_policy(gtk.UPDATE_CONTINUOUS)
         self._freq_range.set_size_request(120, 15)
         self._freq_range.show()
 
@@ -245,7 +243,7 @@ of XO)") + ' '
         self._freq_stepper_down.connect('clicked', self._freq_stepper_down_cb)
         self._freq_stepper_down.show()
 
-        self._freq_range_tool = gtk.ToolItem()
+        self._freq_range_tool = Gtk.ToolItem()
         self._freq_range_tool.add(self._freq_range)
         self._freq_range_tool.show()
 
@@ -346,20 +344,21 @@ of XO)") + ' '
     def cb_page_sizef(self, button=None):
         ''' Callback to scale the frequency range (zoom in and out) '''
         if self._update_page_size_id:
-            gobject.source_remove(self._update_page_size_id)
+            GObject.source_remove(self._update_page_size_id)
         self._update_page_size_id =\
-            gobject.timeout_add(250, self.update_page_size)
+            GObject.timeout_add(250, self.update_page_size)
         return True
 
     def update_page_size(self):
         ''' Set up the scaling of the display. '''
         self._update_page_size_id = None
-        new_value = round(self.activity.adjustmentf.value * 100.0) / 100.0
-        if self.activity.adjustmentf.value != new_value:
-            self.activity.adjustmentf.value = new_value
+        value = self.activity.adjustmentf.get_value()
+        new_value = round(value * 100.0) / 100.0
+        if value != new_value:
+            self.activity.adjustmentf.set_value(new_value)
             return False
-        time_div = 0.001 * max(self.activity.adjustmentf.value, 0.05)
-        freq_div = 1000 * max(self.activity.adjustmentf.value, 0.01)
+        time_div = 0.001 * max(value, 0.05)
+        freq_div = 1000 * max(value, 0.01)
         self.activity.wave.set_div(time_div, freq_div)
         self.update_string_for_textbox()
         return False
@@ -367,13 +366,13 @@ of XO)") + ' '
     def set_sound_context(self):
         ''' Called when analog sensing is selected '''
         self.set_show_hide_windows(mode='sound')
-        gobject.timeout_add(500, self.sound_context_on)
+        GObject.timeout_add(500, self.sound_context_on)
         self.activity.CONTEXT = 'sound'
 
     def set_sensor_context(self):
         ''' Called when digital sensing is selected '''
         self.set_show_hide_windows(mode='sensor')
-        gobject.timeout_add(500, self.sensor_context_on)
+        GObject.timeout_add(500, self.sensor_context_on)
         self.activity.CONTEXT = 'sensor'
 
     def set_show_hide_windows(self, mode='sound'):
@@ -412,10 +411,8 @@ of XO)") + ' '
 
     def set_sample_value(self, value='', channel=0):
         ''' Write a sample value to the textbox. '''
-        gtk.threads_enter()
         self.values[channel] = value
         self.update_string_for_textbox()
-        gtk.threads_leave()
         return
 
     def record_control_cb(self, button=None):
@@ -423,7 +420,7 @@ of XO)") + ' '
         session, or just logs the current buffer. '''
         if self.activity.audiograb.we_are_logging:
             self.activity.audiograb.set_logging_params(start_stop=False)
-            self._record.set_icon('media-record')
+            self._record.set_icon_name('media-record')
             self._record.show()
             self._record.set_tooltip(_('Start Recording'))
         else:
@@ -442,8 +439,8 @@ of XO)") + ' '
                     self._log_to_string(self._log_value),
                     channels=self._channels, mode=self.mode)
             self.activity.audiograb.set_logging_params(
-                start_stop=True, interval=interval, screenshot=False)
-            self._record.set_icon('record-stop')
+                start_stop=True, interval=interval)
+            self._record.set_icon_name('record-stop')
             self._record.show()
             self._record.set_tooltip(_('Stop Recording'))
             self.activity.new_recording = True
