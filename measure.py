@@ -120,6 +120,9 @@ def _get_hardware_model():
         if 'VirtualBox' in _get_firmware_number():
             model = 'VirtualBox VM'
 
+    if model is None:
+        return 'Unknown'
+
     return model.split(' ')[0]
 
 
