@@ -33,6 +33,8 @@ from gettext import gettext as _
 from sugar3.activity import activity
 from sugar3.activity.widgets import ActivityToolbarButton
 from sugar3.activity.widgets import StopButton
+from sugar3.graphics.alert import Alert
+from sugar3.graphics.icon import Icon
 from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.graphics.toolbarbox import ToolbarButton
 from sugar3.graphics.toolbutton import ToolButton
@@ -137,6 +139,9 @@ class MeasureActivity(activity.Activity):
         Logging is in journal.py '''
 
         activity.Activity.__init__(self, handle)
+
+        if Gst.version() == (1L, 0L, 10L, 0L):
+            return self._incompatible()
 
         self._image_counter = 1
         self.mode_images = {}
@@ -492,5 +497,34 @@ class MeasureActivity(activity.Activity):
     def get_nick_from_sugar(self):
         ''' Returns nick from Sugar '''
         return profile.get_nick_name()
+
+    def _incompatible(self):
+        ''' Display abbreviated activity user interface with alert '''
+        toolbox = ToolbarBox()
+        stop = StopButton(self)
+        toolbox.toolbar.add(stop)
+        self.set_toolbar_box(toolbox)
+
+        title = _('Activity not compatible with this system.')
+        msg = _('Please downgrade activity and try again.')
+        alert = Alert(title=title, msg=msg)
+        alert.add_button(0, 'Stop', Icon(icon_name='activity-stop'))
+        self.add_alert(alert)
+
+        label = Gtk.Label(_('Uh oh, GStreamer is too old.'))
+        self.set_canvas(label)
+
+        alert.connect('response', self.__incompatible_response_cb)
+        stop.connect('clicked', self.__incompatible_stop_clicked_cb,
+                         alert)
+
+        self.show_all()
+
+    def __incompatible_stop_clicked_cb(self, button, alert):
+        self.remove_alert(alert)
+
+    def __incompatible_response_cb(self, alert, response):
+        self.remove_alert(alert)
+        self.close()
 
 Gst.init(None)

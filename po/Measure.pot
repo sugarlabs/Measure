@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-13 14:22+1000\n"
+"POT-Creation-Date: 2017-06-13 17:07+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,7 +91,7 @@ msgstr ""
 msgid "Hz"
 msgstr ""
 
-#: journal.py:62 measure.py:432
+#: journal.py:62 measure.py:437
 msgid "Session"
 msgstr ""
 
@@ -207,11 +207,11 @@ msgstr ""
 msgid "Voltage"
 msgstr ""
 
-#: sensor_toolbar.py:63 measure.py:263 measure.py:473
+#: sensor_toolbar.py:63 measure.py:268 measure.py:478
 msgid "Time Base"
 msgstr ""
 
-#: sensor_toolbar.py:64 measure.py:477
+#: sensor_toolbar.py:64 measure.py:482
 msgid "Frequency Base"
 msgstr ""
 
@@ -288,39 +288,51 @@ msgstr ""
 msgid "Decrease bias"
 msgstr ""
 
-#: measure.py:105
+#: measure.py:107
 msgid "Not available"
 msgstr ""
 
-#: measure.py:232
+#: measure.py:237
 msgid "Sensors"
 msgstr ""
 
 #. TRANS: Tuning insruments
-#: measure.py:239
+#: measure.py:244
 msgid "Tuning"
 msgstr ""
 
-#: measure.py:245
+#: measure.py:250
 msgid "Add instrument"
 msgstr ""
 
-#: measure.py:277 measure.py:456
+#: measure.py:282 measure.py:461
 msgid "Freeze the display"
 msgstr ""
 
-#: measure.py:283
+#: measure.py:288
 msgid "Capture sample now"
 msgstr ""
 
-#: measure.py:295
+#: measure.py:300
 msgid "<Ctrl>Q"
 msgstr ""
 
-#: measure.py:419
+#: measure.py:424
 msgid "Measure Log"
 msgstr ""
 
-#: measure.py:451
+#: measure.py:456
 msgid "Unfreeze the display"
+msgstr ""
+
+#: measure.py:508
+msgid "Activity not compatible with this system."
+msgstr ""
+
+#: measure.py:509
+msgid "Please downgrade activity and try again."
+msgstr ""
+
+#: measure.py:514
+msgid "Uh oh, GStreamer is too old."
 msgstr ""
