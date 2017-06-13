@@ -1,3 +1,8 @@
+101
+
+* New translations (Chris Leonard et al),
+* On Fedora 18 GStreamer 1.0.10 systems, display an error (James Cameron).
+
 100
 
 * Port to Gtk+ 3.0, GStreamer 1.0, for Ubuntu 16.04 and later (James Cameron)
