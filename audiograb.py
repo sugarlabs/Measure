@@ -123,7 +123,7 @@ class AudioGrab():
         self.pads = []
         self.queue = []
         self.fakesink = []
-        self.pipeline = Gst.Pipeline('pipeline')
+        self.pipeline = Gst.Pipeline.new('pipeline')
         self.alsasrc = Gst.ElementFactory.make('alsasrc', 'alsa-source')
         self.pipeline.add(self.alsasrc)
         self.caps1 = Gst.ElementFactory.make('capsfilter', 'caps1')
