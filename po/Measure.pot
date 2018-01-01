@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-13 17:07+1000\n"
+"POT-Creation-Date: 2018-01-01 14:19+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "oscilloscope program for visualizing microphone input"
 msgstr ""
 
-#: config.py:76 tuning_toolbar.py:231 sensor_toolbar.py:156
+#: config.py:76 sensor_toolbar.py:156 tuning_toolbar.py:231
 msgid "None"
 msgstr ""
 
@@ -119,56 +119,61 @@ msgstr ""
 msgid "Waveform"
 msgstr ""
 
-#: tuning_toolbar.py:62
-msgid "Tune an instrument."
+#: measure.py:107
+msgid "Not available"
 msgstr ""
 
-#: tuning_toolbar.py:74 tuning_toolbar.py:473
-msgid "Notes"
+#: measure.py:237
+msgid "Sensors"
 msgstr ""
 
-#: tuning_toolbar.py:82 tuning_toolbar.py:482
-msgid "Octaves"
+#. TRANS: Tuning insruments
+#: measure.py:244
+msgid "Tuning"
 msgstr ""
 
-#: tuning_toolbar.py:95
-msgid "Enter a frequency to display."
+#: measure.py:250
+msgid "Add instrument"
 msgstr ""
 
-#: tuning_toolbar.py:106 tuning_toolbar.py:294 tuning_toolbar.py:324
-msgid "Show tuning line."
+#: measure.py:268 measure.py:478 sensor_toolbar.py:63
+msgid "Time Base"
 msgstr ""
 
-#: tuning_toolbar.py:116 tuning_toolbar.py:317
-msgid "Show harmonics."
+#: measure.py:282 measure.py:461
+msgid "Freeze the display"
 msgstr ""
 
-#: tuning_toolbar.py:126
-msgid "Play a note."
+#: measure.py:288
+msgid "Capture sample now"
 msgstr ""
 
-#: tuning_toolbar.py:264 tuning_toolbar.py:265
-msgid "All notes"
+#: measure.py:300
+msgid "<Ctrl>Q"
 msgstr ""
 
-#: tuning_toolbar.py:301 tuning_toolbar.py:337
-msgid "Hide tuning line."
+#: measure.py:424
+msgid "Measure Log"
 msgstr ""
 
-#: tuning_toolbar.py:311
-msgid "Hide harmonics."
+#: measure.py:456
+msgid "Unfreeze the display"
 msgstr ""
 
-#: tuning_toolbar.py:458
-msgid "my instrument"
+#: measure.py:482 sensor_toolbar.py:64
+msgid "Frequency Base"
 msgstr ""
 
-#: tuning_toolbar.py:463
-msgid "Enter instrument name."
+#: measure.py:508
+msgid "Activity not compatible with this system."
 msgstr ""
 
-#: tuning_toolbar.py:492
-msgid "Add a new note."
+#: measure.py:509
+msgid "Please downgrade activity and try again."
+msgstr ""
+
+#: measure.py:514
+msgid "Uh oh, GStreamer is too old."
 msgstr ""
 
 #: sensor_toolbar.py:38
@@ -205,14 +210,6 @@ msgstr ""
 
 #: sensor_toolbar.py:62
 msgid "Voltage"
-msgstr ""
-
-#: sensor_toolbar.py:63 measure.py:268 measure.py:478
-msgid "Time Base"
-msgstr ""
-
-#: sensor_toolbar.py:64 measure.py:482
-msgid "Frequency Base"
 msgstr ""
 
 #: sensor_toolbar.py:65 toolbar_side.py:52
@@ -288,51 +285,54 @@ msgstr ""
 msgid "Decrease bias"
 msgstr ""
 
-#: measure.py:107
-msgid "Not available"
+#: tuning_toolbar.py:62
+msgid "Tune an instrument."
 msgstr ""
 
-#: measure.py:237
-msgid "Sensors"
+#: tuning_toolbar.py:74 tuning_toolbar.py:473
+msgid "Notes"
 msgstr ""
 
-#. TRANS: Tuning insruments
-#: measure.py:244
-msgid "Tuning"
+#: tuning_toolbar.py:82 tuning_toolbar.py:482
+msgid "Octaves"
 msgstr ""
 
-#: measure.py:250
-msgid "Add instrument"
+#: tuning_toolbar.py:95
+msgid "Enter a frequency to display."
 msgstr ""
 
-#: measure.py:282 measure.py:461
-msgid "Freeze the display"
+#: tuning_toolbar.py:106 tuning_toolbar.py:294 tuning_toolbar.py:324
+msgid "Show tuning line."
 msgstr ""
 
-#: measure.py:288
-msgid "Capture sample now"
+#: tuning_toolbar.py:116 tuning_toolbar.py:317
+msgid "Show harmonics."
 msgstr ""
 
-#: measure.py:300
-msgid "<Ctrl>Q"
+#: tuning_toolbar.py:126
+msgid "Play a note."
 msgstr ""
 
-#: measure.py:424
-msgid "Measure Log"
+#: tuning_toolbar.py:264 tuning_toolbar.py:265
+msgid "All notes"
 msgstr ""
 
-#: measure.py:456
-msgid "Unfreeze the display"
+#: tuning_toolbar.py:301 tuning_toolbar.py:337
+msgid "Hide tuning line."
 msgstr ""
 
-#: measure.py:508
-msgid "Activity not compatible with this system."
+#: tuning_toolbar.py:311
+msgid "Hide harmonics."
 msgstr ""
 
-#: measure.py:509
-msgid "Please downgrade activity and try again."
+#: tuning_toolbar.py:458
+msgid "my instrument"
 msgstr ""
 
-#: measure.py:514
-msgid "Uh oh, GStreamer is too old."
+#: tuning_toolbar.py:463
+msgid "Enter instrument name."
+msgstr ""
+
+#: tuning_toolbar.py:492
+msgid "Add a new note."
 msgstr ""
