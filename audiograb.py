@@ -130,29 +130,30 @@ class AudioGrab():
         self.pipeline.add(self.caps1)
         caps_str = 'audio/x-raw,rate=(int)%d,channels=(int)%d,depth=(int)16' % (
             RATE, self.channels)
-        self.caps1.set_property('caps', Gst.caps_from_string(caps_str))
+        self.caps1.props.caps = Gst.caps_from_string(caps_str)
         if self.channels == 1:
             self.fakesink.append(Gst.ElementFactory.make('fakesink', 'fsink'))
             self.pipeline.add(self.fakesink[0])
             self.fakesink[0].connect('handoff', self.on_buffer, 0)
-            self.fakesink[0].set_property('signal-handoffs', True)
+            self.fakesink[0].props.signal_handoffs = True
             self.alsasrc.link(self.caps1)
             self.caps1.link(self.fakesink[0])
         else:
             if not hasattr(self, 'splitter'):
-                self.splitter = Gst.ElementFactory.make('deinterleave')
+                self.splitter = Gst.ElementFactory.make('deinterleave', None)
                 self.pipeline.add(self.splitter)
-                self.splitter.set_properties('keep-positions=true', 'name=d')
+                self.splitter.props.keep_positions = True
                 self.splitter.connect('pad-added', self._splitter_pad_added)
                 self.alsasrc.link(self.caps1)
                 self.caps1.link(self.splitter)
+
             for i in range(self.channels):
-                self.queue.append(Gst.ElementFactory.make('queue'))
+                self.queue.append(Gst.ElementFactory.make('queue', None))
                 self.pipeline.add(self.queue[i])
-                self.fakesink.append(Gst.ElementFactory.make('fakesink'))
+                self.fakesink.append(Gst.ElementFactory.make('fakesink', None))
                 self.pipeline.add(self.fakesink[i])
                 self.fakesink[i].connect('handoff', self.on_buffer, i)
-                self.fakesink[i].set_property('signal-handoffs', True)
+                self.fakesink[i].props.signal_handoffs = True
 
     def _unlink_sink_queues(self):
         ''' Build the sink pipelines '''
@@ -190,7 +191,7 @@ class AudioGrab():
         '''Sets whether the handoff signal would generate an interrupt
         or not'''
         for i in range(len(self.fakesink)):
-            self.fakesink[i].set_property('signal-handoffs', handoff_state)
+            self.fakesink[i].signal_handoffs = handoff_state
 
     def _new_buffer(self, buf, channel):
         ''' Use a new buffer '''
@@ -370,12 +371,12 @@ class AudioGrab():
         self.pause_grabbing()
         caps_str = 'audio/x-raw-int,rate=%d,channels=%d,depth=16' % (
             sr, self.channels)
-        self.caps1.set_property('caps', Gst.caps_from_string(caps_str))
+        self.caps1.props.caps = Gst.caps_from_string(caps_str)
         self.resume_grabbing()
 
     def get_sampling_rate(self):
         ''' Gets the sampling rate of the capture device '''
-        return int(self.caps1.get_property('caps')[0]['rate'])
+        return int(self.caps1.props.caps[0]['rate'])
 
     def start_grabbing(self):
         '''Called right at the start of the Activity'''
