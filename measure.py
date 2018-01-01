@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # Written by Arjun Sarwal <arjun@laptop.org>
 # Copyright (C) 2007, Arjun Sarwal
@@ -23,9 +23,8 @@ vs = {'Gdk': '3.0', 'GConf': '2.0', 'Gst': '1.0', 'Gtk': '3.0',
 for api, ver in vs.iteritems():
     gi.require_version(api, ver)
 
-from gi.repository import Gdk, Gtk, Pango, GdkPixbuf, Gst, Gio
+from gi.repository import Gdk, Gtk, GdkPixbuf, Gst, Gio
 import os
-import subprocess
 import csv
 
 from gettext import gettext as _
@@ -49,7 +48,7 @@ from drawwaveform import DrawWaveform
 from toolbar_side import SideToolbar
 from sensor_toolbar import SensorToolbar
 from tuning_toolbar import TuningToolbar, InstrumentToolbar
-from config import ICONS_DIR, XO1, XO15, XO175, XO4, UNKNOWN, INSTRUMENT_DICT
+from config import ICONS_DIR, INSTRUMENT_DICT
 
 import logging
 
@@ -144,13 +143,15 @@ class MeasureActivity(activity.Activity):
             return self._incompatible()
 
         self._image_counter = 1
+
+        def mode_image(name):
+            path = os.path.join(ICONS_DIR, name)
+            return GdkPixbuf.Pixbuf.new_from_file_at_size(path, 45, 45)
+
         self.mode_images = {}
-        self.mode_images['sound'] = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            os.path.join(ICONS_DIR, 'media-audio.svg'), 45, 45)
-        self.mode_images['resistance'] = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            os.path.join(ICONS_DIR, 'resistance.svg'), 45, 45)
-        self.mode_images['voltage'] = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            os.path.join(ICONS_DIR, 'voltage.svg'), 45, 45)
+        self.mode_images['sound'] = mode_image('media-audio.svg')
+        self.mode_images['resistance'] = mode_image('resistance.svg')
+        self.mode_images['voltage'] = mode_image('voltage.svg')
 
         self.icon_colors = self.get_icon_colors_from_sugar()
         self.stroke_color, self.fill_color = self.icon_colors.split(',')
@@ -175,12 +176,12 @@ class MeasureActivity(activity.Activity):
         self.wave = DrawWaveform(self)
 
         ag = audiograb.AudioGrab_Unknown
-        ags = {'XO-1':    audiograb.AudioGrab_XO1,
-               'XO-1.5':  audiograb.AudioGrab_XO15,
+        ags = {'XO-1': audiograb.AudioGrab_XO1,
+               'XO-1.5': audiograb.AudioGrab_XO15,
                'XO-1.75': audiograb.AudioGrab_XO175,
-               'XO-4':    audiograb.AudioGrab_XO4,
-               'NL3':     audiograb.AudioGrab_NL3,
-        }
+               'XO-4': audiograb.AudioGrab_XO4,
+               'NL3': audiograb.AudioGrab_NL3,
+               }
         if self.hw in ags:
             ag = ags[self.hw]
 
@@ -330,7 +331,7 @@ class MeasureActivity(activity.Activity):
             self._extras_button.show()
             if self._extra_tools in self._extra_item:
                 self._extra_item.remove(self._extra_tools)
-            if not self._extra_tools in self._extras_toolbar_item:
+            if self._extra_tools not in self._extras_toolbar_item:
                 self._extras_toolbar_item.add(self._extra_tools)
             self._extras_toolbar_item.show()
             self.sensor_toolbar.log_label.hide()
@@ -339,7 +340,7 @@ class MeasureActivity(activity.Activity):
             self._extras_button.hide()
             if self._extra_tools in self._extras_toolbar_item:
                 self._extras_toolbar_item.remove(self._extra_tools)
-            if not self._extra_tools in self._extra_item:
+            if self._extra_tools not in self._extra_item:
                 self._extra_item.add(self._extra_tools)
             if self._extras_button.is_expanded():
                 self._extras_button.set_expanded(False)
@@ -381,7 +382,7 @@ class MeasureActivity(activity.Activity):
         # Check to see if there are any new instruments to save
         if hasattr(self, 'new_instrument_toolbar'):
             for i, instrument in enumerate(
-                self.new_instrument_toolbar.new_instruments):
+                    self.new_instrument_toolbar.new_instruments):
                 log.debug('saving %s' % (instrument))
                 notes = ''
                 for i, note in enumerate(INSTRUMENT_DICT[instrument]):
@@ -400,7 +401,7 @@ class MeasureActivity(activity.Activity):
             # Also output to a separate file as a workaround to Ticket 2127
             # (the assumption being that this file will be opened by the user)
             tmp_data_file = os.path.join(os.environ['SUGAR_ACTIVITY_ROOT'],
-                                 'instance', 'sensor_data' + '.csv')
+                                         'instance', 'sensor_data' + '.csv')
             log.debug('saving sensor data to %s' % (tmp_data_file))
             if self._dsobject is None:  # first time, so create
                 fd2 = open(tmp_data_file, 'wb')
@@ -516,7 +517,7 @@ class MeasureActivity(activity.Activity):
 
         alert.connect('response', self.__incompatible_response_cb)
         stop.connect('clicked', self.__incompatible_stop_clicked_cb,
-                         alert)
+                     alert)
 
         self.show_all()
 

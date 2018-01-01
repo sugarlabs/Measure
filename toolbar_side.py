@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#! /usr/bin/python
 #
 # Author:  Arjun Sarwal   arjun@laptop.org
 # Copyright (C) 2007, Arjun Sarwal
@@ -102,8 +101,8 @@ class SideToolbar(Gtk.Toolbar):
                                               channel=self._channel)
         elif self.mode == 'sensor':
             self.activity.wave.set_bias_param(int(
-                    300 * (adjy.get_value() - (UPPER - LOWER) / 2.)),
-                                              channel=self._channel)
+                300 * (adjy.get_value() - (UPPER - LOWER) / 2.)),
+                channel=self._channel)
         self.mode_values[self.mode] = adjy.get_value()
         return True
 

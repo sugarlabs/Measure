@@ -20,13 +20,12 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from gi.repository import Gdk, Gtk
+from gi.repository import Gdk
 import cairo
 import time
 import os
 import StringIO
 import dbus
-from numpy import array
 from gettext import gettext as _
 
 from sugar3.datastore import datastore
@@ -45,8 +44,7 @@ class DataLogger():
         'sound': _('Sound'),
         'resistance': _('Ohms'),
         'voltage': _('Volts'),
-        'frequency': _('Hz')
-        }
+        'frequency': _('Hz')}
 
     def __init__(self, activity):
         ''' We store csv data in the Journal entry for Measure; screen captures
@@ -64,8 +62,7 @@ class DataLogger():
         self.data_buffer.append('%s: %s' % (_('User'), user))
         self.data_buffer.append('%s: %s' % (_('Mode'), self.MODE_LABELS[mode]))
         self.data_buffer.append('%s: %s' % (
-                _('Date'), time.strftime('%Y-%m-%d %H:%M:%S',
-                                         time.localtime())))
+            _('Date'), time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
         self.data_buffer.append('%s: %s' % (_('Interval'),
                                             str(logging_interval)))
         if channels > 1:
@@ -79,7 +76,7 @@ class DataLogger():
             self.data_buffer.append('%d: %s' % (sample, str(value)))
         elif self.activity.wave.visibility[channel]:
             self.data_buffer.append('%d.%d: %s' % (
-                    sample, channel, str(value)))
+                sample, channel, str(value)))
 
     def stop_session(self):
         '''Write the data_buffer onto a file'''
@@ -93,7 +90,8 @@ class DataLogger():
 
         window = self.activity.wave.get_window()
         width, height = window.get_width(), window.get_height()
-        surface = Gdk.Window.create_similar_surface(window, cairo.CONTENT_COLOR,
+        surface = Gdk.Window.create_similar_surface(window,
+                                                    cairo.CONTENT_COLOR,
                                                     width, height)
         cr = cairo.Context(surface)
         Gdk.cairo_set_source_window(cr, window, 0, 0)
@@ -104,7 +102,7 @@ class DataLogger():
             dsobject = datastore.create()
             try:
                 dsobject.metadata['title'] = '%s %d' % (_('Waveform'),
-                                                       capture_count)
+                                                        capture_count)
                 dsobject.metadata['keep'] = '0'
                 dsobject.metadata['buddies'] = ''
                 dsobject.metadata['preview'] = self._get_preview_data(surface)
@@ -118,7 +116,6 @@ class DataLogger():
             os.remove(tmp_file_path)
             return True
         return False
-
 
     def _get_preview_data(self, screenshot_surface):
         screenshot_width = screenshot_surface.get_width()

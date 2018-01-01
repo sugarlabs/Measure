@@ -79,13 +79,12 @@ INSTRUMENT_DICT = {
     _('Viola'): [130.813, 195.998, 293.665, 440],
     _('Cello'): [65.4064, 97.9989, 146.832, 220],
     _('Bass'): [41.2034, 55, 73.4162, 97.9989],
-    #TRANS: a small Andean stringed instrument of the lute family
+    # TRANS: a small Andean stringed instrument of the lute family
     _('Charango'): [329.63, 392, 440, 523.25, 659.26],
-    #TRANS: a small string instrument (also called machimbo)
+    # TRANS: a small string instrument (also called machimbo)
     _('Cavaquinho'): [293.665, 391.995, 493.883, 587.330],
     _('Ukulele'): [261.626, 329.628, 391.995, 440],
     _('Sitar'): [174.614, 130.813, 195.998, 65.4064, 391.995,
-                            261.626, 523.251],
+                 261.626, 523.251],
     _('Mandolin'): [195.998, 293.665, 440, 659.255],
-    _('Recorder'): [391.995]
-    }
+    _('Recorder'): [391.995]}

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#! /usr/bin/python
 #
 # Author:  Arjun Sarwal   arjun@laptop.org
 # Copyright (C) 2007, Arjun Sarwal
@@ -19,16 +18,12 @@
 
 from gi.repository import Gtk
 from gi.repository import GObject
-import os
 from gettext import gettext as _
-from gettext import ngettext
 
-from config import ICONS_DIR, CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO4
+from config import CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO4
 
 from sugar3.graphics.toolbutton import ToolButton
-from sugar3.graphics.combobox import ComboBox
 from sugar3.graphics.menuitem import MenuItem
-from sugar3.graphics.toolcombobox import ToolComboBox
 from sugar3.graphics.radiotoolbutton import RadioToolButton
 import logging
 log = logging.getLogger('measure-activity')
@@ -214,7 +209,7 @@ of XO)") + ' '
         for tenth_seconds in LOG_TIMER_VALUES:
             text = self._log_to_string(tenth_seconds)
             menu_item = MenuItem(icon_name='timer-%d' % (tenth_seconds),
-                                 text_label=self._log_to_string(tenth_seconds))
+                                 text_label=text)
             menu_item.connect('activate', self._log_selected_cb, tenth_seconds)
             self._log_palette.menu.append(menu_item)
             menu_item.show()
@@ -261,7 +256,7 @@ of XO)") + ' '
             self.activity.wave.set_trigger(value)
 
     def analog_resistance_voltage_mode_cb(self, button=None,
-                                   mode_to_set='sound'):
+                                          mode_to_set='sound'):
         ''' Callback for Analog/Resistance/Voltage Buttons '''
         if self._lock_radio_buttons:
             logging.debug('mode selector locked')
@@ -323,8 +318,8 @@ of XO)") + ' '
         where one notch is 1/100 of the total range. This correspond
         to zooming out as a larger number of Hertz or milliseconds
         will be represented by the same space on the screen. '''
-        new_value = self._freq_range.get_value() +\
-                    (self.UPPER - self.LOWER) / 100.0
+        new_value = self._freq_range.get_value() + \
+            (self.UPPER - self.LOWER) / 100.0
         if new_value <= self.UPPER:
             self._freq_range.set_value(new_value)
         else:
@@ -334,8 +329,8 @@ of XO)") + ' '
         ''' Moves the horizontal zoom slider to the right one notch,
         where one notch is 1/100 of the total range. This corresponds
         to zooming in. '''
-        new_value = self._freq_range.get_value() -\
-                    (self.UPPER - self.LOWER) / 100.0
+        new_value = self._freq_range.get_value() - \
+            (self.UPPER - self.LOWER) / 100.0
         if new_value >= self.LOWER:
             self._freq_range.set_value(new_value)
         else:
@@ -426,7 +421,7 @@ of XO)") + ' '
         else:
             Xscale = (1.00 / self.activity.audiograb.get_sampling_rate())
             Yscale = 0.0
-            interval = self._log_value / 10. # self.interval_convert()
+            interval = self._log_value / 10.  # self.interval_convert()
             username = self.activity.nick
             if self.activity.wave.get_fft_mode():
                 self.activity.data_logger.start_new_session(
@@ -462,8 +457,8 @@ of XO)") + ' '
             string_for_textbox += ('\n' + scalex)
         elif self.mode == 'sound':
             scalex = self.STR_XAXIS_TEXT % {
-                    'unit': self.MS,
-                    'division': self.activity.wave.time_div * 1000}
+                'unit': self.MS,
+                'division': self.activity.wave.time_div * 1000}
             string_for_textbox += self.STR_TIME
             string_for_textbox += ('\n' + scalex)
         else:

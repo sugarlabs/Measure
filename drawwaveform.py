@@ -17,11 +17,11 @@
 
 
 from gi.repository import Gdk, Gtk
-from math import floor, ceil, pi
+from math import floor, ceil
 from numpy import array, where, int16, float64, multiply, fft, arange, blackman
 from ringbuffer import RingBuffer1d
 
-from config import MAX_GRAPHS, RATE, LOWER, UPPER
+from config import MAX_GRAPHS, RATE, UPPER
 from config import INSTRUMENT_DICT
 from tuning_toolbar import A0, C8, freq_note
 
@@ -29,8 +29,6 @@ from tuning_toolbar import A0, C8, freq_note
 import logging
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
-
-from gettext import gettext as _
 
 
 class DrawWaveform(Gtk.DrawingArea):
@@ -48,7 +46,7 @@ class DrawWaveform(Gtk.DrawingArea):
         """ Initialize drawing area and scope parameter """
         super(type(self), self).__init__()
 
-        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | \
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
                         Gdk.EventMask.PROPERTY_CHANGE_MASK)
 
         self.activity = activity
@@ -254,20 +252,22 @@ class DrawWaveform(Gtk.DrawingArea):
             ypos *= -32767.0 / y_mag
 
         x_offset = self.get_allocated_width() * xpos - \
-                   (samples - samples_to_end) * self.draw_interval
+            (samples - samples_to_end) * self.draw_interval
 
         position = -1
         if self.triggering == self.TRIGGER_POS:
-            ints = buf[samples - samples_to_end: - samples_to_end - 3] <= ypos
-            ints &= buf[samples - samples_to_end + 1: - samples_to_end - 2] > \
-                    ypos
+            sams = buf[samples - samples_to_end: - samples_to_end - 3]
+            ints = sams <= ypos
+            sams = buf[samples - samples_to_end + 1: - samples_to_end - 2]
+            ints &= sams > ypos
             ints = where(ints)[0]
             if len(ints) > 0:
                 position = max(position, ints[-1])
         elif self.triggering == self.TRIGGER_NEG:
-            ints = buf[samples - samples_to_end: -samples_to_end - 3] >= ypos
-            ints &= buf[samples - samples_to_end + 1: -samples_to_end - 2] < \
-                    ypos
+            sams = buf[samples - samples_to_end: - samples_to_end - 3]
+            ints = sams >= ypos
+            sams = buf[samples - samples_to_end + 1: - samples_to_end - 2]
+            ints &= sams < ypos
             ints = where(ints)[0]
             if len(ints) > 0:
                 position = max(position, ints[-1])
@@ -277,9 +277,9 @@ class DrawWaveform(Gtk.DrawingArea):
         else:
             position = position + samples - samples_to_end
             x_offset -= int(
-                (float(-buf[position] + ypos) / \
-                     (buf[position + 1] - buf[position])) * \
-                    self.draw_interval + 0.5)
+                (float(-buf[position] + ypos) /
+                 (buf[position + 1] - buf[position])) *
+                self.draw_interval + 0.5)
         return position, samples_to_end
 
     def _draw_cb(self, widget, cr):
@@ -359,7 +359,7 @@ class DrawWaveform(Gtk.DrawingArea):
                         cr.line_to(x * j, h)
                     cr.stroke()
 
-            #Iterate for each graph
+            # Iterate for each graph
             for graph_id in self.graph_id:
                 if not self.visibility[graph_id]:
                     continue
@@ -376,11 +376,12 @@ class DrawWaveform(Gtk.DrawingArea):
                         if self.triggering != self.TRIGGER_NONE:
                             position, samples_to_end = \
                                 self._calculate_trigger_position(
-                                samples, self.y_mag[graph_id], buf)
-                            data = buf[position - samples + samples_to_end:\
-                                position + samples_to_end + 2].astype(float64)
+                                    samples, self.y_mag[graph_id], buf)
+                            sams = buf[position - samples + samples_to_end:
+                                       position + samples_to_end + 2]
                         else:
-                            data = buf[-samples:].astype(float64)
+                            sams = buf[-samples:]
+                        data = sams.astype(float64)
 
                     else:
                         # FFT
@@ -418,8 +419,8 @@ class DrawWaveform(Gtk.DrawingArea):
                         data += (h / 2.0)
 
                     # The actual drawing of the graph
-                    lines = (arange(len(data), dtype='float32')\
-                            * self.draw_interval) + x_offset
+                    lines = (arange(len(data), dtype='float32') *
+                             self.draw_interval) + x_offset
                     lines = zip(lines, data)
 
                     if self.fft_show:
@@ -445,7 +446,8 @@ class DrawWaveform(Gtk.DrawingArea):
                             cr.move_to(x - length, y)
                             cr.line_to(x + length, y)
                             cr.move_to(x, y - length)
-                            cr.line_to(x, y - length + self._TRIGGER_LINE_THICKNESS)
+                            cr.line_to(x, y - length +
+                                       self._TRIGGER_LINE_THICKNESS)
                             cr.stroke()
 
                     cr.set_line_width(self._FOREGROUND_LINE_THICKNESS)
@@ -505,12 +507,13 @@ class DrawWaveform(Gtk.DrawingArea):
             self.draw_interval = 5.0
 
             self.set_max_samples(
-                ceil(self.get_allocated_width() / \
-                        float(self.draw_interval) * 2) * self.input_step)
+                ceil(self.get_allocated_width() /
+                     float(self.draw_interval) * 2) * self.input_step)
 
             # Create the (blackman) window
             self.fft_window = blackman(
-                ceil(self.get_allocated_width() / float(self.draw_interval) * 2))
+                ceil(self.get_allocated_width() /
+                     float(self.draw_interval) * 2))
 
             self.draw_interval *= wanted_step / self.input_step
         else:
@@ -521,10 +524,10 @@ class DrawWaveform(Gtk.DrawingArea):
             samples = time * self._input_freq
             self.set_max_samples(samples * self.max_samples_fact)
 
-            self.input_step = max(ceil(samples\
-                                           / (self.get_allocated_width() / 3.0)), 1)
-            self.draw_interval = self.get_allocated_width()\
-                                           / (float(samples) / self.input_step)
+            self.input_step = max(ceil(samples /
+                                       (self.get_allocated_width() / 3.0)), 1)
+            self.draw_interval = self.get_allocated_width() / \
+                (float(samples) / self.input_step)
 
             self.fft_window = None
 

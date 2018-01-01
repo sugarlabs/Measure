@@ -18,23 +18,20 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-import gi
-gi.require_version('Gst', '1.0')
-from gi.repository import Gst
 from numpy import fromstring
 import subprocess
 import traceback
 from string import find
 from threading import Timer
-from numpy import append
 from numpy.fft import rfft
 
-from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST,\
-                   MAX_LOG_ENTRIES, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE,\
-                   QUIT_CAPTURE_GAIN, QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1, \
-                   XO15, XO175, XO4, MAX_GRAPHS
+from config import RATE, BIAS, DC_MODE_ENABLE, CAPTURE_GAIN, MIC_BOOST, \
+    MAX_LOG_ENTRIES, QUIT_MIC_BOOST, QUIT_DC_MODE_ENABLE, QUIT_CAPTURE_GAIN, \
+    QUIT_BIAS, DISPLAY_DUTY_CYCLE, XO1, XO15, XO175, XO4, MAX_GRAPHS
 
 import logging
+
+from gi.repository import Gst
 
 log = logging.getLogger('measure-activity')
 log.setLevel(logging.DEBUG)
@@ -128,8 +125,8 @@ class AudioGrab():
         self.pipeline.add(self.alsasrc)
         self.caps1 = Gst.ElementFactory.make('capsfilter', 'caps1')
         self.pipeline.add(self.caps1)
-        caps_str = 'audio/x-raw,rate=(int)%d,channels=(int)%d,depth=(int)16' % (
-            RATE, self.channels)
+        caps_str = 'audio/x-raw,rate=(int)%d,channels=(int)%d,depth=(int)16' \
+            % (RATE, self.channels)
         self.caps1.props.caps = Gst.caps_from_string(caps_str)
         if self.channels == 1:
             self.fakesink.append(Gst.ElementFactory.make('fakesink', 'fsink'))
@@ -201,7 +198,8 @@ class AudioGrab():
     def on_buffer(self, element, data_buffer, pad, channel):
         '''The function that is called whenever new data is available
         This is the signal handler for the handoff signal'''
-        temp_buffer = fromstring(data_buffer.extract_dup(0, data_buffer.get_size()), 'int16')
+        size = data_buffer.get_size()
+        temp_buffer = fromstring(data_buffer.extract_dup(0, size), 'int16')
         if not self._dont_queue_the_buffer:
             self._new_buffer(temp_buffer, channel=channel)
 
@@ -325,7 +323,7 @@ class AudioGrab():
             self._busy = False
         else:
             log.debug('skipping sample %d.%d' % (
-                    self._logging_counter, channel))
+                self._logging_counter, channel))
 
     def start_sound_device(self):
         '''Start or Restart grabbing data from the audio capture'''
@@ -432,11 +430,11 @@ class AudioGrab():
     def amixer_set(self, control, state):
         ''' Direct call to amixer for old systems. '''
         if state:
-            output = check_output(
+            check_output(
                 ['amixer', 'set', "%s" % (control), 'unmute'],
                 'Problem with amixer set "%s" unmute' % (control))
         else:
-            output = check_output(
+            check_output(
                 ['amixer', 'set', "%s" % (control), 'mute'],
                 'Problem with amixer set "%s" mute' % (control))
 
@@ -452,7 +450,7 @@ class AudioGrab():
         '''Sets the Master gain slider settings
         master_val must be given as an integer between 0 and 100 indicating the
         percentage of the slider to be set'''
-        output = check_output(
+        check_output(
             ['amixer', 'set', 'Master', "%d%s" % (master_val, '%')],
             'Problem with amixer set Master')
 
@@ -544,7 +542,7 @@ class AudioGrab():
         '''Sets the Capture gain slider settings capture_val must be
         given as an integer between 0 and 100 indicating the
         percentage of the slider to be set'''
-        output = check_output(
+        check_output(
             ['amixer', 'set', 'Capture', "%d%s" % (capture_val, '%')],
             'Problem with amixer set Capture')
 
@@ -569,7 +567,7 @@ class AudioGrab():
         '''Sets the MIC gain slider settings mic_val must be given as
         an integer between 0 and 100 indicating the percentage of the
         slider to be set'''
-        output = check_output(
+        check_output(
             ['amixer', 'set', 'Mic', "%d%s" % (mic_val, '%')],
             'Problem with amixer set Mic')
 
@@ -680,10 +678,10 @@ class AudioGrab_XO175(AudioGrab):
 
     def on_activity_quit(self):
         AudioGrab.on_activity_quit(self)
-        output = check_output(
+        check_output(
             ['amixer', 'set', 'MIC1 Boost', "87%"],
             'restore MIC1 Boost')  # OLPC OS up to 13.2.5
-        output = check_output(
+        check_output(
             ['amixer', 'set', 'Analog Mic Boost', "62%"],
             'restore Analog Mic Boost')  # OLPC OS after 13.2.5
 
@@ -703,7 +701,7 @@ class AudioGrab_XO4(AudioGrab):
 
     def on_activity_quit(self):
         AudioGrab.on_activity_quit(self)
-        output = check_output(
+        check_output(
             ['amixer', 'set', 'Analog Mic Boost', "62%"],
             'restore Analog Mic Boost')
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#! /usr/bin/python
 #
 # Copyright (C) 2009-12 Walter Bender
 # Copyright (C) 2016, James Cameron [Gtk+ 3.0]
@@ -23,9 +22,7 @@ from config import XO4, XO175, INSTRUMENT_DICT
 from audiograb import check_output
 
 from sugar3.graphics.toolbutton import ToolButton
-from sugar3.graphics.combobox import ComboBox
 from sugar3.graphics.menuitem import MenuItem
-from sugar3.graphics.toolcombobox import ToolComboBox
 from sugar3.graphics import style
 
 
@@ -73,7 +70,7 @@ class TuningToolbar(Gtk.Toolbar):
         self._notes_button = ToolButton('notes')
         self._notes_button.set_tooltip(_('Notes'))
         self._notes_button.connect('clicked',
-                                        self._button_selection_cb)
+                                   self._button_selection_cb)
         self.insert(self._notes_button, -1)
         self._setup_notes_palette()
 
@@ -81,7 +78,7 @@ class TuningToolbar(Gtk.Toolbar):
         self._octaves_button = ToolButton('octaves')
         self._octaves_button.set_tooltip(_('Octaves'))
         self._octaves_button.connect('clicked',
-                                        self._button_selection_cb)
+                                     self._button_selection_cb)
         self.insert(self._octaves_button, -1)
         self._setup_octaves_palette()
 
@@ -284,7 +281,7 @@ class TuningToolbar(Gtk.Toolbar):
         if not hasattr(self, '_freq_entry'):  # Still setting up toolbar?
             return
 
-        if not instrument in INSTRUMENT_DICT:
+        if instrument not in INSTRUMENT_DICT:
             return
 
         if fidx == -1:  # All notes
@@ -394,8 +391,7 @@ class TuningToolbar(Gtk.Toolbar):
         self._audio_write(path)
 
         # Play the csound file.
-        output = check_output(['csound', path], 'call to csound failed?')
-        # os.system('csound ' + path + ' > /dev/null 2>&1')
+        check_output(['csound', path], 'call to csound failed?')
 
     def _prepare_sinewave(self, pitch, amplitude, duration, starttime=0,
                           pitch_envelope=99, amplitude_envelope=100,
@@ -403,7 +399,7 @@ class TuningToolbar(Gtk.Toolbar):
 
         pitenv = pitch_envelope
         ampenv = amplitude_envelope
-        if not 1 in self.instrlist:
+        if 1 not in self.instrlist:
             self.orchlines.append("instr 1\n")
             self.orchlines.append("kpitenv oscil 1, 1/p3, p6\n")
             self.orchlines.append("aenv oscil 1, 1/p3, p7\n")
@@ -472,7 +468,7 @@ class InstrumentToolbar(Gtk.Toolbar):
         self._notes_button = ToolButton('notes')
         self._notes_button.set_tooltip(_('Notes'))
         self._notes_button.connect('clicked',
-                                        self._button_selection_cb)
+                                   self._button_selection_cb)
         self.insert(self._notes_button, -1)
         self._setup_notes_palette()
         self._notes_button.show()
@@ -481,7 +477,7 @@ class InstrumentToolbar(Gtk.Toolbar):
         self._octaves_button = ToolButton('octaves')
         self._octaves_button.set_tooltip(_('Octaves'))
         self._octaves_button.connect('clicked',
-                                        self._button_selection_cb)
+                                     self._button_selection_cb)
         self.insert(self._octaves_button, -1)
         self._setup_octaves_palette()
         self._octaves_button.show()
@@ -539,7 +535,6 @@ class InstrumentToolbar(Gtk.Toolbar):
         if name not in INSTRUMENT_DICT:
             INSTRUMENT_DICT[name] = []
             self.activity.tuning_toolbar.instrument.append(name)
-            i = len(self.activity.tuning_toolbar.instrument)
             menu_item = MenuItem(icon_name='',
                                  text_label=name)
             menu_item.connect(
