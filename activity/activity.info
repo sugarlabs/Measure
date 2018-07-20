@@ -1,11 +1,12 @@
 [Activity]
 name = Measure
 bundle_id = org.laptop.MeasureActivity
+license = GPLv2+
 exec = sugar-activity measure.MeasureActivity
 icon = activity-measure
 activity_version = 53
 show_launcher = yes
-license = GPLv2+
-summary = oscilloscope program for visualizing microphone input
-category = science
+summary = Oscilloscope program for visualizing microphone input.
+tags = Science
 repository = https://github.com/walterbender/Measure
+url = https://help.sugarlabs.org/en/measure.html
