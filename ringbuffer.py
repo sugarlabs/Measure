@@ -15,6 +15,7 @@ import numpy as np
 
 
 class RingBuffer1d(object):
+
     """This class implements an array being written in as a ring and that can
     be read from continuously ending with the newest data or starting with the
     oldest. It returns a numpy array copy of the data;

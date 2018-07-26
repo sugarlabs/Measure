@@ -41,6 +41,7 @@ def _can_use_dc(hw):
 
 
 class SensorToolbar(Gtk.Toolbar):
+
     ''' The toolbar for specifiying the sensor: sound, resitance, or
     voltage '''
 

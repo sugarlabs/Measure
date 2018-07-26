@@ -32,6 +32,7 @@ log.setLevel(logging.DEBUG)
 
 
 class DrawWaveform(Gtk.DrawingArea):
+
     """ Handles all the drawing of waveforms """
 
     __gtype_name__ = "MeasureDrawWaveform"

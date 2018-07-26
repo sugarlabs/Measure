@@ -57,6 +57,7 @@ def _avg(array, abs_value=False):
 
 
 class AudioGrab():
+
     """ The interface between measure and the audio device """
 
     def __init__(self, callable1, activity):
@@ -644,12 +645,15 @@ class AudioGrab():
 
 
 class AudioGrab_XO1(AudioGrab):
+
     ''' Use default parameters for OLPC XO-1 laptop '''
     pass
 
 
 class AudioGrab_XO15(AudioGrab):
+
     ''' Override parameters for OLPC XO-1.5 laptop '''
+
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Helper to modify (some) of the sensor settings.'''
         PARAMETERS = {
@@ -663,7 +667,9 @@ class AudioGrab_XO15(AudioGrab):
 
 
 class AudioGrab_XO175(AudioGrab):
+
     ''' Override parameters for OLPC XO-1.75 laptop '''
+
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Helper to modify (some) of the sensor settings.'''
         PARAMETERS = {
@@ -686,7 +692,9 @@ class AudioGrab_XO175(AudioGrab):
 
 
 class AudioGrab_XO4(AudioGrab):
+
     ''' Override parameters for OLPC XO-4 laptop '''
+
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Helper to modify (some) of the sensor settings.'''
         PARAMETERS = {
@@ -706,6 +714,7 @@ class AudioGrab_XO4(AudioGrab):
 
 
 class AudioGrabNoDC(AudioGrab):
+
     def set_bias(self, bias_state):
         pass
 
@@ -726,7 +735,9 @@ class AudioGrabNoDC(AudioGrab):
 
 
 class AudioGrab_NL3(AudioGrabNoDC):
+
     ''' Override parameters for OLPC NL3 laptop '''
+
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Helper to modify (some) of the sensor settings.'''
         PARAMETERS = {
@@ -737,7 +748,9 @@ class AudioGrab_NL3(AudioGrabNoDC):
 
 
 class AudioGrab_Unknown(AudioGrab):
+
     ''' Override parameters for generic hardware '''
+
     def set_sensor_type(self, sensor_type=SENSOR_AC_BIAS):
         '''Helper to modify (some) of the sensor settings.'''
         PARAMETERS = {

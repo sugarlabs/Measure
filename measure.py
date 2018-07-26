@@ -128,6 +128,7 @@ def _get_hardware_model():
 
 
 class MeasureActivity(activity.Activity):
+
     ''' Oscilloscope Sugar activity '''
 
     def __init__(self, handle):

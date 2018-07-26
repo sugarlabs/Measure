@@ -38,6 +38,7 @@ log.setLevel(logging.DEBUG)
 
 
 class DataLogger():
+
     ''' Handles all of the data I/O with the Journal '''
 
     MODE_LABELS = {

@@ -45,6 +45,7 @@ SPAN = '<span foreground="%s"><big><b>%s</b></big></span>'
 
 
 class TuningToolbar(Gtk.Toolbar):
+
     ''' The toolbar for tuning instruments '''
 
     def __init__(self, activity):
@@ -443,6 +444,7 @@ class TuningToolbar(Gtk.Toolbar):
 
 
 class InstrumentToolbar(Gtk.Toolbar):
+
     ''' The toolbar for adding new instruments '''
 
     def __init__(self, activity):

@@ -25,6 +25,7 @@ from config import LOWER, UPPER
 
 
 class SideToolbar(Gtk.Toolbar):
+
     ''' A toolbar on the side of the canvas for adjusting gain/bias '''
 
     def __init__(self, activity, channel=0):
