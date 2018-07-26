@@ -168,7 +168,7 @@ class SideToolbar(Gtk.Toolbar):
 
     def _color_wave(self, color):
         ''' Generate a wave graphic in color to label each side toolbar '''
-        svg = '<?xml version="1.0" ?>\n\
+        svg = b'<?xml version="1.0" ?>\n\
 <!DOCTYPE svg  PUBLIC "-//W3C//DTD SVG 1.1//EN"\n\
 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n\
 <svg enable-background="new 0 0 55.125 55" height="55px" version="1.1"\n\
@@ -178,7 +178,7 @@ xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">\n\
 <path d="M9.066,27.5 c2.32-6.917,4.666-13.834,9.255-13.834\n\
 c9.179,0,9.179,27.668,18.358,27.668c4.59,0,6.986-6.917,9.332-13.834"\n\
 fill="none" stroke="%s" stroke-linecap="round" stroke-width="3.5"/>\n\
-</svg>' % (color)
+</svg>' % (color.encode('utf-8'))
         pixbuf = svg_str_to_pixbuf(svg)
         img = Gtk.Image()
         img.set_from_pixbuf(pixbuf)
