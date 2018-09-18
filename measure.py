@@ -18,8 +18,7 @@
 
 import gi
 
-vs = {'Gdk': '3.0', 'GConf': '2.0', 'Gst': '1.0', 'Gtk': '3.0',
-      'SugarExt': '1.0'}
+vs = {'Gdk': '3.0', 'Gst': '1.0', 'Gtk': '3.0', 'SugarExt': '1.0'}
 for api, ver in vs.iteritems():
     gi.require_version(api, ver)
 
