@@ -12,8 +12,8 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+from gi.repository import GLib
 from gi.repository import Gtk
-from gi.repository import GObject
 
 import os
 from gettext import gettext as _
@@ -354,7 +354,7 @@ class TuningToolbar(Gtk.Toolbar):
             self.activity.audiograb.stop_grabbing()
 
         freq = float(self._freq_entry.get_text())
-        GObject.timeout_add(200, self.play_sound, freq, channels, wave_status)
+        GLib.timeout_add(200, self.play_sound, freq, channels, wave_status)
 
     def play_sound(self, freq, channels, wave_status):
         ''' Play the sound and then restore wave settings '''

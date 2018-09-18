@@ -16,8 +16,8 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
+from gi.repository import GLib
 from gi.repository import Gtk
-from gi.repository import GObject
 from gettext import gettext as _
 
 from config import CAPTURE_GAIN, MIC_BOOST, XO1, XO15, XO175, XO4
@@ -339,9 +339,9 @@ of XO)") + ' '
     def cb_page_sizef(self, button=None):
         ''' Callback to scale the frequency range (zoom in and out) '''
         if self._update_page_size_id:
-            GObject.source_remove(self._update_page_size_id)
+            GLib.source_remove(self._update_page_size_id)
         self._update_page_size_id =\
-            GObject.timeout_add(250, self.update_page_size)
+            GLib.timeout_add(250, self.update_page_size)
         return True
 
     def update_page_size(self):
@@ -361,13 +361,13 @@ of XO)") + ' '
     def set_sound_context(self):
         ''' Called when analog sensing is selected '''
         self.set_show_hide_windows(mode='sound')
-        GObject.timeout_add(500, self.sound_context_on)
+        GLib.timeout_add(500, self.sound_context_on)
         self.activity.CONTEXT = 'sound'
 
     def set_sensor_context(self):
         ''' Called when digital sensing is selected '''
         self.set_show_hide_windows(mode='sensor')
-        GObject.timeout_add(500, self.sensor_context_on)
+        GLib.timeout_add(500, self.sensor_context_on)
         self.activity.CONTEXT = 'sensor'
 
     def set_show_hide_windows(self, mode='sound'):
