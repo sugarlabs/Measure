@@ -1,3 +1,14 @@
+102
+
+* Fix for Gst.Pipeline arguments (Walter Bender),
+* Modernise audiograb (James Cameron),
+* Regenerate POT file (James Cameron),
+* New translations (Markus, Martín Oesterreich, Paulo Francisco, Besnik Bleta),
+* Fix flake8 errors (James Cameron),
+* Update metadata and license details (James Cameron, Vipul Gupta),
+* Port from GObject to GLib (James Cameron),
+* Remove unused GConf reference (James Cameron),
+
 101
 
 * New translations (Chris Leonard et al),
