@@ -25,7 +25,7 @@ msgstr ""
 msgid "oscilloscope program for visualizing microphone input"
 msgstr ""
 
-#: config.py:76 sensor_toolbar.py:156 tuning_toolbar.py:231
+#: config.py:76 sensor_toolbar.py:151 tuning_toolbar.py:228
 msgid "None"
 msgstr ""
 
@@ -75,51 +75,51 @@ msgstr ""
 msgid "Recorder"
 msgstr ""
 
-#: journal.py:45 sensor_toolbar.py:60 sensor_toolbar.py:97
+#: journal.py:44 sensor_toolbar.py:55 sensor_toolbar.py:92
 msgid "Sound"
 msgstr ""
 
-#: journal.py:46 sensor_toolbar.py:61
+#: journal.py:45 sensor_toolbar.py:56
 msgid "Ohms"
 msgstr ""
 
-#: journal.py:47 sensor_toolbar.py:62
+#: journal.py:46 sensor_toolbar.py:57
 msgid "Volts"
 msgstr ""
 
-#: journal.py:48 sensor_toolbar.py:70
+#: journal.py:47 sensor_toolbar.py:65
 msgid "Hz"
 msgstr ""
 
-#: journal.py:62 measure.py:437
+#: journal.py:60 measure.py:437
 msgid "Session"
 msgstr ""
 
-#: journal.py:64
+#: journal.py:62
 msgid "User"
 msgstr ""
 
-#: journal.py:65
+#: journal.py:63
 msgid "Mode"
 msgstr ""
 
-#: journal.py:67
+#: journal.py:65
 msgid "Date"
 msgstr ""
 
-#: journal.py:69
+#: journal.py:66
 msgid "Interval"
 msgstr ""
 
-#: journal.py:72
+#: journal.py:69
 msgid "Channels"
 msgstr ""
 
-#: journal.py:106
+#: journal.py:104
 msgid "Waveform"
 msgstr ""
 
-#: measure.py:107
+#: measure.py:105
 msgid "Not available"
 msgstr ""
 
@@ -136,7 +136,7 @@ msgstr ""
 msgid "Add instrument"
 msgstr ""
 
-#: measure.py:268 measure.py:478 sensor_toolbar.py:63
+#: measure.py:268 measure.py:478 sensor_toolbar.py:58
 msgid "Time Base"
 msgstr ""
 
@@ -160,7 +160,7 @@ msgstr ""
 msgid "Unfreeze the display"
 msgstr ""
 
-#: measure.py:482 sensor_toolbar.py:64
+#: measure.py:482 sensor_toolbar.py:59
 msgid "Frequency Base"
 msgstr ""
 
@@ -176,163 +176,163 @@ msgstr ""
 msgid "Uh oh, GStreamer is too old."
 msgstr ""
 
-#: sensor_toolbar.py:38
+#: sensor_toolbar.py:33
 msgid "1/10 second"
 msgstr ""
 
-#: sensor_toolbar.py:38 sensor_toolbar.py:209
+#: sensor_toolbar.py:33 sensor_toolbar.py:204
 msgid "1 second"
 msgstr ""
 
-#: sensor_toolbar.py:39
+#: sensor_toolbar.py:34
 msgid "30 seconds"
 msgstr ""
 
-#: sensor_toolbar.py:39
+#: sensor_toolbar.py:34
 msgid "5 minutes"
 msgstr ""
 
-#: sensor_toolbar.py:40
+#: sensor_toolbar.py:35
 msgid "30 minutes"
 msgstr ""
 
-#: sensor_toolbar.py:55
+#: sensor_toolbar.py:50
 msgid "Resistive sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 
-#: sensor_toolbar.py:58
+#: sensor_toolbar.py:53
 msgid "Voltage sensor (connect sensor to pink 'Mic In' on left side of XO)"
 msgstr ""
 
-#: sensor_toolbar.py:61
+#: sensor_toolbar.py:56
 msgid "Resistance"
 msgstr ""
 
-#: sensor_toolbar.py:62
+#: sensor_toolbar.py:57
 msgid "Voltage"
 msgstr ""
 
-#: sensor_toolbar.py:65 toolbar_side.py:52
+#: sensor_toolbar.py:60 toolbar_side.py:51
 msgid "Invert"
 msgstr ""
 
-#: sensor_toolbar.py:66
+#: sensor_toolbar.py:61
 #, python-format
 msgid "X Axis Scale: 1 division = %(division)s %(unit)s"
 msgstr ""
 
-#: sensor_toolbar.py:68
+#: sensor_toolbar.py:63
 msgid "ms"
 msgstr ""
 
-#: sensor_toolbar.py:107
+#: sensor_toolbar.py:102
 msgid "Resistance Sensor"
 msgstr ""
 
-#: sensor_toolbar.py:116
+#: sensor_toolbar.py:111
 msgid "Voltage Sensor"
 msgstr ""
 
-#: sensor_toolbar.py:132
+#: sensor_toolbar.py:127
 msgid "Select logging interval"
 msgstr ""
 
-#: sensor_toolbar.py:140
+#: sensor_toolbar.py:135
 msgid "Start logging"
 msgstr ""
 
-#: sensor_toolbar.py:148
+#: sensor_toolbar.py:143
 msgid "Trigger"
 msgstr ""
 
-#: sensor_toolbar.py:164
+#: sensor_toolbar.py:159
 msgid "Rising Edge"
 msgstr ""
 
-#: sensor_toolbar.py:172
+#: sensor_toolbar.py:167
 msgid "Falling Edge"
 msgstr ""
 
-#: sensor_toolbar.py:228
+#: sensor_toolbar.py:223
 msgid "Zoom out"
 msgstr ""
 
-#: sensor_toolbar.py:242
+#: sensor_toolbar.py:237
 msgid "Zoom in"
 msgstr ""
 
-#: sensor_toolbar.py:425
+#: sensor_toolbar.py:420
 msgid "Start Recording"
 msgstr ""
 
-#: sensor_toolbar.py:445
+#: sensor_toolbar.py:440
 msgid "Stop Recording"
 msgstr ""
 
-#: toolbar_side.py:58 toolbar_side.py:140
+#: toolbar_side.py:57 toolbar_side.py:139
 msgid "Increase amplitude"
 msgstr ""
 
-#: toolbar_side.py:73 toolbar_side.py:142
+#: toolbar_side.py:72 toolbar_side.py:141
 msgid "Decrease amplitude"
 msgstr ""
 
-#: toolbar_side.py:145
+#: toolbar_side.py:144
 msgid "Increase bias"
 msgstr ""
 
-#: toolbar_side.py:147
+#: toolbar_side.py:146
 msgid "Decrease bias"
 msgstr ""
 
-#: tuning_toolbar.py:62
+#: tuning_toolbar.py:59
 msgid "Tune an instrument."
 msgstr ""
 
-#: tuning_toolbar.py:74 tuning_toolbar.py:473
+#: tuning_toolbar.py:71 tuning_toolbar.py:469
 msgid "Notes"
 msgstr ""
 
-#: tuning_toolbar.py:82 tuning_toolbar.py:482
+#: tuning_toolbar.py:79 tuning_toolbar.py:478
 msgid "Octaves"
 msgstr ""
 
-#: tuning_toolbar.py:95
+#: tuning_toolbar.py:92
 msgid "Enter a frequency to display."
 msgstr ""
 
-#: tuning_toolbar.py:106 tuning_toolbar.py:294 tuning_toolbar.py:324
+#: tuning_toolbar.py:103 tuning_toolbar.py:291 tuning_toolbar.py:321
 msgid "Show tuning line."
 msgstr ""
 
-#: tuning_toolbar.py:116 tuning_toolbar.py:317
+#: tuning_toolbar.py:113 tuning_toolbar.py:314
 msgid "Show harmonics."
 msgstr ""
 
-#: tuning_toolbar.py:126
+#: tuning_toolbar.py:123
 msgid "Play a note."
 msgstr ""
 
-#: tuning_toolbar.py:264 tuning_toolbar.py:265
+#: tuning_toolbar.py:261 tuning_toolbar.py:262
 msgid "All notes"
 msgstr ""
 
-#: tuning_toolbar.py:301 tuning_toolbar.py:337
+#: tuning_toolbar.py:298 tuning_toolbar.py:334
 msgid "Hide tuning line."
 msgstr ""
 
-#: tuning_toolbar.py:311
+#: tuning_toolbar.py:308
 msgid "Hide harmonics."
 msgstr ""
 
-#: tuning_toolbar.py:458
+#: tuning_toolbar.py:454
 msgid "my instrument"
 msgstr ""
 
-#: tuning_toolbar.py:463
+#: tuning_toolbar.py:459
 msgid "Enter instrument name."
 msgstr ""
 
-#: tuning_toolbar.py:492
+#: tuning_toolbar.py:488
 msgid "Add a new note."
 msgstr ""
