@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2016-12-22 20:12+0000\n"
+"PO-Revision-Date: 2018-02-10 18:15+0000\n"
 "Last-Translator: Besnik_b <besnik@programeshqip.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sq\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1482437564.000000\n"
+"X-POOTLE-MTIME: 1518286549.000000\n"
 
 #: activity/activity.info:2
 msgid "Measure"
@@ -210,7 +210,7 @@ msgstr "30 sekonda"
 
 #: sensor_toolbar.py:121
 msgid "5 minutes"
-msgstr " 5 minuta"
+msgstr "5 minuta"
 
 #: sensor_toolbar.py:121
 msgid "30 minutes"
@@ -218,7 +218,7 @@ msgstr "30 minuta"
 
 #: sensor_toolbar.py:124
 msgid "Sampling interval"
-msgstr "Interval kampionizimi "
+msgstr "Interval kampionizimi"
 
 #: sensor_toolbar.py:141 sensor_toolbar.py:362
 msgid "Start Recording"
@@ -254,7 +254,7 @@ msgstr "Ndale Incizimin"
 
 #: toolbar_side.py:57 toolbar_side.py:138
 msgid "Increase amplitude"
-msgstr "Rritja amplitudën "
+msgstr "Rritja amplitudën"
 
 #: toolbar_side.py:72 toolbar_side.py:140
 msgid "Decrease amplitude"
