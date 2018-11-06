@@ -9,4 +9,7 @@ summary = Oscilloscope program for visualizing microphone input.
 tags = Science
 repository = https://github.com/sugarlabs/Measure
 url = https://help.sugarlabs.org/measure.html
+metadata_license = CC0-1.0
+description:
+    <p>Program for visualizing microphone input</p>
 screenshots = https://github.com/sugarlabs/Measure/tree/master/screenshots/measure-1.PNG https://github.com/sugarlabs/Measure/tree/master/screenshots/measure-2.PNG https://github.com/sugarlabs/Measure/tree/master/screenshots/measure-3.PNG
