@@ -297,6 +297,9 @@ class TuningToolbar(Gtk.Toolbar):
             self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
             self._show_tuning_line = True
 
+        # For consistency, update the freq_entry to make it audible too
+        self._freq_entry.set_text(str(self.activity.wave.tuning_line))
+
         self._updating_note = False
 
     def harmonic_cb(self, *args):
