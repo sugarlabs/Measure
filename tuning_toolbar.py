@@ -225,21 +225,20 @@ class TuningToolbar(Gtk.Toolbar):
         if self._tuning_tool is not None:
             self.remove(self._tuning_tool)
 
+        # Always remove previous buttons
+        if hasattr(self, '_tuning_button'):
+            self.remove(self._tuning_button)
+        self.remove(self._notes_button)
+        self.remove(self._octaves_button)
+
         if instrument == _('None'):
             self.activity.wave.instrument = None
-
-            # Remove any previous tuning button
-            if hasattr(self, '_tuning_button'):
-                self._tuning_button.destroy()
 
             # Restore the notes, octaves buttons
             if hasattr(self, '_notes_button'):
                 self.insert(self._notes_button, 2)
                 self.insert(self._octaves_button, 3)
             return
-
-        self.remove(self._notes_button)
-        self.remove(self._octaves_button)
 
         self.activity.wave.instrument = instrument
 
@@ -251,7 +250,7 @@ class TuningToolbar(Gtk.Toolbar):
         self._tuning_button = ToolButton('notes')
         self._tuning_button.set_tooltip(instrument)
         self._tuning_button.connect('clicked', self._button_selection_cb)
-        self.insert(self._tuning_button, 1)
+        self.insert(self._tuning_button, 2)
         self._setup_tuning_palette(instrument)
 
     def _setup_tuning_palette(self, instrument):
