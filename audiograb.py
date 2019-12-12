@@ -374,7 +374,8 @@ class AudioGrab():
 
     def get_sampling_rate(self):
         ''' Gets the sampling rate of the capture device '''
-        return int(self.caps1.props.caps[0]['rate'])
+        _, value = self.caps1.props.caps.get_structure(0).get_int('rate')
+        return int(value)
 
     def start_grabbing(self):
         '''Called right at the start of the Activity'''
