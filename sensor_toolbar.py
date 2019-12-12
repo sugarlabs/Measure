@@ -184,7 +184,7 @@ of XO)") + ' '
         self._log_value = LOG_TIMER_VALUES[idx]
         self.log_label.set_text(self._log_to_string(self._log_value))
         if hasattr(self, '_log_button'):
-            self._log_button.set_icon('timer-%d' % (self._log_value))
+            self._log_button.set_icon_name('timer-%d' % (self._log_value))
 
     def _log_selection_cb(self, widget):
         if self._log_palette:
