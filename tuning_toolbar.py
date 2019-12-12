@@ -287,14 +287,14 @@ class TuningToolbar(Gtk.Toolbar):
         if fidx == -1:  # All notes
             self.activity.wave.instrument = instrument
             self.activity.wave.tuning_line = 0.0
-            self._new_tuning_line.set_icon('tuning-tools')
+            self._new_tuning_line.set_icon_name('tuning-tools')
             self._new_tuning_line.set_tooltip(_('Show tuning line.'))
             self._show_tuning_line = False
         else:
             freq = INSTRUMENT_DICT[instrument][fidx]
             self.activity.wave.instrument = None
             self.activity.wave.tuning_line = freq
-            self._new_tuning_line.set_icon('tuning-tools-off')
+            self._new_tuning_line.set_icon_name('tuning-tools-off')
             self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
             self._show_tuning_line = True
 
