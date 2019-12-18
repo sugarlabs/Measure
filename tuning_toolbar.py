@@ -211,7 +211,7 @@ class TuningToolbar(Gtk.Toolbar):
         self.instrument_palette = self._instrument_button.get_palette()
 
         self.instrument = []
-        for k in INSTRUMENT_DICT.keys():
+        for k in list(INSTRUMENT_DICT.keys()):
             self.instrument.append(k)
             menu_item = MenuItem(icon_name='',
                                  text_label=k)

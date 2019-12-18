@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # Author:  Arjun Sarwal   arjun@laptop.org
 # Copyright (C) 2007, Arjun Sarwal
@@ -421,7 +421,7 @@ class DrawWaveform(Gtk.DrawingArea):
                     # The actual drawing of the graph
                     lines = (arange(len(data), dtype='float32') *
                              self.draw_interval) + x_offset
-                    lines = zip(lines, data)
+                    lines = list(zip(lines, data))
 
                     if self.fft_show:
                         n = data.argmin()

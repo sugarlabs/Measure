@@ -250,10 +250,13 @@ of XO)") + ' '
     def update_trigger_control_cb(self, button, value):
         if button is None:
             value = self.activity.wave.TRIGGER_NONE
-        if self.activity.wave.get_fft_mode():
-            self.trigger_none.set_active(True)
-        else:
-            self.activity.wave.set_trigger(value)
+        try:
+            if self.activity.wave.get_fft_mode():
+                self.trigger_none.set_active(True)
+            else:
+                self.activity.wave.set_trigger(value)
+        except RuntimeError as e:
+            logging.debug('Warning: Maximum Recursions on the same method has taken place', e)
 
     def analog_resistance_voltage_mode_cb(self, button=None,
                                           mode_to_set='sound'):

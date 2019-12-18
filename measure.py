@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
 # Written by Arjun Sarwal <arjun@laptop.org>
@@ -19,7 +19,7 @@
 import gi
 
 vs = {'Gdk': '3.0', 'Gst': '1.0', 'Gtk': '3.0', 'SugarExt': '1.0'}
-for api, ver in vs.iteritems():
+for api, ver in vs.items():
     gi.require_version(api, ver)
 
 from gi.repository import Gdk, Gtk, GdkPixbuf, Gst, Gio
@@ -138,7 +138,7 @@ class MeasureActivity(activity.Activity):
 
         activity.Activity.__init__(self, handle)
 
-        if Gst.version() == (1L, 0L, 10L, 0L):
+        if Gst.version() == (1, 0, 10, 0):
             return self._incompatible()
 
         self._image_counter = 1
@@ -367,7 +367,7 @@ class MeasureActivity(activity.Activity):
 
     def read_metadata(self):
         ''' Any saved instruments? '''
-        for data in self.metadata.keys():
+        for data in list(self.metadata.keys()):
             if data[0] == PREFIX:  # instrument
                 log.debug('found an instrument: %s' % (data[1:]))
                 instrument = data[1:]
