@@ -2,7 +2,7 @@
 name = Measure
 bundle_id = org.laptop.MeasureActivity
 license = GPLv2+
-exec = sugar-activity measure.MeasureActivity
+exec = sugar-activity3 measure.MeasureActivity
 icon = activity-measure
 activity_version = 102
 summary = Oscilloscope program for visualizing microphone input.

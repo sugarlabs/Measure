@@ -430,7 +430,8 @@ class MeasureActivity(activity.Activity):
 
     def read_file(self, file_path):
         ''' Read csv data from journal on start '''
-        reader = csv.reader(open(file_path, "rb"))
+        reader = csv.reader(open(file_path, "r"))
+
         # Count the number of sessions.
         for row in reader:
             if len(row) > 0:

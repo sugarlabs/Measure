@@ -460,6 +460,7 @@ class AudioGrab():
         integer between 0 and 100 and is an indicative of the
         percentage 0 to 100%'''
         output = check_output(['amixer', 'get', 'Master'],
+        
                               'amixer: Could not get Master volume')
         if output is None:
             return 100
@@ -772,4 +773,7 @@ def check_output(command, warning):
         if status != 0:
             log.warning(warning)
             return None
+
+    output = output.decode('utf-8')
     return output
+
