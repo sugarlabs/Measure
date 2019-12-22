@@ -190,7 +190,7 @@ fill="none" stroke="%s" stroke-linecap="round" stroke-width="3.5"/>\n\
 def svg_str_to_pixbuf(svg_string):
     ''' Load pixbuf from SVG string '''
     pl = GdkPixbuf.PixbufLoader.new_with_type('svg')
-    pl.write(svg_string)
+    pl.write(bytes(svg_string, 'utf-8'))
     pl.close()
     pixbuf = pl.get_pixbuf()
     return pixbuf

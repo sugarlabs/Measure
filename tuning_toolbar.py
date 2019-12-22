@@ -211,7 +211,7 @@ class TuningToolbar(Gtk.Toolbar):
         self.instrument_palette = self._instrument_button.get_palette()
 
         self.instrument = []
-        for k in INSTRUMENT_DICT.keys():
+        for k in list(INSTRUMENT_DICT.keys()):
             self.instrument.append(k)
             menu_item = MenuItem(icon_name='',
                                  text_label=k)
@@ -330,8 +330,8 @@ class TuningToolbar(Gtk.Toolbar):
         freq = self._freq_entry.get_text()
         try:
             self.activity.wave.tuning_line = float(freq)
-            if freq < 0:
-                freq = -freq
+            if self.activity.wave.tuning_line < 0:
+                self.activity.wave.tuning_line = -self.activity.wave.tuning_line
             self._new_tuning_line.set_icon_name('tuning-tools-off')
             self._new_tuning_line.set_tooltip(_('Hide tuning line.'))
             self._show_tuning_line = True
