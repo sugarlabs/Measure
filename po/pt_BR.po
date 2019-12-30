@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Measure\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2018-08-20 18:23+0000\n"
+"PO-Revision-Date: 2019-03-09 00:45+0000\n"
 "Last-Translator: Paulo Francisco <slomp@ufrgs.br>\n"
 "Language-Team: Portuguese\n"
 "Language: pt_BR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1534789432.000000\n"
+"X-POOTLE-MTIME: 1552092330.000000\n"
 
 #: activity/activity.info:2
 msgid "Measure"
@@ -280,7 +280,7 @@ msgstr "Definir uma frequência para mostrar."
 
 #: tuning_toolbar.py:111 tuning_toolbar.py:180 tuning_toolbar.py:263
 msgid "Show tuning line."
-msgstr "Mostrar linha de afinação"
+msgstr "Mostrar linha de afinação."
 
 #: tuning_toolbar.py:122 tuning_toolbar.py:256
 msgid "Show harmonics."
