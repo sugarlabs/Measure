@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-26 00:31-0400\n"
-"PO-Revision-Date: 2018-02-10 18:15+0000\n"
+"PO-Revision-Date: 2018-11-11 20:59+0000\n"
 "Last-Translator: Besnik_b <besnik@programeshqip.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sq\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1518286549.000000\n"
+"X-POOTLE-MTIME: 1541969987.000000\n"
 
 #: activity/activity.info:2
 msgid "Measure"
@@ -177,7 +177,7 @@ msgstr "Voltazh"
 
 #: sensor_toolbar.py:57 toolbar_side.py:51
 msgid "Invert"
-msgstr "Përmbyse"
+msgstr "Këmbeji"
 
 #: sensor_toolbar.py:58
 #, python-format
