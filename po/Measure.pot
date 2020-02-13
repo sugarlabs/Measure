@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-18 12:38+1000\n"
+"POT-Creation-Date: 2020-02-13 16:05+1100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,17 @@ msgstr ""
 msgid "Oscilloscope program for visualizing microphone input."
 msgstr ""
 
-#: config.py:76 sensor_toolbar.py:151 tuning_toolbar.py:228
+#: activity/activity.info:4
+msgid "Program for visualizing microphone input"
+msgstr ""
+
+#: activity/activity.info:4
+msgid ""
+"Using this program you can easily visualize your voice or even a musical "
+"instrument."
+msgstr ""
+
+#: config.py:76 sensor_toolbar.py:151 tuning_toolbar.py:234
 msgid "None"
 msgstr ""
 
@@ -91,7 +101,7 @@ msgstr ""
 msgid "Hz"
 msgstr ""
 
-#: journal.py:60 measure.py:437
+#: journal.py:60 measure.py:438
 msgid "Session"
 msgstr ""
 
@@ -136,11 +146,11 @@ msgstr ""
 msgid "Add instrument"
 msgstr ""
 
-#: measure.py:268 measure.py:478 sensor_toolbar.py:58
+#: measure.py:268 measure.py:479 sensor_toolbar.py:58
 msgid "Time Base"
 msgstr ""
 
-#: measure.py:282 measure.py:461
+#: measure.py:282 measure.py:462
 msgid "Freeze the display"
 msgstr ""
 
@@ -156,23 +166,23 @@ msgstr ""
 msgid "Measure Log"
 msgstr ""
 
-#: measure.py:456
+#: measure.py:457
 msgid "Unfreeze the display"
 msgstr ""
 
-#: measure.py:482 sensor_toolbar.py:59
+#: measure.py:483 sensor_toolbar.py:59
 msgid "Frequency Base"
 msgstr ""
 
-#: measure.py:508
+#: measure.py:509
 msgid "Activity not compatible with this system."
 msgstr ""
 
-#: measure.py:509
+#: measure.py:510
 msgid "Please downgrade activity and try again."
 msgstr ""
 
-#: measure.py:514
+#: measure.py:515
 msgid "Uh oh, GStreamer is too old."
 msgstr ""
 
@@ -261,11 +271,11 @@ msgstr ""
 msgid "Zoom in"
 msgstr ""
 
-#: sensor_toolbar.py:420
+#: sensor_toolbar.py:423
 msgid "Start Recording"
 msgstr ""
 
-#: sensor_toolbar.py:440
+#: sensor_toolbar.py:443
 msgid "Stop Recording"
 msgstr ""
 
@@ -289,11 +299,11 @@ msgstr ""
 msgid "Tune an instrument."
 msgstr ""
 
-#: tuning_toolbar.py:71 tuning_toolbar.py:469
+#: tuning_toolbar.py:71 tuning_toolbar.py:471
 msgid "Notes"
 msgstr ""
 
-#: tuning_toolbar.py:79 tuning_toolbar.py:478
+#: tuning_toolbar.py:79 tuning_toolbar.py:480
 msgid "Octaves"
 msgstr ""
 
@@ -301,11 +311,11 @@ msgstr ""
 msgid "Enter a frequency to display."
 msgstr ""
 
-#: tuning_toolbar.py:103 tuning_toolbar.py:291 tuning_toolbar.py:321
+#: tuning_toolbar.py:103 tuning_toolbar.py:290 tuning_toolbar.py:323
 msgid "Show tuning line."
 msgstr ""
 
-#: tuning_toolbar.py:113 tuning_toolbar.py:314
+#: tuning_toolbar.py:113 tuning_toolbar.py:316
 msgid "Show harmonics."
 msgstr ""
 
@@ -313,26 +323,26 @@ msgstr ""
 msgid "Play a note."
 msgstr ""
 
-#: tuning_toolbar.py:261 tuning_toolbar.py:262
+#: tuning_toolbar.py:260 tuning_toolbar.py:261
 msgid "All notes"
 msgstr ""
 
-#: tuning_toolbar.py:298 tuning_toolbar.py:334
+#: tuning_toolbar.py:297 tuning_toolbar.py:336
 msgid "Hide tuning line."
 msgstr ""
 
-#: tuning_toolbar.py:308
+#: tuning_toolbar.py:310
 msgid "Hide harmonics."
 msgstr ""
 
-#: tuning_toolbar.py:454
+#: tuning_toolbar.py:456
 msgid "my instrument"
 msgstr ""
 
-#: tuning_toolbar.py:459
+#: tuning_toolbar.py:461
 msgid "Enter instrument name."
 msgstr ""
 
-#: tuning_toolbar.py:488
+#: tuning_toolbar.py:490
 msgid "Add a new note."
 msgstr ""
