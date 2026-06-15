@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-13 16:05+1100\n"
-"PO-Revision-Date: 2026-06-15 03:03+0000\n"
+"PO-Revision-Date: 2026-06-15 07:48+0000\n"
 "Last-Translator: NF <rkavt@smartprojects.ge>\n"
 "Language-Team: Georgian <http://weblate.sugarlabs.org/projects/"
 "sugar-activities/measure/ka/>\n"
@@ -117,7 +117,7 @@ msgstr ""
 
 #: journal.py:65
 msgid "Date"
-msgstr ""
+msgstr "თარიღი"
 
 #: journal.py:66
 msgid "Interval"
@@ -125,7 +125,7 @@ msgstr ""
 
 #: journal.py:69
 msgid "Channels"
-msgstr ""
+msgstr "არხები"
 
 #: journal.py:104
 msgid "Waveform"
@@ -162,7 +162,7 @@ msgstr ""
 
 #: measure.py:300
 msgid "<Ctrl>Q"
-msgstr ""
+msgstr "<Ctrl>Q"
 
 #: measure.py:424
 msgid "Measure Log"
