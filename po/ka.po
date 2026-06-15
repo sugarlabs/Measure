@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-13 16:05+1100\n"
-"PO-Revision-Date: 2026-04-01 08:11+0000\n"
+"PO-Revision-Date: 2026-06-15 03:03+0000\n"
 "Last-Translator: NF <rkavt@smartprojects.ge>\n"
 "Language-Team: Georgian <http://weblate.sugarlabs.org/projects/"
 "sugar-activities/measure/ka/>\n"
@@ -89,7 +89,7 @@ msgstr ""
 
 #: journal.py:44 sensor_toolbar.py:55 sensor_toolbar.py:92
 msgid "Sound"
-msgstr ""
+msgstr "ხმა"
 
 #: journal.py:45 sensor_toolbar.py:56
 msgid "Ohms"
