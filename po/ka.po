@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-13 16:05+1100\n"
-"PO-Revision-Date: 2026-06-15 07:48+0000\n"
+"PO-Revision-Date: 2026-06-29 06:56+0000\n"
 "Last-Translator: NF <rkavt@smartprojects.ge>\n"
 "Language-Team: Georgian <http://weblate.sugarlabs.org/projects/"
 "sugar-activities/measure/ka/>\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: activity/activity.info:2
 msgid "Measure"
-msgstr ""
+msgstr "გაზომვა"
 
 #: activity/activity.info:3
 msgid "Oscilloscope program for visualizing microphone input."
@@ -39,53 +39,53 @@ msgstr ""
 
 #: config.py:76 sensor_toolbar.py:151 tuning_toolbar.py:234
 msgid "None"
-msgstr ""
+msgstr "არცერთი"
 
 #: config.py:77
 msgid "Guitar"
-msgstr ""
+msgstr "გიტარა"
 
 #: config.py:78
 msgid "Violin"
-msgstr ""
+msgstr "ვიოლინო"
 
 #: config.py:79
 msgid "Viola"
-msgstr ""
+msgstr "ალტი"
 
 #: config.py:80
 msgid "Cello"
-msgstr ""
+msgstr "ჩელო"
 
 #: config.py:81
 msgid "Bass"
-msgstr ""
+msgstr "ბასი"
 
 #. TRANS: a small Andean stringed instrument of the lute family
 #: config.py:83
 msgid "Charango"
-msgstr ""
+msgstr "ჩარანგო"
 
 #. TRANS: a small string instrument (also called machimbo)
 #: config.py:85
 msgid "Cavaquinho"
-msgstr ""
+msgstr "კარავაკინიო"
 
 #: config.py:86
 msgid "Ukulele"
-msgstr ""
+msgstr "უკულელე"
 
 #: config.py:87
 msgid "Sitar"
-msgstr ""
+msgstr "სიტარა"
 
 #: config.py:89
 msgid "Mandolin"
-msgstr ""
+msgstr "მანდოლინი"
 
 #: config.py:90
 msgid "Recorder"
-msgstr ""
+msgstr "ბლოკ-ფლეიტა"
 
 #: journal.py:44 sensor_toolbar.py:55 sensor_toolbar.py:92
 msgid "Sound"
@@ -93,27 +93,27 @@ msgstr "ხმა"
 
 #: journal.py:45 sensor_toolbar.py:56
 msgid "Ohms"
-msgstr ""
+msgstr "ომი"
 
 #: journal.py:46 sensor_toolbar.py:57
 msgid "Volts"
-msgstr ""
+msgstr "ვოლტი"
 
 #: journal.py:47 sensor_toolbar.py:65
 msgid "Hz"
-msgstr ""
+msgstr "ჰც"
 
 #: journal.py:60 measure.py:438
 msgid "Session"
-msgstr ""
+msgstr "სესია"
 
 #: journal.py:62
 msgid "User"
-msgstr ""
+msgstr "მომხმარებელი"
 
 #: journal.py:63
 msgid "Mode"
-msgstr ""
+msgstr "რეჟიმი"
 
 #: journal.py:65
 msgid "Date"
@@ -121,7 +121,7 @@ msgstr "თარიღი"
 
 #: journal.py:66
 msgid "Interval"
-msgstr ""
+msgstr "ინტერვალი"
 
 #: journal.py:69
 msgid "Channels"
@@ -129,7 +129,7 @@ msgstr "არხები"
 
 #: journal.py:104
 msgid "Waveform"
-msgstr ""
+msgstr "ტალღის ფორმა"
 
 #: measure.py:105
 msgid "Not available"
@@ -137,12 +137,12 @@ msgstr ""
 
 #: measure.py:237
 msgid "Sensors"
-msgstr ""
+msgstr "სენსორები"
 
 #. TRANS: Tuning insruments
 #: measure.py:244
 msgid "Tuning"
-msgstr ""
+msgstr "რეგულირება"
 
 #: measure.py:250
 msgid "Add instrument"
@@ -218,15 +218,15 @@ msgstr ""
 
 #: sensor_toolbar.py:56
 msgid "Resistance"
-msgstr ""
+msgstr "წინაღობა"
 
 #: sensor_toolbar.py:57
 msgid "Voltage"
-msgstr ""
+msgstr "ძაბვა"
 
 #: sensor_toolbar.py:60 toolbar_side.py:51
 msgid "Invert"
-msgstr ""
+msgstr "ინვერსია"
 
 #: sensor_toolbar.py:61
 #, python-format
@@ -235,7 +235,7 @@ msgstr ""
 
 #: sensor_toolbar.py:63
 msgid "ms"
-msgstr ""
+msgstr "მწმ"
 
 #: sensor_toolbar.py:102
 msgid "Resistance Sensor"
@@ -303,7 +303,7 @@ msgstr ""
 
 #: tuning_toolbar.py:71 tuning_toolbar.py:471
 msgid "Notes"
-msgstr ""
+msgstr "შენიშვნები"
 
 #: tuning_toolbar.py:79 tuning_toolbar.py:480
 msgid "Octaves"
@@ -348,3 +348,7 @@ msgstr ""
 #: tuning_toolbar.py:490
 msgid "Add a new note."
 msgstr ""
+
+#: measure.py:240
+msgid "Controls"
+msgstr "კონტროლის ელემენტები"
